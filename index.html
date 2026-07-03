@@ -52,6 +52,14 @@ button{cursor:pointer}
 .gate-err p{font-size:12px;color:var(--sub);line-height:1.6;margin-top:6px}
 .gate-err code{background:#fff;padding:1px 5px;border-radius:4px;font-size:11px}
 .gate-btn{margin-top:16px;background:var(--mmh-blue);color:#fff;border:none;padding:12px 22px;border-radius:12px;font-size:13.5px;font-weight:700}
+.pic-picker-title{margin-top:6px;margin-bottom:12px;font-size:13.5px;font-weight:700;color:var(--mmh-navy)}
+.pic-picker-list{display:flex;flex-direction:column;gap:8px;text-align:left}
+.pic-choice{display:flex;align-items:center;gap:12px;width:100%;background:#f7f9fc;border:1px solid #e2e8f5;border-radius:12px;padding:10px 12px;cursor:pointer;transition:.15s;text-align:left}
+.pic-choice:hover{background:#eef3fb;border-color:var(--mmh-blue);transform:translateY(-1px)}
+.pic-choice-av{width:38px;height:38px;border-radius:10px;color:#fff;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.pic-choice-info{display:flex;flex-direction:column;line-height:1.35}
+.pic-choice-info b{font-size:13.5px;color:var(--mmh-navy)}
+.pic-choice-info small{font-size:11px;color:var(--sub)}
 .gate-mail{margin-top:14px;font-size:12px;color:var(--faint)}
 
 /* ══ TOP BAR ══ */
@@ -315,7 +323,7 @@ button{cursor:pointer}
       <div class="tb-av" id="u-av">?</div>
       <div class="tb-ut"><b id="u-name">—</b><span id="u-email">—</span></div>
       <span class="tb-role" id="u-role">—</span>
-      <button class="tb-out" title="Đăng xuất / đổi tài khoản" onclick="logout()"><svg viewBox="0 0 24 24"><path d="M16 17l5-5-5-5M21 12H9M12 19a7 7 0 1 1 0-14"/></svg></button>
+      <button class="tb-out" title="Đổi người dùng (PIC)" onclick="logout()"><svg viewBox="0 0 24 24"><path d="M16 17l5-5-5-5M21 12H9M12 19a7 7 0 1 1 0-14"/></svg></button>
     </div>
   </div></div>
 
@@ -337,7 +345,9 @@ button{cursor:pointer}
 
 <script>
 /* CÙNG ORIGIN: file này chạy bên trong chính Web App, gọi thẳng /exec hiện hành → hết Failed to fetch */
-var GAS_URL = window.location.pathname;   // ví dụ: /macros/s/AKfy.../exec — không kèm query string
+/* ⚠️ DÁN LINK /exec CỦA BẠN VÀO ĐÂY (Deploy ▸ Manage deployments ▸ copy Web app URL).
+   Chạy trên GitHub Pages nên PHẢI dùng URL tuyệt đối, không dùng pathname. */
+var GAS_URL = "https://script.google.com/macros/s/AKfycbzn-5chMgO7lQPKmot8P7UkP9C40MdCPtiTTa4H1gcKepVsnr1IYfcB7sSdK1_jrZYY/exec";
 </script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════════════
@@ -373,7 +383,7 @@ function typeColor(t){ return TYPE_COLORS[t]||"#3A5CAA"; }
 
 /* ── STATE ── */
 var S={
-  user:null, keyTasks:[], monthly:[], pics:[], managers:[],
+  user:null, keyTasks:[], monthly:[], pics:[], managers:[], picList:[],
   statusOptions:["Idle","In Progress","Completed","Overdue"],
   typeOptions:[],
   tab:"overview",
@@ -392,50 +402,103 @@ var _tt;
 function toast(m){ var t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(_tt); _tt=setTimeout(function(){t.classList.remove("show");},3000); }
 function overlay(on,title,msg){ var o=$("overlay"); if(title)$("ov-title").textContent=title; if(msg)$("ov-msg").textContent=msg; o.classList.toggle("show",!!on); }
 
-/* ══════════════ API LAYER (GAS) ══════════════ */
+/* ══════════════ API LAYER (JSONP — chạy được trên GitHub Pages) ══════════════
+   JSONP dùng thẻ <script> nên né được CORS. Web App phải deploy "Who has access: ANYONE".
+   Mọi request tự đính kèm ?pic=<PIC đã chọn> để server biết vai trò. */
+var _jsonpSeq = 0;
+function jsonp(params){
+  return new Promise(function(resolve,reject){
+    var cbName = "__mmh_cb_" + (Date.now()) + "_" + (++_jsonpSeq);
+    var s = document.createElement("script");
+    var timer = setTimeout(function(){ cleanup(); reject(new Error("Hết thời gian chờ máy chủ (timeout). Kiểm tra link /exec và quyền Web App (Anyone).")); }, 30000);
+    function cleanup(){ clearTimeout(timer); delete window[cbName]; if(s.parentNode) s.parentNode.removeChild(s); }
+    window[cbName] = function(data){ cleanup(); resolve(data); };
+    // gắn callback + pic hiện tại (nếu đã chọn)
+    params.callback = cbName;
+    if(S.user && S.user.pic && !("pic" in params)) params.pic = S.user.pic;
+    var qs = Object.keys(params).map(function(k){ return encodeURIComponent(k)+"="+encodeURIComponent(params[k]==null?"":params[k]); }).join("&");
+    var url = GAS_URL + "?" + qs;
+    if(url.length > 7500){ cleanup(); reject(new Error("Nội dung quá dài để gửi (giới hạn kỹ thuật của JSONP). Hãy rút gọn phần mô tả/ghi chú.")); return; }
+    s.src = url;
+    s.onerror = function(){ cleanup(); reject(new Error("Không tải được dữ liệu từ máy chủ — kiểm tra link /exec đã đúng và Web App để 'Anyone'.")); };
+    document.body.appendChild(s);
+  });
+}
 function apiGet(action,extra){
   var params={action:action};
   if(extra) Object.keys(extra).forEach(function(k){params[k]=extra[k];});
-  var qs=Object.keys(params).map(function(k){return encodeURIComponent(k)+"="+encodeURIComponent(params[k]);}).join("&");
-  return fetch(GAS_URL+"?"+qs,{method:"GET",redirect:"follow",cache:"no-store"})
-    .then(function(r){return r.text();})
-    .then(function(t){ var j; try{j=JSON.parse(t);}catch(e){ throw new Error("Máy chủ trả về không phải JSON — kiểm tra quyền Web App (Anyone with Google Account)."); } if(j&&j.ok===false)throw new Error(j.error||"Lỗi"); return j; });
+  return jsonp(params).then(function(j){ if(j&&j.ok===false)throw new Error(j.error||"Lỗi"); return j; });
 }
+/* JSONP chỉ hỗ trợ GET → apiPost cũng đi qua GET (payload nằm trên query string) */
 function apiPost(body){
   if(!body.action) throw new Error("thiếu action");
-  return fetch(GAS_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(body),redirect:"follow"})
-    .then(function(r){return r.text();})
-    .then(function(t){ var j; try{j=JSON.parse(t);}catch(e){ throw new Error("Phản hồi không hợp lệ từ máy chủ"); } if(j&&j.ok===false)throw new Error(j.error||"Lỗi"); return j; });
+  var params={}; Object.keys(body).forEach(function(k){
+    var v=body[k];
+    params[k]=(v!==null && typeof v==="object") ? JSON.stringify(v) : v;
+  });
+  return jsonp(params).then(function(j){ if(j&&j.ok===false)throw new Error(j.error||"Lỗi"); return j; });
 }
 
-/* ══════════════ BOOT / AUTH ══════════════ */
+/* ══════════════ BOOT / CHỌN PIC ══════════════ */
 window.addEventListener("load",function(){ boot(); });
 function boot(){
-  gateStatus("Đang xác thực tài khoản Google…");
+  gateStatus("Đang tải danh sách người dùng…");
   apiGet("boot").then(function(res){
-    if(!res.user || !res.user.known){
-      gateError("Tài khoản chưa được cấp quyền",
-        "Email <b>"+esc(res.user&&res.user.email||"(không đọc được)")+"</b> chưa nằm trong danh sách PIC của Marketing/Product.<br><br>"+
-        "Hãy đăng nhập bằng đúng email công ty MMH của bạn (vd <code>marketing.mmh@manimedicalhanoi.com</code>), hoặc liên hệ quản trị để được thêm.");
-      return;
-    }
-    S.user=res.user;
+    // lưu dữ liệu chung
     S.keyTasks=res.keyTasks||[];
     S.monthly=res.monthly||[];
     S.pics=res.pics||[];
     S.managers=res.managers||[];
     S.statusOptions=res.statusOptions||S.statusOptions;
     S.typeOptions=res.typeOptions||[];
-    startApp();
+    S.picList=res.picList||[];
+
+    // nếu đã chọn PIC trước đó (nhớ trong localStorage) → vào thẳng
+    var saved="";
+    try{ saved=localStorage.getItem("mmh_pic")||""; }catch(_){}
+    var found=saved ? S.picList.filter(function(u){return u.pic===saved;})[0] : null;
+    if(found){ setUser(found); startApp(); return; }
+
+    // chưa chọn → hiện màn hình chọn PIC
+    showPicPicker();
   }).catch(function(e){
     var msg=e.message||"";
-    if(/JSON|Web App|Anyone/i.test(msg)){
-      gateError("Chưa cấp quyền truy cập Web App",
-        "Vào Apps Script ▸ Deploy ▸ Manage deployments ▸ Edit, đặt <b>Execute as: User accessing the web app</b> và <b>Who has access: Anyone with Google Account</b>, rồi Deploy lại.<br><br><code>"+esc(msg)+"</code>");
+    if(/exec|Anyone|timeout|máy chủ/i.test(msg)){
+      gateError("Không kết nối được Web App",
+        "Kiểm tra: (1) link <b>/exec</b> trong file đã đúng chưa, (2) Web App deploy với <b>Who has access: Anyone</b> (KHÔNG phải 'Anyone with Google Account').<br><br><code>"+esc(msg)+"</code>");
     } else {
       gateError("Không kết nối được máy chủ", esc(msg)+"<br><br>Kiểm tra mạng và thử lại.");
     }
   });
+}
+function setUser(u){
+  S.user={ email:"", pic:u.pic, role:u.role, title:u.title, known:true };
+  try{ localStorage.setItem("mmh_pic", u.pic); }catch(_){}
+}
+function showPicPicker(){
+  $("gate-spin").style.display="none";
+  $("gate-status").style.display="none";
+  $("gate-err").classList.remove("show");
+  var opts=S.picList.map(function(u){
+    var badge = u.role==="manager" ? "⭐ Quản lý" : "PIC";
+    return '<button class="pic-choice" onclick="pickPic(\''+esc(u.pic).replace(/'/g,"\\'")+'\')">'+
+             '<span class="pic-choice-av" style="background:'+avColor(u.pic)+'">'+esc(initials(u.pic))+'</span>'+
+             '<span class="pic-choice-info"><b>'+esc(u.pic)+'</b><small>'+esc(u.title||"")+' · '+badge+'</small></span>'+
+           '</button>';
+  }).join("");
+  $("gate-mail").innerHTML=
+    '<div class="pic-picker-title">Chọn bạn là ai để tiếp tục</div>'+
+    '<div class="pic-picker-list">'+opts+'</div>';
+}
+function pickPic(name){
+  var u=S.picList.filter(function(x){return x.pic===name;})[0];
+  if(!u) return;
+  setUser(u);
+  startApp();
+}
+function switchUser(){
+  try{ localStorage.removeItem("mmh_pic"); }catch(_){}
+  location.reload();
 }
 function gateStatus(m){ $("gate-status").textContent=m; }
 function gateError(title,html){
@@ -450,7 +513,7 @@ function startApp(){
   $("u-av").textContent=initials(S.user.pic);
   $("u-av").style.background=avColor(S.user.pic);
   $("u-name").textContent=S.user.pic;
-  $("u-email").textContent=S.user.email;
+  $("u-email").textContent=S.user.title||"";
   var rp=$("u-role");
   if(isManager()){ rp.className="tb-role"; rp.textContent="⭐ Quản lý · "+(S.user.title||""); }
   else { rp.className="tb-role pic"; rp.textContent=S.user.title||"PIC"; }
@@ -458,9 +521,8 @@ function startApp(){
   switchTab("overview");
 }
 function logout(){
-  // Google session không thể xoá bằng JS; hướng dẫn người dùng đổi tài khoản
-  toast("Để đổi tài khoản: đăng xuất Google hoặc mở bằng cửa sổ ẩn danh");
-  window.open("https://accounts.google.com/Logout","_blank");
+  // Không còn login Google — chỉ đổi PIC đang chọn
+  switchUser();
 }
 
 /* ══════════════ TABS ══════════════ */
