@@ -327,8 +327,106 @@ button{cursor:pointer}
   .modal-overlay{align-items:flex-end;padding:0}
   .modal-box{max-width:100%;border-radius:20px 20px 0 0}
   .kt-meta{width:100%}
+
+/* ═══════════════ MONTHLY REPORT v2 ═══════════════ */
+.mr-overview{display:flex;align-items:center;gap:20px;flex-wrap:wrap;background:linear-gradient(135deg,#fff,var(--lb3));border:1px solid var(--border);border-radius:var(--r-xl);padding:18px 22px;margin-bottom:18px;box-shadow:var(--sh-sm)}
+.mro-left{min-width:180px}
+.mro-month{font-size:18px;font-weight:800;color:var(--mmh-navy)}
+.mro-sub{font-size:12.5px;color:var(--sub);margin-top:3px}
+.mro-stats{display:flex;gap:22px;margin-left:auto}
+.mro-stat{text-align:center}
+.mro-v{font-size:26px;font-weight:800;color:var(--mmh-navy);line-height:1}
+.mro-l{font-size:11px;color:var(--sub);margin-top:3px}
+.mro-prog{min-width:200px;flex:1}
+.mro-prog-top{display:flex;justify-content:space-between;font-size:12.5px;color:var(--sub);margin-bottom:6px}
+.mro-prog-top b{color:var(--mmh-blue);font-size:14px}
+.mro-prog-track{height:10px;background:var(--lb3);border-radius:6px;overflow:hidden}
+.mro-prog-track i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#22c55e,#4ade80);transition:width .7s cubic-bezier(.4,0,.2,1)}
+.mr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:16px}
+.mr-card2{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow:hidden;transition:box-shadow .15s,transform .15s}
+.mr-card2:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+.mr-card2-head{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--gray)}
+.mr-card2-title{font-size:15px;font-weight:800;color:var(--mmh-navy);margin-bottom:9px;line-height:1.3}
+.mr-card2-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mr-type2{font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px}
+.mr-fill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:10px}
+.mr-fill.done{background:#E6F4EA;color:#1E6B3A}
+.mr-fill.empty{background:var(--lb3);color:var(--sub)}
+.mr-pic2{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--text);margin-left:auto}
+.mr-pic2-av{width:22px;height:22px;border-radius:50%;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.mr-card2-body{padding:16px 18px;font-size:13.5px;line-height:1.7;color:var(--text);max-height:340px;overflow-y:auto;white-space:normal}
+.mr-card2-body.is-empty{color:var(--faint);font-style:italic}
+.mr-card2-body b{color:var(--mmh-navy);font-weight:700}
+.mr-empty-txt{color:var(--faint);font-style:italic}
+@media(max-width:640px){ .mr-grid{grid-template-columns:1fr} .mro-stats{gap:16px;margin-left:0} .mr-overview{gap:14px} }
+
+.bars{display:flex;flex-direction:column;gap:3px}
+.bar-row{padding:8px 8px;border-radius:9px;transition:background .14s;cursor:default}
+.bar-row:hover{background:var(--lb3)}
+.bar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.bar-name{font-size:13px;color:var(--text);font-weight:500}
+.bar-val{font-size:13px;font-weight:800}
+.bar-track{height:10px;background:var(--lb3);border-radius:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:6px;width:0;animation:barGrow .7s cubic-bezier(.4,0,.2,1) forwards}
+.bar-row:hover .bar-fill{filter:brightness(1.08)}
+@keyframes barGrow{from{width:0}}
+
+/* ═══════════════ FAB — nút tròn thêm việc ═══════════════ */
+#fab-wrap{position:fixed;right:26px;bottom:26px;z-index:900;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+#fab-btn{width:58px;height:58px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--mmh-blue),var(--mmh-navy));color:#fff;box-shadow:0 8px 26px rgba(14,47,95,.4);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .18s}
+#fab-btn:hover{transform:scale(1.08)}
+#fab-btn:active{transform:scale(.94)}
+#fab-btn.open{transform:rotate(135deg)}
+#fab-btn svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:2.6;stroke-linecap:round}
+#fab-menu{display:none;flex-direction:column;gap:8px;align-items:flex-end}
+#fab-menu.show{display:flex;animation:fabpop .18s ease}
+@keyframes fabpop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.fab-item{display:flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 15px;font-size:13.5px;font-weight:700;color:var(--mmh-navy);cursor:pointer;box-shadow:var(--sh-md);white-space:nowrap;transition:.14s}
+.fab-item:hover{border-color:var(--mmh-blue);transform:translateX(-3px)}
+.fab-ic{font-size:16px}
+@media(max-width:640px){ #fab-wrap{right:16px;bottom:16px} #fab-btn{width:54px;height:54px} }
+
+html{font-size:15px}
+body{font-size:14.5px}
+/* Toolbar / tiêu đề */
+.tb-title h1{font-size:20px}
+.tb-title p{font-size:13px}
+.tab-btn{font-size:14.5px}
+/* KPI cards */
+.kpi-card .kpi-val{font-size:32px}
+.kpi-card .kpi-label{font-size:13px}
+/* Chips lọc PIC */
+.chip{font-size:13.5px}
+/* Panel / section headings */
+.section-title h2{font-size:16.5px}
+.panel-pad h3{font-size:14.5px}
+/* Task cells */
+.tc-title{font-size:14px}
+.tc-bottom{font-size:12.5px}
+.sc-title{font-size:13.5px}
+.sc-update-txt{font-size:11.5px}
+/* Detail / key task panel */
+.kt-title{font-size:14.5px}
+.kt-meta{font-size:12.5px}
+/* My-focus panel */
+.mf-title{font-size:16px}
+.mf-name{font-size:13px}
+.mf-col-h{font-size:13px}
+/* Bảng, form, modal */
+table.dt td, table.dt th{font-size:13.5px}
+.field label{font-size:12px}
+.field input,.field select,.field textarea{font-size:14px}
+.modal-head h3{font-size:17px}
+.btn-primary,.btn-secondary{font-size:14px}
+/* Monthly report */
+.mr-key{font-size:15px}
+.mr-col-content{font-size:13.5px}
+@media(max-width:640px){
+  html{font-size:15.5px}
+  .kpi-card .kpi-val{font-size:27px}
 }
 </style>
+
 </head>
 <body>
 
@@ -376,6 +474,18 @@ button{cursor:pointer}
 <div id="modals"></div>
 
 <div id="overlay"><div class="ov-card"><div class="gate-spinner" style="margin:0"></div><h3 id="ov-title">Đang xử lý</h3><p id="ov-msg">Vui lòng đợi…</p></div></div>
+
+<!-- FAB — nút tròn thêm việc nhanh (chỉ hiện trong app) -->
+<div id="fab-wrap" style="display:none">
+  <div id="fab-menu">
+    <button class="fab-item" onclick="fabAddKey()"><span class="fab-ic">🗂️</span>Thêm Key Task</button>
+    <button class="fab-item" onclick="fabAddSub()"><span class="fab-ic">➕</span>Thêm Sub Task</button>
+  </div>
+  <button id="fab-btn" onclick="toggleFab()" title="Thêm việc">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -554,7 +664,27 @@ function startApp(){
   else { rp.className="tb-role pic"; rp.textContent=S.user.title||"PIC"; }
   buildTabs();
   switchTab("overview");
+  $("fab-wrap").style.display="flex";
 }
+/* ── FAB — thêm việc nhanh ── */
+function toggleFab(){
+  var m=$("fab-menu"), b=$("fab-btn");
+  var open=m.classList.toggle("show"); b.classList.toggle("open",open);
+}
+function closeFab(){ $("fab-menu").classList.remove("show"); $("fab-btn").classList.remove("open"); }
+function fabAddKey(){
+  closeFab();
+  if(!isManager()){ toast("Chỉ quản lý được thêm Key Task"); return; }
+  switchTab("detail"); setTimeout(openAddKey,60);
+}
+function fabAddSub(){
+  closeFab();
+  switchTab("detail"); setTimeout(function(){ openAddSub(null); },60);
+}
+document.addEventListener("click",function(e){
+  var w=$("fab-wrap");
+  if(w && w.style.display!=="none" && !w.contains(e.target)) closeFab();
+});
 function logout(){
   // Không còn login Google — chỉ đổi PIC đang chọn
   switchUser();
@@ -753,14 +883,18 @@ function kpiCard(val,label,ic,cls){
 }
 function groupCount(rows,fn){ var m={}; rows.forEach(function(r){ var k=fn(r)||"(khác)"; m[k]=(m[k]||0)+1; }); return Object.keys(m).map(function(k){return[k,m[k]];}).sort(function(a,b){return b[1]-a[1];}); }
 function barsHTML(entries,kind){
-  if(!entries.length) return '<p style="color:var(--faint);font-size:12px">Chưa có dữ liệu</p>';
+  if(!entries.length) return '<p style="color:var(--faint);font-size:12.5px">Chưa có dữ liệu</p>';
   var max=Math.max.apply(null,entries.map(function(e){return e[1];}))||1;
-  return entries.map(function(e){
+  var total=entries.reduce(function(a,e){return a+e[1];},0)||1;
+  return '<div class="bars">'+entries.map(function(e){
     var p=Math.round(e[1]/max*100);
+    var share=Math.round(e[1]/total*100);
     var color= kind==="status" ? (/Hoàn/.test(e[0])?"#22c55e":/Đang/.test(e[0])?"#3b82f6":/Quá/.test(e[0])?"#ef4444":"#94a3b8") : typeColor(e[0]);
-    return '<div style="padding:7px 0"><div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:12px">'+esc(e[0])+'</span><span style="font-size:12px;font-weight:700;color:'+color+'">'+e[1]+'</span></div>'
-      +'<div style="height:7px;background:var(--lb3);border-radius:4px;overflow:hidden"><div style="height:100%;border-radius:4px;width:'+p+'%;background:'+color+'"></div></div></div>';
-  }).join("");
+    return '<div class="bar-row" title="'+esc(e[0])+': '+e[1]+' ('+share+'%)">'
+      +'<div class="bar-top"><span class="bar-name">'+esc(e[0])+'</span>'
+      +'<span class="bar-val" style="color:'+color+'">'+e[1]+' <small style="color:var(--faint);font-weight:600">· '+share+'%</small></span></div>'
+      +'<div class="bar-track"><div class="bar-fill" style="width:'+p+'%;background:'+color+'"></div></div></div>';
+  }).join("")+'</div>';
 }
 
 /* ══════════════════════════════════════════════════════════════════════════════
@@ -935,36 +1069,85 @@ function monthList(){ var set={}; S.monthly.forEach(function(m){ if(m.month)set[
 function renderMonth(){
   var months=monthList();
   if(!S.monthSel||months.indexOf(S.monthSel)<0) S.monthSel=months[0]||"";
-  var rows=S.monthly.filter(function(m){return m.month===S.monthSel;});
-  var types=[...new Set(rows.map(function(r){return r.typeTask;}).filter(Boolean))];
-  if(S.monthType) rows=rows.filter(function(r){return r.typeTask===S.monthType;});
+  var allRows=S.monthly.filter(function(m){return m.month===S.monthSel;});
+  var types=[...new Set(allRows.map(function(r){return r.typeTask;}).filter(Boolean))];
+  var rows = S.monthType ? allRows.filter(function(r){return r.typeTask===S.monthType;}) : allRows;
+
+  // ── thống kê tháng ──
+  var filled=allRows.filter(function(r){return String(r.text||"").trim();}).length;
+  var pct=allRows.length?Math.round(filled/allRows.length*100):0;
+  var pics=[...new Set(allRows.map(function(r){return r.pic;}).filter(Boolean))];
 
   var h="";
+  // Toolbar: chọn tháng + nút thêm
   h+='<div class="toolbar">'
     +'<div class="sel"><select onchange="S.monthSel=this.value;S.monthType=\'\';renderMonth()">'
       +months.map(function(m){return '<option value="'+m+'"'+(m===S.monthSel?" selected":"")+'>Tháng '+fmtMonth(m)+'</option>';}).join("")
-    +'</select></div>'
-    +'<div class="sel"><select onchange="S.monthType=this.value;renderMonth()"><option value="">Tất cả loại</option>'
-      +types.map(function(t){return '<option'+(t===S.monthType?" selected":"")+'>'+esc(t)+'</option>';}).join("")
     +'</select></div>'
     +'<span style="flex:1"></span>'
     +'<button class="btn-primary" onclick="openAddMonthly()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm mục</button>'
     +'</div>';
 
-  if(!rows.length){ h+='<div class="empty"><div class="ic">📅</div><p>Chưa có mục nào cho tháng này.</p></div>'; $("tab-month").innerHTML=h; return; }
+  if(!allRows.length){ h+='<div class="empty"><div class="ic">📅</div><p>Chưa có mục nào cho tháng này.</p></div>'; $("tab-month").innerHTML=h; return; }
+
+  // ── Overview card (tiến độ hoàn thiện) ──
+  h+='<div class="mr-overview">'
+    +'<div class="mro-left">'
+      +'<div class="mro-month">📅 Tháng '+esc(fmtMonth(S.monthSel))+'</div>'
+      +'<div class="mro-sub">'+allRows.length+' mục · '+types.length+' loại · '+pics.length+' PIC</div>'
+    +'</div>'
+    +'<div class="mro-stats">'
+      +'<div class="mro-stat"><div class="mro-v">'+allRows.length+'</div><div class="mro-l">Tổng mục</div></div>'
+      +'<div class="mro-stat"><div class="mro-v" style="color:#1E6B3A">'+filled+'</div><div class="mro-l">Đã điền</div></div>'
+      +'<div class="mro-stat"><div class="mro-v" style="color:#8A6D00">'+(allRows.length-filled)+'</div><div class="mro-l">Còn trống</div></div>'
+    +'</div>'
+    +'<div class="mro-prog">'
+      +'<div class="mro-prog-top"><span>Hoàn thiện</span><b>'+pct+'%</b></div>'
+      +'<div class="mro-prog-track"><i style="width:'+pct+'%"></i></div>'
+    +'</div>'
+  +'</div>';
+
+  // ── Filter chips theo Type ──
+  h+='<div class="chips" style="margin-bottom:16px">';
+  h+='<button class="chip'+(S.monthType===""?" active":"")+'" onclick="S.monthType=\'\';renderMonth()">Tất cả ('+allRows.length+')</button>';
+  types.forEach(function(t){
+    var c=typeColor(t), cnt=allRows.filter(function(r){return r.typeTask===t;}).length;
+    h+='<button class="chip'+(S.monthType===t?" active":"")+'" style="'+(S.monthType===t?'background:'+c+';border-color:'+c:'')+'" onclick="S.monthType=\''+jsq(t)+'\';renderMonth()">'+esc(t)+' ('+cnt+')</button>';
+  });
+  h+='</div>';
+
+  // ── Cards ──
+  h+='<div class="mr-grid">';
   rows.forEach(function(r){
     var editable=canEditPic(r.pic), c=typeColor(r.typeTask);
-    h+='<div class="mr-card"><div class="mr-head">'
-      +'<span class="mr-key">'+esc(r.keyTask)+'</span>'
-      +'<span class="mr-type" style="background:'+c+'18;color:'+c+'">'+esc(r.typeTask)+'</span>'
-      +'<span class="sc-pic" style="font-size:12px"><span class="sc-pic-av" style="background:'+avColor(r.pic)+'">'+esc(initials(r.pic))+'</span>'+esc(r.pic)+'</span>'
-      +(editable?'<button class="icon-btn" onclick="openEditMonthly('+r.row+')" title="Sửa">✏️</button>'
-                :'<span class="sc-lock" style="font-size:11px">🔒 Chỉ xem</span>')
+    var hasText=String(r.text||"").trim();
+    var statusChip = hasText ? '<span class="mr-fill done">✅ Đã điền</span>' : '<span class="mr-fill empty">○ Trống</span>';
+    h+='<div class="mr-card2" style="border-top:3px solid '+c+'">'
+      +'<div class="mr-card2-head">'
+        +'<div class="mr-card2-title">'+esc(r.keyTask)+'</div>'
+        +'<div class="mr-card2-meta">'
+          +'<span class="mr-type2" style="background:'+c+'18;color:'+c+'">'+esc(r.typeTask)+'</span>'
+          +statusChip
+          +'<span class="mr-pic2"><span class="mr-pic2-av" style="background:'+avColor(r.pic)+'">'+esc(initials(r.pic))+'</span>'+esc(r.pic)+'</span>'
+          +(editable?'<button class="icon-btn" onclick="openEditMonthly('+r.row+')" title="Sửa">✏️</button>':'<span class="sc-lock" style="font-size:11px">🔒</span>')
+        +'</div>'
       +'</div>'
-      +'<div class="mr-body">'+(r.text?esc(r.text):'<span class="mr-empty-txt">— chưa có nội dung —</span>')+'</div>'
+      +'<div class="mr-card2-body '+(hasText?'':'is-empty')+'">'+(hasText?mrFormatText(r.text):'<span class="mr-empty-txt">— chưa có nội dung —</span>')+'</div>'
       +'</div>';
   });
+  h+='</div>';
   $("tab-month").innerHTML=h;
+}
+/* Format nội dung Monthly: giữ xuống dòng, tô đậm dòng tiêu đề "X:", biến URL thành link */
+function mrFormatText(t){
+  var s=esc(String(t||""));
+  // URL → link
+  s=s.replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" rel="noopener" style="color:var(--mmh-blue);word-break:break-all">$1</a>');
+  // dòng dạng "TOTAL: ...", "1. ...", "Label:" → in đậm phần nhãn đầu dòng
+  s=s.replace(/^([^\n:]{1,40}:)/gm,'<b>$1</b>');
+  // xuống dòng
+  s=s.replace(/\n/g,'<br>');
+  return s;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════════
@@ -1300,17 +1483,23 @@ function saveAddMonthly(){
     .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
 }
 
-/* ── REPORT: chọn gửi ── */
+/* ── REPORT: chọn gửi (theo PIC) ── */
 function openReportSend(){
+  var isMgr = isManager();
+  var picOpts = S.pics.map(function(p){return '<option'+(p===S.user.pic?" selected":"")+'>'+esc(p)+'</option>';}).join("");
   var html='<div class="modal-box"><div class="modal-head"><h3>📄 Tạo & gửi báo cáo tuần</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
     +'<div class="field"><label>Tuần báo cáo</label><input type="text" value="'+fmtVNFull(S.reportFrom)+' – '+fmtVNFull(S.reportTo)+'" disabled/></div>'
     +'<label style="font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:10px">Gửi tới</label>'
     +'<div class="radio-cards">'
-    +'<label class="radio-card sel" onclick="selReportOpt(this,\'self\')"><input type="radio" name="ropt" value="self" checked/><div class="rc-ic">🧪</div><div><div class="rc-t">Chỉ gửi cho tôi (test)</div><div class="rc-s">Gửi tới '+esc(S.user.email)+' để kiểm tra trước</div></div></label>'
-    +'<label class="radio-card" onclick="selReportOpt(this,\'all\')"><input type="radio" name="ropt" value="all"/><div class="rc-ic">📢</div><div><div class="rc-t">Gửi cả nhóm Marketing</div><div class="rc-s">Tất cả nhân sự MKT · CC: vtt.hoa@ &amp; nt.ha@manimedicalhanoi.com</div></div></label>'
+    +'<label class="radio-card sel" onclick="selReportOpt(this,\'self\')"><input type="radio" name="ropt" value="self" checked/><div class="rc-ic">🧪</div><div><div class="rc-t">Gửi thử cho tôi</div><div class="rc-s">Chỉ chứa Key/Sub-task của '+esc(S.user.pic)+' trong tuần này</div></div></label>'
+    +(isMgr
+       ? '<label class="radio-card" onclick="selReportOpt(this,\'pic\')"><input type="radio" name="ropt" value="pic"/><div class="rc-ic">👤</div><div style="flex:1"><div class="rc-t">Gửi cho 1 PIC</div><div class="rc-s">Báo cáo riêng của PIC được chọn</div>'
+         +'<select id="rp-pic" style="margin-top:8px;width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px" onclick="event.stopPropagation()">'+picOpts+'</select></div></label>'
+         +'<label class="radio-card" onclick="selReportOpt(this,\'all\')"><input type="radio" name="ropt" value="all"/><div class="rc-ic">📢</div><div><div class="rc-t">Gửi cho tất cả PIC</div><div class="rc-s">Mỗi PIC nhận 1 email riêng — chỉ việc của họ · CC: vtt.hoa@ &amp; nt.ha@</div></div></label>'
+       : '')
     +'</div>'
-    +'<div class="field-hint" style="margin-top:12px">PDF khổ A4 ngang (landscape) gồm Key Task &amp; Sub-task trong tuần.</div>'
+    +'<div class="field-hint" style="margin-top:12px">Mỗi báo cáo chỉ gồm Key Task &amp; Sub-task mà PIC đó phụ trách, active trong tuần. Email &amp; PDF cùng nội dung.</div>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
     +'<button class="btn-primary" onclick="doSendReport()">📧 Tạo PDF &amp; gửi</button></div>'
     +'</div></div>';
@@ -1319,8 +1508,11 @@ function openReportSend(){
 function selReportOpt(el,v){ document.querySelectorAll(".radio-card").forEach(function(c){c.classList.remove("sel");}); el.classList.add("sel"); el.querySelector("input").checked=true; }
 function doSendReport(){
   var opt=(document.querySelector('input[name=ropt]:checked')||{}).value||"self";
-  overlay(true,"Đang tạo PDF","Tổng hợp & gửi email báo cáo tuần…");
-  apiPost({action:"weeklyReport", from:S.reportFrom, to:S.reportTo, option:opt})
+  var body={action:"weeklyReport", from:S.reportFrom, to:S.reportTo, option:opt};
+  if(opt==="pic"){ var sel=$("rp-pic"); body.toPic = sel? sel.value : S.user.pic; }
+  var msg = opt==="all" ? "Gửi báo cáo riêng cho từng PIC…" : "Tổng hợp & gửi email báo cáo tuần…";
+  overlay(true,"Đang tạo PDF",msg);
+  apiPost(body)
     .then(function(r){ overlay(false); closeModal(); toast("✓ "+(r.message||"Đã gửi")); })
     .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
 }
