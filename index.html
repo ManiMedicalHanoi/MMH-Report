@@ -477,6 +477,134 @@ button{cursor:pointer}
   .gnav-label{min-width:96px;font-size:14px}
 }
 @media(max-width:400px){ .mf-grid{grid-template-columns:1fr} .kpi-row{grid-template-columns:1fr 1fr} }
+
+/* ══════════════ TIME FILTER BAR (dùng chung) ══════════════ */
+.tf-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 16px;margin-bottom:18px;box-shadow:var(--sh-sm)}
+.tf-seg{display:inline-flex;background:var(--gray);border:1.5px solid var(--border);border-radius:var(--r-md);padding:3px}
+.tf-seg button{border:none;background:none;padding:9px 17px;border-radius:8px;font-size:13.5px;font-weight:700;color:var(--sub);transition:.14s}
+.tf-seg button.active{background:var(--mmh-navy);color:#fff;box-shadow:var(--sh-sm)}
+.tf-nav{display:flex;align-items:center;gap:8px}
+.tf-arrow{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.14s}
+.tf-arrow:hover{border-color:var(--mmh-blue);color:var(--mmh-blue)}
+.tf-arrow svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round}
+.tf-label{font-size:15px;font-weight:800;color:var(--mmh-navy);min-width:200px;text-align:center}
+.tf-range{display:flex;align-items:center;gap:10px;margin-left:auto;flex-wrap:wrap}
+.tf-date{display:flex;align-items:center;gap:7px;background:var(--pale);border:1.5px solid var(--border);border-radius:10px;padding:5px 10px}
+.tf-date span{font-size:12.5px;font-weight:700;color:var(--sub)}
+.tf-date input[type=date]{border:none;background:none;font-size:14px;font-family:inherit;color:var(--text);outline:none;cursor:pointer;padding:4px 2px}
+.tf-date input[type=date]::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.6;filter:invert(28%) sepia(30%) saturate(1200%) hue-rotate(190deg)}
+@media(max-width:720px){ .tf-bar{gap:10px} .tf-label{min-width:150px;font-size:13.5px} .tf-range{margin-left:0;width:100%} }
+
+/* ══════════════ FLIP CARDS (Tổng quan) ══════════════ */
+.flip-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+.flip-card{perspective:1200px;height:150px;cursor:pointer}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .55s var(--ease);transform-style:preserve-3d}
+.flip-card.flipped .flip-inner{transform:rotateY(180deg)}
+.flip-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--r-lg);border:1px solid var(--border);box-shadow:var(--sh-sm);overflow:hidden;background:#fff}
+.flip-front{display:flex;flex-direction:column;justify-content:center;padding:18px 18px}
+.flip-ic{position:absolute;right:14px;top:13px;font-size:20px;opacity:.9}
+.flip-val{font-size:44px;font-weight:800;line-height:1;color:var(--mmh-navy)}
+.flip-label{font-size:14px;color:var(--sub);margin-top:9px;font-weight:700}
+.flip-hint{position:absolute;left:18px;bottom:13px;font-size:10.5px;color:var(--faint);font-weight:600}
+.flip-back{transform:rotateY(180deg);display:flex;flex-direction:column;padding:12px 13px 26px}
+.flip-back-h{display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:800;color:var(--mmh-navy);padding-bottom:8px;border-bottom:1.5px solid var(--border);margin-bottom:7px}
+.flip-back-h span{background:var(--mmh-navy);color:#fff;min-width:24px;height:22px;padding:0 7px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:12px}
+.flip-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:5px}
+.flip-item{display:flex;align-items:center;gap:7px;padding:6px 8px;background:var(--pale);border-radius:8px;cursor:pointer;transition:.12s}
+.flip-item:hover{background:var(--lb3);transform:translateX(2px)}
+.flip-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.flip-nm{font-size:12.5px;color:var(--text);font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.flip-pic{font-size:11px;color:var(--sub);flex:0 0 auto}
+.flip-empty{font-size:12px;color:var(--faint);text-align:center;padding:16px}
+/* màu nhấn cạnh trái theo loại card */
+.flip-card.accent .flip-front{background:linear-gradient(135deg,var(--mmh-navy),#1a4478)}
+.flip-card.accent .flip-front .flip-val{color:var(--mmh-yellow)}
+.flip-card.accent .flip-front .flip-label,.flip-card.accent .flip-front .flip-hint{color:rgba(255,255,255,.8)}
+.flip-card.c-done .flip-val{color:var(--success-fg)}
+.flip-card.c-prog .flip-val{color:var(--info-fg)}
+.flip-card.c-prog2 .flip-val{color:#2563eb}
+.flip-card.c-over .flip-val{color:var(--danger-fg)}
+.flip-card.c-done .flip-front,.flip-card.c-prog .flip-front,.flip-card.c-prog2 .flip-front,.flip-card.c-over .flip-front{border-top:3px solid currentColor}
+.flip-card.c-done .flip-front{border-top-color:var(--success-fg)}
+.flip-card.c-prog .flip-front{border-top-color:var(--info-fg)}
+.flip-card.c-prog2 .flip-front{border-top-color:#2563eb}
+.flip-card.c-over .flip-front{border-top-color:var(--danger-fg)}
+@media(max-width:1000px){ .flip-row{grid-template-columns:repeat(3,1fr)} }
+@media(max-width:640px){ .flip-row{grid-template-columns:1fr 1fr;gap:10px} .flip-card{height:130px} .flip-val{font-size:34px} }
+
+/* ══════════════ KEY HEADER META — CĂN THẲNG HÀNG ══════════════ */
+.kt-hmeta{display:grid;grid-template-columns:130px 150px 46px 90px 40px 120px;align-items:center;gap:10px;flex:0 0 auto}
+.khm{font-size:12.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.khm-pic{display:flex;align-items:center;gap:6px;font-weight:600}
+.khm-av{width:22px;height:22px;border-radius:50%;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.khm-date{font-size:12px}
+.khm-pct{font-weight:800;text-align:right}
+.khm-prog{}
+.kt-progbar{display:block;height:7px;background:var(--lb3);border-radius:4px;overflow:hidden}
+.kt-progfill{display:block;height:100%;border-radius:4px;transition:width .5s var(--ease)}
+.khm-sub{font-size:12px;color:var(--faint);font-weight:700;text-align:center}
+.khm-status{justify-self:end}
+@media(max-width:1100px){
+  .kt-hmeta{grid-template-columns:auto auto auto;gap:8px;width:100%;margin-top:4px}
+  .khm-prog,.khm-sub{display:none}
+}
+
+/* ══════════════ SUB-TASK TRỤC DỌC + COMMENT ẨN ══════════════ */
+.sub-list{display:flex;flex-direction:column;gap:0}
+.sub-row{border-bottom:1px solid var(--border);position:relative}
+.sub-row:last-of-type{border-bottom:none}
+.sub-row.locked{opacity:.9}
+.sr-main{display:grid;grid-template-columns:14px 40px 1fr 190px 130px 90px 140px 22px 16px;align-items:center;gap:10px;padding:11px 12px;cursor:pointer;transition:background .12s}
+.sr-main:hover{background:var(--pale)}
+.sr-dot{width:10px;height:10px;border-radius:50%}
+.sr-no{font-size:11.5px;color:var(--faint);font-weight:700;font-family:'DM Mono',monospace}
+.sr-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sr-prog{display:flex;align-items:center;gap:8px}
+.sr-progbar{flex:1;height:8px;background:var(--lb3);border-radius:5px;overflow:hidden;min-width:80px}
+.sr-progfill{display:block;height:100%;border-radius:5px}
+.sr-progpct{font-size:12px;font-weight:800;color:var(--mmh-blue);min-width:34px;text-align:right}
+.sr-pic{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--sub);font-weight:600;white-space:nowrap;overflow:hidden}
+.sr-pic-av{width:21px;height:21px;border-radius:50%;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.sr-date{font-size:12.5px;color:var(--sub);white-space:nowrap;text-align:center}
+.sr-st{justify-self:start;font-size:11px!important;padding:3px 10px!important}
+.sr-cmt-ic{font-size:13px;opacity:.75;text-align:center}
+.sr-caret{width:16px;height:16px;stroke:var(--faint);fill:none;stroke-width:2.4;transition:transform .2s}
+.sr-caret.open{transform:rotate(90deg)}
+.sr-actions{position:absolute;right:44px;top:8px;display:flex;gap:4px;opacity:0;transition:opacity .14s}
+.sub-row:hover .sr-actions{opacity:1}
+.sr-edit,.sr-del{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--border);background:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sr-edit:hover{border-color:var(--mmh-blue);background:var(--pale)}
+.sr-del:hover{border-color:var(--danger);background:#fee2e2}
+.sr-lock{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:12px;opacity:.5}
+/* comment ẩn */
+.sr-comment{display:none;padding:0 14px 14px 66px;animation:fade .2s}
+.sr-comment.open{display:block}
+.sr-cmt-lbl{font-size:11px;font-weight:700;color:var(--mmh-blue);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px}
+.sr-cmt-txt{font-size:13.5px;color:var(--text);line-height:1.65;word-break:break-word;background:var(--pale);border-radius:10px;padding:11px 13px;border-left:3px solid var(--mmh-blue)}
+.sr-cmt-empty{font-size:12.5px;color:var(--faint);font-style:italic;padding:8px 0}
+.sr-ref-btn{margin-top:9px;font-size:12.5px;font-weight:700;color:var(--mmh-navy);background:#fff;border:1.5px solid var(--lb1);border-radius:8px;padding:8px 12px;cursor:pointer;transition:.14s}
+.sr-ref-btn:hover{border-color:var(--mmh-blue);background:var(--lb3);color:var(--mmh-blue)}
+.sub-empty{padding:16px;text-align:center;font-size:13px;color:var(--faint)}
+.sub-add-row{padding:12px 14px;text-align:center;font-size:14px;font-weight:700;color:var(--mmh-blue);cursor:pointer;border-top:1.5px dashed var(--lb1);transition:.14s}
+.sub-add-row:hover{background:var(--lb3)}
+@media(max-width:900px){
+  .sr-main{grid-template-columns:12px 1fr 90px 16px;gap:8px;row-gap:6px}
+  .sr-no,.sr-prog,.sr-date,.sr-cmt-ic{display:none}
+  .sr-st{grid-column:auto}
+  .sr-comment{padding-left:20px}
+  .sr-actions{position:static;opacity:1;padding:0 12px 10px 20px}
+}
+
+/* ══════════════ REPORT SECTIONS ══════════════ */
+.rp-sec{display:flex;align-items:center;gap:12px;margin:20px 0 12px}
+.rp-sec-badge{font-size:14px;font-weight:800;padding:7px 14px;border-radius:9px;color:#fff;background:var(--mmh-blue)}
+.rp-sec-badge.this{background:var(--mmh-navy)}
+.rp-sec-badge.next{background:#E0900A}
+.rp-sec-range{font-size:13.5px;font-weight:700;color:var(--sub)}
+.rp-sec-count{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--faint);background:var(--gray);padding:5px 12px;border-radius:10px}
+
+.sr-prog-empty{visibility:hidden}
+
 </style>
 </head>
 <body>
@@ -586,15 +714,97 @@ var S={
   statusOptions:["To Do","In Progress","Completed","Cancelled"],
   typeOptions:[],
   tab:"overview",
+  /* ⭐ BỘ LỌC THỜI GIAN DÙNG CHUNG (Tổng quan + Chi tiết + Gantt) */
+  dateMode:"week",       // 'week' | 'month' | 'range'
+  dateFrom:"", dateTo:"",// khoảng hiệu lực (tự tính từ mode)
   overviewPic:"",
+  overviewFlip:{},       // card nào đang lật
   ganttType:"",
-  ganttMonth:null,
   ganttOpen:{},          // key task nào đang mở sub trên Gantt (mặc định ẩn)
   detailType:"", detailQ:"", detailOpen:{},
   monthSel:"", monthType:"",
-  reportView:"thisweek", reportFrom:"", reportTo:"",
+  reportFrom:"", reportTo:"",
   editCtx:null,
 };
+/* Khởi tạo khoảng thời gian mặc định = tuần này (thứ 2 → CN) */
+function initDateFilter(){
+  var mon=mondayOf(new Date());
+  var sun=new Date(mon); sun.setDate(mon.getDate()+6);
+  S.dateFrom=toISO(mon); S.dateTo=toISO(sun); S.dateMode="week";
+}
+/* Đặt lại khoảng theo mode. keepAnchor: giữ mốc hiện tại (dùng khi bấm ‹ ›) */
+function setDateMode(mode){
+  var today=new Date();
+  if(mode==="week"){
+    var mon=mondayOf(today), sun=new Date(mon); sun.setDate(mon.getDate()+6);
+    S.dateFrom=toISO(mon); S.dateTo=toISO(sun);
+  } else if(mode==="month"){
+    var y=today.getFullYear(), m=today.getMonth();
+    S.dateFrom=toISO(new Date(y,m,1)); S.dateTo=toISO(new Date(y,m+1,0));
+  }
+  S.dateMode=mode;
+  rerenderTimeTabs();
+}
+function setDateRange(from,to){
+  if(from) S.dateFrom=from; if(to) S.dateTo=to;
+  if(S.dateFrom && S.dateTo && S.dateFrom>S.dateTo){ var t=S.dateFrom; S.dateFrom=S.dateTo; S.dateTo=t; }
+  S.dateMode="range";
+  rerenderTimeTabs();
+}
+/* dịch khoảng hiện tại tiến/lùi theo mode */
+function shiftDate(dir){
+  var f=new Date(S.dateFrom+"T00:00:00"), t=new Date(S.dateTo+"T00:00:00");
+  if(S.dateMode==="month"){
+    var y=f.getFullYear(), m=f.getMonth()+dir;
+    S.dateFrom=toISO(new Date(y,m,1)); S.dateTo=toISO(new Date(y,m+1,0));
+  } else {
+    var span=Math.round((t-f)/86400000)+1;
+    f.setDate(f.getDate()+dir*span); t.setDate(t.getDate()+dir*span);
+    S.dateFrom=toISO(f); S.dateTo=toISO(t);
+  }
+  rerenderTimeTabs();
+}
+function rerenderTimeTabs(){
+  if(S.tab==="overview") renderOverview();
+  else if(S.tab==="detail") renderDetail();
+  else if(S.tab==="gantt") renderGantt();
+}
+/* nhãn hiển thị khoảng */
+function dateRangeLabel(){
+  if(S.dateMode==="month"){ var m=/^(\d{4})-(\d{2})/.exec(S.dateFrom); return m?("Tháng "+m[2]+"/"+m[1]):""; }
+  return fmtVNFull(S.dateFrom)+" – "+fmtVNFull(S.dateTo);
+}
+/* 1 sub có "active" trong khoảng [from,to] không (start/deadline/actual trong khoảng, hoặc InProgress) */
+function subInRange(s, from, to){
+  var eff=s.revised||s.planned||"";
+  var inR=function(d){ return d && String(d).slice(0,10)>=from && String(d).slice(0,10)<=to; };
+  return inR(s.start)||inR(eff)||inR(s.actual)||isInProgress(s.status);
+}
+/* key có ít nhất 1 sub active trong khoảng (hoặc key rỗng sub thì luôn hiện) */
+function keyInRange(k, from, to){
+  var subs=k.subs||[];
+  if(!subs.length) return true;
+  return subs.some(function(s){ return subInRange(s,from,to); });
+}
+/* Toolbar bộ lọc thời gian dùng chung — trả HTML */
+function timeFilterBar(){
+  return '<div class="tf-bar">'
+    +'<div class="tf-seg">'
+      +'<button class="'+(S.dateMode==="week"?"active":"")+'" onclick="setDateMode(\'week\')">Tuần này</button>'
+      +'<button class="'+(S.dateMode==="month"?"active":"")+'" onclick="setDateMode(\'month\')">Tháng này</button>'
+      +'<button class="'+(S.dateMode==="range"?"active":"")+'" onclick="setDateMode(\'range\')">Tùy chọn</button>'
+    +'</div>'
+    +'<div class="tf-nav">'
+      +'<button class="tf-arrow" onclick="shiftDate(-1)" title="Trước"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>'
+      +'<span class="tf-label">'+dateRangeLabel()+'</span>'
+      +'<button class="tf-arrow" onclick="shiftDate(1)" title="Sau"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>'
+    +'</div>'
+    +'<div class="tf-range">'
+      +'<div class="tf-date"><span>Từ</span><input type="date" value="'+S.dateFrom+'" onchange="setDateRange(this.value,null)"/></div>'
+      +'<div class="tf-date"><span>Đến</span><input type="date" value="'+S.dateTo+'" onchange="setDateRange(null,this.value)"/></div>'
+    +'</div>'
+  +'</div>';
+}
 function isManager(){ return S.user && S.user.role==="manager"; }
 function canEditPic(pic){ if(isManager())return true; return String(pic||"").toLowerCase()===String(S.user.pic||"").toLowerCase(); }
 
@@ -703,6 +913,7 @@ function gateError(title,html){
 function startApp(){
   $("gate").style.display="none";
   $("app").style.display="block";
+  initDateFilter();
   $("u-av").textContent=initials(S.user.pic);
   $("u-av").style.background=avColor(S.user.pic);
   $("u-name").textContent=S.user.pic;
@@ -810,38 +1021,54 @@ function mondayOf(d){ var x=new Date(d); x.setHours(0,0,0,0); var w=(x.getDay()+
 function renderOverview(){
   var kts=allKeyTasks();
   var pics=picListAll();
-  var filtered = S.overviewPic ? kts.filter(function(k){ return k.pic===S.overviewPic || (k.subs||[]).some(function(s){return s.pic===S.overviewPic;}); }) : kts;
+  var from=S.dateFrom, to=S.dateTo, todayISOv=toISO(new Date());
+  var pfilter=S.overviewPic;
 
-  var subs=[]; filtered.forEach(function(k){ (k.subs||[]).forEach(function(s){ if(!S.overviewPic||s.pic===S.overviewPic) subs.push(s); }); });
-  var done=subs.filter(function(s){return isDone(s.status);}).length;
-  var prog=subs.filter(function(s){return isInProgress(s.status);}).length;
-  var todo=subs.filter(function(s){return /to\s*do/i.test(s.status)||!s.status;}).length;
-  var cancel=subs.filter(function(s){return isCancelled(s.status);}).length;
+  // gom các cặp {k,s} theo PIC lọc + khoảng thời gian
+  function eff(s){ return s.revised||s.planned||""; }
+  var pool=[];
+  kts.forEach(function(k){ (k.subs||[]).forEach(function(s){
+    if(pfilter && s.pic!==pfilter) return;
+    pool.push({k:k,s:s});
+  });});
+
+  // phân nhóm theo khoảng đã chọn
+  function inR(d){ return d && String(d).slice(0,10)>=from && String(d).slice(0,10)<=to; }
+  var total   = pool.filter(function(o){ return subInRange(o.s, from, to); });
+  var todayL  = pool.filter(function(o){ return !isDone(o.s.status)&&!isCancelled(o.s.status) && toISO(eff(o.s))===todayISOv; });
+  var doneRec = pool.filter(function(o){ return isDone(o.s.status) && (inR(o.s.actual)||inR(eff(o.s))||subInRange(o.s,from,to)); });
+  var inprog  = pool.filter(function(o){ return isInProgress(o.s.status); });
+  var overdue = pool.filter(function(o){ return !isDone(o.s.status)&&!isCancelled(o.s.status) && eff(o.s) && toISO(eff(o.s))<todayISOv; });
 
   var h="";
-  h+=myFocusPanel();
 
-  h+='<div class="chips" style="margin-bottom:18px">';
-  h+='<button class="chip'+(S.overviewPic===""?" active":"")+'" onclick="setOverviewPic(\'\')">👥 Tất cả PIC</button>';
+  // ── ① BAR PIC lên trên cùng ──
+  h+='<div class="chips" style="margin-bottom:16px">';
+  h+='<button class="chip'+(pfilter===""?" active":"")+'" onclick="setOverviewPic(\'\')">👥 Tất cả PIC</button>';
   pics.forEach(function(p){
-    h+='<button class="chip'+(S.overviewPic===p?" active":"")+'" onclick="setOverviewPic(\''+jsq(p)+'\')">'
+    h+='<button class="chip'+(pfilter===p?" active":"")+'" onclick="setOverviewPic(\''+jsq(p)+'\')">'
       +'<span class="cav" style="background:'+avColor(p)+'">'+esc(initials(p))+'</span>'+esc(p)+'</button>';
   });
   h+='</div>';
 
-  h+='<div class="kpi-row">'
-    +kpiCard(subs.length,"Sub-task","⚙️","accent")
-    +kpiCard(done,"Completed","✅","c-done")
-    +kpiCard(prog,"In Progress","🔵","c-prog")
-    +kpiCard(todo,"To Do","⚪","c-todo")
-    +kpiCard(cancel,"Cancelled","✖","c-cancel")
+  // ── ② Bộ lọc thời gian dùng chung ──
+  h+=timeFilterBar();
+
+  // ── ③ 5 CARDBOX FLIP ──  Tổng / Hôm nay / Đã xong / Đang thực hiện / Quá hạn
+  h+='<div class="flip-row">'
+    +flipCard('total',   total.length,   'Tổng số việc',   '📋', 'accent', total)
+    +flipCard('today',   todayL.length,  'Công việc hôm nay','📌','c-prog', todayL)
+    +flipCard('done',    doneRec.length, 'Đã xong gần đây','✅','c-done', doneRec)
+    +flipCard('prog',    inprog.length,  'Đang thực hiện', '🔵','c-prog2', inprog)
+    +flipCard('over',    overdue.length, 'Quá hạn',        '🔴','c-over', overdue)
     +'</div>';
 
-  if(!S.overviewPic){
+  // ── ④ Công việc của PIC (bấm mở bảng sửa như tab Chi tiết) ──
+  if(!pfilter){
     h+='<div class="section-title"><h2>Hiệu suất theo nhân sự</h2><span class="hint">bấm để lọc</span></div>';
     h+='<div class="cell-grid" style="grid-template-columns:repeat(auto-fill,minmax(270px,1fr))">';
     pics.forEach(function(p){
-      var ps=[]; kts.forEach(function(k){ (k.subs||[]).forEach(function(s){ if(s.pic===p) ps.push(s); }); });
+      var ps=[]; kts.forEach(function(k){ (k.subs||[]).forEach(function(s){ if(s.pic===p && subInRange(s,from,to)) ps.push(s); }); });
       var active=ps.filter(function(s){return !isCancelled(s.status);});
       var pdone=active.filter(function(s){return isDone(s.status);}).length;
       var rate=active.length?Math.round(pdone/active.length*100):0;
@@ -849,7 +1076,7 @@ function renderOverview(){
       h+='<div class="task-cell" style="cursor:pointer" onclick="setOverviewPic(\''+jsq(p)+'\')">'
         +'<div class="tc-pic"><span class="tc-pic-av" style="background:'+c+'">'+esc(initials(p))+'</span><b style="font-size:14.5px;color:var(--text)">'+esc(p)+'</b>'
         +(S.managers.indexOf(p)>=0?'<span style="margin-left:auto;font-size:10px;color:var(--warn-fg);background:var(--warn-bg);padding:2px 8px;border-radius:8px;font-weight:700">⭐ QL</span>':'')+'</div>'
-        +'<div class="tc-bottom"><span>'+ps.length+' sub-task</span><span>✅ '+pdone+'</span></div>'
+        +'<div class="tc-bottom"><span>'+ps.length+' việc trong kỳ</span><span>✅ '+pdone+'</span></div>'
         +'<div class="tc-progbar"><div class="tc-progfill" style="width:'+rate+'%;background:'+c+'"></div></div>'
         +'<div class="tc-bottom"><span>Hoàn thành</span><span style="font-weight:800;color:'+c+'">'+rate+'%</span></div>'
         +'</div>';
@@ -857,79 +1084,42 @@ function renderOverview(){
     h+='</div>';
 
     h+='<div class="section-title"><h2>Phân bổ theo loại công việc</h2></div>';
+    var done=total.filter(function(o){return isDone(o.s.status);}).length;
+    var prog2=total.filter(function(o){return isInProgress(o.s.status);}).length;
+    var todo=total.filter(function(o){return /to\s*do/i.test(o.s.status)||!o.s.status;}).length;
+    var cancel=pool.filter(function(o){return isCancelled(o.s.status);}).length;
     h+='<div class="grid2">';
     h+='<div class="panel panel-pad"><h3>Key Task theo Type</h3>'+barsHTML(groupCount(kts,function(k){return k.type||"(khác)";}),null)+'</div>';
-    h+='<div class="panel panel-pad"><h3>Sub-task theo trạng thái</h3>'
-      +donutHTML([["Completed",done,"#22c55e"],["In Progress",prog,"#3b82f6"],["To Do",todo,"#94a3b8"],["Cancelled",cancel,"#b8b2c2"]], subs.length, "sub-task")
+    h+='<div class="panel panel-pad"><h3>Sub-task theo trạng thái (trong kỳ)</h3>'
+      +donutHTML([["Completed",done,"#22c55e"],["In Progress",prog2,"#3b82f6"],["To Do",todo,"#94a3b8"],["Cancelled",cancel,"#b8b2c2"]], total.length, "việc")
       +'</div>';
     h+='</div>';
   } else {
-    h+='<div class="section-title"><h2>Công việc của '+esc(S.overviewPic)+'</h2>'
-      +'<span class="sp"></span><button class="btn-secondary" onclick="setOverviewPic(\'\')">← Tất cả</button></div>';
-    h+='<div class="cell-grid">';
-    filtered.forEach(function(k){
-      var st=ktStatus(k), p=ktProgress(k), m=stMeta(st), c=typeColor(k.type);
-      h+='<div class="task-cell" style="cursor:pointer" onclick="switchTab(\'detail\');setTimeout(function(){openDetailKey(\''+jsq(k.no)+'\')},60)">'
-        +'<div class="tc-top"><span class="tc-dot" style="background:'+m.dot+'"></span>'
-        +'<span style="font-size:10px;color:'+c+';background:'+c+'18;padding:2px 8px;border-radius:8px;font-weight:700">'+esc(k.type||"")+'</span>'
-        +'<span class="tc-status '+m.cls+'">'+m.lbl+'</span></div>'
-        +'<div class="tc-title">'+esc(k.keyTask)+'</div>'
-        +'<div class="tc-progbar"><div class="tc-progfill" style="width:'+p+'%;background:'+c+'"></div></div>'
-        +'<div class="tc-bottom"><span>'+(k.subs||[]).length+' sub-task</span><span style="font-weight:700;color:'+c+'">'+p+'%</span></div>'
-        +'</div>';
-    });
-    h+='</div>';
+    // ── PIC được chọn: hiện BẢNG SỬA TRỰC TIẾP (giống tab Chi tiết) ──
+    h+='<div class="section-title"><h2>Công việc của '+esc(pfilter)+' <span style="font-size:12.5px;color:var(--faint);font-weight:600">— bấm sub-task để sửa</span></h2>'
+      +'<span class="sp"></span><button class="btn-secondary" onclick="setOverviewPic(\'\')">← Tất cả PIC</button></div>';
+    var myKeys=kts.filter(function(k){ return (k.subs||[]).some(function(s){return s.pic===pfilter && subInRange(s,from,to);}) || (k.pic===pfilter && keyInRange(k,from,to)); });
+    if(!myKeys.length){ h+='<div class="empty"><div class="ic">📭</div><p>'+esc(pfilter)+' không có việc trong khoảng đã chọn.</p></div>'; }
+    else h+=detailKeyPanels(myKeys, from, to, pfilter);
   }
   $("tab-overview").innerHTML=h;
 }
 function setOverviewPic(p){ S.overviewPic=p; renderOverview(); }
-
-/* Panel "Việc của tôi" */
-function myFocusPanel(){
-  var me=S.user.pic;
-  var mine=[];
-  allKeyTasks().forEach(function(k){ (k.subs||[]).forEach(function(s){ if(s.pic===me) mine.push({k:k,s:s}); }); });
-  if(!mine.length) return "";
-
-  var todayISO=toISO(new Date());
-  function eff(s){ return s.revised||s.planned||""; }
-  function done(s){ return isDone(s.status); }
-  function overdue(s){ return !done(s) && !isCancelled(s.status) && eff(s) && toISO(eff(s))<todayISO; }
-
-  var dueToday=mine.filter(function(o){ return !done(o.s) && !isCancelled(o.s.status) && toISO(eff(o.s))===todayISO; });
-  var overdueA=mine.filter(function(o){ return overdue(o.s); });
-  var pending =mine.filter(function(o){ return !done(o.s) && !isCancelled(o.s.status) && !overdue(o.s) && toISO(eff(o.s))!==todayISO; });
-  var doneRec =mine.filter(function(o){ return done(o.s); }).slice(0,6);
-
-  function taskLine(o){
+function toggleFlip(id){ S.overviewFlip[id]=!S.overviewFlip[id]; renderOverview(); }
+/* card lật: mặt trước số to; mặt sau danh sách task (bấm sang tab chi tiết mở sửa) */
+function flipCard(id,val,label,ic,cls,items){
+  var flipped=!!S.overviewFlip[id];
+  var listHtml = items.length ? items.slice(0,40).map(function(o){
     var s=o.s, m=stMeta(s.status);
-    return '<div class="mf-item" onclick="gotoSub(\''+jsq(o.k.no)+'\',\''+jsq(s.no)+'\')" title="'+esc(s.result||'')+'">'
-      +'<span class="mf-dot" style="background:'+m.dot+'"></span>'
-      +'<span class="mf-name">'+esc(s.name||s.subTask)+'</span>'
-      +(s.result?'<span class="mf-note-ic" title="'+esc(s.result)+'">💬</span>':'')
-      +'</div>';
-  }
-  function col(title,arr,cls,empty){
-    var body = arr.length ? arr.map(taskLine).join("") : '<div class="mf-empty">'+empty+'</div>';
-    return '<div class="mf-col '+cls+'"><div class="mf-col-h"><b>'+title+'</b><span class="mf-count">'+arr.length+'</span></div><div class="mf-col-body">'+body+'</div></div>';
-  }
-
-  var soonLimit=addDaysISO(todayISO,3);
-  var dueSoon=mine.filter(function(o){ var e=eff(o.s); return !done(o.s) && !isCancelled(o.s.status) && !overdue(o.s) && e && toISO(e)>todayISO && toISO(e)<=soonLimit; });
-  var alerts=[];
-  if(overdueA.length) alerts.push('<span class="mf-alert over">🔴 '+overdueA.length+' việc <b>quá hạn</b></span>');
-  if(dueToday.length) alerts.push('<span class="mf-alert today">📌 '+dueToday.length+' việc <b>đến hạn hôm nay</b></span>');
-  if(dueSoon.length) alerts.push('<span class="mf-alert soon">⏰ '+dueSoon.length+' việc <b>sắp đến hạn (≤3 ngày)</b></span>');
-  var banner = alerts.length ? '<div class="mf-banner">'+alerts.join('')+'</div>' : '';
-
-  return '<div class="mf-wrap">'
-    +'<div class="mf-title">Xin chào '+esc(me)+' — đây là việc của bạn</div>'
-    +banner
-    +'<div class="mf-grid">'
-      +col('🔴 Quá hạn',overdueA,'mf-over','Không có việc quá hạn 👍')
-      +col('📌 Hôm nay',dueToday,'mf-today','Hôm nay không có việc đến hạn')
-      +col('⏳ Đang chờ',pending,'mf-pend','Trống')
-      +col('✅ Đã xong (gần đây)',doneRec,'mf-done','Chưa có việc hoàn thành')
+    return '<div class="flip-item" onclick="event.stopPropagation();gotoSub(\''+jsq(o.k.no)+'\',\''+jsq(s.no)+'\')">'
+      +'<span class="flip-dot" style="background:'+m.dot+'"></span>'
+      +'<span class="flip-nm">'+esc(s.name||s.subTask)+'</span>'
+      +'<span class="flip-pic">'+esc(s.pic||'')+'</span></div>';
+  }).join("") : '<div class="flip-empty">Không có việc</div>';
+  return '<div class="flip-card '+(flipped?"flipped":"")+' '+cls+'" onclick="toggleFlip(\''+id+'\')">'
+    +'<div class="flip-inner">'
+      +'<div class="flip-face flip-front"><div class="flip-ic">'+ic+'</div><div class="flip-val">'+val+'</div><div class="flip-label">'+esc(label)+'</div><div class="flip-hint">bấm xem chi tiết ↻</div></div>'
+      +'<div class="flip-face flip-back"><div class="flip-back-h"><b>'+esc(label)+'</b><span>'+val+'</span></div><div class="flip-list">'+listHtml+'</div><div class="flip-hint">↩ bấm để lật lại</div></div>'
     +'</div></div>';
 }
 function gotoSub(kno,sno){ switchTab('detail'); setTimeout(function(){ openDetailKey(kno); var el=document.getElementById('sub-'+sno); if(el){el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('flash'); setTimeout(function(){el.classList.remove('flash');},1600);} },80); }
@@ -976,21 +1166,18 @@ function barsHTML(entries){
 /* ══════════════════════════════════════════════════════════════════════════════
    TAB: GANTT — mặc định CHỈ hiện key task; bấm key mới xổ sub. % real-time.
    ══════════════════════════════════════════════════════════════════════════════ */
+/* Gantt vẽ theo khoảng dùng chung S.dateFrom/dateTo */
 function ganttRange(){
-  var base = S.ganttMonth ? new Date(S.ganttMonth) : new Date();
-  var y=base.getFullYear(), m=base.getMonth();
-  var start=new Date(y,m,1); start.setHours(0,0,0,0);
-  var end=new Date(y,m+1,0); end.setHours(0,0,0,0);
+  var start=new Date(S.dateFrom+"T00:00:00"); start.setHours(0,0,0,0);
+  var end=new Date(S.dateTo+"T00:00:00"); end.setHours(0,0,0,0);
+  if(end<start){ var t=start; start=end; end=t; }
   var days=Math.round((end-start)/86400000)+1;
+  if(days>62){ // giới hạn để không quá rộng
+    end=new Date(start); end.setDate(start.getDate()+61); days=62;
+  }
   var today=new Date(); today.setHours(0,0,0,0);
-  return { start:start, end:end, days:days, today:today, y:y, m:m };
+  return { start:start, end:end, days:days, today:today };
 }
-function ganttShiftMonth(n){
-  var base = S.ganttMonth ? new Date(S.ganttMonth) : new Date();
-  base.setDate(1); base.setMonth(base.getMonth()+n);
-  S.ganttMonth=base; renderGantt();
-}
-function ganttThisMonth(){ S.ganttMonth=null; renderGantt(); }
 function ganttToggleKey(no){ S.ganttOpen[no]=!S.ganttOpen[no]; renderGantt(); }
 function ganttExpandAll(){
   var kts=allKeyTasks(); if(S.ganttType) kts=kts.filter(function(k){return k.type===S.ganttType;});
@@ -1005,23 +1192,18 @@ function renderGantt(){
 
   var R=ganttRange();
   var totalDays=R.days;
-  var monthName=(R.m+1)+"/"+R.y;
   function off(d){ return Math.round((new Date(d)-R.start)/86400000); }
   var todayISOv=toISO(R.today);
 
   var h="";
-  h+='<div class="toolbar" style="justify-content:space-between;flex-wrap:wrap;gap:10px">';
-  h+='<div class="gantt-nav">'
-    +'<button class="gnav-btn" onclick="ganttShiftMonth(-1)" title="Tháng trước"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>'
-    +'<span class="gnav-label">Tháng '+monthName+'</span>'
-    +'<button class="gnav-btn" onclick="ganttShiftMonth(1)" title="Tháng sau"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>'
-    +'<button class="gnav-today" onclick="ganttThisMonth()">Tháng này</button>'
-    +'</div>';
-  h+='<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">';
+  // bộ lọc thời gian dùng chung (Gantt đổi theo khoảng)
+  h+=timeFilterBar();
+  // hàng nút: Mở/Ẩn sub · Thêm Key Task · Thêm Sub Task (đều là nút primary, icon-only cho gọn)
+  h+='<div class="toolbar" style="justify-content:flex-end;gap:8px">';
   h+='<button class="gantt-expand-all" onclick="ganttExpandAll()">⇕ Mở/Ẩn sub-task</button>';
-  if(isManager()) h+='<button class="btn-primary" onclick="openAddKey()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm Key Task</button>';
-  h+='<button class="btn-secondary" onclick="openAddSub(null)"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm Sub Task</button>';
-  h+='</div></div>';
+  if(isManager()) h+='<button class="btn-primary" title="Thêm Key Task" onclick="openAddKey()"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><line x1="17.5" y1="14" x2="17.5" y2="21"/><line x1="14" y1="17.5" x2="21" y2="17.5"/></svg>Key Task</button>';
+  h+='<button class="btn-primary" title="Thêm Sub Task" style="background:var(--mmh-blue)" onclick="openAddSub(null)"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Sub Task</button>';
+  h+='</div>';
   h+='<div class="chips" style="margin-bottom:14px"><button class="chip'+(S.ganttType===""?" active":"")+'" onclick="S.ganttType=\'\';renderGantt()">Tất cả loại</button>'
     +types.map(function(t){return '<button class="chip'+(S.ganttType===t?" active":"")+'" style="'+(S.ganttType===t?'background:'+typeColor(t):'')+'" onclick="S.ganttType=\''+jsq(t)+'\';renderGantt()">'+esc(t)+'</button>';}).join("")
     +'</div>';
@@ -1153,70 +1335,116 @@ function renderDetail(){
   var types=[...new Set(kts.map(function(k){return k.type;}).filter(Boolean))];
   if(S.detailType) kts=kts.filter(function(k){return k.type===S.detailType;});
   if(S.detailQ){ var q=S.detailQ.toLowerCase(); kts=kts.filter(function(k){ return (k.keyTask+" "+k.pic+" "+(k.subs||[]).map(function(s){return s.name+" "+s.pic;}).join(" ")).toLowerCase().indexOf(q)>=0; }); }
+  // lọc theo khoảng thời gian dùng chung
+  var from=S.dateFrom, to=S.dateTo;
+  kts=kts.filter(function(k){ return keyInRange(k,from,to); });
 
   var h="";
+  // bộ lọc thời gian dùng chung
+  h+=timeFilterBar();
+  // search (BỎ 2 nút thêm — đã có dấu + trong panel)
   h+='<div class="toolbar">'
     +'<div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
     +'<input type="text" placeholder="Tìm key task / sub-task / PIC…" value="'+esc(S.detailQ)+'" oninput="S.detailQ=this.value;renderDetail()"/></div>';
-  if(isManager()) h+='<button class="btn-primary" onclick="openAddKey()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm Key Task</button>';
-  h+='<button class="btn-secondary" onclick="openAddSub(null)"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm Sub Task</button>';
   h+='</div>';
   h+='<div class="chips" style="margin-bottom:16px"><button class="chip'+(S.detailType===""?" active":"")+'" onclick="S.detailType=\'\';renderDetail()">Tất cả loại</button>'
     +types.map(function(t){return '<button class="chip'+(S.detailType===t?" active":"")+'" style="'+(S.detailType===t?'background:'+typeColor(t):'')+'" onclick="S.detailType=\''+jsq(t)+'\';renderDetail()">'+esc(t)+'</button>';}).join("")+'</div>';
 
-  if(!kts.length){ h+='<div class="empty"><div class="ic">📋</div><p>Không có key task phù hợp.</p></div>'; $("tab-detail").innerHTML=h; return; }
+  if(!kts.length){ h+='<div class="empty"><div class="ic">📋</div><p>Không có key task phù hợp trong khoảng đã chọn.</p></div>'; $("tab-detail").innerHTML=h; return; }
 
+  h+=detailKeyPanels(kts, from, to, null);
+  $("tab-detail").innerHTML=h;
+}
+
+/* ── Render danh sách Key Task panels (dùng chung Detail + Overview-per-PIC) ──
+ * picFilter: nếu != null, chỉ hiện sub-task của PIC đó.
+ * Sub-task xổ theo TRỤC DỌC; nội dung ẩn dạng comment (bấm mới hiện).
+ */
+function detailKeyPanels(kts, from, to, picFilter){
+  var h="";
   kts.forEach(function(k){
     var st=ktStatus(k), p=ktProgress(k), m=stMeta(st), c=typeColor(k.type);
     var open=!!S.detailOpen[k.no];
     var editKey=canEditPic(k.pic);
     var addSub = isManager() || canEditPic(k.pic);
     var revised = k.revised && k.planned && k.revised!==k.planned;
+    var subs=(k.subs||[]).filter(function(s){
+      if(picFilter && s.pic!==picFilter) return false;
+      return subInRange(s,from,to);
+    });
+    var doneCnt=subs.filter(function(s){return isDone(s.status);}).length;
+
+    /* ── HEADER key: các meta căn thẳng hàng (grid cố định) ── */
     h+='<div class="kt-panel"><div class="kt-head'+(open?" open":"")+'" onclick="toggleDetail(\''+jsq(k.no)+'\')">'
       +'<svg class="kt-caret" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>'
       +'<span class="kt-type-tag" style="background:'+c+'18;color:'+c+'">'+esc(k.type||"—")+'</span>'
       +'<span class="kt-title">'+esc(k.keyTask)+'</span>'
-      +'<span class="kt-meta"><span>👤 '+esc(k.pic)+'</span>'
-        +(k.start||k.planned?'<span>📅 '+fmtVN(k.start)+' → '+fmtVN(k.revised||k.planned)+(revised?' <b style="color:var(--warn-fg)">(dời)</b>':'')+'</span>':'')
-        +'<span style="font-weight:800;color:'+c+'">'+p+'%</span>'
+      +'<span class="kt-hmeta">'
+        +'<span class="khm khm-pic"><span class="khm-av" style="background:'+avColor(k.pic)+'">'+esc(initials(k.pic))+'</span>'+esc(k.pic||'—')+'</span>'
+        +'<span class="khm khm-date">'+(k.start||k.planned?('📅 '+fmtVN(k.start)+' → '+fmtVN(k.revised||k.planned)+(revised?' *':'')):'—')+'</span>'
+        +'<span class="khm khm-pct" style="color:'+c+'">'+p+'%</span>'
+        +'<span class="khm khm-prog"><span class="kt-progbar"><span class="kt-progfill" style="width:'+p+'%;background:'+c+'"></span></span></span>'
+        +'<span class="khm khm-sub">'+doneCnt+'/'+subs.length+'</span>'
+        +'<span class="khm khm-status"><span class="tc-status '+m.cls+'">'+m.lbl+'</span></span>'
       +'</span>'
-      +'<span class="kt-prog"><div class="tc-progbar"><div class="tc-progfill" style="width:'+p+'%;background:'+c+'"></div></div></span>'
-      +'<span class="tc-status '+m.cls+'">'+m.lbl+'</span>'
-      /* ⭐ PHÂN QUYỀN: chỉ hiện nút Sửa/Nhắc/Xóa khi có quyền. PIC không thấy nút của người khác. */
       +'<span class="kt-actions" onclick="event.stopPropagation()">'
         +(editKey?'<button class="icon-btn" title="Sửa Key Task" onclick="openEdit(\''+jsq(k.no)+'\',null)">✏️</button>':'')
         +(isManager()?'<button class="icon-btn" title="Nhắc việc" onclick="openAssign(\''+jsq(k.no)+'\',null)">🔔</button>':'')
         +(isManager()?'<button class="icon-btn" title="Xoá Key Task" onclick="delRow(\''+jsq(k.no)+'\','+k.row+',true)">🗑️</button>':'')
       +'</span>'
       +'</div>'
-      +'<div class="kt-body'+(open?" open":"")+'"><div class="sub-cell-grid">';
-    (k.subs||[]).forEach(function(s){
-      var canE=canEditPic(s.pic);
-      var sm=stMeta(s.status);
-      var links=extractLinks(s.result);
-      var spct=subPct(s), scol=sm.dot;
-      var showProg = isInProgress(s.status) || (spct>0 && spct<100);
-      h+='<div class="sub-cell'+(canE?"":" locked")+'" id="sub-'+esc(s.no)+'">'
-        +'<div class="sc-head">'
-          +(canE?'<button class="sc-edit-btn" onclick="openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')" title="Sửa">✏️ Sửa</button>':'<span class="sc-lock">🔒</span>')
-          +'<span class="tc-status '+sm.cls+'" style="margin-left:auto">'+sm.lbl+'</span></div>'
-        +'<div class="sc-title">'+esc(s.name||s.subTask)+'</div>'
-        +(showProg?'<div class="sc-progrow"><div class="sc-progbar"><div class="sc-progfill" style="width:'+spct+'%;background:'+scol+'"></div></div><span class="sc-progpct">'+spct+'%</span></div>':'')
-        +(s.result?'<div class="sc-result"><div class="sc-result-lbl">💬 Kết quả / Cập nhật</div><div class="sc-result-txt">'+linkify(s.result)+'</div></div>':'<div class="sc-result empty">— chưa có kết quả —</div>')
-        +(links.length?'<button class="sc-ref-btn" onclick="showReferral(\''+jsq(s.no)+'\',\''+jsq(s.name||s.subTask)+'\')">🔗 Tham chiếu ('+links.length+' link)</button>':'')
-        +'<div class="sc-foot"><span class="sc-pic"><span class="sc-pic-av" style="background:'+avColor(s.pic)+'">'+esc(initials(s.pic))+'</span>'+esc(s.pic||"—")+'</span>'
-        +'<span class="sc-dl">'+(effDate(s)?'📅 '+esc(fmtVN(effDate(s))):'')+'</span>'
-        +(canE?'<button class="sc-del-btn" onclick="delRow(\''+jsq(k.no)+'\','+s.row+',false)" title="Xoá sub-task">🗑️</button>':'')
-        +'</div>'
-        +'</div>';
+      /* ── BODY: sub-task TRỤC DỌC ── */
+      +'<div class="kt-body'+(open?" open":"")+'"><div class="sub-list">';
+    subs.forEach(function(s){
+      h+=subRowVertical(k, s);
     });
-    if(addSub) h+='<div class="sub-cell sc-add" onclick="openAddSub(\''+jsq(k.no)+'\')">+ Thêm Sub Task</div>';
+    if(!subs.length) h+='<div class="sub-empty">Không có sub-task trong khoảng này.</div>';
+    if(addSub) h+='<div class="sub-add-row" onclick="openAddSub(\''+jsq(k.no)+'\')">＋ Thêm Sub Task</div>';
     h+='</div></div></div>';
   });
-  $("tab-detail").innerHTML=h;
+  return h;
 }
-function toggleDetail(no){ S.detailOpen[no]=!S.detailOpen[no]; renderDetail(); }
-function openDetailKey(no){ S.detailOpen[no]=true; renderDetail(); }
+
+/* ── 1 dòng sub-task theo trục dọc; comment ẩn, bấm mới hiện ── */
+function subRowVertical(k, s){
+  var canE=canEditPic(s.pic);
+  var sm=stMeta(s.status);
+  var links=extractLinks(s.result);
+  var spct=subPct(s), scol=sm.dot;
+  var showProg = isInProgress(s.status);   // ⭐ CHỈ In Progress mới hiện thanh %
+  var expanded = !!S.detailOpen["sub_"+s.no];
+  var hasComment = !!(s.result && String(s.result).trim());
+
+  return '<div class="sub-row'+(canE?"":" locked")+'" id="sub-'+esc(s.no)+'">'
+    +'<div class="sr-main" onclick="toggleSubComment(\''+jsq(s.no)+'\')">'
+      +'<span class="sr-dot" style="background:'+scol+'"></span>'
+      +'<span class="sr-no">'+esc(s.no)+'</span>'
+      +'<span class="sr-name">'+esc(s.name||s.subTask)+'</span>'
+      +(showProg
+         ? '<span class="sr-prog"><span class="sr-progbar"><span class="sr-progfill" style="width:'+spct+'%;background:'+scol+'"></span></span><span class="sr-progpct">'+spct+'%</span></span>'
+         : '<span class="sr-prog sr-prog-empty"></span>')
+      +'<span class="sr-pic"><span class="sr-pic-av" style="background:'+avColor(s.pic)+'">'+esc(initials(s.pic))+'</span>'+esc(s.pic||'—')+'</span>'
+      +'<span class="sr-date">'+(effDate(s)?fmtVN(effDate(s)):'—')+'</span>'
+      +'<span class="tc-status '+sm.cls+' sr-st">'+sm.lbl+'</span>'
+      +(hasComment?'<span class="sr-cmt-ic" title="Có ghi chú">💬</span>':'')
+      +'<svg class="sr-caret'+(expanded?" open":"")+'" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>'
+    +'</div>'
+    +'<div class="sr-actions">'
+      +(canE?'<button class="sr-edit" onclick="event.stopPropagation();openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')" title="Sửa">✏️</button>':'<span class="sr-lock">🔒</span>')
+      +(canE?'<button class="sr-del" onclick="event.stopPropagation();delRow(\''+jsq(k.no)+'\','+s.row+',false)" title="Xoá">🗑️</button>':'')
+    +'</div>'
+    /* comment ẩn — chỉ hiện khi mở */
+    +'<div class="sr-comment'+(expanded?" open":"")+'">'
+      +(hasComment
+         ? '<div class="sr-cmt-lbl">💬 Kết quả / Cập nhật</div><div class="sr-cmt-txt">'+linkify(s.result)+'</div>'
+         : '<div class="sr-cmt-empty">— chưa có kết quả —</div>')
+      +(links.length?'<button class="sr-ref-btn" onclick="event.stopPropagation();showReferral(\''+jsq(s.no)+'\',\''+jsq(s.name||s.subTask)+'\')">🔗 Tham chiếu ('+links.length+' link)</button>':'')
+    +'</div>'
+  +'</div>';
+}
+function toggleSubComment(no){ S.detailOpen["sub_"+no]=!S.detailOpen["sub_"+no]; rerenderActive(); }
+function toggleDetail(no){ S.detailOpen[no]=!S.detailOpen[no]; rerenderActive(); }
+function openDetailKey(no){ S.detailOpen[no]=true; if(S.tab==="detail")renderDetail(); else if(S.tab==="overview")renderOverview(); }
 
 /* ══════════════════════════════════════════════════════════════════════════════
    TAB: MONTHLY
@@ -1307,47 +1535,71 @@ function mrFormatText(t){
                start nằm chính tuần sau HOẶC deadline hiệu lực >= đầu tuần sau
                (tuần sau hoặc xa hơn) HOẶC còn đang mở. KHÔNG hiển thị cột Kết quả.
    ══════════════════════════════════════════════════════════════════════════════ */
+/* Chọn tuần báo cáo — mặc định tuần hiện tại (T2→T7). Điều hướng ‹ › theo tuần. */
+function reportShiftWeek(dir){
+  var f=new Date(S.reportFrom+"T00:00:00"), t=new Date(S.reportTo+"T00:00:00");
+  f.setDate(f.getDate()+dir*7); t.setDate(t.getDate()+dir*7);
+  S.reportFrom=toISO(f); S.reportTo=toISO(t); renderReport();
+}
+function reportThisWeek(){ var mon=mondayOf(new Date()); var sat=new Date(mon); sat.setDate(mon.getDate()+5); S.reportFrom=toISO(mon); S.reportTo=toISO(sat); renderReport(); }
+
 function renderReport(){
   if(!S.reportFrom||!S.reportTo){ var mon=mondayOf(new Date()); var sat=new Date(mon); sat.setDate(mon.getDate()+5); S.reportFrom=toISO(mon); S.reportTo=toISO(sat); }
-  var isNext = (S.reportView==="nextweek");
-  var from=S.reportFrom, to=S.reportTo;
-  if(isNext){ from=addDaysISO(S.reportFrom,7); to=addDaysISO(S.reportTo,7); }
+  var tFrom=S.reportFrom, tTo=S.reportTo;
+  var nFrom=addDaysISO(tFrom,7), nTo=addDaysISO(tTo,7);
 
-  var subs=allSubs().filter(function(o){
-    var s=o.s, eff=s.revised||s.planned||"";
-    var inW=function(d){ return d && String(d).slice(0,10)>=from && String(d).slice(0,10)<=to; };
-    if(!isNext){
+  // lọc tuần này (có kết quả)
+  function filterThis(){
+    return allSubs().filter(function(o){
+      var s=o.s, eff=s.revised||s.planned||"";
+      var inW=function(d){ return d && String(d).slice(0,10)>=tFrom && String(d).slice(0,10)<=tTo; };
       return inW(s.start)||inW(eff)||inW(s.actual)||isInProgress(s.status);
-    }
-    // tuần sau (plan): chưa đóng
-    if(isDone(s.status)||isCancelled(s.status)) return false;
-    var startInNext = inW(s.start);
-    var effAtOrAfter = eff && String(eff).slice(0,10) >= from;   // hạn ở tuần sau hoặc xa hơn
-    var stillOpen    = isInProgress(s.status) || /to\s*do/i.test(s.status);
-    return startInNext || effAtOrAfter || stillOpen;
-  });
-
-  var showResult = !isNext;
+    });
+  }
+  // lọc tuần sau (plan, chưa đóng)
+  function filterNext(){
+    return allSubs().filter(function(o){
+      var s=o.s, eff=s.revised||s.planned||"";
+      if(isDone(s.status)||isCancelled(s.status)) return false;
+      var inW=function(d){ return d && String(d).slice(0,10)>=nFrom && String(d).slice(0,10)<=nTo; };
+      var startInNext=inW(s.start);
+      var effAtOrAfter=eff && String(eff).slice(0,10)>=nFrom;
+      var stillOpen=isInProgress(s.status)||/to\s*do/i.test(s.status);
+      return startInNext||effAtOrAfter||stillOpen;
+    });
+  }
+  var tSubs=filterThis(), nSubs=filterNext();
 
   var h="";
   h+='<div class="report-toolbar">'
-    +'<div class="seg"><button class="'+(!isNext?"active":"")+'" onclick="S.reportView=\'thisweek\';renderReport()">📍 Tuần này</button>'
-    +'<button class="'+(isNext?"active":"")+'" onclick="S.reportView=\'nextweek\';renderReport()">⏭️ Plan tuần sau</button></div>'
-    +'<div class="sel" style="display:flex;gap:8px;align-items:center"><span style="font-size:12.5px;color:var(--sub);font-weight:600">Từ</span>'
-    +'<input type="date" value="'+S.reportFrom+'" onchange="S.reportFrom=this.value;renderReport()" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:10px"/></div>'
-    +'<div class="sel" style="display:flex;gap:8px;align-items:center"><span style="font-size:12.5px;color:var(--sub);font-weight:600">Đến</span>'
-    +'<input type="date" value="'+S.reportTo+'" onchange="S.reportTo=this.value;renderReport()" style="padding:10px 12px;border:1.5px solid var(--border);border-radius:10px"/></div>'
+    +'<div class="gantt-nav">'
+      +'<button class="gnav-btn" onclick="reportShiftWeek(-1)" title="Tuần trước"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>'
+      +'<span class="gnav-label" style="min-width:190px">'+fmtVNFull(tFrom)+' – '+fmtVNFull(tTo)+'</span>'
+      +'<button class="gnav-btn" onclick="reportShiftWeek(1)" title="Tuần sau"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>'
+      +'<button class="gnav-today" onclick="reportThisWeek()">Tuần này</button>'
+    +'</div>'
     +'<span style="flex:1"></span>'
-    +'<button class="btn-primary" onclick="openReportSend()"><svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>Tạo PDF &amp; gửi email</button>'
+    +'<button class="btn-primary" onclick="openReportSend()"><svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>Tạo PDF &amp; gửi (gộp 2 phần)</button>'
     +'</div>';
-  h+='<div style="font-size:13px;color:var(--sub);margin-bottom:14px">'+
-    (isNext?"⏭️ <b>Plan tuần sau</b> ("+fmtVNFull(from)+" – "+fmtVNFull(to)+") — không hiển thị cột kết quả":
-            "📍 Công việc trong tuần này ("+fmtVNFull(from)+" – "+fmtVNFull(to)+")")+
-    ' · <b>'+subs.length+'</b> sub-task</div>';
+  h+='<div style="font-size:13px;color:var(--sub);margin-bottom:14px">Email &amp; PDF sẽ gồm <b>2 phần</b>: ① Kết quả tuần này &nbsp;+&nbsp; ② Plan tuần sau (không kèm cột kết quả).</div>';
 
-  if(!subs.length){ h+='<div class="empty"><div class="ic">📄</div><p>Không có công việc nào trong khoảng đã chọn.</p></div>'; $("tab-report").innerHTML=h; return; }
+  // ── Phần ① Kết quả tuần này ──
+  h+='<div class="rp-sec"><span class="rp-sec-badge this">① Kết quả tuần này</span><span class="rp-sec-range">'+fmtVNFull(tFrom)+' – '+fmtVNFull(tTo)+'</span><span class="rp-sec-count">'+tSubs.length+' sub-task</span></div>';
+  h+=reportSection(tSubs, false);
+
+  // ── Phần ② Plan tuần sau ──
+  h+='<div class="rp-sec next"><span class="rp-sec-badge next">② Plan tuần sau</span><span class="rp-sec-range">'+fmtVNFull(nFrom)+' – '+fmtVNFull(nTo)+'</span><span class="rp-sec-count">'+nSubs.length+' sub-task</span></div>';
+  h+=reportSection(nSubs, true);
+
+  $("tab-report").innerHTML=h;
+}
+/* dựng các bảng theo key cho 1 phần report */
+function reportSection(subs, isNext){
+  var showResult=!isNext;
+  if(!subs.length) return '<div class="empty" style="padding:30px"><div class="ic">'+(isNext?'🗓️':'📄')+'</div><p>'+(isNext?'Không có việc dự kiến tuần sau.':'Không có việc trong tuần này.')+'</p></div>';
   var byKey={};
   subs.forEach(function(o){ (byKey[o.k.no]=byKey[o.k.no]||{k:o.k,items:[]}).items.push(o.s); });
+  var h="";
   Object.keys(byKey).forEach(function(kn){
     var b=byKey[kn], c=typeColor(b.k.type);
     var lastCol = showResult ? '<th>Kết quả / Link</th>' : '';
@@ -1366,7 +1618,7 @@ function renderReport(){
           +'</tr>';
       }).join("")+'</tbody></table></div>';
   });
-  $("tab-report").innerHTML=h;
+  return h;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════════
@@ -1695,13 +1947,11 @@ function saveAddMonthly(){
 /* ── REPORT: gửi (kèm scope tuần này / tuần sau) ── */
 function openReportSend(){
   var isMgr = isManager();
-  var isNext = (S.reportView==="nextweek");
+  var nFrom=addDaysISO(S.reportFrom,7), nTo=addDaysISO(S.reportTo,7);
   var picOpts = S.pics.map(function(p){return '<option'+(p===S.user.pic?" selected":"")+'>'+esc(p)+'</option>';}).join("");
-  var scopeLabel = isNext ? 'PLAN TUẦN SAU (không kèm kết quả)' : 'BÁO CÁO TUẦN NÀY';
-  var html='<div class="modal-box"><div class="modal-head"><h3>📄 '+(isNext?'Gửi plan tuần sau':'Tạo & gửi báo cáo tuần')+'</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
+  var html='<div class="modal-box"><div class="modal-head"><h3>📄 Tạo & gửi báo cáo tuần</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
-    +'<div class="field"><label>Loại</label><input type="text" value="'+scopeLabel+'" disabled/></div>'
-    +'<div class="field"><label>Tuần gốc</label><input type="text" value="'+fmtVNFull(S.reportFrom)+' – '+fmtVNFull(S.reportTo)+(isNext?'  (sẽ +7 ngày)':'')+'" disabled/></div>'
+    +'<div class="field"><label>Nội dung email (gộp 2 phần)</label><input type="text" value="① Tuần này: '+fmtVNFull(S.reportFrom)+'–'+fmtVNFull(S.reportTo)+'  ②  Plan tuần sau: '+fmtVNFull(nFrom)+'–'+fmtVNFull(nTo)+'" disabled/></div>'
     +'<label style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:10px">Gửi tới</label>'
     +'<div class="radio-cards">'
     +'<label class="radio-card sel" onclick="selReportOpt(this,\'self\')"><input type="radio" name="ropt" value="self" checked/><div class="rc-ic">🧪</div><div><div class="rc-t">Gửi thử cho tôi</div><div class="rc-s">Chỉ chứa việc của '+esc(S.user.pic)+'</div></div></label>'
@@ -1711,7 +1961,7 @@ function openReportSend(){
          +'<label class="radio-card" onclick="selReportOpt(this,\'all\')"><input type="radio" name="ropt" value="all"/><div class="rc-ic">📢</div><div><div class="rc-t">Gửi cho tất cả PIC</div><div class="rc-s">Mỗi PIC nhận 1 email riêng · CC: vtt.hoa@ &amp; nt.ha@</div></div></label>'
        : '')
     +'</div>'
-    +'<div class="field-hint" style="margin-top:12px">'+(isNext?'Plan tuần sau: chỉ gồm việc chưa hoàn thành có start/deadline rơi vào tuần sau hoặc xa hơn. KHÔNG kèm cột kết quả.':'Báo cáo gồm việc active trong tuần, có kèm kết quả.')+'</div>'
+    +'<div class="field-hint" style="margin-top:12px">1 email + 1 PDF gồm <b>2 phần</b>: ① Kết quả tuần này (có cột kết quả) và ② Plan tuần sau (hiển thị deadline, không kèm kết quả).</div>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
     +'<button class="btn-primary" onclick="doSendReport()">📧 Tạo PDF &amp; gửi</button></div>'
     +'</div></div>';
@@ -1720,8 +1970,7 @@ function openReportSend(){
 function selReportOpt(el,v){ document.querySelectorAll(".radio-card").forEach(function(c){c.classList.remove("sel");}); el.classList.add("sel"); el.querySelector("input").checked=true; }
 function doSendReport(){
   var opt=(document.querySelector('input[name=ropt]:checked')||{}).value||"self";
-  var scope=(S.reportView==="nextweek")?"nextweek":"thisweek";
-  var body={action:"weeklyReport", from:S.reportFrom, to:S.reportTo, scope:scope, option:opt};
+  var body={action:"weeklyReport", from:S.reportFrom, to:S.reportTo, option:opt};
   if(opt==="pic"){ var sel=$("rp-pic"); body.toPic = sel? sel.value : S.user.pic; }
   var msg = opt==="all" ? "Gửi báo cáo riêng cho từng PIC…" : "Tổng hợp & gửi email…";
   overlay(true,"Đang tạo PDF",msg);
