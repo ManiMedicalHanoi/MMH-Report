@@ -554,7 +554,7 @@ button{cursor:pointer}
 .sub-row{border-bottom:1px solid var(--border);position:relative}
 .sub-row:last-of-type{border-bottom:none}
 .sub-row.locked{opacity:.9}
-.sr-main{display:grid;grid-template-columns:14px 40px 1fr 190px 130px 90px 140px 22px 16px;align-items:center;gap:10px;padding:11px 12px;cursor:pointer;transition:background .12s}
+.sr-main{display:grid;grid-template-columns:14px 38px 1fr 210px 120px 84px 150px 20px 16px;align-items:center;gap:9px;padding:10px 12px;cursor:pointer;transition:background .12s}
 .sr-main:hover{background:var(--pale)}
 .sr-dot{width:10px;height:10px;border-radius:50%}
 .sr-no{font-size:11.5px;color:var(--faint);font-weight:700;font-family:'DM Mono',monospace}
@@ -588,11 +588,14 @@ button{cursor:pointer}
 .sub-add-row{padding:12px 14px;text-align:center;font-size:14px;font-weight:700;color:var(--mmh-blue);cursor:pointer;border-top:1.5px dashed var(--lb1);transition:.14s}
 .sub-add-row:hover{background:var(--lb3)}
 @media(max-width:900px){
-  .sr-main{grid-template-columns:12px 1fr 90px 16px;gap:8px;row-gap:6px}
-  .sr-no,.sr-prog,.sr-date,.sr-cmt-ic{display:none}
-  .sr-st{grid-column:auto}
+  .sr-main{grid-template-columns:12px 1fr auto;gap:8px 10px;row-gap:8px;padding:12px}
+  .sr-no,.sr-date,.sr-cmt-ic,.sr-caret{display:none}
+  .sr-name{grid-column:2 / -1}
+  .sr-prog,.sr-prog-edit{grid-column:1 / -1;order:3}
+  .sr-pic{order:4}
+  .sr-st-wrap,.sr-st{order:5;justify-self:end}
   .sr-comment{padding-left:20px}
-  .sr-actions{position:static;opacity:1;padding:0 12px 10px 20px}
+  .sr-actions{position:static;opacity:1;padding:0 12px 10px 20px;order:6;grid-column:1 / -1}
 }
 
 /* ══════════════ REPORT SECTIONS ══════════════ */
@@ -604,6 +607,52 @@ button{cursor:pointer}
 .rp-sec-count{margin-left:auto;font-size:12.5px;font-weight:700;color:var(--faint);background:var(--gray);padding:5px 12px;border-radius:10px}
 
 .sr-prog-empty{visibility:hidden}
+
+
+/* ══ MULTI-SELECT FILTER DROPDOWN (Chi tiết) ══ */
+.detail-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.detail-toolbar .search{flex:1;min-width:220px}
+.mfd{position:relative}
+.mfd-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 15px;border:1.5px solid var(--border);border-radius:var(--r-md);background:#fff;font-size:14px;font-weight:700;color:var(--sub);white-space:nowrap;transition:.14s}
+.mfd-btn:hover{border-color:var(--mmh-blue);color:var(--mmh-blue)}
+.mfd-btn.active{background:var(--mmh-navy);color:#fff;border-color:var(--mmh-navy)}
+.mfd-ic{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2}
+.mfd-btn.active .mfd-ic{fill:currentColor}
+.mfd-caret{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.4;transition:transform .2s}
+.mfd.open .mfd-caret{transform:rotate(180deg)}
+.mfd-panel{display:none;position:absolute;top:calc(100% + 6px);left:0;z-index:50;min-width:250px;max-width:340px;background:#fff;border:1px solid var(--border);border-radius:var(--r-md);box-shadow:var(--sh-lg);overflow:hidden}
+.mfd.open .mfd-panel{display:block;animation:fade .16s var(--ease)}
+.mfd-head{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid var(--border);background:var(--gray)}
+.mfd-head b{font-size:13px;color:var(--mmh-navy)}
+.mfd-clear{font-size:12px;font-weight:700;color:var(--danger-fg);background:none;border:none;cursor:pointer}
+.mfd-clear:hover{text-decoration:underline}
+.mfd-list{max-height:280px;overflow-y:auto;padding:6px}
+.mfd-item{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:8px;cursor:pointer;transition:.12s}
+.mfd-item:hover{background:var(--pale)}
+.mfd-check{width:19px;height:19px;border-radius:5px;border:1.8px solid var(--border);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;transition:.12s}
+.mfd-check.on{background:var(--mmh-blue);border-color:var(--mmh-blue)}
+.mfd-dot{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
+.mfd-av{width:24px;height:24px;border-radius:50%;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.mfd-name{font-size:13.5px;color:var(--text);font-weight:600}
+.mfd-empty{padding:14px;text-align:center;font-size:13px;color:var(--faint)}
+@media(max-width:720px){ .mfd-panel{left:auto;right:0} }
+
+/* ══ STATUS DROPDOWN & % QUICK EDIT trên dòng sub-task ══ */
+.sr-st-wrap{position:relative}
+.sr-st-sel{appearance:none;-webkit-appearance:none;border:1.5px solid transparent;border-radius:11px;padding:4px 26px 4px 11px;font-size:11.5px;font-weight:700;cursor:pointer;outline:none;font-family:inherit;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='3'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;max-width:150px}
+.sr-st-sel.st-done{background-color:var(--success-bg);color:var(--success-fg)}
+.sr-st-sel.st-inprogress{background-color:var(--info-bg);color:var(--info-fg)}
+.sr-st-sel.st-todo{background-color:var(--todo-bg);color:var(--todo-fg)}
+.sr-st-sel.st-cancel{background-color:var(--cancel-bg);color:var(--cancel-fg)}
+.sr-st-sel:hover{border-color:var(--mmh-blue)}
+.sr-prog-edit{display:flex;align-items:center;gap:5px}
+.sr-pbtn{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border);background:#fff;color:var(--mmh-blue);font-size:15px;font-weight:800;line-height:1;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;justify-content:center;padding:0}
+.sr-pbtn:hover{background:var(--lb3);border-color:var(--mmh-blue)}
+.sr-prange{-webkit-appearance:none;appearance:none;flex:1;min-width:70px;height:6px;border-radius:4px;background:var(--lb3);outline:none;cursor:pointer}
+.sr-prange::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:var(--mmh-blue);cursor:pointer;border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,48,71,.35)}
+.sr-prange::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--mmh-blue);cursor:pointer;border:2.5px solid #fff}
+.sr-progpct{font-size:11.5px;font-weight:800;color:var(--mmh-blue);min-width:34px;text-align:right;flex:0 0 auto}
 
 </style>
 </head>
@@ -696,7 +745,10 @@ function isInProgress(s){ return /progress/i.test(s); }
 function subPct(s){
   if(isDone(s.status)) return 100;
   if(isCancelled(s.status)) return 0;
-  var p = parseInt(s.progress,10); if(isNaN(p)) p=0;
+  var v=s.progress;
+  var p;
+  if(typeof v==='number' && v>0 && v<=1) p=Math.round(v*100);   // dạng tỉ lệ 0.3 → 30
+  else { p=parseInt(v,10); if(isNaN(p))p=0; }
   if(p<0)p=0; if(p>100)p=100;
   return p;
 }
@@ -721,7 +773,8 @@ var S={
   overviewFlip:{},       // card nào đang lật
   ganttType:"",
   ganttOpen:{},          // key task nào đang mở sub trên Gantt (mặc định ẩn)
-  detailType:"", detailQ:"", detailOpen:{},
+  detailType:"", detailTypes:[], detailPics:[], detailQ:"", detailOpen:{},
+  detailFilterOpen:"",   // 'type' | 'pic' | '' — dropdown nào đang mở
   monthSel:"", monthType:"",
   reportFrom:"", reportTo:"",
   editCtx:null,
@@ -1331,30 +1384,78 @@ function showReferral(sno,name){
    TAB: DETAIL
    ══════════════════════════════════════════════════════════════════════════════ */
 function renderDetail(){
-  var kts=allKeyTasks();
-  var types=[...new Set(kts.map(function(k){return k.type;}).filter(Boolean))];
-  if(S.detailType) kts=kts.filter(function(k){return k.type===S.detailType;});
-  if(S.detailQ){ var q=S.detailQ.toLowerCase(); kts=kts.filter(function(k){ return (k.keyTask+" "+k.pic+" "+(k.subs||[]).map(function(s){return s.name+" "+s.pic;}).join(" ")).toLowerCase().indexOf(q)>=0; }); }
-  // lọc theo khoảng thời gian dùng chung
-  var from=S.dateFrom, to=S.dateTo;
-  kts=kts.filter(function(k){ return keyInRange(k,from,to); });
+  var allKts=allKeyTasks();
+  var types=[...new Set(allKts.map(function(k){return k.type;}).filter(Boolean))].sort();
+  var picsAll=picListAll();
 
   var h="";
-  // bộ lọc thời gian dùng chung
   h+=timeFilterBar();
-  // search (BỎ 2 nút thêm — đã có dấu + trong panel)
-  h+='<div class="toolbar">'
+  // Toolbar: search + 2 dropdown multi-select (Type + PIC nếu manager)
+  h+='<div class="detail-toolbar">'
     +'<div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
-    +'<input type="text" placeholder="Tìm key task / sub-task / PIC…" value="'+esc(S.detailQ)+'" oninput="S.detailQ=this.value;renderDetail()"/></div>';
-  h+='</div>';
-  h+='<div class="chips" style="margin-bottom:16px"><button class="chip'+(S.detailType===""?" active":"")+'" onclick="S.detailType=\'\';renderDetail()">Tất cả loại</button>'
-    +types.map(function(t){return '<button class="chip'+(S.detailType===t?" active":"")+'" style="'+(S.detailType===t?'background:'+typeColor(t):'')+'" onclick="S.detailType=\''+jsq(t)+'\';renderDetail()">'+esc(t)+'</button>';}).join("")+'</div>';
-
-  if(!kts.length){ h+='<div class="empty"><div class="ic">📋</div><p>Không có key task phù hợp trong khoảng đã chọn.</p></div>'; $("tab-detail").innerHTML=h; return; }
-
-  h+=detailKeyPanels(kts, from, to, null);
+    +'<input id="detail-search" type="text" placeholder="Tìm key task / sub-task / PIC…" value="'+esc(S.detailQ)+'" autocomplete="off"/></div>'
+    +multiFilterDropdown("type","Loại công việc",types,S.detailTypes)
+    +(isManager()?multiFilterDropdown("pic","PIC phụ trách",picsAll,S.detailPics):"")
+    +'</div>';
+  // vùng list (search chỉ re-render vùng này)
+  h+='<div id="detail-list"></div>';
   $("tab-detail").innerHTML=h;
+
+  // gắn sự kiện search KHÔNG re-render toàn bộ (giữ focus)
+  var si=$("detail-search");
+  if(si){
+    si.oninput=function(){ S.detailQ=this.value; renderDetailList(); };
+    // giữ con trỏ cuối
+  }
+  renderDetailList();
 }
+/* chỉ render phần danh sách key panels — dùng khi gõ search */
+function renderDetailList(){
+  var kts=allKeyTasks();
+  if(S.detailTypes.length) kts=kts.filter(function(k){ return S.detailTypes.indexOf(k.type)>=0; });
+  if(S.detailPics.length)  kts=kts.filter(function(k){ return S.detailPics.indexOf(k.pic)>=0 || (k.subs||[]).some(function(s){return S.detailPics.indexOf(s.pic)>=0;}); });
+  if(S.detailQ){ var q=S.detailQ.toLowerCase(); kts=kts.filter(function(k){ return (k.keyTask+" "+k.pic+" "+(k.subs||[]).map(function(s){return s.name+" "+s.pic;}).join(" ")).toLowerCase().indexOf(q)>=0; }); }
+  var from=S.dateFrom, to=S.dateTo;
+  kts=kts.filter(function(k){ return keyInRange(k,from,to); });
+  var el=$("detail-list"); if(!el) return;
+  if(!kts.length){ el.innerHTML='<div class="empty"><div class="ic">📋</div><p>Không có key task phù hợp.</p></div>'; return; }
+  // nếu manager lọc theo PIC cụ thể → chỉ hiện sub của các PIC đó
+  var picFilter = (isManager() && S.detailPics.length) ? S.detailPics : null;
+  el.innerHTML=detailKeyPanels(kts, from, to, picFilter);
+}
+/* dropdown multi-select filter */
+function multiFilterDropdown(kind, label, options, selected){
+  var open = (S.detailFilterOpen===kind);
+  var count = selected.length;
+  var btnLabel = count ? (label+' · '+count) : label;
+  var items = options.map(function(o){
+    var on = selected.indexOf(o)>=0;
+    return '<label class="mfd-item" onclick="event.stopPropagation();toggleMultiFilter(\''+kind+'\',\''+jsq(o)+'\')">'
+      +'<span class="mfd-check'+(on?" on":"")+'">'+(on?'✓':'')+'</span>'
+      +(kind==='pic'?'<span class="mfd-av" style="background:'+avColor(o)+'">'+esc(initials(o))+'</span>':'<span class="mfd-dot" style="background:'+typeColor(o)+'"></span>')
+      +'<span class="mfd-name">'+esc(o)+'</span></label>';
+  }).join("");
+  return '<div class="mfd '+(open?"open":"")+'">'
+    +'<button class="mfd-btn'+(count?" active":"")+'" onclick="event.stopPropagation();toggleFilterDropdown(\''+kind+'\')">'
+      +'<svg viewBox="0 0 24 24" class="mfd-ic"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>'
+      +esc(btnLabel)+'<svg viewBox="0 0 24 24" class="mfd-caret"><polyline points="6 9 12 15 18 9"/></svg></button>'
+    +'<div class="mfd-panel">'
+      +'<div class="mfd-head"><b>'+esc(label)+'</b>'+(count?'<button class="mfd-clear" onclick="event.stopPropagation();clearMultiFilter(\''+kind+'\')">Xoá</button>':'')+'</div>'
+      +'<div class="mfd-list">'+(items||'<div class="mfd-empty">Không có mục</div>')+'</div>'
+    +'</div></div>';
+}
+function toggleFilterDropdown(kind){ S.detailFilterOpen = (S.detailFilterOpen===kind)?"":kind; renderDetail(); }
+function toggleMultiFilter(kind,val){
+  var arr = kind==='type'?S.detailTypes:S.detailPics;
+  var i=arr.indexOf(val);
+  if(i>=0) arr.splice(i,1); else arr.push(val);
+  renderDetail();
+}
+function clearMultiFilter(kind){ if(kind==='type')S.detailTypes=[]; else S.detailPics=[]; renderDetail(); }
+// đóng dropdown khi click ra ngoài
+document.addEventListener("click",function(e){
+  if(S.detailFilterOpen && !e.target.closest(".mfd")){ S.detailFilterOpen=""; if(S.tab==="detail")renderDetail(); }
+});
 
 /* ── Render danh sách Key Task panels (dùng chung Detail + Overview-per-PIC) ──
  * picFilter: nếu != null, chỉ hiện sub-task của PIC đó.
@@ -1374,8 +1475,8 @@ function detailKeyPanels(kts, from, to, picFilter){
     });
     var doneCnt=subs.filter(function(s){return isDone(s.status);}).length;
 
-    /* ── HEADER key: các meta căn thẳng hàng (grid cố định) ── */
-    h+='<div class="kt-panel"><div class="kt-head'+(open?" open":"")+'" onclick="toggleDetail(\''+jsq(k.no)+'\')">'
+    /* ── HEADER key: click mở/đóng, DOUBLE-CLICK mở sửa ── */
+    h+='<div class="kt-panel"><div class="kt-head'+(open?" open":"")+'" onclick="toggleDetail(\''+jsq(k.no)+'\')" ondblclick="event.stopPropagation();'+(editKey?'openEdit(\''+jsq(k.no)+'\',null)':'')+'">'
       +'<svg class="kt-caret" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>'
       +'<span class="kt-type-tag" style="background:'+c+'18;color:'+c+'">'+esc(k.type||"—")+'</span>'
       +'<span class="kt-title">'+esc(k.keyTask)+'</span>'
@@ -1405,42 +1506,114 @@ function detailKeyPanels(kts, from, to, picFilter){
   return h;
 }
 
-/* ── 1 dòng sub-task theo trục dọc; comment ẩn, bấm mới hiện ── */
+/* ── 1 dòng sub-task theo trục dọc; comment ẩn; sửa nhanh status & % ── */
 function subRowVertical(k, s){
   var canE=canEditPic(s.pic);
   var sm=stMeta(s.status);
   var links=extractLinks(s.result);
   var spct=subPct(s), scol=sm.dot;
-  var showProg = isInProgress(s.status);   // ⭐ CHỈ In Progress mới hiện thanh %
+  var showProg = isInProgress(s.status);   // chỉ In Progress mới cho chỉnh %
   var expanded = !!S.detailOpen["sub_"+s.no];
   var hasComment = !!(s.result && String(s.result).trim());
+  var rid = jsq(k.no)+"|"+jsq(s.no);
+
+  // Cụm % nhanh: thanh kéo + nút +/- (chỉ khi In Progress & có quyền)
+  var progCell;
+  if(showProg && canE){
+    progCell = '<span class="sr-prog sr-prog-edit" onclick="event.stopPropagation()">'
+      +'<button class="sr-pbtn" title="-5%" onclick="event.stopPropagation();bumpProg(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\',-5)">−</button>'
+      +'<input type="range" class="sr-prange" min="0" max="100" step="5" value="'+spct+'" '
+        +'oninput="onDragProg(this,\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')" '
+        +'onchange="commitProg(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\',this.value)"/>'
+      +'<button class="sr-pbtn" title="+5%" onclick="event.stopPropagation();bumpProg(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\',5)">+</button>'
+      +'<span class="sr-progpct" id="pct-'+esc(s.no)+'">'+spct+'%</span></span>';
+  } else if(showProg){
+    progCell = '<span class="sr-prog"><span class="sr-progbar"><span class="sr-progfill" style="width:'+spct+'%;background:'+scol+'"></span></span><span class="sr-progpct">'+spct+'%</span></span>';
+  } else {
+    progCell = '<span class="sr-prog sr-prog-empty"></span>';
+  }
+
+  // Status: dropdown nhanh (nếu có quyền) hoặc badge tĩnh
+  var statusCell;
+  if(canE){
+    statusCell = '<span class="sr-st-wrap" onclick="event.stopPropagation()">'
+      +'<select class="sr-st-sel '+sm.cls+'" onchange="quickStatus(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\',this.value)">'
+      +S.statusOptions.map(function(o){return '<option value="'+esc(o)+'"'+(o===s.status?" selected":"")+'>'+esc(o)+'</option>';}).join("")
+      +'</select></span>';
+  } else {
+    statusCell = '<span class="tc-status '+sm.cls+' sr-st">'+sm.lbl+'</span>';
+  }
 
   return '<div class="sub-row'+(canE?"":" locked")+'" id="sub-'+esc(s.no)+'">'
-    +'<div class="sr-main" onclick="toggleSubComment(\''+jsq(s.no)+'\')">'
+    +'<div class="sr-main" onclick="toggleSubComment(\''+jsq(s.no)+'\')" ondblclick="event.stopPropagation();'+(canE?'openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')':'')+'">'
       +'<span class="sr-dot" style="background:'+scol+'"></span>'
       +'<span class="sr-no">'+esc(s.no)+'</span>'
       +'<span class="sr-name">'+esc(s.name||s.subTask)+'</span>'
-      +(showProg
-         ? '<span class="sr-prog"><span class="sr-progbar"><span class="sr-progfill" style="width:'+spct+'%;background:'+scol+'"></span></span><span class="sr-progpct">'+spct+'%</span></span>'
-         : '<span class="sr-prog sr-prog-empty"></span>')
+      +progCell
       +'<span class="sr-pic"><span class="sr-pic-av" style="background:'+avColor(s.pic)+'">'+esc(initials(s.pic))+'</span>'+esc(s.pic||'—')+'</span>'
       +'<span class="sr-date">'+(effDate(s)?fmtVN(effDate(s)):'—')+'</span>'
-      +'<span class="tc-status '+sm.cls+' sr-st">'+sm.lbl+'</span>'
-      +(hasComment?'<span class="sr-cmt-ic" title="Có ghi chú">💬</span>':'')
+      +statusCell
+      +(hasComment?'<span class="sr-cmt-ic" title="Có ghi chú">💬</span>':'<span class="sr-cmt-ic"></span>')
       +'<svg class="sr-caret'+(expanded?" open":"")+'" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>'
     +'</div>'
     +'<div class="sr-actions">'
-      +(canE?'<button class="sr-edit" onclick="event.stopPropagation();openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')" title="Sửa">✏️</button>':'<span class="sr-lock">🔒</span>')
+      +(canE?'<button class="sr-edit" onclick="event.stopPropagation();openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')" title="Sửa (hoặc double-click)">✏️</button>':'<span class="sr-lock">🔒</span>')
       +(canE?'<button class="sr-del" onclick="event.stopPropagation();delRow(\''+jsq(k.no)+'\','+s.row+',false)" title="Xoá">🗑️</button>':'')
     +'</div>'
-    /* comment ẩn — chỉ hiện khi mở */
     +'<div class="sr-comment'+(expanded?" open":"")+'">'
       +(hasComment
          ? '<div class="sr-cmt-lbl">💬 Kết quả / Cập nhật</div><div class="sr-cmt-txt">'+linkify(s.result)+'</div>'
-         : '<div class="sr-cmt-empty">— chưa có kết quả —</div>')
+         : '<div class="sr-cmt-empty">— chưa có kết quả — <span style="color:var(--mmh-blue);cursor:pointer" onclick="event.stopPropagation();'+(canE?'openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')':'')+'">'+(canE?'thêm ghi chú':'')+'</span></div>')
       +(links.length?'<button class="sr-ref-btn" onclick="event.stopPropagation();showReferral(\''+jsq(s.no)+'\',\''+jsq(s.name||s.subTask)+'\')">🔗 Tham chiếu ('+links.length+' link)</button>':'')
     +'</div>'
   +'</div>';
+}
+/* kéo thanh %: cập nhật số hiển thị tức thì (chưa lưu) */
+function onDragProg(el,kno,sno){
+  var v=el.value; var lbl=$("pct-"+sno); if(lbl) lbl.textContent=v+"%";
+}
+/* thả chuột / đổi → lưu % */
+function commitProg(kno,sno,val){
+  var s=findSub(kno,sno); if(!s) return;
+  var v=parseInt(val,10); if(isNaN(v))v=0;
+  s.progress=v;                       // cục bộ ngay
+  var kk=findKey(kno); if(kk) {} 
+  quietSaveProgress(s.row, v, kno);
+}
+/* nút +/- */
+function bumpProg(kno,sno,delta){
+  var s=findSub(kno,sno); if(!s) return;
+  var v=subPct(s)+delta; if(v<0)v=0; if(v>100)v=100;
+  s.progress=v;
+  var lbl=$("pct-"+sno); if(lbl) lbl.textContent=v+"%";
+  var rng=document.querySelector('#sub-'+cssEsc(sno)+' .sr-prange'); if(rng) rng.value=v;
+  // cập nhật % key task hiển thị
+  renderDetailList();
+  quietSaveProgress(s.row, v, kno);
+}
+function cssEsc(s){ return String(s).replace(/[^a-zA-Z0-9_-]/g,function(c){return "\\"+c;}); }
+/* lưu % im lặng (không overlay); cập nhật lại % key sau khi có kết quả */
+var _progTimer={};
+function quietSaveProgress(row, v, kno){
+  if(!row){ return; }
+  // debounce theo row để tránh spam khi kéo nhanh
+  clearTimeout(_progTimer[row]);
+  _progTimer[row]=setTimeout(function(){
+    apiPost({action:"updateProgress", row:row, progress:v})
+      .then(function(){ toast("✓ Đã lưu "+v+"%"); reloadSoft(); })
+      .catch(function(e){ toast("⚠️ "+e.message); });
+  }, 450);
+}
+/* đổi status nhanh */
+function quickStatus(kno,sno,val){
+  var s=findSub(kno,sno); if(!s) return;
+  s.status=val;
+  if(/complet/i.test(val)) s.progress=100;
+  else if(/cancel/i.test(val)||/to\s*do/i.test(val)) s.progress=0;
+  renderDetailList();
+  apiPost({action:"updateStatus", row:s.row, status:val})
+    .then(function(){ toast("✓ "+val); reloadSoft(); })
+    .catch(function(e){ toast("⚠️ "+e.message); });
 }
 function toggleSubComment(no){ S.detailOpen["sub_"+no]=!S.detailOpen["sub_"+no]; rerenderActive(); }
 function toggleDetail(no){ S.detailOpen[no]=!S.detailOpen[no]; rerenderActive(); }
@@ -1681,11 +1854,10 @@ function openEdit(kno,sno){
     +progFieldHtml("e-progress", curProg, item.status)
     +'<div class="field-row"><div class="field"><label>Bắt đầu</label><input id="e-start" type="date" value="'+esc(item.start||"")+'"/></div>'
     +'<div class="field"><label>Deadline dự kiến</label><input id="e-planned" type="date" value="'+esc(item.planned||"")+'"/></div></div>'
-    +'<div class="field-row"><div class="field"><label>Deadline dời (Revised)</label><input id="e-revised" type="date" value="'+esc(item.revised||"")+'"/></div>'
-    +'<div class="field"><label>Hoàn thành thực tế <small style="color:var(--faint)">(tự tính)</small></label><input type="date" value="'+esc(item.actual||"")+'" disabled/></div></div>'
+    +'<div class="field"><label>Deadline dời (Revised) <small style="color:var(--faint)">(nếu có)</small></label><input id="e-revised" type="date" value="'+esc(item.revised||"")+'"/></div>'
     +'<div class="field"><div class="field-label-row"><label>Kết quả / Link / Ghi chú</label><button class="voice-btn" onclick="toggleVoice(\'e-result\',this)">🎤 Nói</button></div>'
     +'<textarea id="e-result" placeholder="VD: Link Drive, ghi chú kết quả bàn giao…">'+esc(item.result||"")+'</textarea></div>'
-    +'<div class="field-hint">Cột Actual finish (P) & Leadtime (M) do công thức Sheet tự tính. % tiến độ lưu ở cột O.</div>'
+    +'<div class="field-hint">Hoàn thành thực tế (P) &amp; Leadtime (M) do công thức Sheet tự điền khi status = Completed. % tiến độ lưu ở cột O.</div>'
     +'</div>'
     +'<div class="modal-body" style="padding-top:0"><div class="modal-footer">'
     +'<button class="btn-secondary" onclick="closeModal()">Đóng</button>'
@@ -1699,9 +1871,18 @@ function saveEdit(isSub){
     revised:$("e-revised").value, result:$("e-result").value, progress:readProg() };
   if(isManager()){ updates[isSub?"name":"keyTask"]=$("e-name").value; if($("e-pic")) updates.pic=$("e-pic").value; }
   overlay(true,"Đang lưu","Ghi vào Google Sheet…");
-  apiPost({action: isSub?"updateSub":"updateKey", row:ctx.row, updates:updates}).then(function(){
-    return reload();
-  }).then(function(){ overlay(false); closeModal(); toast("✓ Đã cập nhật"); rerenderActive(); })
+  apiPost({action: isSub?"updateSub":"updateKey", row:ctx.row, updates:updates})
+    .then(function(){
+      // cập nhật cục bộ item đang sửa
+      var item = ctx.sno ? findSub(ctx.kno,ctx.sno) : findKey(ctx.kno);
+      if(item){
+        item.status=updates.status; item.start=updates.start; item.planned=updates.planned;
+        item.revised=updates.revised; item.result=updates.result;
+        item.progress=pctLocal(updates.progress, updates.status);
+        if(isManager()){ if(isSub){item.name=updates.name;item.subTask=updates.name;} else item.keyTask=updates.keyTask; if(updates.pic)item.pic=updates.pic; }
+      }
+      overlay(false); closeModal(); toast("✓ Đã cập nhật"); rerenderActive(); reloadSoft();
+    })
     .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
 }
 
@@ -1736,11 +1917,17 @@ function openAddKey(){
 function saveAddKey(){
   var name=$("a-name").value.trim(); if(!name){ toast("Nhập tên Key Task"); return; }
   var type=$("a-type").value.trim(); if(!type){ toast("Chọn loại (Type)"); return; }
+  var payload={action:"addKey", type:type, keyTask:name, pic:$("a-pic").value,
+    start:$("a-start").value, planned:$("a-planned").value, status:$("a-status").value, progress:readProg()};
   overlay(true,"Đang thêm","Ghi Key Task vào Sheet…");
-  apiPost({action:"addKey", type:type, keyTask:name, pic:$("a-pic").value,
-    start:$("a-start").value, planned:$("a-planned").value, status:$("a-status").value, progress:readProg()})
-  .then(function(r){ return reload().then(function(){return r;}); })
-  .then(function(r){ overlay(false); closeModal(); toast("✓ "+(r.message||"Đã thêm")); rerenderActive(); })
+  apiPost(payload)
+  .then(function(r){
+    // thêm cục bộ để hiện ngay
+    S.keyTasks.push({ row:r.row||0, no:r.no||String(S.keyTasks.length+1), keyTask:name, type:type,
+      pic:payload.pic, status:payload.status, progress:pctLocal(payload.progress,payload.status),
+      start:payload.start, planned:payload.planned, revised:"", result:"", actual:"", subs:[] });
+    overlay(false); closeModal(); toast("✓ "+(r.message||"Đã thêm Key Task")); rerenderActive(); reloadSoft();
+  })
   .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
 }
 
@@ -1789,20 +1976,45 @@ function saveAddSub(kno){
   }
   if(!parent || !findKey(parent)){ toast("Chọn Key Task hợp lệ từ danh sách"); return; }
   var name=$("s-name").value.trim(); if(!name){ toast("Nhập tên Sub Task"); return; }
+  var payload={action:"addSub", parentNo:parent, name:name, pic:$("s-pic").value,
+    start:$("s-start").value, planned:$("s-planned").value, status:$("s-status").value, progress:readProg()};
   overlay(true,"Đang thêm","Ghi Sub Task vào Sheet…");
-  apiPost({action:"addSub", parentNo:parent, name:name, pic:$("s-pic").value,
-    start:$("s-start").value, planned:$("s-planned").value, status:$("s-status").value, progress:readProg()})
-  .then(function(r){ return reload().then(function(){return r;}); })
-  .then(function(r){ overlay(false); closeModal(); S.detailOpen[parent]=true; toast("✓ "+(r.message||"Đã thêm")); rerenderActive(); })
+  apiPost(payload)
+  .then(function(r){
+    // cập nhật CỤC BỘ ngay để hiện real-time (không chờ reload)
+    var k=findKey(parent);
+    if(k){
+      k.subs=k.subs||[];
+      var newNo = r.no || (parent+"."+((k.subs.length||0)+1));
+      k.subs.push({ row:r.row||0, no:newNo, name:name, subTask:name, pic:payload.pic,
+        status:payload.status, progress:pctLocal(payload.progress,payload.status),
+        start:payload.start, planned:payload.planned, revised:"", result:"", actual:"", type:k.type });
+    }
+    overlay(false); closeModal(); S.detailOpen[parent]=true;
+    toast("✓ "+(r.message||"Đã thêm sub-task"));
+    rerenderActive();
+    reloadSoft(); // đồng bộ nền, không chặn
+  })
   .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
+}
+/* % cục bộ suy theo status khi thêm mới (cho hiển thị ngay) */
+function pctLocal(p,status){
+  if(/complet/i.test(status)) return 100;
+  if(/cancel/i.test(status)||/to\s*do/i.test(status)) return 0;
+  var n=parseInt(p,10); return isNaN(n)?0:n;
 }
 
 /* ── DELETE ── */
 function delRow(no,row,isKey){
   if(!confirm(isKey?"Xoá Key Task "+no+" và toàn bộ sub-task?":"Xoá dòng "+no+"?")) return;
   overlay(true,"Đang xoá","Xoá khỏi Sheet…");
-  apiPost({action:"deleteRow", row:row}).then(function(r){ return reload().then(function(){return r;}); })
-    .then(function(r){ overlay(false); toast("✓ "+(r.message||"Đã xoá")); rerenderActive(); })
+  apiPost({action:"deleteRow", row:row})
+    .then(function(r){
+      // xóa cục bộ ngay
+      if(isKey){ S.keyTasks=S.keyTasks.filter(function(k){return k.no!==no;}); }
+      else { S.keyTasks.forEach(function(k){ if(k.subs) k.subs=k.subs.filter(function(s){return s.no!==no;}); }); }
+      overlay(false); toast("✓ "+(r.message||"Đã xoá")); rerenderActive(); reloadSoft();
+    })
     .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
 }
 
@@ -2032,6 +2244,19 @@ function reload(){
     if(res.keyTasks) S.keyTasks=res.keyTasks;
     if(res.monthly) S.monthly=res.monthly;
   });
+}
+/* reload nền: đồng bộ dữ liệu thật từ sheet, KHÔNG hiện overlay, im lặng nếu lỗi.
+ * Giữ lại trạng thái mở/đóng panel. Có timeout để không treo. */
+var _softReloading=false;
+function reloadSoft(){
+  if(_softReloading) return;
+  _softReloading=true;
+  apiGet("boot").then(function(res){
+    if(res.keyTasks) S.keyTasks=res.keyTasks;
+    if(res.monthly) S.monthly=res.monthly;
+    _softReloading=false;
+    rerenderActive();
+  }).catch(function(){ _softReloading=false; /* im lặng: bản cục bộ vẫn hiển thị */ });
 }
 function rerenderActive(){
   if(S.tab==="overview") renderOverview();
