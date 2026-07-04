@@ -328,6 +328,73 @@ button{cursor:pointer}
   .modal-box{max-width:100%;border-radius:20px 20px 0 0}
   .kt-meta{width:100%}
 
+/* ═══════════════ DEADLINE BANNER ═══════════════ */
+.mf-banner{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.mf-alert{font-size:12.5px;padding:8px 14px;border-radius:10px;font-weight:600}
+.mf-alert b{font-weight:800}
+.mf-alert.over{background:#FEECEC;color:#b91c1c}
+.mf-alert.today{background:#EAF1FC;color:#1d4ed8}
+.mf-alert.soon{background:#FFF6E0;color:#92660a}
+
+/* ═══════════════ MOBILE OPTIMIZATION ═══════════════ */
+@media(max-width:640px){
+  .mf-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .mf-col-body{max-height:180px}
+  .mf-name{font-size:12px}
+  .kpi-row{grid-template-columns:1fr 1fr;gap:8px}
+  .kpi-card{padding:12px}
+  .grid2{grid-template-columns:1fr;gap:12px}
+  .cell-grid{grid-template-columns:1fr!important}
+  .tabbar{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .tabbar::-webkit-scrollbar{display:none}
+  .tabbtn{flex:0 0 auto;white-space:nowrap}
+  .toolbar{gap:8px}
+  .chips{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;scrollbar-width:none;padding-bottom:4px}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;white-space:nowrap}
+  .modal-box{max-width:100%;border-radius:18px 18px 0 0;margin-top:auto}
+  .modal-overlay{align-items:flex-end;padding:0}
+  .field-row{grid-template-columns:1fr;gap:12px}
+  .donut-wrap{justify-content:center}
+  .tb-title h1{font-size:17px}
+  .tb-user .tb-role{display:none}
+  .sub-cell-grid{grid-template-columns:1fr!important}
+  .kt-meta{font-size:11px}
+  .btn-primary,.btn-secondary{padding:11px 14px;font-size:13.5px}
+}
+@media(max-width:400px){
+  .mf-grid{grid-template-columns:1fr}
+  .kpi-row{grid-template-columns:1fr 1fr}
+}
+
+/* ═══════════════ DONUT CHART ═══════════════ */
+.donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.donut-svg{position:relative;flex:0 0 auto}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.donut-c-val{font-size:26px;font-weight:800;color:var(--mmh-navy);line-height:1}
+.donut-c-sub{font-size:10.5px;color:var(--faint);margin-top:1px}
+.donut-legend{flex:1;min-width:150px;display:flex;flex-direction:column;gap:8px}
+.donut-lg{display:flex;align-items:center;gap:9px;font-size:13px}
+.donut-dot{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
+.donut-lg-name{color:var(--text);flex:1}
+.donut-lg-val{font-weight:800;color:var(--mmh-navy)}
+.donut-lg-val small{color:var(--faint);font-weight:600}
+
+/* ═══════════════ GANTT ENHANCEMENTS ═══════════════ */
+.gantt-wcell.cur{background:var(--lb2);color:var(--mmh-navy);border-radius:6px 6px 0 0}
+.gantt-srow.overdue .gantt-rlabel.sub{color:#b91c1c}
+.gantt-late{margin-left:5px;font-size:11px}
+.gantt-nobar{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:9px;color:var(--faint);font-style:italic}
+.gantt-bar{cursor:pointer;transition:filter .14s,box-shadow .14s}
+.gantt-bar:hover{filter:brightness(1.1);box-shadow:0 2px 8px rgba(14,47,95,.25);z-index:5}
+.gantt-rlabel{cursor:default}
+@media(max-width:640px){
+  .gantt-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .gantt-grid{min-width:680px}
+  .gantt-rlabel{font-size:11px}
+  .gantt-hlabel,.gantt-rlabel{width:130px;min-width:130px}
+}
+
 /* ═══════════════ MONTHLY REPORT v2 ═══════════════ */
 .mr-overview{display:flex;align-items:center;gap:20px;flex-wrap:wrap;background:linear-gradient(135deg,#fff,var(--lb3));border:1px solid var(--border);border-radius:var(--r-xl);padding:18px 22px;margin-bottom:18px;box-shadow:var(--sh-sm)}
 .mro-left{min-width:180px}
@@ -807,11 +874,13 @@ function renderOverview(){
     });
     h+='</div>';
 
-    // Type breakdown
+    // Type breakdown + status donut
     h+='<div class="section-title"><h2>Phân bổ theo loại công việc</h2></div>';
     h+='<div class="grid2">';
     h+='<div class="panel panel-pad"><h3>Key Task theo Type</h3>'+barsHTML(groupCount(kts,function(k){return k.type||"(khác)";}),null)+'</div>';
-    h+='<div class="panel panel-pad"><h3>Sub-task theo trạng thái</h3>'+barsHTML([["✅ Hoàn thành",done],["🔵 Đang làm",prog],["🔴 Quá hạn",over],["⚪ Chưa bắt đầu",idle]],"status")+'</div>';
+    h+='<div class="panel panel-pad"><h3>Sub-task theo trạng thái</h3>'
+      +donutHTML([["Hoàn thành",done,"#22c55e"],["Đang làm",prog,"#3b82f6"],["Quá hạn",over,"#ef4444"],["Chưa bắt đầu",idle,"#94a3b8"]], subs.length, "sub-task")
+      +'</div>';
     h+='</div>';
   } else {
     // single pic: list key tasks
@@ -868,8 +937,20 @@ function myFocusPanel(){
     return '<div class="mf-col '+cls+'"><div class="mf-col-h"><b>'+title+'</b><span class="mf-count">'+arr.length+'</span></div><div class="mf-col-body">'+body+'</div></div>';
   }
 
+  // Thông báo: việc sắp đến hạn (trong 3 ngày tới, chưa xong)
+  function addDays(iso,n){ var d=new Date(iso); d.setDate(d.getDate()+n); return toISO(d); }
+  var soonLimit=addDays(todayISO,3);
+  var dueSoon=mine.filter(function(o){ var e=eff(o.s); return !isDone(o.s) && !isOverdue(o.s) && e && toISO(e)>todayISO && toISO(e)<=soonLimit; });
+
+  var alerts=[];
+  if(overdue.length) alerts.push('<span class="mf-alert over">🔴 '+overdue.length+' việc <b>quá hạn</b></span>');
+  if(dueToday.length) alerts.push('<span class="mf-alert today">📌 '+dueToday.length+' việc <b>đến hạn hôm nay</b></span>');
+  if(dueSoon.length) alerts.push('<span class="mf-alert soon">⏰ '+dueSoon.length+' việc <b>sắp đến hạn (≤3 ngày)</b></span>');
+  var banner = alerts.length ? '<div class="mf-banner">'+alerts.join('')+'</div>' : '';
+
   return '<div class="mf-wrap">'
     +'<div class="mf-title">Xin chào '+esc(me)+' — đây là việc của bạn</div>'
+    +banner
     +'<div class="mf-grid">'
       +col('🔴 Quá hạn',overdue,'mf-over','Không có việc quá hạn 👍')
       +col('📌 Hôm nay',dueToday,'mf-today','Hôm nay không có việc đến hạn')
@@ -882,6 +963,28 @@ function kpiCard(val,label,ic,cls){
   return '<div class="kpi-card '+(cls||"")+'"><div class="kpi-ic">'+ic+'</div><div class="kpi-val">'+val+'</div><div class="kpi-label">'+esc(label)+'</div></div>';
 }
 function groupCount(rows,fn){ var m={}; rows.forEach(function(r){ var k=fn(r)||"(khác)"; m[k]=(m[k]||0)+1; }); return Object.keys(m).map(function(k){return[k,m[k]];}).sort(function(a,b){return b[1]-a[1];}); }
+/* Donut chart SVG — entries: [[label,value,color],...] */
+function donutHTML(entries,centerLabel,centerSub){
+  var total=entries.reduce(function(a,e){return a+e[1];},0);
+  if(!total) return '<p style="color:var(--faint);font-size:12.5px;text-align:center;padding:20px">Chưa có dữ liệu</p>';
+  var R=52, C=2*Math.PI*R, off=0;
+  var segs=entries.filter(function(e){return e[1]>0;}).map(function(e){
+    var frac=e[1]/total, len=frac*C;
+    var seg='<circle cx="70" cy="70" r="'+R+'" fill="none" stroke="'+e[2]+'" stroke-width="20" '
+      +'stroke-dasharray="'+len+' '+(C-len)+'" stroke-dashoffset="'+(-off)+'" transform="rotate(-90 70 70)" '
+      +'style="transition:stroke-dashoffset .6s"><title>'+esc(e[0])+': '+e[1]+' ('+Math.round(frac*100)+'%)</title></circle>';
+    off+=len; return seg;
+  }).join("");
+  var legend=entries.filter(function(e){return e[1]>0;}).map(function(e){
+    return '<div class="donut-lg"><span class="donut-dot" style="background:'+e[2]+'"></span>'
+      +'<span class="donut-lg-name">'+esc(e[0])+'</span>'
+      +'<span class="donut-lg-val">'+e[1]+' <small>· '+Math.round(e[1]/total*100)+'%</small></span></div>';
+  }).join("");
+  return '<div class="donut-wrap"><div class="donut-svg"><svg viewBox="0 0 140 140" width="140" height="140">'
+    +'<circle cx="70" cy="70" r="52" fill="none" stroke="var(--lb3)" stroke-width="20"/>'+segs
+    +'</svg><div class="donut-center"><div class="donut-c-val">'+esc(centerLabel)+'</div><div class="donut-c-sub">'+esc(centerSub||"")+'</div></div></div>'
+    +'<div class="donut-legend">'+legend+'</div></div>';
+}
 function barsHTML(entries,kind){
   if(!entries.length) return '<p style="color:var(--faint);font-size:12.5px">Chưa có dữ liệu</p>';
   var max=Math.max.apply(null,entries.map(function(e){return e[1];}))||1;
@@ -931,35 +1034,42 @@ function renderGantt(){
     +'</div>';
   h+='<span style="flex:1"></span>';
   if(isManager()) h+='<button class="btn-primary" onclick="openAddKey()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm Key Task</button>';
+  h+='<button class="btn-secondary" onclick="openAddSub(null)"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm Sub Task</button>';
   h+='</div>';
 
   var R=ganttRange();
   var totalDays=R.weeks*7;
   function off(d){ return Math.round((new Date(d)-R.start)/86400000); }
+  var todayISOv=toISO(R.today);
   // header weeks
   var weekCells="";
   for(var w=0;w<R.weeks;w++){
     var wd=new Date(R.start); wd.setDate(wd.getDate()+w*7);
-    weekCells+='<div class="gantt-wcell">T'+(w+1)+'<br><span style="font-weight:400;opacity:.7">'+fmtVN(toISO(wd))+'</span></div>';
+    var we=new Date(wd); we.setDate(we.getDate()+6);
+    var isCur = todayISOv>=toISO(wd) && todayISOv<=toISO(we);
+    weekCells+='<div class="gantt-wcell'+(isCur?' cur':'')+'">T'+(w+1)+'<br><span style="font-weight:400;opacity:.7">'+fmtVN(toISO(wd))+'</span></div>';
   }
   var body="";
-  var todayLeft=(off(toISO(R.today))/totalDays)*100;
+  var todayLeft=(off(todayISOv)/totalDays)*100;
   kts.forEach(function(k){
     var kstart=k.start||(k.subs&&k.subs[0]&&k.subs[0].start);
     var keff=k.revised||k.planned;
     var kbar=barStyle(kstart,keff,off,totalDays,typeColor(k.type));
+    var kTip=esc(k.keyTask)+' — '+ktProgress(k)+'% · '+esc(k.pic||'')+(kstart?' · '+fmtVN(kstart)+'→'+fmtVN(keff):'');
     body+='<div class="gantt-krow">'
-      +'<div class="gantt-rlabel key"><span class="gantt-rdot" style="background:'+stMeta(ktStatus(k)).dot+'"></span>'+esc(k.keyTask)+'</div>'
+      +'<div class="gantt-rlabel key" title="'+kTip+'"><span class="gantt-rdot" style="background:'+stMeta(ktStatus(k)).dot+'"></span>'+esc(k.keyTask)+'</div>'
       +'<div class="gantt-track">'+weekTrackCells(R.weeks)
-      +(kbar?'<div class="gantt-bar" style="'+kbar+'" onclick="openEdit(\''+jsq(k.no)+'\',null)">'+ktProgress(k)+'%</div>':'')
+      +(kbar?'<div class="gantt-bar" style="'+kbar+'" title="'+kTip+'" onclick="openEdit(\''+jsq(k.no)+'\',null)">'+ktProgress(k)+'%</div>':'<span class="gantt-nobar">chưa đặt ngày</span>')
       +'</div></div>';
     (k.subs||[]).forEach(function(s){
       var seff=s.revised||s.planned;
       var sbar=barStyle(s.start,seff,off,totalDays,stMeta(s.status).dot);
-      body+='<div class="gantt-srow">'
-        +'<div class="gantt-rlabel sub"><span class="gantt-rdot" style="background:'+stMeta(s.status).dot+'"></span>'+esc(s.name||s.subTask)+'</div>'
+      var overdue=/overdue/i.test(s.status) || (!/complet/i.test(s.status) && seff && toISO(seff)<todayISOv);
+      var sTip=esc(s.name||s.subTask)+' · '+esc(s.status||'—')+(s.start?' · '+fmtVN(s.start)+'→'+fmtVN(seff):'')+(s.result?' · '+esc(s.result.slice(0,60)):'');
+      body+='<div class="gantt-srow'+(overdue?' overdue':'')+'">'
+        +'<div class="gantt-rlabel sub" title="'+sTip+'"><span class="gantt-rdot" style="background:'+stMeta(s.status).dot+'"></span>'+esc(s.name||s.subTask)+(overdue?'<span class="gantt-late">⚠</span>':'')+'</div>'
         +'<div class="gantt-track">'+weekTrackCells(R.weeks)
-        +(sbar?'<div class="gantt-bar" style="'+sbar+';height:18px;top:9px;font-size:9px" onclick="openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')">'+esc(initials(s.pic))+'</div>':'')
+        +(sbar?'<div class="gantt-bar" style="'+sbar+';height:18px;top:9px;font-size:9px" title="'+sTip+'" onclick="openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')">'+esc(initials(s.pic))+'</div>':'<span class="gantt-nobar">—</span>')
         +'</div></div>';
     });
   });
@@ -977,7 +1087,7 @@ function renderGantt(){
     +'<span class="gl-item"><span class="gl-dot" style="background:#3b82f6"></span>Đang làm</span>'
     +'<span class="gl-item"><span class="gl-dot" style="background:#ef4444"></span>Quá hạn</span>'
     +'<span class="gl-item"><span class="gl-dot" style="background:#94a3b8"></span>Chưa bắt đầu</span>'
-    +'<span class="gl-item" style="margin-left:auto;color:var(--faint)">Bấm vào thanh để sửa</span></div>';
+    +'<span class="gl-item" style="margin-left:auto;color:var(--faint)">Di chuột xem chi tiết · bấm thanh để sửa</span></div>';
   $("tab-gantt").innerHTML=h;
 }
 function weekTrackCells(n){ var s=""; for(var i=0;i<n;i++)s+='<div class="gantt-tcell"></div>'; return s; }
@@ -1085,6 +1195,7 @@ function renderMonth(){
       +months.map(function(m){return '<option value="'+m+'"'+(m===S.monthSel?" selected":"")+'>Tháng '+fmtMonth(m)+'</option>';}).join("")
     +'</select></div>'
     +'<span style="flex:1"></span>'
+    +'<button class="btn-secondary" onclick="openMonthlySend()"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Gửi PDF tháng</button>'
     +'<button class="btn-primary" onclick="openAddMonthly()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm mục</button>'
     +'</div>';
 
@@ -1512,6 +1623,38 @@ function doSendReport(){
   if(opt==="pic"){ var sel=$("rp-pic"); body.toPic = sel? sel.value : S.user.pic; }
   var msg = opt==="all" ? "Gửi báo cáo riêng cho từng PIC…" : "Tổng hợp & gửi email báo cáo tuần…";
   overlay(true,"Đang tạo PDF",msg);
+  apiPost(body)
+    .then(function(r){ overlay(false); closeModal(); toast("✓ "+(r.message||"Đã gửi")); })
+    .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
+}
+
+/* ── MONTHLY: gửi PDF theo PIC ── */
+function openMonthlySend(){
+  var isMgr=isManager();
+  var mLabel=fmtMonth(S.monthSel);
+  var picOpts=S.pics.map(function(p){return '<option'+(p===S.user.pic?" selected":"")+'>'+esc(p)+'</option>';}).join("");
+  var html='<div class="modal-box"><div class="modal-head"><h3>📄 Gửi báo cáo tháng '+esc(mLabel)+'</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
+    +'<div class="modal-body">'
+    +'<label style="font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:10px">Gửi tới</label>'
+    +'<div class="radio-cards">'
+    +'<label class="radio-card sel" onclick="selReportOpt(this,\'self\')"><input type="radio" name="mopt" value="self" checked/><div class="rc-ic">🧪</div><div><div class="rc-t">Gửi thử cho tôi</div><div class="rc-s">Các mục Monthly của '+esc(S.user.pic)+' trong tháng '+esc(mLabel)+'</div></div></label>'
+    +(isMgr
+       ? '<label class="radio-card" onclick="selReportOpt(this,\'pic\')"><input type="radio" name="mopt" value="pic"/><div class="rc-ic">👤</div><div style="flex:1"><div class="rc-t">Gửi cho 1 PIC</div><div class="rc-s">Báo cáo tháng riêng của PIC</div>'
+         +'<select id="mrp-pic" style="margin-top:8px;width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px" onclick="event.stopPropagation()">'+picOpts+'</select></div></label>'
+         +'<label class="radio-card" onclick="selReportOpt(this,\'all\')"><input type="radio" name="mopt" value="all"/><div class="rc-ic">📢</div><div><div class="rc-t">Gửi cho tất cả PIC</div><div class="rc-s">Mỗi PIC 1 email riêng · CC vtt.hoa@ &amp; nt.ha@</div></div></label>'
+       : '')
+    +'</div>'
+    +'<div class="field-hint" style="margin-top:12px">PDF khổ A4 dọc, gồm các mục Monthly (Key task + Type + nội dung) của PIC trong tháng '+esc(mLabel)+'.</div>'
+    +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
+    +'<button class="btn-primary" onclick="doSendMonthly()">📧 Tạo PDF &amp; gửi</button></div>'
+    +'</div></div>';
+  showModal(html);
+}
+function doSendMonthly(){
+  var opt=(document.querySelector('input[name=mopt]:checked')||{}).value||"self";
+  var body={action:"monthlyReport", month:S.monthSel, option:opt};
+  if(opt==="pic"){ var sel=$("mrp-pic"); body.toPic=sel?sel.value:S.user.pic; }
+  overlay(true,"Đang tạo PDF", opt==="all"?"Gửi báo cáo tháng cho từng PIC…":"Tổng hợp & gửi báo cáo tháng…");
   apiPost(body)
     .then(function(r){ overlay(false); closeModal(); toast("✓ "+(r.message||"Đã gửi")); })
     .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
