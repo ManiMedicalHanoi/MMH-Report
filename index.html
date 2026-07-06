@@ -192,7 +192,7 @@ button{cursor:pointer}
 /* ══ GANTT ══ */
 .gantt-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow-x:auto;padding-bottom:6px}
 .gantt-grid{min-width:1100px}
-.gantt-hrow{display:grid;grid-template-columns:340px 1fr;border-bottom:1.5px solid var(--border);position:sticky;top:0;background:#fff;z-index:2}
+.gantt-hrow{display:grid;grid-template-columns:380px 1fr;border-bottom:1.5px solid var(--border);position:sticky;top:0;background:#fff;z-index:2}
 .gantt-hlabel{padding:11px 16px;font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:6px}
 .gantt-hlabel-sub{font-size:9.5px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--faint)}
 .gantt-days{display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
@@ -202,19 +202,21 @@ button{cursor:pointer}
 .gantt-dcell.wknd{background:#f7f8fb}
 .gantt-dcell.today{background:var(--mmh-blue);border-radius:6px 6px 0 0}
 .gantt-dcell.today .gd-dow,.gantt-dcell.today .gd-num{color:#fff}
-.gantt-krow{display:grid;grid-template-columns:340px 1fr;border-bottom:1.5px solid var(--border);align-items:center;min-height:52px;background:#fafbfe}
+.gantt-krow{display:grid;grid-template-columns:380px 1fr;border-bottom:1.5px solid var(--border);align-items:flex-start;min-height:56px;background:#fafbfe;padding-top:2px;padding-bottom:2px}
 .gantt-krow:hover{background:#f2f6fd}
-.gantt-srow{display:grid;grid-template-columns:340px 1fr;border-bottom:1px solid var(--border);align-items:center;min-height:44px}
+.gantt-srow{display:grid;grid-template-columns:380px 1fr;border-bottom:1px solid var(--border);align-items:center;min-height:44px}
 .gantt-srow:hover{background:var(--pale)}
 .gantt-rlabel{padding:9px 14px;font-size:12.5px;color:var(--text);display:flex;align-items:center;gap:8px;overflow:hidden}
-.gantt-rlabel .gantt-kname,.gantt-rlabel .gantt-sname{flex:1;min-width:0;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.gantt-rlabel .gantt-kname{flex:1;min-width:0;line-height:1.28;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;font-size:12px}
+.gantt-rlabel .gantt-sname{flex:1;min-width:0;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
 .gantt-rlabel.key{font-weight:700;cursor:pointer}
 .gantt-rlabel.sub{padding-left:34px;font-size:12px;color:var(--sub)}
 .gantt-caret{width:14px;height:14px;stroke:var(--sub);fill:none;stroke-width:2.5;transition:transform .2s;flex:0 0 auto}
 .gantt-krow.open .gantt-caret{transform:rotate(90deg)}
 .gantt-kpct{margin-left:auto;font-size:11px;font-weight:800;color:var(--mmh-blue);background:var(--lb3);border-radius:9px;padding:2px 9px;flex:0 0 auto}
 .gantt-ksub{font-size:10.5px;color:var(--faint);font-weight:600;flex:0 0 auto;margin-left:6px}
-.gantt-rdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.gantt-rdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.gantt-rlabel .gantt-caret{margin-top:3px}
 .gantt-track{position:relative;height:100%;display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
 .gantt-tcell{border-left:1px solid var(--border);height:100%}
 .gantt-tcell.wknd{background:#f7f8fb}
@@ -474,7 +476,7 @@ button{cursor:pointer}
   .mr-grid{grid-template-columns:1fr}
   .mro-stats{gap:16px;margin-left:0}
   .gantt-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .gantt-hlabel,.gantt-rlabel{width:180px;min-width:180px}
+  .gantt-hlabel,.gantt-rlabel{width:200px;min-width:200px}
   .gantt-hrow,.gantt-krow,.gantt-srow{grid-template-columns:180px 1fr}
   .gnav-label{min-width:96px;font-size:14px}
 }
@@ -762,6 +764,7 @@ button{cursor:pointer}
 .sp-item{padding:6px 12px 6px 20px;font-size:12.5px;color:var(--text);border-bottom:1px solid var(--pale)}
 .sp-item small{color:var(--faint)}
 
+.sr-pri-sent{font-size:11px;margin-left:2px;opacity:.7}
 </style>
 </head>
 <body>
@@ -1017,6 +1020,7 @@ function boot(){
   apiGet("boot").then(function(res){
     S.keyTasks=res.keyTasks||[];
     S.monthly=res.monthly||[];
+    syncPriorityMarks();
     S.pics=res.pics||[];
     S.managers=res.managers||[];
     S.statusOptions=res.statusOptions||S.statusOptions;
@@ -1562,23 +1566,24 @@ function renderDetail(){
     +'<label class="dt-toggle"><input type="checkbox" '+(S.detailUseTime?"checked":"")+' onchange="S.detailUseTime=this.checked;renderDetail()"/> <span>Chỉ hiện việc trong khoảng thời gian</span></label>'
     +(S.detailUseTime?'<div class="dt-timebar">'+timeFilterInline()+'</div>':'<span class="dt-hint">Đang hiện <b>tất cả</b> công việc trên sheet — bật để lọc theo tuần/tháng</span>')
     +'</div>';
-  // Hàng 2: search + filter Type + PIC + nút chế độ ưu tiên
+  // Hàng 2: search + filter Type + PIC
   h+='<div class="detail-toolbar">'
     +'<div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
     +'<input id="detail-search" type="text" placeholder="Tìm key task / sub-task / PIC…" value="'+esc(S.detailQ)+'" autocomplete="off"/></div>'
     +multiFilterDropdown("type","Loại công việc",types,S.detailTypes)
     +multiFilterDropdown("pic","PIC phụ trách",picsAll,S.detailPics)
-    +(canPriority?'<button class="btn-priority'+(S.priorityMode?" on":"")+'" onclick="togglePriorityMode()">'+(S.priorityMode?'✓ Đang chọn ưu tiên':'⭐ Đánh dấu ưu tiên')+'</button>':'')
     +'</div>';
-  // Thanh gửi ưu tiên (khi đang ở chế độ)
-  if(canPriority && S.priorityMode){
+  // Thanh gửi ưu tiên — hiện khi manager đã đánh dấu ≥1 việc (checkbox ⭐ luôn hiển thị trên từng task)
+  if(canPriority){
     var n=priorityCount();
-    h+='<div class="priority-bar">'
-      +'<span class="pb-info">⭐ Đã chọn <b>'+n+'</b> việc ưu tiên</span>'
-      +'<span style="flex:1"></span>'
-      +'<button class="btn-secondary" onclick="clearPriority()">Bỏ chọn hết</button>'
-      +'<button class="btn-primary" '+(n?"":"disabled")+' onclick="openSendPriority()">📧 Gửi email nhắc ('+n+')</button>'
-      +'</div>';
+    if(n>0){
+      h+='<div class="priority-bar">'
+        +'<span class="pb-info">⭐ Đã đánh dấu <b>'+n+'</b> việc ưu tiên</span>'
+        +'<span style="flex:1"></span>'
+        +'<button class="btn-secondary" onclick="clearPriority()">Bỏ chọn hết</button>'
+        +'<button class="btn-primary" onclick="openSendPriority()">📧 Gửi email nhắc ('+n+')</button>'
+        +'</div>';
+    }
   }
   h+='<div id="detail-list"></div>';
   $("tab-detail").innerHTML=h;
@@ -1645,35 +1650,51 @@ document.addEventListener("click",function(e){
   if(S.detailFilterOpen && !e.target.closest(".mfd")){ S.detailFilterOpen=""; if(S.tab==="detail")renderDetail(); }
 });
 
-/* ══ #4 CHẾ ĐỘ ĐÁNH DẤU ƯU TIÊN ══ */
-function togglePriorityMode(){ S.priorityMode=!S.priorityMode; if(!S.priorityMode)S.priorityMarks={}; renderDetail(); }
+/* ══ #4 ĐÁNH DẤU ƯU TIÊN (checkbox luôn hiện) ══ */
 function priorityCount(){ return Object.keys(S.priorityMarks).filter(function(k){return S.priorityMarks[k];}).length; }
 function togglePriorityMark(kno,sno){
   var id=kno+"|"+sno;
   S.priorityMarks[id]=!S.priorityMarks[id];
+  // cập nhật cục bộ + ghi cột Q ngay để nhớ (không chặn UI)
+  var s=findSub(kno,sno); if(s) s.priority=!!S.priorityMarks[id];
+  quietSavePriorityFlag(s?s.row:0, !!S.priorityMarks[id]);
   renderDetail();
 }
-function clearPriority(){ S.priorityMarks={}; renderDetail(); }
-function openSendPriority(){
-  // gom các task đã đánh dấu, bỏ Completed
-  var items=[];
+function clearPriority(){
+  // bỏ cờ tất cả (cả cục bộ + sheet)
   Object.keys(S.priorityMarks).forEach(function(id){
     if(!S.priorityMarks[id]) return;
     var p=id.split("|"), s=findSub(p[0],p[1]);
+    if(s){ s.priority=false; quietSavePriorityFlag(s.row,false); }
+  });
+  S.priorityMarks={}; renderDetail();
+}
+var _priFlagTimer={};
+function quietSavePriorityFlag(row, on){
+  if(!row) return;
+  clearTimeout(_priFlagTimer[row]);
+  _priFlagTimer[row]=setTimeout(function(){
+    apiPost({action:"setPriorityFlag", row:row, on:on?1:0}).catch(function(){});
+  },300);
+}
+function openSendPriority(){
+  var items=[];
+  Object.keys(S.priorityMarks).forEach(function(id){
+    if(!S.priorityMarks[id]) return;
+    var p=id.split("|"), k=findKey(p[0]), s=findSub(p[0],p[1]);
     if(!s) return;
-    if(isDone(s.status)) return; // bỏ đã hoàn thành
-    items.push({ no:s.no, name:s.name||s.subTask, pic:s.pic, deadline:s.revised||s.planned||"", status:s.status });
+    if(isDone(s.status)) return;
+    items.push({ no:s.no, name:s.name||s.subTask, keyTask:(k?k.keyTask:""), pic:s.pic, deadline:s.revised||s.planned||"", status:s.status, row:s.row });
   });
   if(!items.length){ toast("Các việc đã chọn đều hoàn thành hoặc rỗng — không cần nhắc"); return; }
-  // preview theo PIC
   var byPic={}; items.forEach(function(it){ (byPic[it.pic]=byPic[it.pic]||[]).push(it); });
   var preview=Object.keys(byPic).map(function(pic){
     return '<div class="sp-pic"><b>'+esc(pic)+'</b> <span>'+byPic[pic].length+' việc</span></div>'
-      +byPic[pic].map(function(it){return '<div class="sp-item">• '+esc(it.name)+' <small>('+(it.deadline?fmtVN(it.deadline):'chưa hạn')+' · '+esc(it.status||'')+')</small></div>';}).join("");
+      +byPic[pic].map(function(it){return '<div class="sp-item">• <b style="color:var(--mmh-blue)">'+esc(it.keyTask)+'</b> › '+esc(it.name)+' <small>('+(it.deadline?fmtVN(it.deadline):'chưa hạn')+' · '+esc(it.status||'')+')</small></div>';}).join("");
   }).join("");
   var html='<div class="modal-box"><div class="modal-head"><h3>📧 Gửi nhắc việc ưu tiên</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
-    +'<div class="field-hint" style="margin-bottom:12px">Mỗi PIC nhận 1 email chứa việc ưu tiên của họ. Việc đã <b>Completed</b> tự động bị bỏ qua. CC: nt.ha, vtt.hoa và bạn.</div>'
+    +'<div class="field-hint" style="margin-bottom:12px">Mỗi PIC nhận 1 email chứa việc ưu tiên của họ (kèm cột Key Task). Việc đã <b>Completed</b> tự bỏ qua. CC: tt.tuyen, nt.ha và bạn.</div>'
     +'<div class="sp-preview">'+preview+'</div>'
     +'<div class="field" style="margin-top:14px"><div class="field-label-row"><label>Ghi chú chung (tuỳ chọn)</label><button class="voice-btn" onclick="toggleVoice(\'sp-note\',this)">🎤 Nói</button></div>'
     +'<textarea id="sp-note" placeholder="VD: Ưu tiên hoàn thành trước cuộc họp thứ 6…"></textarea></div>'
@@ -1688,8 +1709,27 @@ function submitPriority(){
   if(!items.length){ toast("Không có việc để gửi"); return; }
   var note=($("sp-note")&&$("sp-note").value||"").trim();
   overlay(true,"Đang gửi","Gửi email nhắc ưu tiên…");
-  apiPost({action:"sendPriority", items:items, note:note})
-    .then(function(r){ overlay(false); closeModal(); toast("✓ "+(r.message||"Đã gửi")); S.priorityMode=false; S.priorityMarks={}; renderDetail(); })
+  apiPost({action:"sendPriority", mode:"sub", items:items, note:note})
+    .then(function(r){ overlay(false); closeModal(); toast("✓ "+(r.message||"Đã gửi"));
+      // đánh dấu đã gửi cục bộ
+      items.forEach(function(it){ var s=findSub(it.no.split(".")[0]||"", it.no); });
+      reloadSoft(); renderDetail(); })
+    .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
+}
+/* Gửi nhắc cả 1 KEY TASK (tất cả sub chưa done của key) — mode 'key' */
+function sendKeyPriority(kno){
+  var k=findKey(kno); if(!k){ toast("Không tìm thấy key task"); return; }
+  var subs=(k.subs||[]).filter(function(s){ return !isDone(s.status) && !isCancelled(s.status); });
+  if(!subs.length){ toast("Key task này không còn việc cần nhắc"); return; }
+  // gom theo PIC để hiển thị, nhưng gửi mode 'key' (1 email chung)
+  var items=[{ no:k.no, name:k.keyTask, keyTask:k.keyTask, pic:k.pic, deadline:k.revised||k.planned||"", status:ktStatus(k), row:k.row }];
+  // thực ra gửi theo từng sub PIC liên quan:
+  var picItems=subs.map(function(s){ return { no:s.no, name:s.name||s.subTask, keyTask:k.keyTask, pic:s.pic, deadline:s.revised||s.planned||"", status:s.status, row:s.row }; });
+  var pics=[...new Set(picItems.map(function(i){return i.pic;}).filter(Boolean))];
+  if(!confirm('Gửi nhắc ưu tiên KEY TASK "'+k.keyTask+'" tới '+pics.length+' PIC ('+pics.join(", ")+')?')) return;
+  overlay(true,"Đang gửi","Gửi nhắc key task…");
+  apiPost({action:"sendPriority", mode:"key", items:picItems, note:""})
+    .then(function(r){ overlay(false); toast("✓ "+(r.message||"Đã gửi")); reloadSoft(); })
     .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
 }
 
@@ -1737,6 +1777,7 @@ function detailKeyPanels(kts, from, to, picFilter, useTime){
       +'</span>'
       +'<span class="kt-actions" onclick="event.stopPropagation()">'
         +(editKey?'<button class="icon-btn" title="Sửa Key Task" onclick="openEdit(\''+jsq(k.no)+'\',null)">✏️</button>':'')
+        +(isManager()?'<button class="icon-btn" title="Gửi nhắc ưu tiên cả Key Task này" onclick="sendKeyPriority(\''+jsq(k.no)+'\')">⭐</button>':'')
         +(isManager()?'<button class="icon-btn" title="Nhắc việc" onclick="openAssign(\''+jsq(k.no)+'\',null)">🔔</button>':'')
         +(isManager()?'<button class="icon-btn" title="Xoá Key Task" onclick="delRow(\''+jsq(k.no)+'\','+k.row+',true)">🗑️</button>':'')
       +'</span>'
@@ -1810,20 +1851,23 @@ function subRowVertical(k, s, outOfRange){
       outTag='<span class="sr-outtag todo">🕓 '+(s.start?('Bắt đầu dự kiến '+fmtVN(s.start)):'Chưa bắt đầu')+' bởi '+esc(s.pic||'—')+'</span>';
     }
   }
-  // checkbox ưu tiên (chỉ khi đang ở chế độ priorityMode)
+  // checkbox ưu tiên — LUÔN hiện cho manager (bỏ chế độ mode). PIC thường không thấy.
   var priCheck='';
-  if(S.priorityMode){
+  var canPri = isManager();
+  if(canPri){
     var marked=!!S.priorityMarks[jsq(k.no)+"|"+jsq(s.no)];
     var isDoneSub=isDone(s.status);
+    var sentBadge = s.priorityMailAt ? '<span class="sr-pri-sent" title="Đã gửi mail nhắc '+fmtVN(s.priorityMailAt)+'">📨</span>' : '';
     priCheck='<span class="sr-pri" onclick="event.stopPropagation()">'
       +(isDoneSub
         ? '<span class="sr-pri-done" title="Đã hoàn thành — không cần nhắc">✓</span>'
-        : '<span class="sr-pri-check'+(marked?" on":"")+'" onclick="togglePriorityMark(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')" title="Đánh dấu ưu tiên">'+(marked?'⭐':'☆')+'</span>')
+        : '<span class="sr-pri-check'+(marked?" on":"")+'" onclick="togglePriorityMark(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')" title="'+(marked?'Bỏ ưu tiên':'Đánh dấu ưu tiên')+'">'+(marked?'⭐':'☆')+'</span>')
+      +sentBadge
       +'</span>';
   }
 
   return '<div class="sub-row'+(canE?"":" locked")+(outOfRange?" out-range":"")+(S.priorityMarks[jsq(k.no)+"|"+jsq(s.no)]?" pri-marked":"")+'" id="sub-'+esc(s.no)+'">'
-    +'<div class="sr-main'+(S.priorityMode?" has-pri":"")+'" onclick="toggleSubComment(\''+jsq(s.no)+'\')" ondblclick="event.stopPropagation();'+(canE?'openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')':'')+'">'
+    +'<div class="sr-main'+(canPri?" has-pri":"")+'" onclick="toggleSubComment(\''+jsq(s.no)+'\')" ondblclick="event.stopPropagation();'+(canE?'openEdit(\''+jsq(k.no)+'\',\''+jsq(s.no)+'\')':'')+'">'
       +priCheck
       +'<span class="sr-dot" style="background:'+scol+'"></span>'
       +'<span class="sr-no">'+esc(s.no)+'</span>'
@@ -2524,15 +2568,17 @@ function openMonthlySend(){
   var isMgr=isManager();
   var mLabel=fmtMonth(S.monthSel);
   var picOpts=S.pics.map(function(p){return '<option'+(p===S.user.pic?" selected":"")+'>'+esc(p)+'</option>';}).join("");
+  var nLabel=fmtMonth(nextMonthLocal(S.monthSel));
   var html='<div class="modal-box"><div class="modal-head"><h3>📄 Gửi báo cáo tháng '+esc(mLabel)+'</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
+    +'<div class="field-hint" style="margin-bottom:12px">Email &amp; PDF gồm <b>2 phần</b>: ① Kết quả tháng '+esc(mLabel)+' &nbsp;+&nbsp; ② Kế hoạch tháng '+esc(nLabel)+'. Bố cục PDF giống báo cáo tuần.</div>'
     +'<label style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:10px">Gửi tới</label>'
     +'<div class="radio-cards">'
     +'<label class="radio-card sel" onclick="selReportOpt(this,\'self\')"><input type="radio" name="mopt" value="self" checked/><div class="rc-ic">🧪</div><div><div class="rc-t">Gửi thử cho tôi</div><div class="rc-s">Các mục Monthly của '+esc(S.user.pic)+'</div></div></label>'
     +(isMgr
        ? '<label class="radio-card" onclick="selReportOpt(this,\'pic\')"><input type="radio" name="mopt" value="pic"/><div class="rc-ic">👤</div><div style="flex:1"><div class="rc-t">Gửi cho 1 PIC</div><div class="rc-s">Báo cáo tháng riêng của PIC</div>'
          +'<select id="mrp-pic" style="margin-top:8px;width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px" onclick="event.stopPropagation()">'+picOpts+'</select></div></label>'
-         +'<label class="radio-card" onclick="selReportOpt(this,\'all\')"><input type="radio" name="mopt" value="all"/><div class="rc-ic">📢</div><div><div class="rc-t">Gửi cho tất cả PIC</div><div class="rc-s">Mỗi PIC 1 email riêng · CC vtt.hoa@ &amp; nt.ha@</div></div></label>'
+         +'<label class="radio-card" onclick="selReportOpt(this,\'all\')"><input type="radio" name="mopt" value="all"/><div class="rc-ic">📢</div><div><div class="rc-t">Gửi cho tất cả PIC</div><div class="rc-s">Mỗi PIC 1 email riêng · CC vtt.hoa@ &amp; nt.ha@ &amp; bạn</div></div></label>'
        : '')
     +'</div>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
@@ -2540,6 +2586,7 @@ function openMonthlySend(){
     +'</div></div>';
   showModal(html);
 }
+function nextMonthLocal(m){ var y=parseInt(m.slice(0,4),10),mo=parseInt(m.slice(4,6),10); mo++; if(mo>12){mo=1;y++;} return y+("0"+mo).slice(-2); }
 function doSendMonthly(){
   var opt=(document.querySelector('input[name=mopt]:checked')||{}).value||"self";
   var body={action:"monthlyReport", month:S.monthSel, option:opt};
@@ -2571,6 +2618,15 @@ function reload(){
   return apiGet("boot").then(function(res){
     if(res.keyTasks) S.keyTasks=res.keyTasks;
     if(res.monthly) S.monthly=res.monthly;
+    syncPriorityMarks();
+  });
+}
+/* đồng bộ S.priorityMarks từ cột Q (sub.priority) trên sheet — chỉ set cho task chưa Completed */
+function syncPriorityMarks(){
+  allKeyTasks().forEach(function(k){
+    (k.subs||[]).forEach(function(s){
+      if(s.priority && !isDone(s.status)){ S.priorityMarks[k.no+"|"+s.no]=true; }
+    });
   });
 }
 /* reload nền: đồng bộ dữ liệu thật từ sheet, KHÔNG hiện overlay, im lặng nếu lỗi.
@@ -2582,6 +2638,7 @@ function reloadSoft(){
   apiGet("boot").then(function(res){
     if(res.keyTasks) S.keyTasks=res.keyTasks;
     if(res.monthly) S.monthly=res.monthly;
+    syncPriorityMarks();
     _softReloading=false;
     rerenderActive();
   }).catch(function(){ _softReloading=false; /* im lặng: bản cục bộ vẫn hiển thị */ });
