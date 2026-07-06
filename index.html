@@ -765,6 +765,42 @@ button{cursor:pointer}
 .sp-item small{color:var(--faint)}
 
 .sr-pri-sent{font-size:11px;margin-left:2px;opacity:.7}
+
+/* ══ BẢNG TIN HOẠT ĐỘNG (banner chạy chậm bên phải) ══ */
+.act-rail{position:fixed;top:0;right:0;height:100vh;z-index:400;display:flex;align-items:stretch;pointer-events:none}
+.act-toggle{pointer-events:auto;align-self:center;position:absolute;right:100%;top:50%;transform:translateY(-50%);writing-mode:vertical-rl;background:var(--mmh-navy);color:#fff;border:none;padding:14px 8px;border-radius:10px 0 0 10px;cursor:pointer;font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:8px;box-shadow:-3px 0 12px rgba(0,0,0,.14)}
+.act-toggle-ic{writing-mode:horizontal-tb;font-size:15px}
+.act-panel{pointer-events:auto;width:320px;max-width:82vw;background:#fff;border-left:1px solid var(--border);box-shadow:-8px 0 28px rgba(14,47,95,.10);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1)}
+.act-rail:not(.collapsed) .act-panel{transform:translateX(0)}
+.act-rail:not(.collapsed) .act-toggle{right:320px}
+@media(max-width:820px){ .act-rail:not(.collapsed) .act-toggle{right:82vw} }
+.act-head{padding:14px 16px;border-bottom:1px solid var(--border);background:var(--gray)}
+.act-head b{font-size:14px;color:var(--mmh-navy);display:block;margin-bottom:9px}
+.act-scope{display:flex;gap:6px}
+.act-scope-btn{flex:1;padding:6px 10px;font-size:12px;font-weight:700;border:1.5px solid var(--border);background:#fff;border-radius:8px;cursor:pointer;color:var(--sub)}
+.act-scope-btn.active{background:var(--mmh-navy);color:#fff;border-color:var(--mmh-navy)}
+.act-viewport{flex:1;overflow:hidden;position:relative;mask-image:linear-gradient(180deg,transparent,#000 6%,#000 94%,transparent)}
+.act-track{display:flex;flex-direction:column;gap:10px;padding:14px}
+.act-track.anim{animation:actScroll linear infinite}
+.act-track:hover{animation-play-state:paused}
+@keyframes actScroll{from{transform:translateY(0)}to{transform:translateY(var(--act-shift,-50%))}}
+.act-card{border:1px solid var(--border);border-radius:12px;padding:11px 13px;background:#fff;flex:0 0 auto}
+.act-card-h{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.act-av{width:26px;height:26px;border-radius:50%;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.act-who{font-size:13px;font-weight:700;color:var(--text);flex:1;min-width:0}
+.act-badge{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.act-badge.add{background:#E3F2E7;color:#1E6B3A}
+.act-badge.update{background:#E7EEFB;color:#2450A4}
+.act-badge.progress{background:#E7EEFB;color:#2450A4}
+.act-badge.complete{background:#DCF3E4;color:#137A3A}
+.act-badge.assign{background:#EDE7FB;color:#5B3AA4}
+.act-badge.priority{background:#FDF0D6;color:#8A5A00}
+.act-badge.delete{background:#FBE7E7;color:#A43A3A}
+.act-badge.report{background:#E7F4FB;color:#1E6B8A}
+.act-detail{font-size:12px;color:var(--sub);line-height:1.45}
+.act-time{font-size:10.5px;color:var(--faint);margin-top:4px}
+.act-empty{padding:30px 14px;text-align:center;color:var(--faint);font-size:13px}
+.act-group-t{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--faint);padding:2px 2px 0}
 </style>
 </head>
 <body>
@@ -806,6 +842,24 @@ button{cursor:pointer}
     <div id="tab-detail"    class="tabpage"></div>
     <div id="tab-month"     class="tabpage"></div>
     <div id="tab-report"    class="tabpage"></div>
+  </div>
+
+  <!-- Bảng tin hoạt động (banner chạy chậm bên phải) -->
+  <div id="activity-rail" class="act-rail collapsed">
+    <button class="act-toggle" onclick="toggleActivityRail()" title="Bảng tin hoạt động">
+      <span class="act-toggle-ic">📢</span>
+      <span class="act-toggle-txt">Hoạt động</span>
+    </button>
+    <div class="act-panel">
+      <div class="act-head">
+        <b>📢 Bảng tin hoạt động</b>
+        <div class="act-scope">
+          <button id="act-scope-week" class="act-scope-btn active" onclick="setActivityScope('week')">Tuần này</button>
+          <button id="act-scope-month" class="act-scope-btn" onclick="setActivityScope('month')">Tháng này</button>
+        </div>
+      </div>
+      <div class="act-viewport"><div id="act-track" class="act-track"></div></div>
+    </div>
   </div>
 </div>
 
@@ -890,6 +944,7 @@ var S={
   detailShowAllSubs:{},  // key.no → hiện tất cả subtask (kể cả ngoài khoảng)
   priorityMode:false,    // đang ở chế độ đánh dấu ưu tiên
   priorityMarks:{},      // "kno|sno" → true
+  activityLog:[], activityScope:"week", activityOpen:false,
   monthSel:"", monthType:"",
   reportFrom:"", reportTo:"", reportPics:[], reportTypes:[], reportFilterOpen:"",
   editCtx:null,
@@ -1020,6 +1075,7 @@ function boot(){
   apiGet("boot").then(function(res){
     S.keyTasks=res.keyTasks||[];
     S.monthly=res.monthly||[];
+    S.activityLog=res.activityLog||[];
     syncPriorityMarks();
     S.pics=res.pics||[];
     S.managers=res.managers||[];
@@ -1100,6 +1156,9 @@ function startApp(){
   $("fab-wrap").style.display="flex";
   // PIC không được thêm Key Task → ẩn nút trong FAB
   if(!isManager()){ var fk=$("fab-key"); if(fk) fk.style.display="none"; }
+  // hiện bảng tin hoạt động (mặc định thu gọn, có nút mở)
+  var rail=document.getElementById("activity-rail"); if(rail) rail.style.display="flex";
+  renderActivity();
 }
 
 /* ── FAB ── */
@@ -1899,8 +1958,15 @@ function onDragProg(el,kno,sno){
 function commitProg(kno,sno,val){
   var s=findSub(kno,sno); if(!s) return;
   var v=parseInt(val,10); if(isNaN(v))v=0;
-  s.progress=v;                       // cục bộ ngay
-  var kk=findKey(kno); if(kk) {} 
+  s.progress=v;
+  // RULE: kéo lên 100% → status Completed
+  if(v>=100 && !isDone(s.status)){
+    s.status="Completed"; s.progress=100;
+    renderDetailList();
+    apiPost({action:"updateStatus", row:s.row, status:"Completed"}).then(function(){ reloadSoft(); }).catch(function(){});
+    toast("✓ Đạt 100% → chuyển Completed");
+    return;
+  }
   quietSaveProgress(s.row, v, kno);
 }
 /* nút +/- */
@@ -1908,9 +1974,16 @@ function bumpProg(kno,sno,delta){
   var s=findSub(kno,sno); if(!s) return;
   var v=subPct(s)+delta; if(v<0)v=0; if(v>100)v=100;
   s.progress=v;
+  // RULE: đạt 100% → Completed
+  if(v>=100 && !isDone(s.status)){
+    s.status="Completed"; s.progress=100;
+    renderDetailList();
+    apiPost({action:"updateStatus", row:s.row, status:"Completed"}).then(function(){ reloadSoft(); }).catch(function(){});
+    toast("✓ Đạt 100% → chuyển Completed");
+    return;
+  }
   var lbl=$("pct-"+sno); if(lbl) lbl.textContent=v+"%";
   var rng=document.querySelector('#sub-'+cssEsc(sno)+' .sr-prange'); if(rng) rng.value=v;
-  // cập nhật % key task hiển thị
   renderDetailList();
   quietSaveProgress(s.row, v, kno);
 }
@@ -1933,8 +2006,13 @@ function quickStatus(kno,sno,val){
   s.status=val;
   if(/complet/i.test(val)) s.progress=100;
   else if(/cancel/i.test(val)||/to\s*do/i.test(val)) s.progress=0;
+  else if(/progress/i.test(val)){ if(!s.progress || s.progress<=0) s.progress=25; }  // RULE: In Progress mặc định 25%
   renderDetailList();
+  // gửi cả status và progress để đồng bộ
   apiPost({action:"updateStatus", row:s.row, status:val})
+    .then(function(){
+      if(/progress/i.test(val)){ return apiPost({action:"updateProgress", row:s.row, progress:s.progress}); }
+    })
     .then(function(){ toast("✓ "+val); reloadSoft(); })
     .catch(function(e){ toast("⚠️ "+e.message); });
 }
@@ -2638,9 +2716,11 @@ function reloadSoft(){
   apiGet("boot").then(function(res){
     if(res.keyTasks) S.keyTasks=res.keyTasks;
     if(res.monthly) S.monthly=res.monthly;
+    if(res.activityLog) S.activityLog=res.activityLog;
     syncPriorityMarks();
     _softReloading=false;
     rerenderActive();
+    if(S.activityOpen) renderActivity();
   }).catch(function(){ _softReloading=false; /* im lặng: bản cục bộ vẫn hiển thị */ });
 }
 function rerenderActive(){
@@ -2652,6 +2732,113 @@ function rerenderActive(){
 }
 document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&$("m-active")) closeModal(); });
 
+
+/* ══════════════ BẢNG TIN HOẠT ĐỘNG (Activity Feed) ══════════════ */
+function toggleActivityRail(){
+  var r=document.getElementById("activity-rail"); if(!r) return;
+  r.classList.toggle("collapsed");
+  S.activityOpen=!r.classList.contains("collapsed");
+  if(S.activityOpen) renderActivity();
+}
+function setActivityScope(sc){
+  S.activityScope=sc;
+  var w=document.getElementById("act-scope-week"), m=document.getElementById("act-scope-month");
+  if(w)w.classList.toggle("active",sc==="week");
+  if(m)m.classList.toggle("active",sc==="month");
+  renderActivity();
+}
+/* lọc log theo tuần/tháng hiện tại */
+function activityInScope(){
+  var log=S.activityLog||[];
+  var now=new Date();
+  var from;
+  if(S.activityScope==="month"){
+    from=now.getFullYear()+"-"+("0"+(now.getMonth()+1)).slice(-2)+"-01";
+  } else {
+    var mon=mondayOf(now); from=toISO(mon);
+  }
+  return log.filter(function(a){ return String(a.ts).slice(0,10)>=from; });
+}
+var ACT_TYPE_META={
+  add:{label:"Thêm mới",badge:"add"},
+  update:{label:"Cập nhật công việc",badge:"update"},
+  progress:{label:"Cập nhật công việc",badge:"progress"},
+  complete:{label:"Đánh dấu hoàn thành",badge:"complete"},
+  assign:{label:"Giao việc",badge:"assign"},
+  priority:{label:"Nhắc việc ưu tiên",badge:"priority"},
+  delete:{label:"Xoá",badge:"delete"},
+  report:{label:"Gửi báo cáo",badge:"report"}
+};
+function actRelTime(ts){
+  var d=new Date(ts), now=new Date();
+  var diff=Math.floor((now-d)/60000); // phút
+  if(isNaN(diff)) return "";
+  if(diff<1) return "vừa xong";
+  if(diff<60) return diff+" phút trước";
+  var h=Math.floor(diff/60); if(h<24) return h+" giờ trước";
+  var dd=Math.floor(h/24); if(dd<7) return dd+" ngày trước";
+  return fmtVN(String(ts).slice(0,10));
+}
+/* tổng hợp: "Thuong đã hoàn thành X việc trong tuần, gần nhất: ..." */
+function activitySummaryCards(list){
+  // gom theo PIC cho nhóm complete
+  var doneByPic={};
+  list.filter(function(a){return a.type==="complete";}).forEach(function(a){
+    (doneByPic[a.pic]=doneByPic[a.pic]||[]).push(a);
+  });
+  var cards=[];
+  Object.keys(doneByPic).forEach(function(pic){
+    var arr=doneByPic[pic];
+    var latest=arr[0]; // đã sort mới→cũ
+    var nm=(latest.detail||"").replace(/^hoàn thành\s*/i,"").replace(/^[^"]*"/,'"');
+    cards.push({ pic:pic, type:"complete",
+      detail:"đã hoàn thành <b>"+arr.length+"</b> việc "+(S.activityScope==="month"?"trong tháng":"trong tuần")+". Gần nhất: "+esc((latest.detail||"").replace(/^hoàn thành\s*—\s*/i,"")),
+      ts:latest.ts, summary:true });
+  });
+  return cards;
+}
+function renderActivity(){
+  var track=document.getElementById("act-track"); if(!track) return;
+  var list=activityInScope();
+  if(!list.length){ track.className="act-track"; track.innerHTML='<div class="act-empty">Chưa có hoạt động nào '+(S.activityScope==="month"?"trong tháng":"trong tuần")+" này.</div>"; return; }
+
+  // Ưu tiên 5 cập nhật mới nhất + thẻ tổng hợp hoàn thành theo PIC
+  var summary=activitySummaryCards(list);
+  var recent=list.slice(0,12); // hiển thị nhiều để cuộn, nhưng ưu tiên mới nhất
+
+  function card(a){
+    var meta=ACT_TYPE_META[a.type]||{label:"Hoạt động",badge:"update"};
+    return '<div class="act-card">'
+      +'<div class="act-card-h">'
+        +'<span class="act-av" style="background:'+avColor(a.pic)+'">'+esc(initials(a.pic))+'</span>'
+        +'<span class="act-who">'+esc(a.pic||"—")+'</span>'
+        +'<span class="act-badge '+meta.badge+'">'+meta.label+'</span>'
+      +'</div>'
+      +'<div class="act-detail">'+(a.summary?a.detail:esc(a.detail||""))+'</div>'
+      +'<div class="act-time">'+actRelTime(a.ts)+'</div>'
+    +'</div>';
+  }
+  var html="";
+  if(summary.length){ html+='<div class="act-group-t">✅ Hoàn thành</div>'+summary.map(card).join(""); }
+  html+='<div class="act-group-t">🔔 Mới nhất</div>'+recent.map(card).join("");
+  // nhân đôi để cuộn liền mạch nếu nội dung dài
+  var full=html+html;
+  track.innerHTML=full;
+  track.className="act-track";
+  // bật cuộn chậm nếu nội dung cao hơn viewport
+  requestAnimationFrame(function(){
+    var vp=track.parentElement;
+    var singleH=track.scrollHeight/2;
+    if(singleH > vp.clientHeight + 20){
+      var dur=Math.max(30, Math.round(singleH/10)); // rất chậm: ~10px/s
+      track.style.setProperty("--act-shift","-"+singleH+"px");
+      track.style.animationDuration=dur+"s";
+      track.classList.add("anim");
+    } else {
+      track.innerHTML=html; // không đủ dài thì không cuộn
+    }
+  });
+}
 </script>
 </body>
 </html>
