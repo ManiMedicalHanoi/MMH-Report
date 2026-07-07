@@ -770,12 +770,12 @@ button{cursor:pointer}
 
 /* ══ BẢNG TIN HOẠT ĐỘNG (banner chạy chậm bên phải) ══ */
 .act-rail{position:fixed;top:0;right:0;height:100vh;z-index:400;display:flex;align-items:stretch;pointer-events:none}
-.act-toggle{pointer-events:auto;position:fixed;right:18px;bottom:150px;z-index:401;background:var(--mmh-navy);color:#fff;border:none;width:56px;height:56px;border-radius:50%;cursor:pointer;font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 6px 20px rgba(14,47,95,.32);transition:transform .16s}
-.act-toggle:hover{transform:scale(1.06)}
-.act-toggle-ic{font-size:20px;line-height:1}
-.act-toggle-txt{font-size:8.5px;line-height:1}
-.act-rail:not(.collapsed) .act-toggle{right:338px}
-@media(max-width:820px){ .act-rail:not(.collapsed) .act-toggle{right:18px;bottom:auto;top:14px} }
+.act-toggle{pointer-events:auto;position:fixed;right:20px;top:76px;z-index:401;background:var(--mmh-navy);color:#fff;border:none;height:42px;padding:0 16px;border-radius:22px;cursor:pointer;font-weight:700;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:8px;box-shadow:0 5px 18px rgba(14,47,95,.28);transition:transform .16s,background .16s}
+.act-toggle:hover{transform:translateY(-1px);background:#123a6b}
+.act-toggle-ic{font-size:16px;line-height:1}
+.act-toggle-txt{font-size:12.5px;line-height:1;white-space:nowrap}
+.act-rail:not(.collapsed) .act-toggle{right:352px}
+@media(max-width:820px){ .act-toggle{top:auto;bottom:150px;right:18px;padding:0;width:52px;height:52px;border-radius:50%} .act-toggle-txt{display:none} .act-rail:not(.collapsed) .act-toggle{right:18px;top:14px;bottom:auto} }
 .act-panel{pointer-events:auto;width:336px;max-width:86vw;background:#fff;border-left:1px solid var(--border);box-shadow:-8px 0 28px rgba(14,47,95,.10);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1)}
 .act-rail:not(.collapsed) .act-panel{transform:translateX(0)}
 .act-head{padding:14px 16px;border-bottom:1px solid var(--border);background:var(--gray)}
@@ -824,6 +824,21 @@ button{cursor:pointer}
 .sr-prog-lock{display:flex;align-items:center;gap:7px;opacity:.9}
 .sr-prog-lock .sr-progbar{flex:1}
 .sr-prog-lock .sr-progpct{font-weight:700;color:var(--sub);min-width:38px;text-align:right}
+
+/* Hover box chi tiết cho thông báo hoạt động — hiện cố định bên trái panel */
+.act-card{position:relative}
+.act-hoverbox{position:fixed;right:360px;top:50%;transform:translateY(-50%) translateX(10px);width:300px;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 16px 44px rgba(14,47,95,.22);padding:15px 17px;z-index:500;opacity:0;visibility:hidden;transition:opacity .15s,transform .15s;pointer-events:none}
+.act-card:hover .act-hoverbox{opacity:1;visibility:visible;transform:translateY(-50%) translateX(0)}
+.ahb-title{font-size:13px;font-weight:700;color:var(--mmh-navy);margin-bottom:11px;line-height:1.4;padding-bottom:9px;border-bottom:1px solid var(--pale)}
+.ahb-row{display:flex;gap:10px;font-size:12px;margin-bottom:7px}
+.ahb-row .k{color:var(--faint);min-width:72px;flex:0 0 auto;font-weight:600}
+.ahb-row .v{color:var(--text);flex:1;word-break:break-word}
+.ahb-arrow{position:absolute;right:-6px;top:50%;transform:translateY(-50%) rotate(45deg);width:12px;height:12px;background:#fff;border-right:1px solid var(--border);border-top:1px solid var(--border)}
+@media(max-width:900px){ .act-hoverbox{display:none} }
+
+.month-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.month-label{font-size:15px;font-weight:700;color:var(--mmh-navy);min-width:150px;text-align:center}
+.mro-mini{font-size:12.5px;color:var(--sub);font-weight:600}
 </style>
 </head>
 <body>
@@ -968,7 +983,7 @@ var S={
   priorityMode:false,    // đang ở chế độ đánh dấu ưu tiên
   priorityMarks:{},      // "kno|sno" → true
   activityLog:[], activityScope:"week", activityOpen:false,
-  monthSel:"", monthType:"",
+  monthSel:"", monthType:"", monthTypes:[], monthPics:[],
   reportFrom:"", reportTo:"", reportPics:[], reportTypes:[], reportFilterOpen:"",
   editCtx:null,
 };
@@ -1169,11 +1184,14 @@ function startApp(){
   if(isManager()){ rp.className="tb-role"; rp.textContent="⭐ Quản lý · "+(S.user.title||""); }
   else { rp.className="tb-role pic"; rp.textContent=S.user.title||"PIC"; }
   buildTabs();
-  // Mặc định tab "Tất cả công việc" lọc theo PIC login — TRỪ Ha (xem tất cả)
-  if(S.user.pic && String(S.user.pic).toLowerCase()!=="ha"){
+  // Mặc định lọc theo PIC login. Leader/HOD/Director (canAssign) xem tất cả.
+  var me=(S.picList||[]).filter(function(u){return u.pic===S.user.pic;})[0]||{};
+  var seesAll = !!me.canAssign || String(S.user.pic||"").toLowerCase()==="ha";
+  if(S.user.pic && !seesAll){
     S.detailPics=[S.user.pic];
+    S.monthPics=[S.user.pic];
   } else {
-    S.detailPics=[];
+    S.detailPics=[]; S.monthPics=[];
   }
   switchTab("overview");
   $("fab-wrap").style.display="flex";
@@ -1734,16 +1752,26 @@ function multiFilterDropdown(kind, label, options, selected){
       +'<div class="mfd-list">'+(items||'<div class="mfd-empty">Không có mục</div>')+'</div>'
     +'</div></div>';
 }
-function toggleFilterDropdown(kind){ S.detailFilterOpen = (S.detailFilterOpen===kind)?"":kind; renderDetail(); }
+function toggleFilterDropdown(kind){
+  S.detailFilterOpen = (S.detailFilterOpen===kind)?"":kind;
+  if(kind==='mtype'||kind==='mpic') renderMonth(); else renderDetail();
+}
 function toggleMultiFilter(kind,val){
-  var arr = kind==='type'?S.detailTypes:S.detailPics;
+  var arr;
+  if(kind==='type')arr=S.detailTypes; else if(kind==='pic')arr=S.detailPics;
+  else if(kind==='mtype')arr=(S.monthTypes=S.monthTypes||[]); else if(kind==='mpic')arr=(S.monthPics=S.monthPics||[]);
+  else return;
   var i=arr.indexOf(val);
   if(i>=0) arr.splice(i,1); else arr.push(val);
-  renderDetail();
+  if(kind==='mtype'||kind==='mpic') renderMonth(); else renderDetail();
 }
-function clearMultiFilter(kind){ if(kind==='type')S.detailTypes=[]; else S.detailPics=[]; renderDetail(); }
+function clearMultiFilter(kind){
+  if(kind==='type')S.detailTypes=[]; else if(kind==='pic')S.detailPics=[];
+  else if(kind==='mtype')S.monthTypes=[]; else if(kind==='mpic')S.monthPics=[];
+  if(kind==='mtype'||kind==='mpic') renderMonth(); else renderDetail();
+}
 document.addEventListener("click",function(e){
-  if(S.detailFilterOpen && !e.target.closest(".mfd")){ S.detailFilterOpen=""; if(S.tab==="detail")renderDetail(); }
+  if(S.detailFilterOpen && !e.target.closest(".mfd")){ var k=S.detailFilterOpen; S.detailFilterOpen=""; if(k==='mtype'||k==='mpic'){ if(S.tab==="month")renderMonth(); } else if(S.tab==="detail")renderDetail(); }
 });
 
 /* ══ #4 ĐÁNH DẤU ƯU TIÊN (checkbox luôn hiện) ══ */
@@ -2083,48 +2111,40 @@ function renderMonth(){
   var months=monthList();
   if(!S.monthSel||months.indexOf(S.monthSel)<0) S.monthSel=months[0]||"";
   var allRows=S.monthly.filter(function(m){return m.month===S.monthSel;});
-  var types=[...new Set(allRows.map(function(r){return r.typeTask;}).filter(Boolean))];
-  var rows = S.monthType ? allRows.filter(function(r){return r.typeTask===S.monthType;}) : allRows;
+  var types=[...new Set(allRows.map(function(r){return r.typeTask;}).filter(Boolean))].sort();
+  var picsAll=[...new Set(allRows.map(function(r){return r.pic;}).filter(Boolean))].sort();
+
+  // áp filter type + pic
+  var rows=allRows.slice();
+  if(S.monthTypes&&S.monthTypes.length) rows=rows.filter(function(r){return S.monthTypes.indexOf(r.typeTask)>=0;});
+  if(S.monthPics&&S.monthPics.length) rows=rows.filter(function(r){return S.monthPics.indexOf(r.pic)>=0;});
 
   var filled=allRows.filter(function(r){return String(r.text||"").trim();}).length;
   var pct=allRows.length?Math.round(filled/allRows.length*100):0;
   var pics=[...new Set(allRows.map(function(r){return r.pic;}).filter(Boolean))];
 
+  var idx=months.indexOf(S.monthSel);
   var h="";
-  h+='<div class="toolbar">'
-    +'<div class="sel"><select onchange="S.monthSel=this.value;S.monthType=\'\';renderMonth()">'
-      +months.map(function(m){return '<option value="'+m+'"'+(m===S.monthSel?" selected":"")+'>Tháng '+fmtMonth(m)+'</option>';}).join("")
-    +'</select></div>'
+  // Hàng 1: tab tháng + prev/next + nút gửi/thêm
+  h+='<div class="month-toolbar">'
+    +'<div class="tf-seg"><button class="active">Theo tháng</button></div>'
+    +'<button class="tf-arrow" '+(idx<months.length-1?'':'disabled')+' onclick="shiftMonth(1)" title="Tháng trước"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>'
+    +'<span class="month-label">📅 Tháng '+esc(fmtMonth(S.monthSel))+'</span>'
+    +'<button class="tf-arrow" '+(idx>0?'':'disabled')+' onclick="shiftMonth(-1)" title="Tháng sau"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>'
     +'<span style="flex:1"></span>'
-    +'<button class="btn-secondary" onclick="openMonthlySend()"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Gửi PDF tháng</button>'
-    +'<button class="btn-primary" onclick="openAddMonthly()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm mục</button>'
+    +'<button class="btn-secondary" onclick="openMonthlySend()">📄 Xuất / Gửi PDF</button>'
+    +(isManager()?'<button class="btn-primary" onclick="openAddMonthly()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Thêm mục</button>':'')
     +'</div>';
 
   if(!allRows.length){ h+='<div class="empty"><div class="ic">📅</div><p>Chưa có mục nào cho tháng này.</p></div>'; $("tab-month").innerHTML=h; return; }
 
-  h+='<div class="mr-overview">'
-    +'<div class="mro-left">'
-      +'<div class="mro-month">📅 Tháng '+esc(fmtMonth(S.monthSel))+'</div>'
-      +'<div class="mro-sub">'+allRows.length+' mục · '+types.length+' loại · '+pics.length+' PIC</div>'
-    +'</div>'
-    +'<div class="mro-stats">'
-      +'<div class="mro-stat"><div class="mro-v">'+allRows.length+'</div><div class="mro-l">Tổng mục</div></div>'
-      +'<div class="mro-stat"><div class="mro-v" style="color:#1E6B3A">'+filled+'</div><div class="mro-l">Đã điền</div></div>'
-      +'<div class="mro-stat"><div class="mro-v" style="color:#8A6D00">'+(allRows.length-filled)+'</div><div class="mro-l">Còn trống</div></div>'
-    +'</div>'
-    +'<div class="mro-prog">'
-      +'<div class="mro-prog-top"><span>Hoàn thiện</span><b>'+pct+'%</b></div>'
-      +'<div class="mro-prog-track"><i style="width:'+pct+'%"></i></div>'
-    +'</div>'
-  +'</div>';
-
-  h+='<div class="chips" style="margin-bottom:16px">';
-  h+='<button class="chip'+(S.monthType===""?" active":"")+'" onclick="S.monthType=\'\';renderMonth()">Tất cả ('+allRows.length+')</button>';
-  types.forEach(function(t){
-    var c=typeColor(t), cnt=allRows.filter(function(r){return r.typeTask===t;}).length;
-    h+='<button class="chip'+(S.monthType===t?" active":"")+'" style="'+(S.monthType===t?'background:'+c+';border-color:'+c:'')+'" onclick="S.monthType=\''+jsq(t)+'\';renderMonth()">'+esc(t)+' ('+cnt+')</button>';
-  });
-  h+='</div>';
+  // Hàng 2: filter Type + PIC gọn
+  h+='<div class="detail-toolbar" style="margin-bottom:14px">'
+    +multiFilterDropdown("mtype","Loại công việc",types,S.monthTypes||[])
+    +multiFilterDropdown("mpic","PIC phụ trách",picsAll,S.monthPics||[])
+    +'<span style="flex:1"></span>'
+    +'<span class="mro-mini">'+allRows.length+' mục · '+filled+' đã điền · '+pct+'% hoàn thiện</span>'
+    +'</div>';
 
   h+='<div class="mr-grid">';
   rows.forEach(function(r){
@@ -2138,14 +2158,20 @@ function renderMonth(){
           +'<span class="mr-type2" style="background:'+c+'18;color:'+c+'">'+esc(r.typeTask)+'</span>'
           +statusChip
           +'<span class="mr-pic2"><span class="mr-pic2-av" style="background:'+avColor(r.pic)+'">'+esc(initials(r.pic))+'</span>'+esc(r.pic)+'</span>'
-          +(editable?'<button class="icon-btn" onclick="openEditMonthly('+r.row+')" title="Sửa">✏️</button>':'<span class="sc-lock" style="font-size:12px">🔒</span>')
+          +(editable?'<button class="icon-btn" onclick="openEditMonthly('+r.row+')" title="Sửa">✏️</button>':'<span class="sc-lock" style="font-size:12px" title="Chỉ PIC phụ trách hoặc leader sửa được">🔒</span>')
         +'</div>'
       +'</div>'
       +'<div class="mr-card2-body '+(hasText?'':'is-empty')+'">'+(hasText?mrFormatText(r.text):'<span class="mr-empty-txt">— chưa có nội dung —</span>')+'</div>'
       +'</div>';
   });
+  if(!rows.length) h+='<div class="empty"><div class="ic">🔍</div><p>Không có mục phù hợp bộ lọc.</p></div>';
   h+='</div>';
   $("tab-month").innerHTML=h;
+}
+function shiftMonth(dir){
+  var months=monthList(); var idx=months.indexOf(S.monthSel);
+  var ni=idx+dir;
+  if(ni>=0 && ni<months.length){ S.monthSel=months[ni]; renderMonth(); }
 }
 function mrFormatText(t){
   var s=esc(String(t||""));
@@ -2707,27 +2733,47 @@ function openMonthlySend(){
     +'<div class="field-hint" style="margin-bottom:12px">Email &amp; PDF gồm <b>2 phần</b>: ① Kết quả tháng '+esc(mLabel)+' &nbsp;+&nbsp; ② Kế hoạch tháng '+esc(nLabel)+'. Bố cục PDF giống báo cáo tuần.</div>'
     +'<label style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:10px">Gửi tới</label>'
     +'<div class="radio-cards">'
-    +'<label class="radio-card sel" onclick="selReportOpt(this,\'self\')"><input type="radio" name="mopt" value="self" checked/><div class="rc-ic">🧪</div><div><div class="rc-t">Gửi thử cho tôi</div><div class="rc-s">Các mục Monthly của '+esc(S.user.pic)+'</div></div></label>'
+    +'<label class="radio-card sel" onclick="selReportOpt(this,\'download\')"><input type="radio" name="mopt" value="download" checked/><div class="rc-ic">⬇️</div><div><div class="rc-t">Tải 2 file PDF</div><div class="rc-s">File 1: toàn bộ task tháng '+esc(mLabel)+' · File 2: tháng '+esc(nLabel)+' — sắp theo PIC (Quỳnh Anh → Đức Anh → Thương → Tuyến → Giang)</div></div></label>'
+    +'<label class="radio-card" onclick="selReportOpt(this,\'self\')"><input type="radio" name="mopt" value="self"/><div class="rc-ic">🧪</div><div><div class="rc-t">Gửi thử email cho tôi</div><div class="rc-s">Các mục Monthly của '+esc(S.user.pic)+' (① tháng này + ② kế hoạch tháng sau)</div></div></label>'
     +(isMgr
-       ? '<label class="radio-card" onclick="selReportOpt(this,\'pic\')"><input type="radio" name="mopt" value="pic"/><div class="rc-ic">👤</div><div style="flex:1"><div class="rc-t">Gửi cho 1 PIC</div><div class="rc-s">Báo cáo tháng riêng của PIC</div>'
+       ? '<label class="radio-card" onclick="selReportOpt(this,\'pic\')"><input type="radio" name="mopt" value="pic"/><div class="rc-ic">👤</div><div style="flex:1"><div class="rc-t">Gửi email cho 1 PIC</div><div class="rc-s">Báo cáo tháng riêng của PIC</div>'
          +'<select id="mrp-pic" style="margin-top:8px;width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px" onclick="event.stopPropagation()">'+picOpts+'</select></div></label>'
-         +'<label class="radio-card" onclick="selReportOpt(this,\'all\')"><input type="radio" name="mopt" value="all"/><div class="rc-ic">📢</div><div><div class="rc-t">Gửi cho tất cả PIC</div><div class="rc-s">Mỗi PIC 1 email riêng · CC vtt.hoa@ &amp; nt.ha@ &amp; bạn</div></div></label>'
+         +'<label class="radio-card" onclick="selReportOpt(this,\'all\')"><input type="radio" name="mopt" value="all"/><div class="rc-ic">📢</div><div><div class="rc-t">Gửi email cho tất cả PIC</div><div class="rc-s">Mỗi PIC 1 email riêng · CC vtt.hoa@ &amp; nt.ha@ &amp; bạn</div></div></label>'
        : '')
     +'</div>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
-    +'<button class="btn-primary" onclick="doSendMonthly()">📧 Tạo PDF &amp; gửi</button></div>'
+    +'<button class="btn-primary" onclick="doSendMonthly()">Thực hiện</button></div>'
     +'</div></div>';
   showModal(html);
 }
 function nextMonthLocal(m){ var y=parseInt(m.slice(0,4),10),mo=parseInt(m.slice(4,6),10); mo++; if(mo>12){mo=1;y++;} return y+("0"+mo).slice(-2); }
 function doSendMonthly(){
-  var opt=(document.querySelector('input[name=mopt]:checked')||{}).value||"self";
+  var opt=(document.querySelector('input[name=mopt]:checked')||{}).value||"download";
   var body={action:"monthlyReport", month:S.monthSel, option:opt};
   if(opt==="pic"){ var sel=$("mrp-pic"); body.toPic=sel?sel.value:S.user.pic; }
-  overlay(true,"Đang tạo PDF", opt==="all"?"Gửi báo cáo tháng cho từng PIC…":"Tổng hợp & gửi báo cáo tháng…");
+  overlay(true, opt==="download"?"Đang tạo PDF":"Đang gửi", opt==="download"?"Tổng hợp toàn bộ task theo PIC…":(opt==="all"?"Gửi báo cáo tháng cho từng PIC…":"Tổng hợp & gửi báo cáo tháng…"));
   apiPost(body)
-    .then(function(r){ overlay(false); closeModal(); toast("✓ "+(r.message||"Đã gửi")); })
+    .then(function(r){
+      overlay(false); closeModal();
+      if(r.download && r.files){
+        r.files.forEach(function(f){ downloadB64Pdf(f.b64, f.name); });
+        toast("✓ "+(r.message||"Đã tạo file PDF"));
+      } else {
+        toast("✓ "+(r.message||"Đã gửi"));
+      }
+    })
     .catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
+}
+/* tải file PDF từ base64 */
+function downloadB64Pdf(b64, name){
+  try{
+    var bin=atob(b64); var len=bin.length; var arr=new Uint8Array(len);
+    for(var i=0;i<len;i++) arr[i]=bin.charCodeAt(i);
+    var blob=new Blob([arr],{type:'application/pdf'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); },1500);
+  }catch(e){ toast("Lỗi tải file: "+e.message); }
 }
 
 /* ══════════════ VOICE ══════════════ */
@@ -2788,6 +2834,11 @@ function rerenderActive(){
 document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&$("m-active")) closeModal(); });
 
 
+function fmtDateTime(ts){
+  try{ var d=new Date(ts);
+    return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear()+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+  }catch(e){ return String(ts).slice(0,16).replace('T',' '); }
+}
 /* ══════════════ BẢNG TIN HOẠT ĐỘNG (Activity Feed) ══════════════ */
 function toggleActivityRail(){
   var r=document.getElementById("activity-rail"); if(!r) return;
@@ -2863,13 +2914,26 @@ function renderActivity(){
 
   function card(a){
     var meta=ACT_TYPE_META[a.type]||{label:"Hoạt động",badge:"update"};
+    var detail=a.summary?a.detail:esc(a.detail||"");
+    // box chi tiết hiện khi hover (bên trái panel)
+    var full=[];
+    if(a.keyTask) full.push('<div class="ahb-row"><span class="k">Key task</span><span class="v">'+esc(a.keyTask)+'</span></div>');
+    if(a.subNo) full.push('<div class="ahb-row"><span class="k">Mã</span><span class="v">'+esc(a.subNo)+'</span></div>');
+    full.push('<div class="ahb-row"><span class="k">Người</span><span class="v">'+esc(a.pic||'—')+'</span></div>');
+    full.push('<div class="ahb-row"><span class="k">Loại</span><span class="v">'+meta.label+'</span></div>');
+    full.push('<div class="ahb-row"><span class="k">Thời gian</span><span class="v">'+esc(fmtDateTime(a.ts))+'</span></div>');
+    var hover='<div class="act-hoverbox"><div class="ahb-arrow"></div>'
+      +'<div class="ahb-title">'+detail+'</div>'
+      +full.join("")
+      +'</div>';
     return '<div class="act-card">'
+      +hover
       +'<div class="act-card-h">'
         +'<span class="act-av" style="background:'+avColor(a.pic)+'">'+esc(initials(a.pic))+'</span>'
         +'<span class="act-who">'+esc(a.pic||"—")+'</span>'
         +'<span class="act-badge '+meta.badge+'">'+meta.label+'</span>'
       +'</div>'
-      +'<div class="act-detail">'+(a.summary?a.detail:esc(a.detail||""))+'</div>'
+      +'<div class="act-detail">'+detail+'</div>'
       +'<div class="act-time">'+actRelTime(a.ts)+'</div>'
     +'</div>';
   }
