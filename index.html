@@ -1945,16 +1945,27 @@ function multiFilterDropdown(kind,label,items,sel){
     +(cnt?'<button class="mfd-clear" onclick="clearDetailFilter(\''+kind+'\')">Xóa lọc</button>':'')
     +'</div><div class="mfd-list">'+list+'</div></div></div>';
 }
-function toggleDetailFilter(kind){ S.detailFilterOpen=(S.detailFilterOpen===kind)?"":kind; renderDetail(); }
+function toggleDetailFilter(kind){ S.detailFilterOpen=(S.detailFilterOpen===kind)?"":kind; if(kind==="mtype"||kind==="mpic")renderMonth(); else renderDetail(); }
 function toggleDetailFilterVal(kind,val){
-  var arr=(kind==="type")?S.detailTypes:S.detailPics;
+  var arr;
+  if(kind==="type")arr=S.detailTypes;
+  else if(kind==="pic")arr=S.detailPics;
+  else if(kind==="mtype")arr=(S.monthTypes=S.monthTypes||[]);
+  else if(kind==="mpic")arr=(S.monthPics=S.monthPics||[]);
+  else return;
   var i=arr.indexOf(val);
   if(i>=0) arr.splice(i,1); else arr.push(val);
-  renderDetail();
+  if(kind==="mtype"||kind==="mpic")renderMonth(); else renderDetail();
 }
-function clearDetailFilter(kind){ if(kind==="type")S.detailTypes=[]; else S.detailPics=[]; renderDetail(); }
+function clearDetailFilter(kind){
+  if(kind==="type")S.detailTypes=[];
+  else if(kind==="pic")S.detailPics=[];
+  else if(kind==="mtype")S.monthTypes=[];
+  else if(kind==="mpic")S.monthPics=[];
+  if(kind==="mtype"||kind==="mpic")renderMonth(); else renderDetail();
+}
 document.addEventListener("click",function(e){
-  if(S.detailFilterOpen && !e.target.closest(".mfd")){ S.detailFilterOpen=""; if(S.tab==="detail")renderDetail(); }
+  if(S.detailFilterOpen && !e.target.closest(".mfd")){ var k=S.detailFilterOpen; S.detailFilterOpen=""; if(k==="mtype"||k==="mpic"){ if(S.tab==="month")renderMonth(); } else if(S.tab==="detail")renderDetail(); }
 });
 
 /* Panels key + sub — DÙNG CHUNG cho Overview(lọc PIC) và Detail.
@@ -2110,6 +2121,7 @@ function bumpProg(sno,delta){
   var cur=subPct(sub), nv=Math.max(0,Math.min(100,cur+delta));
   commitProg(sno,nv);
 }
+/* ⭐ #2: cập nhật CỤC BỘ + render ngay (tức thì), lưu ngầm nền — không overlay, không refetch */
 function commitProg(sno,val){
   var sub=findSub(sno); if(!sub)return;
   if(!canEditPic(sub.pic)){ toast("🔒 Chỉ "+(sub.pic||"PIC")+" sửa được"); return; }
@@ -2118,25 +2130,30 @@ function commitProg(sno,val){
   if(v>=100){ newStatus="Completed"; }
   else if(v>0 && (/to\s*do/i.test(sub.status)||!sub.status)){ newStatus="In Progress"; }
   sub.progress=v/100; sub.status=newStatus;
-  overlay(true,"Đang lưu","Cập nhật tiến độ…");
-  apiPost({action:"updateProgress",no:sno,progress:v,status:newStatus}).then(function(){
-    overlay(false); toast("✓ Đã cập nhật "+v+"%"); reloadSoft();
-  }).catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
+  rerenderActive();                 // đổi màu + thanh + status ngay lập tức
+  quietSave(sno,{action:"updateProgress",no:sno,progress:v,status:newStatus});
 }
 function quickStatus(sno,val){
   var sub=findSub(sno); if(!sub)return;
-  if(!canEditPic(sub.pic)){ toast("🔒 Chỉ "+(sub.pic||"PIC")+" sửa được"); reloadSoft(); return; }
+  if(!canEditPic(sub.pic)){ toast("🔒 Chỉ "+(sub.pic||"PIC")+" sửa được"); rerenderActive(); return; }
   var prog=subPct(sub);
-  // ⭐ #2: Completed→100; Cancelled/To Do→0; In Progress mà đang 0 → 25%
+  // ⭐ #2: Completed→100; Cancelled/To Do→0; In Progress mà đang 0 → 25%.
+  //        Đặc biệt: Completed(100%)→In Progress phải về 25% (không giữ 100%)
   if(isDone(val)) prog=100;
   else if(isCancelled(val)) prog=0;
   else if(/to\s*do/i.test(val)) prog=0;
-  else if(isInProgress(val) && prog<=0) prog=25;
+  else if(isInProgress(val)){ if(prog<=0 || prog>=100) prog=25; }
   sub.status=val; sub.progress=prog/100;
-  overlay(true,"Đang lưu","Cập nhật trạng thái…");
-  apiPost({action:"updateProgress",no:sno,progress:prog,status:val}).then(function(){
-    overlay(false); toast("✓ "+val); reloadSoft();
-  }).catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
+  rerenderActive();
+  quietSave(sno,{action:"updateProgress",no:sno,progress:prog,status:val});
+}
+/* lưu ngầm nền — debounce theo sub, không overlay, chỉ toast lỗi */
+var _saveTimer={};
+function quietSave(sno,body){
+  clearTimeout(_saveTimer[sno]);
+  _saveTimer[sno]=setTimeout(function(){
+    apiPost(body).catch(function(e){ toast("⚠️ Lưu thất bại: "+e.message); reloadSoft(); });
+  }, 400);
 }
 function findSub(sno){
   var found=null;
@@ -2257,6 +2274,11 @@ function renderMonth(){
   var months=[...new Set(S.monthly.map(function(m){return m.month;}).filter(Boolean))].sort().reverse();
   if(!S.monthSel && months.length) S.monthSel=months[0];
   var types=[...new Set(S.monthly.map(function(m){return m.type;}).filter(Boolean))];
+  // ⭐ #1: PIC mặc định thấy sẵn task của mình (chưa từng đặt bộ lọc → tự set = mình)
+  if(!S._monthPicInit){
+    S._monthPicInit=true;
+    if(!canAssign() && S.user && S.user.pic) S.monthPics=[S.user.pic];
+  }
   var selTypes=S.monthTypes||[], selPics=S.monthPics||[];
   var pics=[...new Set(S.monthly.map(function(m){return m.pic;}).filter(Boolean))];
   var rows=S.monthly.filter(function(m){
@@ -2272,6 +2294,9 @@ function renderMonth(){
     +'<button class="tf-arrow" onclick="shiftMonth(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button></div>';
   h+='<div class="sel"><select onchange="S.monthSel=this.value;renderMonth()">'
     +months.map(function(m){return '<option value="'+esc(m)+'"'+(m===S.monthSel?' selected':'')+'>'+esc(fmtMonth(m))+'</option>';}).join("")+'</select></div>';
+  // ⭐ #1: 2 bộ lọc Loại việc + Nhân sự
+  h+=multiFilterDropdown("mtype","Loại việc",types.map(function(t){return {val:t,label:t,color:typeColor(t)};}),selTypes);
+  h+=multiFilterDropdown("mpic","Nhân sự",pics.map(function(p){return {val:p,label:p,av:true};}),selPics);
   h+='<span class="mro-mini">'+rows.length+' mục</span>';
   h+='<div class="sp" style="flex:1"></div>';
   if(canAssign()) h+='<button class="btn-secondary" onclick="openSendMonth()"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Xuất PDF báo cáo tháng</button>';
@@ -2291,7 +2316,8 @@ function renderMonth(){
           +'<span class="mr-pic2"><span class="mr-pic2-av" style="background:'+avColor(m.pic)+'">'+esc(initials(m.pic||'?'))+'</span>'+esc(m.pic||'—')+'</span>'
         +'</div></div>'
         +'<div class="mr-card2-body'+(filled?'':' is-empty')+'">'+(filled?linkify(m.content):'Chưa có nội dung.')+'</div>';
-      if(canEdit) h+='<div style="padding:10px 19px 15px"><button class="btn-secondary" onclick="openEditMonth(\''+jsq(m.no)+'\')">✏️ Cập nhật</button></div>';
+      if(canEdit) h+='<div style="padding:10px 19px 15px;display:flex;gap:8px"><button class="btn-secondary" onclick="openEditMonth(\''+jsq(m.no)+'\')">✏️ Cập nhật</button>'
+        +'<button class="btn-secondary" style="color:var(--danger-fg);border-color:#f0c8c8" onclick="delMonth(\''+jsq(m.no)+'\',\''+jsq(m.title||m.keyTask||'')+'\')">🗑️ Xóa</button></div>';
       h+='</div>';
     });
     h+='</div>';
@@ -2303,6 +2329,15 @@ function shiftMonth(dir){
   var i=months.indexOf(S.monthSel);
   var ni=i+dir;
   if(ni>=0&&ni<months.length){ S.monthSel=months[ni]; renderMonth(); }
+}
+/* ⭐ #1: xóa 1 mục Monthly trong sheet MONTH */
+function delMonth(no,title){
+  if(!confirm('Xóa mục "'+(title||no)+'" khỏi báo cáo tháng?\nKhông thể hoàn tác.')) return;
+  overlay(true,"Đang xóa","Xóa khỏi sheet MONTH…");
+  apiPost({action:"deleteMonth",no:no}).then(function(r){
+    S.monthly=(S.monthly||[]).filter(function(m){return m.no!==no;});
+    overlay(false); toast("✓ "+(r&&r.message||"Đã xóa")); renderMonth(); reloadSoft();
+  }).catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
 }
 
 /* ══════════════ MODAL chung ══════════════ */
@@ -2398,6 +2433,7 @@ function openAddKey(){
   var picField = canAsg
     ? '<select id="ak-pic">'+picOptionsHtml(myPic)+'</select>'
     : '<select id="ak-pic" disabled><option selected>'+esc(myPic)+'</option></select>';
+  var today=toISO(new Date());
   var html='<div class="modal-box"><div class="modal-head"><h3>🗂️ Thêm Key Task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
     +'<div class="field"><label>Tên Key Task</label><input id="ak-name" placeholder="Nhập tên key task…"/></div>'
@@ -2407,21 +2443,28 @@ function openAddKey(){
       +'<div class="field"><label>PIC phụ trách'+(canAsg?'':' <span style="color:var(--faint);font-weight:600;text-transform:none">(mặc định là bạn)</span>')+'</label>'+picField+'</div>'
     +'</div>'
     +'<div class="field-row">'
-      +'<div class="field"><label>Bắt đầu</label><input type="date" id="ak-start"/></div>'
-      +'<div class="field"><label>Hạn</label><input type="date" id="ak-planned"/></div>'
+      +'<div class="field"><label>Bắt đầu</label><input type="date" id="ak-start" value="'+today+'" onchange="syncDeadlineMin(\'ak-start\',\'ak-planned\')"/></div>'
+      +'<div class="field"><label>Hạn</label><input type="date" id="ak-planned" value="'+today+'" min="'+today+'"/></div>'
     +'</div>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
     +'<button class="btn-primary" id="ak-save" onclick="saveAddKey()">➕ Thêm</button></div>'
     +'</div></div>';
   showModal(html);
 }
+/* ⭐ #3: khi đổi Bắt đầu → set min cho Hạn = ngày bắt đầu; nếu Hạn < Bắt đầu thì kéo Hạn lên bằng */
+function syncDeadlineMin(startId, planId){
+  var s=$(startId), p=$(planId); if(!s||!p) return;
+  if(s.value){ p.min=s.value; if(p.value && p.value<s.value) p.value=s.value; }
+}
 function saveAddKey(){
   var name=$("ak-name").value.trim();
   if(!name){ toast("Nhập tên key task"); return; }
+  var start=$("ak-start").value, plan=$("ak-planned").value;
+  if(start && plan && plan<start){ toast("⚠️ Hạn phải bằng hoặc sau ngày bắt đầu"); return; }
   var pic=$("ak-pic").value || S.user.pic;   // select disabled vẫn có value
   $("ak-save").disabled=true;
   overlay(true,"Đang thêm","Tạo key task…");
-  apiPost({action:"addKey",keyTask:name,type:$("ak-type").value,pic:pic,start:$("ak-start").value,planned:$("ak-planned").value})
+  apiPost({action:"addKey",keyTask:name,type:$("ak-type").value,pic:pic,start:start,planned:plan})
     .then(function(r){ overlay(false); closeModal(); toast(r&&r.softTimeout?"✓ Đã thêm (đang đồng bộ…)":"✓ Đã thêm key task"); reload(); })
     .catch(function(e){ overlay(false); $("ak-save").disabled=false; toast("⚠️ "+e.message); });
 }
@@ -2435,6 +2478,7 @@ function openAddSub(kno){
   var picField = canAsg
     ? '<select id="as-pic">'+picOptionsHtml(myPic)+'</select>'
     : '<select id="as-pic" disabled><option selected>'+esc(myPic)+'</option></select>';
+  var today=toISO(new Date());
   var html='<div class="modal-box"><div class="modal-head"><h3>➕ Thêm Sub-task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body">'
     +'<div class="field"><label>Thuộc Key Task</label><select id="as-key">'
@@ -2445,8 +2489,8 @@ function openAddSub(kno){
       +'<div class="field"><label>Trạng thái</label><select id="as-status">'+S.statusOptions.map(function(o){return '<option>'+esc(o)+'</option>';}).join("")+'</select></div>'
     +'</div>'
     +'<div class="field-row">'
-      +'<div class="field"><label>Bắt đầu</label><input type="date" id="as-start"/></div>'
-      +'<div class="field"><label>Hạn</label><input type="date" id="as-planned"/></div>'
+      +'<div class="field"><label>Bắt đầu</label><input type="date" id="as-start" value="'+today+'" onchange="syncDeadlineMin(\'as-start\',\'as-planned\')"/></div>'
+      +'<div class="field"><label>Hạn</label><input type="date" id="as-planned" value="'+today+'" min="'+today+'"/></div>'
     +'</div>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
     +'<button class="btn-primary" id="as-save" onclick="saveAddSub()">➕ Thêm</button></div>'
@@ -2457,10 +2501,12 @@ function saveAddSub(){
   var kno=$("as-key").value;
   var name=$("as-name").value.trim();
   if(!name){ toast("Nhập tên sub-task"); return; }
+  var start=$("as-start").value, plan=$("as-planned").value;
+  if(start && plan && plan<start){ toast("⚠️ Hạn phải bằng hoặc sau ngày bắt đầu"); return; }
   var pic=$("as-pic").value || S.user.pic;
   $("as-save").disabled=true;
   overlay(true,"Đang thêm","Tạo sub-task…");
-  apiPost({action:"addSub",keyNo:kno,parentNo:kno,name:name,pic:pic,status:$("as-status").value,start:$("as-start").value,planned:$("as-planned").value})
+  apiPost({action:"addSub",keyNo:kno,parentNo:kno,name:name,pic:pic,status:$("as-status").value,start:start,planned:plan})
     .then(function(r){ overlay(false); closeModal(); toast(r&&r.softTimeout?"✓ Đã thêm (đang đồng bộ…)":"✓ Đã thêm sub-task"); reload(); })
     .catch(function(e){ overlay(false); $("as-save").disabled=false; toast("⚠️ "+e.message); });
 }
