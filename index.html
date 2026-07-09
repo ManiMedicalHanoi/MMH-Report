@@ -1003,7 +1003,7 @@ var S={
   bootByPic:null,                /* nhớ PIC đã chọn để boot lại khi đổi nguồn */
   dateMode:"week", dateFrom:"", dateTo:"",
   overviewPic:"", overviewFlip:{},
-  ganttType:"", ganttOpen:{},
+  ganttType:"", ganttTypes:[], ganttPics:[], ganttQ:"", ganttOpen:{},
   detailType:"", detailTypes:[], detailPics:[], detailQ:"", detailOpen:{},
   detailFilterOpen:"",
   detailTimeMode:"all",
@@ -1705,7 +1705,22 @@ function ganttExpandAll(){
 function renderGantt(){
   var kts=allKeyTasks();
   var types=[...new Set(kts.map(function(k){return k.type;}).filter(Boolean))];
-  if(S.ganttType) kts=kts.filter(function(k){return k.type===S.ganttType;});
+  var pics=picListAll();
+  var selTypes=S.ganttTypes||[], selPics=S.ganttPics||[];
+  var q=(S.ganttQ||"").toLowerCase();
+  // ⭐ #3: áp bộ lọc Loại việc + Nhân sự + search (Gantt đổi theo)
+  kts=kts.filter(function(k){
+    if(selTypes.length && selTypes.indexOf(k.type)<0) return false;
+    if(selPics.length){
+      var hit=(selPics.indexOf(k.pic)>=0) || (k.subs||[]).some(function(s){return selPics.indexOf(s.pic)>=0;});
+      if(!hit) return false;
+    }
+    if(q){
+      var hay=(k.keyTask||"")+" "+(k.type||"")+" "+(k.pic||"")+" "+(k.subs||[]).map(function(s){return (s.name||s.subTask||"")+" "+(s.pic||"");}).join(" ");
+      if(hay.toLowerCase().indexOf(q)<0) return false;
+    }
+    return true;
+  });
   var R=ganttRange();
   var totalDays=R.days;
   function off(d){ return Math.round((new Date(d)-R.start)/86400000); }
@@ -1726,12 +1741,14 @@ function renderGantt(){
   kts = kts.filter(keyInGantt);
   var h="";
   h+=timeFilterBar();
-  h+='<div class="toolbar" style="justify-content:flex-end;gap:8px">';
+  // ⭐ #3: thanh search + 2 bộ lọc giống tab "Tất cả công việc"
+  h+='<div class="detail-toolbar">';
+  h+='<div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
+    +'<input type="text" placeholder="Tìm key task, sub-task, PIC…" value="'+esc(S.ganttQ||"")+'" oninput="S.ganttQ=this.value;clearTimeout(window._gq);window._gq=setTimeout(renderGantt,220)"/></div>';
+  h+=multiFilterDropdown("gtype","Loại việc",types.map(function(t){return {val:t,label:t,color:typeColor(t)};}),selTypes);
+  h+=multiFilterDropdown("gpic","Nhân sự",pics.map(function(p){return {val:p,label:p,av:true};}),selPics);
   h+='<button class="gantt-expand-all" onclick="ganttExpandAll()">⇕ Mở/Ẩn sub-task</button>';
   h+='</div>';
-  h+='<div class="chips" style="margin-bottom:14px"><button class="chip'+(S.ganttType===""?" active":"")+'" onclick="S.ganttType=\'\';renderGantt()">Tất cả loại</button>'
-    +types.map(function(t){return '<button class="chip'+(S.ganttType===t?" active":"")+'" style="'+(S.ganttType===t?'background:'+typeColor(t):'')+'" onclick="S.ganttType=\''+jsq(t)+'\';renderGantt()">'+esc(t)+'</button>';}).join("")
-    +'</div>';
   var dayCells="";
   for(var d=0;d<totalDays;d++){
     var dd=new Date(R.start); dd.setDate(dd.getDate()+d);
@@ -1880,6 +1897,9 @@ function renderDetail(){
   var pics=picListAll();
   var q=(S.detailQ||"").toLowerCase();
   var selTypes=S.detailTypes||[], selPics=S.detailPics||[];
+  var tmode=S.detailTimeMode||"all";
+  var wFrom = tmode!=="all" ? S.dateFrom : null;
+  var wTo   = tmode!=="all" ? S.dateTo   : null;
   var filtered=kts.filter(function(k){
     if(selTypes.length && selTypes.indexOf(k.type)<0) return false;
     if(selPics.length){
@@ -1889,6 +1909,12 @@ function renderDetail(){
     if(q){
       var hay=(k.keyTask||"")+" "+(k.type||"")+" "+(k.pic||"")+" "+(k.subs||[]).map(function(s){return (s.name||s.subTask||"")+" "+(s.pic||"");}).join(" ");
       if(hay.toLowerCase().indexOf(q)<0) return false;
+    }
+    // ⭐ #1: khi lọc theo tuần/tháng, chỉ hiện key có ít nhất 1 sub active trong khoảng
+    if(wFrom && wTo){
+      var subs=k.subs||[];
+      if(!subs.length) return keyInRange(k, wFrom, wTo);
+      if(!subs.some(function(s){return subInRange(s, wFrom, wTo);})) return false;
     }
     return true;
   });
@@ -1910,7 +1936,6 @@ function renderDetail(){
     +'<input type="text" placeholder="Tìm key task, sub-task, PIC…" value="'+esc(S.detailQ||"")+'" oninput="S.detailQ=this.value;clearTimeout(window._dq);window._dq=setTimeout(renderDetail,220)"/></div>';
   h+=multiFilterDropdown("type","Loại việc",types.map(function(t){return {val:t,label:t,color:typeColor(t)};}),selTypes);
   h+=multiFilterDropdown("pic","Nhân sự",pics.map(function(p){return {val:p,label:p,av:true};}),selPics);
-  if(canAssign()||isManager()) h+='<button class="btn-primary" onclick="openAddKey()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Key Task</button>';
   h+='</div>';
   // truyền from/to khi lọc theo thời gian
   var fFrom = tm!=="all" ? S.dateFrom : null;
@@ -1945,27 +1970,31 @@ function multiFilterDropdown(kind,label,items,sel){
     +(cnt?'<button class="mfd-clear" onclick="clearDetailFilter(\''+kind+'\')">Xóa lọc</button>':'')
     +'</div><div class="mfd-list">'+list+'</div></div></div>';
 }
-function toggleDetailFilter(kind){ S.detailFilterOpen=(S.detailFilterOpen===kind)?"":kind; if(kind==="mtype"||kind==="mpic")renderMonth(); else renderDetail(); }
+function toggleDetailFilter(kind){ S.detailFilterOpen=(S.detailFilterOpen===kind)?"":kind; if(kind==="mtype"||kind==="mpic")renderMonth(); else if(kind==="gtype"||kind==="gpic")renderGantt(); else renderDetail(); }
 function toggleDetailFilterVal(kind,val){
   var arr;
   if(kind==="type")arr=S.detailTypes;
   else if(kind==="pic")arr=S.detailPics;
   else if(kind==="mtype")arr=(S.monthTypes=S.monthTypes||[]);
   else if(kind==="mpic")arr=(S.monthPics=S.monthPics||[]);
+  else if(kind==="gtype")arr=(S.ganttTypes=S.ganttTypes||[]);
+  else if(kind==="gpic")arr=(S.ganttPics=S.ganttPics||[]);
   else return;
   var i=arr.indexOf(val);
   if(i>=0) arr.splice(i,1); else arr.push(val);
-  if(kind==="mtype"||kind==="mpic")renderMonth(); else renderDetail();
+  if(kind==="mtype"||kind==="mpic")renderMonth(); else if(kind==="gtype"||kind==="gpic")renderGantt(); else renderDetail();
 }
 function clearDetailFilter(kind){
   if(kind==="type")S.detailTypes=[];
   else if(kind==="pic")S.detailPics=[];
   else if(kind==="mtype")S.monthTypes=[];
   else if(kind==="mpic")S.monthPics=[];
-  if(kind==="mtype"||kind==="mpic")renderMonth(); else renderDetail();
+  else if(kind==="gtype")S.ganttTypes=[];
+  else if(kind==="gpic")S.ganttPics=[];
+  if(kind==="mtype"||kind==="mpic")renderMonth(); else if(kind==="gtype"||kind==="gpic")renderGantt(); else renderDetail();
 }
 document.addEventListener("click",function(e){
-  if(S.detailFilterOpen && !e.target.closest(".mfd")){ var k=S.detailFilterOpen; S.detailFilterOpen=""; if(k==="mtype"||k==="mpic"){ if(S.tab==="month")renderMonth(); } else if(S.tab==="detail")renderDetail(); }
+  if(S.detailFilterOpen && !e.target.closest(".mfd")){ var k=S.detailFilterOpen; S.detailFilterOpen=""; if(k==="mtype"||k==="mpic"){ if(S.tab==="month")renderMonth(); } else if(k==="gtype"||k==="gpic"){ if(S.tab==="gantt")renderGantt(); } else if(S.tab==="detail")renderDetail(); }
 });
 
 /* Panels key + sub — DÙNG CHUNG cho Overview(lọc PIC) và Detail.
