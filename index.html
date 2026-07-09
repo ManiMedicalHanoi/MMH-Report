@@ -2359,7 +2359,7 @@ function renderMonth(){
         +'</div></div>'
         +'<div class="mr-card2-body'+(filled?'':' is-empty')+'">'+(filled?linkify(m.content):'Chưa có nội dung.')+'</div>';
       if(canEdit) h+='<div style="padding:10px 19px 15px;display:flex;gap:8px"><button class="btn-secondary" onclick="openEditMonth('+(m.row||0)+')">✏️ Cập nhật</button>'
-        +'<button class="btn-secondary" style="color:var(--danger-fg);border-color:#f0c8c8" onclick="delMonth(\''+jsq(m.no)+'\','+(m.row||0)+',\''+jsq(m.title||m.keyTask||'')+'\')">🗑️ Xóa</button></div>';
+        +'<button class="btn-secondary" style="color:var(--danger-fg);border-color:#f0c8c8" onclick="delMonth('+(m.row||0)+',\''+jsq(m.no||"")+'\',\''+jsq(m.title||m.keyTask||'')+'\',\''+jsq(m.month||"")+'\')">🗑️ Xóa</button></div>';
       h+='</div>';
     });
     h+='</div>';
@@ -2373,11 +2373,11 @@ function shiftMonth(dir){
   if(ni>=0&&ni<months.length){ S.monthSel=months[ni]; renderMonth(); }
 }
 /* ⭐ #1: xóa 1 mục Monthly trong sheet MONTH */
-function delMonth(no,row,title){
+function delMonth(row,no,title,month){
   if(!confirm('Xóa mục "'+(title||no)+'" khỏi báo cáo tháng?\nKhông thể hoàn tác.')) return;
   overlay(true,"Đang xóa","Xóa khỏi sheet MONTH…");
-  apiPost({action:"deleteMonth",no:no,row:row}).then(function(r){
-    S.monthly=(S.monthly||[]).filter(function(m){ return row?(m.row!==row):(m.no!==no); });
+  apiPost({action:"deleteMonth",row:row,no:no,title:title,month:month}).then(function(r){
+    S.monthly=(S.monthly||[]).filter(function(m){ return row?(m.row!==row):(m.title!==title); });
     overlay(false); toast("✓ "+(r&&r.message||"Đã xóa")); renderMonth(); reloadSoft();
   }).catch(function(e){ overlay(false); toast("⚠️ "+e.message); });
 }
