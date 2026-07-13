@@ -79,6 +79,8 @@ button{cursor:pointer}
 .src-tab .src-lock{font-size:12px;opacity:.7}
 .src-tab .src-badge{font-size:10px;font-weight:700;background:var(--mmh-navy);color:#fff;padding:2px 8px;border-radius:9px}
 .src-tab.active .src-badge{background:var(--mmh-blue)}
+/* ⭐ v5.6: badge "số việc khớp bộ lọc" — nền đỏ, chữ TRẮNG (trước là vàng/chữ đen khó đọc) */
+.src-badge.live{background:#D9433F!important;color:#fff!important;box-shadow:0 0 0 2px rgba(217,67,63,.16)}
 @media(max-width:640px){ #sourcetabs{overflow-x:auto;scrollbar-width:none} .src-tab{white-space:nowrap;flex:0 0 auto} }
 
 /* ══ TABS NAV ══ */
@@ -949,7 +951,6 @@ button{cursor:pointer}
 .mq-od{background:#D9433F;color:#fff;font-weight:800;border-radius:9px;padding:1px 8px;font-size:11px}
 .mq-ok{color:#1E9E5A;font-weight:800;font-size:11.5px}
 @media(prefers-reduced-motion:reduce){ .mq-track{animation:none} .mq-wrap{overflow-x:auto} }
-.src-badge.live{background:var(--mmh-yellow);color:var(--mmh-navy)}
 #mytask-bar.hidden{display:none}
 .mt-ic{font-size:20px;flex:0 0 auto}
 .mt-txt{font-size:14px;color:#8A5A00;font-weight:600;flex:1;min-width:180px;line-height:1.5}
@@ -1161,13 +1162,14 @@ var STATUS_META={
 function stMeta(s){ return STATUS_META[s]||STATUS_META[""]; }
 /* ⭐ Màu theo mức % — đồng bộ với email/PDF backend
    0–25% đỏ · 25–50% cam · 50–75% xanh dương · 75–99% xanh lá · 100% xanh lá đậm */
+/* ⭐ v5.6: thang màu % — ĐỎ → CAM → VÀNG → XANH LÁ (tăng dần theo tiến độ) */
 function progColor(p){
   p=Math.max(0,Math.min(100,Math.round(p||0)));
-  if(p>=100) return "#1E9E5A";
-  if(p>=75)  return "#3FA64B";
-  if(p>=50)  return "#3A5CAA";
-  if(p>=25)  return "#E08A00";
-  return "#D9433F";
+  if(p>=100) return "#1E9E5A";   // xanh đậm
+  if(p>=75)  return "#3FA64B";   // xanh lá
+  if(p>=50)  return "#E5B300";   // vàng
+  if(p>=25)  return "#E8833A";   // cam
+  return "#D9433F";              // đỏ
 }
 /* ⭐ Task quá hạn mà chưa xong (In Progress / To Do) */
 function isOverdue(s){
@@ -1191,12 +1193,36 @@ function subPct(s){
   if(isInProgress(s.status) && p<25) p=25;
   return p;
 }
+/* ⭐ v5.6: BẢNG MÀU LOẠI CÔNG VIỆC — mỗi loại 1 màu KHÁC HẲN nhau (không còn cùng sắc xanh) */
 var TYPE_COLORS={
-  "Marketing-Digital Marketing":"#3A5CAA","Marketing-Design":"#8b5cf6","Marketing-Event":"#e11d48",
+  /* Marketing & Product */
+  "Marketing-Digital Marketing":"#2563eb","Marketing-Design":"#8b5cf6","Marketing-Event":"#e11d48",
   "Marketing-Project":"#0891b2","Marketing-Promotion":"#f59e0b","Marketing-Customer care":"#0d9488",
-  "Product-Training & Presentation":"#0E8A6E","Product-Data Organization":"#7c3aed","Product-Customer Claim":"#c026d3"
+  "Marketing-KOL Partnership":"#db2777",
+  "Product-Training & Presentation":"#16a34a","Product-Data Organization":"#7c3aed",
+  "Product-Customer Claim":"#c026d3","Product-Market Research":"#0ea5e9",
+  /* Back office */
+  "Back office-IT Support":"#0ea5e9","Back office-Legal":"#dc2626","Back office-Inventory":"#f97316",
+  "Back office-Purchasing":"#a16207","Back office-Financial":"#15803d","Back office-Logistics":"#0d9488",
+  "Back office-Sales Support":"#7c3aed","Back office-Product Registration":"#be123c",
+  "Back office-Risk Management":"#475569","Back office-HR-GA":"#ca8a04",
+  /* Management */
+  "Management-Reporting":"#1d4ed8","Management-Planning":"#9333ea","Management-Process":"#0f766e",
+  "Management-People":"#e11d48","Management-Meeting":"#b45309"
 };
-function typeColor(t){ return TYPE_COLORS[t]||"#3A5CAA"; }
+/* Loại chưa có trong bảng → sinh màu ổn định theo tên, tránh trùng sắc */
+var TYPE_PALETTE=["#e11d48","#2563eb","#f59e0b","#16a34a","#8b5cf6","#0891b2","#db2777","#65a30d",
+                  "#f97316","#0ea5e9","#7c3aed","#dc2626","#0d9488","#ca8a04","#9333ea","#475569"];
+var _typeColorCache={};
+function typeColor(t){
+  var k=String(t||"");
+  if(TYPE_COLORS[k]) return TYPE_COLORS[k];
+  if(!k) return "#94a3b8";
+  if(_typeColorCache[k]) return _typeColorCache[k];
+  var h=0; for(var i=0;i<k.length;i++){ h=(h*31+k.charCodeAt(i))>>>0; }
+  var c=TYPE_PALETTE[h%TYPE_PALETTE.length];
+  _typeColorCache[k]=c; return c;
+}
 
 /* ── STATE ── */
 var S={
@@ -1391,6 +1417,7 @@ function boot(){
   GAS_URL = GAS_URLS[S.source] || GAS_URLS.marketing;
   apiGet("boot").then(function(res){
     applyBootData(res);
+    cacheBoot(S.source, res);      /* ⭐ v5.6: cache nguồn đầu tiên */
     var saved="";
     try{ saved=localStorage.getItem("mmh_pic")||""; }catch(_){}
     var found=saved ? S.picList.filter(function(u){return u.pic===saved;})[0] : null;
@@ -1551,6 +1578,7 @@ function startApp(){
   renderActivity();
   renderMyTaskBar();
   scanMyTasks();   // ⭐ quét task của tôi ở CẢ 3 phòng ban (chạy nền)
+  setTimeout(prefetchSources, 400);   // ⭐ v5.6: tải sẵn 2 phòng ban còn lại → chuyển tab tức thì
   /* ⭐ v5.5: ngôn ngữ */
   renderLangSwitch();
   startI18nObserver();
@@ -1634,38 +1662,82 @@ function buildSourceTabs(){
       +'</button>';
   }).join("");
 }
+/* ⭐ v5.6: CHUYỂN PHÒNG BAN TỨC THÌ
+   · Lần đầu vào 1 nguồn → vẫn phải gọi backend (có overlay).
+   · Từ lần 2 trở đi → DỰNG NGAY từ cache (0 giây chờ), rồi lặng lẽ tải mới ở nền
+     và cập nhật lại nếu dữ liệu đổi. Cache cũng được làm mới sau mỗi lần boot. */
+var SRC_CACHE={};        // src → dữ liệu boot gần nhất
+function cacheBoot(src,res){
+  SRC_CACHE[src]={ ts:Date.now(), res:res };
+}
+function applySource(src, res, silent){
+  applyBootData(res);
+  buildSourceTabs();
+  buildTabs();                       // ẩn tab Monthly khi ở Management
+  var dp=$("denied-page"); if(dp) dp.style.display="none";
+  applyDefaultPicFilter();
+  var me=String((S.user&&S.user.pic)||"");
+  if(me){ S.detailPics=[me]; S.detailTimeMode="week"; setDateMode("week"); }
+  switchTab("detail");               // vào thẳng "Tất cả công việc" của mình
+  renderActivity();
+  renderMyTaskBar();
+  if(LANG==="en") translateNode(document.body);
+  if(!silent) toast("✓ Đã chuyển sang "+SOURCE_META[src].label);
+}
 function switchSource(src){
   if(src===S.source) return;
   S.source=src;
   GAS_URL=GAS_URLS[src]||GAS_URLS.marketing;
   // reset các bộ lọc phụ thuộc dữ liệu
-  S.overviewPic=""; S.overviewFlip={}; S.ganttType=""; S.ganttOpen={};
+  S.overviewPic=""; S.overviewFlip={}; S.ovPics=[]; S.ovTypes=[];
+  S.ganttType=""; S.ganttTypes=[]; S.ganttPics=[]; S.ganttOpen={};
   S.detailTypes=[]; S.detailQ=""; S.detailOpen={}; S.detailShowAllSubs={};
-  S.priorityMarks={}; S.monthSel=""; S.monthTypes=[];
-  S.ganttQ=""; S.ganttOpenSub={};   // ⭐ reset Gantt search/sub
-  overlay(true,"Đang tải","Đang chuyển sang "+SOURCE_META[src].label+"…");
+  S.priorityMarks={}; S.monthSel=""; S.monthTypes=[]; S.monthPics=[];
+  S.ganttQ=""; S.ganttOpenSub={};
+  S._monthPicInit=false;
+
+  var cached=SRC_CACHE[src];
+  var haveCache = !!(cached && cached.res && !cached.res.denied);
+
+  if(haveCache){
+    applySource(src, cached.res, true);      // ⚡ hiện ngay, KHÔNG overlay
+    toast("✓ "+SOURCE_META[src].label+" · đang làm mới nền…");
+  } else {
+    overlay(true,"Đang tải","Đang chuyển sang "+SOURCE_META[src].label+"…");
+  }
+
   apiGet("boot").then(function(res){
+    if(S.source!==src) return;               // người dùng đã bấm sang nguồn khác
     if(res && res.denied){
-      overlay(false);
-      buildSourceTabs();
-      showDeniedPage();
-      return;
+      overlay(false); buildSourceTabs(); showDeniedPage(); return;
     }
-    applyBootData(res);
-    overlay(false);
-    buildSourceTabs();
-    buildTabs();   // ẩn tab Monthly khi ở Management
-    $("denied-page").style.display="none";
-    // ⭐ v5: lọc sẵn theo PIC đang login nếu họ có task ở nguồn này
-    applyDefaultPicFilter();
-    switchTab("overview");
-    renderActivity();
-    renderMyTaskBar();
-    toast("✓ Đã chuyển sang "+SOURCE_META[src].label);
+    cacheBoot(src,res);
+    if(haveCache){
+      // chỉ cập nhật dữ liệu, KHÔNG nhảy tab / không đụng bộ lọc người dùng vừa chỉnh
+      S.keyTasks=res.keyTasks||[]; S.monthly=res.monthly||[];
+      S.activityLog=res.activityLog||[]; S.pics=res.pics||[];
+      S.managers=res.managers||[]; S.picList=res.picList||[];
+      S.typeOptions=res.typeOptions||[]; S._picSet=null;
+      syncPriorityMarks();
+      rerenderActive(); buildSourceTabs(); renderActivity(); renderMyTaskBar();
+      if(LANG==="en") translateNode(document.body);
+    } else {
+      overlay(false);
+      applySource(src, res, false);
+    }
   }).catch(function(e){
     overlay(false);
     if(/quyền|denied|permission/i.test(e.message||"")){ showDeniedPage(); }
-    else toast("⚠️ "+e.message);
+    else if(!haveCache) toast("⚠️ "+e.message);
+  });
+}
+/* ⭐ Tải sẵn (prefetch) 2 nguồn còn lại ngay sau khi đăng nhập → bấm tab là hiện liền */
+function prefetchSources(){
+  ["marketing","backoffice","management"].forEach(function(src){
+    if(src===S.source || SRC_CACHE[src]) return;
+    jsonpTo(GAS_URLS[src], { action:"boot", pic:(S.user&&S.user.pic)||"" })
+      .then(function(r){ if(r && r.ok && !r.denied) cacheBoot(src, r); })
+      .catch(function(){});
   });
 }
 function showDeniedPage(){
@@ -1750,7 +1822,7 @@ var LANG = (function(){ try{ return localStorage.getItem("mmh_lang")||"vi"; }cat
 var T_KEYS = {
   "chart.byType":   { vi:"Sub-task theo loại công việc", en:"Sub-tasks by work type" },
   "chart.byStatus": { vi:"Sub-task theo trạng thái",     en:"Sub-tasks by status" },
-  "chart.progress": { vi:"Tiến độ hoàn thành theo kỳ",   en:"Completion progress by period" },
+  "chart.progress": { vi:"Tiến độ hoàn thành từ",         en:"Completion progress from" },
   "chart.nodata":   { vi:"Chưa có dữ liệu",              en:"No data yet" },
   "chart.overall":  { vi:"Hoàn thành",                   en:"Completed" },
   "chart.byWeek":   { vi:"Mỗi dòng = 1 tuần · số sub-task đã hoàn thành / tổng sub-task trong tuần đó",
@@ -1822,7 +1894,27 @@ var DICT_EN = {
   "Chọn phòng ban của bạn":"Choose your department", "← Chọn phòng khác":"← Choose another department",
   "Ban giám đốc & Trưởng phòng":"Directors & Heads", "Product · Marketing · Dental Sales":"Product · Marketing · Dental Sales",
   "Kho · Kế toán · Mua hàng":"Stock · Accounting · Purchasing",
-  "Sales & Marketing":"Sales & Marketing"
+  "Sales & Marketing":"Sales & Marketing",
+  /* ⭐ v5.6: overlay / toast / trạng thái */
+  "Đang tải":"Loading", "Đang lưu":"Saving", "Đang gửi":"Sending", "Đang xóa":"Deleting",
+  "Đang tạo PDF":"Generating PDF", "Đang tải danh sách người dùng…":"Loading user list…",
+  "Tạo PDF & gửi tới team…":"Generating PDF & sending to team…",
+  "Tạo PDF & gửi thử…":"Generating PDF & sending test…",
+  "Dựng file PDF báo cáo tháng…":"Building monthly report PDF…",
+  "Cập nhật monthly…":"Updating monthly item…", "Xóa khỏi sheet MONTH…":"Removing from MONTH sheet…",
+  "Không kết nối được máy chủ":"Cannot reach the server", "↻ Thử lại":"↻ Retry",
+  /* banner / marquee */
+  "Xin chào":"Hi", "— bạn còn":"— you still have", "việc":"tasks", "chưa hoàn thành":"unfinished",
+  ". Bấm để mở phòng ban tương ứng:":". Click to open the department:",
+  "✓ đúng hạn":"✓ on time", "Ẩn":"Hide",
+  /* nút & nhãn khác */
+  "Thông tin thầu":"Tender results", "Dự trù & Doanh số":"Forecast & Turnover",
+  "Dự trù &amp; Doanh số":"Forecast & Turnover", "Product Data":"Product data",
+  "Đổi người dùng (PIC)":"Switch user", "Bảng tin hoạt động":"Activity feed",
+  "Số việc khớp bộ lọc hiện tại":"Tasks matching current filters",
+  "Việc chưa hoàn thành của bạn":"Your unfinished tasks",
+  "bấm để xem chi tiết":"click for details",
+  "Chưa có dữ liệu":"No data yet"
 };
 
 /* Quy tắc động (có số / tên) VI → EN */
@@ -1849,25 +1941,44 @@ var RULES_EN = [
   [/^(\d+) việc chưa xong$/, "$1 open"],
   [/^(\d+) quá hạn$/, "$1 overdue"],
   [/^Tuần (.+)$/, "Week $1"],
-  [/^Tháng (\d{2}\/\d{4})$/, "Month $1"]
+  [/^Tháng (\d{2}\/\d{4})$/, "Month $1"],
+  /* ⭐ v5.6 */
+  [/^Đang chuyển sang (.+)…$/, "Switching to $1…"],
+  [/^✓ Đã chuyển sang (.+)$/, "✓ Switched to $1"],
+  [/^Tiến độ hoàn thành từ (.+)$/, "Completion progress from $1"],
+  [/^(\d+) người có việc trong kỳ · bấm để xem chi tiết$/, "$1 people with tasks · click for details"],
+  [/^Chỉ (.+) sửa được$/, "Only $1 can edit this"],
+  [/^✓ (.+)$/, "✓ $1"]
 ];
 
+/* ⭐ v5.6: tách phần "icon" đứng đầu (emoji, ✓, ⇕, →…) để vẫn tra được từ điển */
+var LEAD_ICON=/^([\u2190-\u21FF\u2300-\u27BF\u2B00-\u2BFF\uD800-\uDFFF\uFE0F\u200D\u00A9\u00AE\s]+)/;
 function trEN(str){
   var raw=String(str);
   var key=raw.trim();
   if(!key) return null;
-  if(DICT_EN[key]!==undefined){
-    return raw.replace(key, DICT_EN[key]);
-  }
-  for(var i=0;i<RULES_EN.length;i++){
-    if(RULES_EN[i][0].test(key)){
-      return raw.replace(key, key.replace(RULES_EN[i][0], RULES_EN[i][1]));
+  function look(k){
+    if(DICT_EN[k]!==undefined) return DICT_EN[k];
+    for(var i=0;i<RULES_EN.length;i++){
+      if(RULES_EN[i][0].test(k)) return k.replace(RULES_EN[i][0], RULES_EN[i][1]);
     }
+    return null;
+  }
+  var out=look(key);
+  if(out!==null) return raw.replace(key, out);
+  /* thử bỏ icon đứng đầu: "📑 Thông tin thầu" → "Thông tin thầu" */
+  var m=LEAD_ICON.exec(key);
+  if(m && m[1] && m[1].trim()!==""){
+    var rest=key.slice(m[1].length);
+    var o2=look(rest);
+    if(o2!==null) return raw.replace(key, m[1]+o2);
   }
   return null;
 }
 
 var _i18nObserver=null, _i18nBusy=false, _i18nTimer=null;
+/* ⭐ v5.6: nhớ bản gốc tiếng Việt để quay lại VN mà KHÔNG cần reload trang */
+var _i18nOrig=[];   // [{node|el, attr, orig}]
 var I18N_SKIP={SCRIPT:1,STYLE:1,TEXTAREA:1};
 function translateNode(root){
   if(LANG!=="en" || !root) return;
@@ -1886,7 +1997,10 @@ function translateNode(root){
     while((n=walker.nextNode())) nodes.push(n);
     nodes.forEach(function(node){
       var out=trEN(node.nodeValue);
-      if(out!==null && out!==node.nodeValue) node.nodeValue=out;
+      if(out!==null && out!==node.nodeValue){
+        _i18nOrig.push({node:node, orig:node.nodeValue});
+        node.nodeValue=out;
+      }
     });
     var els=root.querySelectorAll?root.querySelectorAll("[placeholder],[title]"):[];
     [].forEach.call(els, function(el){
@@ -1894,7 +2008,10 @@ function translateNode(root){
         var v=el.getAttribute(a);
         if(!v) return;
         var o=trEN(v);
-        if(o!==null && o!==v) el.setAttribute(a,o);
+        if(o!==null && o!==v){
+          _i18nOrig.push({el:el, attr:a, orig:v});
+          el.setAttribute(a,o);
+        }
       });
     });
   }catch(e){ console.error("i18n",e); }
@@ -1909,15 +2026,45 @@ function startI18nObserver(){
   });
   _i18nObserver.observe(document.body, {childList:true, subtree:true, characterData:false});
 }
+/* Khôi phục toàn bộ chuỗi về tiếng Việt (dùng khi bấm VN) */
+function restoreI18n(){
+  _i18nBusy=true;
+  for(var i=_i18nOrig.length-1;i>=0;i--){
+    var it=_i18nOrig[i];
+    try{
+      if(it.node && it.node.parentNode) it.node.nodeValue=it.orig;
+      else if(it.el && it.el.isConnected) it.el.setAttribute(it.attr, it.orig);
+    }catch(e){}
+  }
+  _i18nOrig=[];
+  _i18nBusy=false;
+}
+/* ⭐ v5.6: đổi ngôn ngữ TẠI CHỖ — không reload, không quay về màn hình đăng nhập,
+   giữ nguyên tab / bộ lọc / vị trí đang xem. */
 function setLang(l){
   if(l===LANG) return;
   LANG=l;
   try{ localStorage.setItem("mmh_lang", l); }catch(e){}
+  var scrollY=window.scrollY||0;
+  if(l==="vi"){
+    restoreI18n();                 // trả chuỗi tĩnh về VN
+    rerenderAllUI();               // render lại phần động (vốn sinh ra bằng VN)
+  } else {
+    rerenderAllUI();
+    translateNode(document.body);
+    startI18nObserver();
+  }
   renderLangSwitch();
-  if(l==="vi"){ location.reload(); return; }     // về VN: render lại sạch từ đầu
-  buildTabs(); buildSourceTabs(); rerenderActive(); renderActivity(); renderMyTaskBar();
-  translateNode(document.body);
-  startI18nObserver();
+  window.scrollTo(0, scrollY);     // giữ nguyên vị trí cuộn
+}
+/* vẽ lại toàn bộ phần động mà KHÔNG rời khỏi tab hiện tại */
+function rerenderAllUI(){
+  try{
+    if(S.user){
+      buildTabs(); buildSourceTabs(); rerenderActive();
+      renderActivity(); renderMyTaskBar();
+    }
+  }catch(e){ console.error(e); }
 }
 function renderLangSwitch(){
   var el=document.getElementById("lang-switch");
@@ -2143,7 +2290,8 @@ function renderOverview(){
       +donutBig([["Completed",done,"#22c55e"],["In Progress",prog2,"#3b82f6"],["To Do",todo,"#94a3b8"],["Cancelled",cancel,"#b8b2c2"]], String(total.length), t("unit.task"))
       +'</div>';
     h+='</div>';
-    h+='<div class="panel panel-pad chart-card" style="margin-top:16px"><h3>'+t("chart.progress")+'</h3>'
+    h+='<div class="panel panel-pad chart-card" style="margin-top:16px"><h3>'+t("chart.progress")+' '
+      +fmtVNFull(from)+' → '+fmtVNFull(to)+'</h3>'
       +progressBarsHTML(total, from, to)+'</div>';
   } else {
     h+='<div class="section-title"><h2>Công việc của '+esc(pfilter)+' <span style="font-size:12.5px;color:var(--faint);font-weight:600">— bấm sub-task để sửa</span></h2>'
@@ -2277,7 +2425,7 @@ function progressBarsHTML(pool, from, to){
       +'<span class="pb-val">'+b.done+'<small>/'+b.total+'</small></span></div>';
   }).join("");
   return '<div class="pb-wrap">'
-    +'<div class="pb-hero"><div class="pb-hero-l"><b>'+grate+'%</b><span>'+t("chart.overall")+'</span></div>'
+    +'<div class="pb-hero"><div class="pb-hero-l"><b style="color:'+progColor(grate)+'">'+grate+'%</b><span>'+t("chart.overall")+'</span></div>'
       +'<div class="pb-hero-r"><span class="pb-track big"><span class="pb-fill" style="width:'+grate+'%;background:'+progColor(grate)+'"></span></span>'
       +'<span class="pb-hero-n">'+gd+' / '+gt+' '+t("unit.subtask")+'</span></div></div>'
     +'<div class="pb-list">'+rows+'</div>'
