@@ -392,7 +392,9 @@ button{cursor:pointer}
 .pb-row{display:flex;align-items:center;gap:12px}
 .pb-lb{flex:0 0 130px;font-size:12.5px;font-weight:700;color:var(--sub);text-align:right;white-space:nowrap}
 .pb-track{position:relative;flex:1;height:22px;background:var(--lb3);border-radius:11px;overflow:hidden;display:block}
-.pb-track.big{height:16px}
+.pb-track.big{height:30px;border-radius:14px}
+.pb-fill{border-radius:14px}
+.pb-inpct.big{line-height:30px;right:14px;font-size:13px}
 .pb-fill{position:absolute;left:0;top:0;bottom:0;border-radius:11px;transition:width .5s var(--ease)}
 .pb-inpct{position:absolute;right:10px;top:0;line-height:22px;font-size:11.5px;font-weight:800;color:var(--mmh-navy)}
 .pb-val{flex:0 0 62px;font-size:13.5px;font-weight:800;color:var(--mmh-navy);text-align:right}
@@ -629,6 +631,28 @@ button{cursor:pointer}
 .mfd-av{width:24px;height:24px;border-radius:50%;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 .mfd-name{font-size:13.5px;color:var(--text);font-weight:600}
 .mfd-empty{padding:14px;text-align:center;font-size:13px;color:var(--faint)}
+/* ⭐ v5.8: hộp thoại GIAO VIỆC */
+.as-check{display:flex;align-items:center;gap:9px;margin-top:10px;font-size:13.5px;color:var(--sub);cursor:pointer}
+.as-check input{width:17px;height:17px}
+.as-list{max-height:260px;overflow-y:auto;border:1.5px solid var(--border);border-radius:10px;padding:6px;display:flex;flex-direction:column;gap:4px}
+.as-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:.12s}
+.as-row:hover{background:var(--pale)}
+.as-row.on{background:#EAF1FF;box-shadow:inset 3px 0 0 var(--mmh-blue)}
+.as-row.od{background:#FFF4F4}
+.as-row.od.on{background:#FFE9E9;box-shadow:inset 3px 0 0 #D9433F}
+.as-row input{width:17px;height:17px;flex:0 0 auto}
+.as-no{font-size:11px;font-weight:800;color:var(--mmh-blue);background:#E8EEF9;border-radius:5px;padding:2px 7px;flex:0 0 auto}
+.as-nm{flex:1;min-width:0;display:flex;flex-direction:column}
+.as-nm b{font-size:13.5px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.as-nm small{font-size:11.5px;color:var(--faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.as-pic{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--sub);white-space:nowrap}
+.as-av{width:22px;height:22px;border-radius:50%;color:#fff;font-size:9.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.as-dl{font-size:12px;font-weight:700;color:var(--sub);white-space:nowrap}
+.as-dl.od{color:#D9433F}
+.as-empty{padding:22px;text-align:center;color:var(--faint);font-size:13px}
+.as-new{margin:14px 0;padding:12px 14px;background:var(--pale);border-radius:10px}
+.as-new>b{font-size:13px;color:var(--mmh-navy)}
+@media(max-width:640px){ .as-pic,.as-dl{display:none} }
 .mfd-all{background:var(--pale)}
 .mfd-all.on{background:#E8EEF9}
 .mfd-sep{height:1px;background:var(--border);margin:6px 4px}
@@ -1086,9 +1110,9 @@ button{cursor:pointer}
         </div>
         <!-- 2 bộ lọc PIC + Loại hành động -->
         <div class="act-filters">
-          <div class="act-fsel"><select id="act-filter-pic" onchange="setActivityPic(this.value)"><option value="">👥 All PIC</option></select></div>
+          <div class="act-fsel"><select id="act-filter-pic" onchange="setActivityPic(this.value)"><option value="">👥 Tất cả nhân sự</option></select></div>
           <div class="act-fsel"><select id="act-filter-type" onchange="setActivityType(this.value)">
-            <option value="">⚙️ All hành động</option>
+            <option value="">⚙️ Tất cả hành động</option>
             <option value="add">Thêm mới</option>
             <option value="update">Cập nhật</option>
             <option value="complete">Hoàn thành</option>
@@ -1196,23 +1220,23 @@ function subPct(s){
 /* ⭐ v5.6: BẢNG MÀU LOẠI CÔNG VIỆC — mỗi loại 1 màu KHÁC HẲN nhau (không còn cùng sắc xanh) */
 var TYPE_COLORS={
   /* Marketing & Product */
-  "Marketing-Digital Marketing":"#2563eb","Marketing-Design":"#8b5cf6","Marketing-Event":"#e11d48",
-  "Marketing-Project":"#0891b2","Marketing-Promotion":"#f59e0b","Marketing-Customer care":"#0d9488",
-  "Marketing-KOL Partnership":"#db2777",
-  "Product-Training & Presentation":"#16a34a","Product-Data Organization":"#7c3aed",
-  "Product-Customer Claim":"#c026d3","Product-Market Research":"#0ea5e9",
+  "Marketing-Digital Marketing":"#3B6FB6", "Marketing-Design":"#7E63C4", "Marketing-Event":"#C2504C",
+  "Marketing-Project":"#3F8F8A",           "Marketing-Promotion":"#D08A3E", "Marketing-Customer care":"#5B8C5A",
+  "Marketing-KOL Partnership":"#B4628F",
+  "Product-Training & Presentation":"#4E8C6E", "Product-Data Organization":"#6C7BAE",
+  "Product-Customer Claim":"#A0616A",          "Product-Market Research":"#4B93B8",
   /* Back office */
-  "Back office-IT Support":"#0ea5e9","Back office-Legal":"#dc2626","Back office-Inventory":"#f97316",
-  "Back office-Purchasing":"#a16207","Back office-Financial":"#15803d","Back office-Logistics":"#0d9488",
-  "Back office-Sales Support":"#7c3aed","Back office-Product Registration":"#be123c",
-  "Back office-Risk Management":"#475569","Back office-HR-GA":"#ca8a04",
+  "Back office-IT Support":"#4B93B8",  "Back office-Legal":"#C2504C",   "Back office-Inventory":"#D08A3E",
+  "Back office-Purchasing":"#9A7B4F",  "Back office-Financial":"#4E8C6E","Back office-Logistics":"#3F8F8A",
+  "Back office-Sales Support":"#7E63C4","Back office-Product Registration":"#B4628F",
+  "Back office-Risk Management":"#6B7A90","Back office-HR-GA":"#BFA14A",
   /* Management */
-  "Management-Reporting":"#1d4ed8","Management-Planning":"#9333ea","Management-Process":"#0f766e",
-  "Management-People":"#e11d48","Management-Meeting":"#b45309"
+  "Management-Reporting":"#3B6FB6", "Management-Planning":"#8E6BA8", "Management-Process":"#42827C",
+  "Management-People":"#C06C7E",    "Management-Meeting":"#A8813F"
 };
-/* Loại chưa có trong bảng → sinh màu ổn định theo tên, tránh trùng sắc */
-var TYPE_PALETTE=["#e11d48","#2563eb","#f59e0b","#16a34a","#8b5cf6","#0891b2","#db2777","#65a30d",
-                  "#f97316","#0ea5e9","#7c3aed","#dc2626","#0d9488","#ca8a04","#9333ea","#475569"];
+/* Loại chưa khai báo → sinh màu ổn định từ bảng màu dịu, tương phản (không chói mắt) */
+var TYPE_PALETTE=["#C2504C","#3B6FB6","#D08A3E","#4E8C6E","#7E63C4","#3F8F8A","#B4628F","#8A9A4E",
+                  "#C0784B","#4B93B8","#6C7BAE","#A0616A","#5B8C5A","#BFA14A","#8E6BA8","#6B7A90"];
 var _typeColorCache={};
 function typeColor(t){
   var k=String(t||"");
@@ -1252,6 +1276,7 @@ var S={
   monthSel:"", monthType:"", monthTypes:[], monthPics:[],
   reportFrom:"", reportTo:"", reportPics:[], reportTypes:[], reportFilterOpen:"",
   sendWeek:"", sendMonth:"",   /* ⭐ v5.3: kỳ báo cáo chọn trong hộp thoại gửi */
+  assignTo:"", assignSel:{}, assignNote:"", assignQ:"", assignRepic:true,   /* ⭐ v5.8: giao việc */
   editCtx:null,
 };
 function initDateFilter(){
@@ -1346,8 +1371,8 @@ function canEditPic(pic){ if(canAssign())return true; return String(pic||"").toL
 
 /* ── OVERLAY / TOAST ── */
 var _tt;
-function toast(m){ var t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(_tt); _tt=setTimeout(function(){t.classList.remove("show");},3000); }
-function overlay(on,title,msg){ var o=$("overlay"); if(title)$("ov-title").textContent=title; if(msg)$("ov-msg").textContent=msg; o.classList.toggle("show",!!on); }
+function toast(m){ var t=$("toast"); t.textContent=m; if(typeof LANG!=="undefined"&&LANG==="en") translateNode(t); t.classList.add("show"); clearTimeout(_tt); _tt=setTimeout(function(){t.classList.remove("show");},3000); }
+function overlay(on,title,msg){ var o=$("overlay"); if(title)$("ov-title").textContent=title; if(msg)$("ov-msg").textContent=msg; if(typeof LANG!=="undefined"&&LANG==="en") translateNode(o); o.classList.toggle("show",!!on); }
 
 /* ══════════════ API ══════════════ */
 var _jsonpSeq = 0;
@@ -1701,7 +1726,7 @@ function switchSource(src){
 
   if(haveCache){
     applySource(src, cached.res, true);      // ⚡ hiện ngay, KHÔNG overlay
-    toast("✓ "+SOURCE_META[src].label+" · đang làm mới nền…");
+    toast("⟳ Đang cập nhật task của "+SOURCE_META[src].label+"…");
   } else {
     overlay(true,"Đang tải","Đang chuyển sang "+SOURCE_META[src].label+"…");
   }
@@ -1914,7 +1939,49 @@ var DICT_EN = {
   "Số việc khớp bộ lọc hiện tại":"Tasks matching current filters",
   "Việc chưa hoàn thành của bạn":"Your unfinished tasks",
   "bấm để xem chi tiết":"click for details",
-  "Chưa có dữ liệu":"No data yet"
+  "Chưa có dữ liệu":"No data yet",
+  /* ⭐ v5.7 — Bảng tin hoạt động */
+  "👥 Tất cả nhân sự":"👥 All assignees", "⚙️ Tất cả hành động":"⚙️ All actions",
+  "Tất cả nhân sự":"All assignees", "Tất cả hành động":"All actions",
+  "Nhắc ưu tiên":"Priority reminder", "Gửi email/báo cáo":"Email / report sent",
+  "Giao việc":"Assigned", "Thêm mới":"Created", "Trước":"Previous", "Sau":"Next",
+  /* Hộp thoại báo cáo tuần */
+  "Kết quả tuần:":"Week results:", "Plan tuần sau:":"Next week plan:",
+  "Kết quả tuần này:":"This week results:",
+  "Email + PDF gồm 2 phần. Thanh % có màu theo mức, dòng":"Email + PDF has 2 parts. Progress bars are colour-coded; ",
+  "quá hạn":"overdue", "được bôi đỏ.":"rows are highlighted in red.",
+  "Chỉ tới email của":"Sent only to the mailbox of",
+  "— để kiểm tra nội dung trước.":"— to review the content first.",
+  "Gửi cho Team Leader, HOD & đồng nghiệp cùng team":"Send to Team Leader, HOD & teammates",
+  "Gửi cho Team Leader, HOD &amp; đồng nghiệp cùng team":"Send to Team Leader, HOD & teammates",
+  "tất cả thành viên cùng team của bạn":"all members of your team",
+  "CC (luôn có):":"CC (always):", "To:":"To:", "CC:":"CC:", "cả team":"the whole team",
+  /* Hộp thoại báo cáo tháng */
+  "① Kết quả tháng:":"① Month results:", "② Kế hoạch tháng:":"② Next month plan:",
+  "PDF đính kèm email":"The PDF attached to the email is", "y hệt":"identical to",
+  "file tải trực tiếp (toàn bộ PIC, nhóm theo loại việc).":"the direct download (all assignees, grouped by work type).",
+  "Gửi tới email của":"Sent to the mailbox of",
+  "để kiểm tra nội dung trước.":"to review the content first.",
+  "Toàn bộ PIC, nhóm theo loại công việc. Không gửi email.":"All assignees, grouped by work type. No email sent.",
+  /* Thanh lọc thời gian */
+  "Công việc trong tháng":"This month's tasks", "Công việc trong tuần":"This week's tasks",
+  "Tất cả loại":"All types",
+  /* Vai trò */
+  "⭐ Quản lý":"⭐ Manager", "⭐ QL":"⭐ MGR", "⭐ Director":"⭐ Director", "⭐ HOD":"⭐ HOD",
+  "👤 Team Leader":"👤 Team Leader",
+  /* ⭐ v5.8: giao việc */
+  "Giao việc":"Assign task", "📨 Giao việc":"📨 Assign task",
+  "📨 Gửi email giao việc":"📨 Send assignment email",
+  "Giao cho (người nhận email)":"Assign to (email recipient)", "— Chọn nhân sự —":"— Select assignee —",
+  "Chọn công việc để giao":"Select tasks to assign", "Tìm công việc…":"Search tasks…",
+  "➕ Hoặc giao một việc MỚI":"➕ Or assign a NEW task",
+  "Tên công việc mới":"New task name", "Thuộc Key Task":"Under key task",
+  "Ghi chú kèm email":"Note in the email", "Đang giao việc":"Assigning",
+  "Cập nhật PIC & gửi email…":"Updating assignee & sending email…",
+  "Không có công việc chưa hoàn thành nào khớp.":"No unfinished task matches.",
+  "🔒 Chỉ quản lý mới giao việc được":"🔒 Only managers can assign tasks",
+  "⚠️ Chưa chọn người nhận":"⚠️ No recipient selected",
+  "⚠️ Chưa chọn việc nào để giao":"⚠️ No task selected"
 };
 
 /* Quy tắc động (có số / tên) VI → EN */
@@ -1948,6 +2015,23 @@ var RULES_EN = [
   [/^Tiến độ hoàn thành từ (.+)$/, "Completion progress from $1"],
   [/^(\d+) người có việc trong kỳ · bấm để xem chi tiết$/, "$1 people with tasks · click for details"],
   [/^Chỉ (.+) sửa được$/, "Only $1 can edit this"],
+  /* ⭐ v5.7 — chuỗi động còn thiếu */
+  [/^Nhân sự \((\d+)\)$/, "Assignee ($1)"],
+  [/^Loại việc \((\d+)\)$/, "Work type ($1)"],
+  [/^(\d{2}\/\d{4})\s*\(tháng này\)$/, "$1 (this month)"],
+  [/^(.+?)\s*\(tuần này\)$/, "$1 (this week)"],
+  [/^(.+?)\s*\(tuần sau\)$/, "$1 (next week)"],
+  [/^Bạn không có công việc nào trong (.+)\.$/, "You have no tasks in $1."],
+  [/^⟳ Đang cập nhật task của (.+)…$/, "⟳ Updating tasks of $1…"],
+  [/^⭐ Quản lý · (.+)$/, "⭐ Manager · $1"],
+  [/^Tháng (\d{2}\/\d{4})$/, "Month $1"],
+  [/^(\d+) mục$/, "$1 items"],
+  [/^Chỉ (.+) sửa được$/, "Only $1 can edit"],
+  [/^Chọn công việc để giao \((\d+) đã chọn\)$/, "Select tasks to assign ($1 selected)"],
+  [/^\((\d+) đã chọn\)$/, "($1 selected)"],
+  [/^Đã giao (\d+) việc cho (.+)$/, "Assigned $1 task(s) to $2"],
+  [/^Đã gửi nhắc việc \((\d+) công việc\) tới (.+)$/, "Sent assignment ($1 tasks) to $2"],
+  [/^Không tìm thấy email của (.+)$/, "No email found for $1"],
   [/^✓ (.+)$/, "✓ $1"]
 ];
 
@@ -2426,8 +2510,11 @@ function progressBarsHTML(pool, from, to){
   }).join("");
   return '<div class="pb-wrap">'
     +'<div class="pb-hero"><div class="pb-hero-l"><b style="color:'+progColor(grate)+'">'+grate+'%</b><span>'+t("chart.overall")+'</span></div>'
-      +'<div class="pb-hero-r"><span class="pb-track big"><span class="pb-fill" style="width:'+grate+'%;background:'+progColor(grate)+'"></span></span>'
-      +'<span class="pb-hero-n">'+gd+' / '+gt+' '+t("unit.subtask")+'</span></div></div>'
+      +'<div class="pb-hero-r">'
+        +'<span class="pb-track big"><span class="pb-fill" style="width:'+grate+'%;background:'+progColor(grate)+'"></span>'
+          +'<span class="pb-inpct big">'+grate+'%</span></span>'
+        +'<span class="pb-hero-n">'+gd+' / '+gt+' '+t("unit.subtask")+'</span>'
+      +'</div></div>'
     +'<div class="pb-list">'+rows+'</div>'
     +'<div class="pb-note">'+(byMonth?t("chart.byMonth"):t("chart.byWeek"))+'</div></div>';
 }
@@ -2824,6 +2911,12 @@ function renderDetail(){
     +'<input type="text" id="detail-search" placeholder="Tìm key task, sub-task, PIC…" value="'+esc(S.detailQ||"")+'" oninput="S.detailQ=this.value;clearTimeout(window._dq);window._dq=setTimeout(renderDetailList,200)"/></div>';
   h+=multiFilterDropdown("type","Loại việc",types.map(function(t){return {val:t,label:t,color:typeColor(t)};}),selTypes);
   h+=multiFilterDropdown("pic","Nhân sự",pics.map(function(p){return {val:p,label:p,av:true};}),selPics);
+  /* ⭐ v5.8: GIAO VIỆC — chỉ hiện với người có quyền (Nguyen Ha · Tuyen · Hoa · Team Leader) */
+  if(canAssign()){
+    h+='<div class="sp" style="flex:1"></div>'
+      +'<button class="btn-primary" onclick="openAssign()">'
+      +'<svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z"/></svg>Giao việc</button>';
+  }
   h+='</div>';
   h+='<div id="detail-list"></div>';
   $("tab-detail").innerHTML=h;
@@ -3336,8 +3429,136 @@ function delMonth(row,no,title,month){
 }
 
 /* ══════════════ MODAL chung ══════════════ */
-function showModal(html){ $("modals").innerHTML='<div class="modal-overlay show" onclick="if(event.target===this)closeModal()">'+html+'</div>'; }
+function showModal(html){ $("modals").innerHTML='<div class="modal-overlay show" onclick="if(event.target===this)closeModal()">'+html+'</div>'; if(typeof LANG!=="undefined"&&LANG==="en") translateNode($("modals")); }
 function closeModal(){ $("modals").innerHTML=""; }
+
+/* ══════════════ ⭐ v5.8: GIAO VIỆC (ASSIGN) — gửi email giao việc cho PIC ══════════════
+   Trước đây backend đã có action 'assign' nhưng GIAO DIỆN chưa hề gọi tới → tính năng "không chạy".
+   Nay: quản lý (Nguyen Ha · Tuyen · Hoa · Team Leader) mở hộp thoại, chọn người nhận,
+   tick các việc cần giao (hoặc thêm việc mới ngay tại chỗ), tuỳ chọn CHUYỂN PIC của việc
+   sang người đó, rồi gửi email giao việc. Dùng được ở CẢ 3 nguồn (kể cả Management). */
+function assignablePics(){
+  var names=(S.picList||[]).map(function(u){return u.pic;});
+  picListAll().forEach(function(p){ if(names.indexOf(p)<0) names.push(p); });
+  return names.filter(function(p,i,a){ return p && a.indexOf(p)===i; }).sort();
+}
+function openAssign(preNo){
+  if(!canAssign()){ toast("🔒 Chỉ quản lý mới giao việc được"); return; }
+  S.assignSel = {};
+  if(preNo) S.assignSel[preNo]=true;
+  S.assignTo = S.assignTo || "";
+  S.assignQ = "";
+  renderAssignModal();
+}
+function assignOpenSubs(){
+  var out=[];
+  (S.keyTasks||[]).forEach(function(k){ (k.subs||[]).forEach(function(sb){
+    if(isDone(sb.status)||isCancelled(sb.status)) return;
+    out.push({k:k,s:sb});
+  });});
+  return out;
+}
+function renderAssignModal(){
+  var pics=assignablePics();
+  var to=S.assignTo||"";
+  var q=(S.assignQ||"").toLowerCase();
+  var list=assignOpenSubs().filter(function(o){
+    if(!q) return true;
+    var hay=(o.s.name||o.s.subTask||"")+" "+(o.k.keyTask||"")+" "+(o.s.pic||"")+" "+(o.s.no||"");
+    return hay.toLowerCase().indexOf(q)>=0;
+  });
+  var nSel=Object.keys(S.assignSel||{}).filter(function(k){return S.assignSel[k];}).length;
+  var rows=list.length ? list.map(function(o){
+    var on=!!S.assignSel[o.s.no];
+    var dl=effDate(o.s)?fmtVNFull(effDate(o.s)):"—";
+    var od=isOverdue(o.s);
+    return '<label class="as-row'+(on?" on":"")+(od?" od":"")+'">'
+      +'<input type="checkbox" '+(on?"checked":"")+' onchange="toggleAssignSel(\''+jsq(o.s.no)+'\',this.checked)"/>'
+      +'<span class="as-no">'+esc(o.s.no)+'</span>'
+      +'<span class="as-nm"><b>'+esc(o.s.name||o.s.subTask||"")+'</b><small>'+esc(o.k.keyTask||"")+'</small></span>'
+      +'<span class="as-pic"><span class="as-av" style="background:'+avColor(o.s.pic)+'">'+esc(initials(o.s.pic||"?"))+'</span>'+esc(o.s.pic||"— chưa gán —")+'</span>'
+      +'<span class="as-dl'+(od?" od":"")+'">'+esc(dl)+'</span>'
+      +'</label>';
+  }).join("") : '<div class="as-empty">Không có công việc chưa hoàn thành nào khớp.</div>';
+
+  var html='<div class="modal-box modal-lg"><div class="modal-head"><h3>📨 Giao việc</h3>'
+    +'<button class="modal-close" onclick="closeModal()">✕</button></div>'
+    +'<div class="modal-body">'
+    +'<div class="field"><label>Giao cho (người nhận email)</label>'
+      +'<select id="as-to" onchange="S.assignTo=this.value;renderAssignModal()">'
+      +'<option value="">— Chọn nhân sự —</option>'
+      +pics.map(function(p){ return '<option value="'+esc(p)+'"'+(p===to?" selected":"")+'>'+esc(p)+'</option>'; }).join("")
+      +'</select></div>'
+    +'<label class="as-check"><input type="checkbox" id="as-repic" '+(S.assignRepic!==false?"checked":"")+' onchange="S.assignRepic=this.checked"/>'
+      +'<span>Chuyển <b>PIC</b> của các việc đã chọn sang người này (ghi vào sheet)</span></label>'
+    +'<div class="field" style="margin-top:12px"><label>Chọn công việc để giao <span style="color:var(--mmh-blue)">('+nSel+' đã chọn)</span></label>'
+      +'<div class="search" style="margin-bottom:8px"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
+      +'<input type="text" id="as-q" placeholder="Tìm công việc…" value="'+esc(S.assignQ||"")+'" oninput="S.assignQ=this.value;clearTimeout(window._asq);window._asq=setTimeout(renderAssignModal,220)"/></div>'
+      +'<div class="as-list">'+rows+'</div></div>'
+    +'<div class="as-new"><b>➕ Hoặc giao một việc MỚI</b>'
+      +'<div class="field-row" style="margin-top:8px">'
+        +'<div class="field"><label>Tên công việc mới</label><input id="as-newname" placeholder="VD: Chuẩn bị hồ sơ thầu BV Bạch Mai"/></div>'
+        +'<div class="field"><label>Deadline</label><input id="as-newdl" type="date"/></div>'
+      +'</div>'
+      +'<div class="field"><label>Thuộc Key Task</label><select id="as-newkey">'
+        +(S.keyTasks||[]).map(function(k){ return '<option value="'+esc(k.no)+'">'+esc(k.no+'. '+k.keyTask)+'</option>'; }).join("")
+      +'</select></div></div>'
+    +'<div class="field"><div class="field-label-row"><label>Ghi chú kèm email</label></div>'
+      +'<textarea id="as-note" rows="3" placeholder="VD: Ưu tiên hoàn thành trước 20/07, báo cáo lại khi xong.">'+esc(S.assignNote||"")+'</textarea></div>'
+    +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
+    +'<button class="btn-primary" id="as-send" onclick="doAssign()">📨 Gửi email giao việc</button></div>'
+    +'</div></div>';
+  showModal(html);
+}
+function toggleAssignSel(no,on){ S.assignSel=S.assignSel||{}; S.assignSel[no]=!!on; renderAssignModal(); }
+function doAssign(){
+  var to=String(S.assignTo||"").trim();
+  if(!to){ toast("⚠️ Chưa chọn người nhận"); return; }
+  var note=$("as-note")?$("as-note").value:"";
+  S.assignNote=note;
+  var newName=$("as-newname")?$("as-newname").value.trim():"";
+  var newDl=$("as-newdl")?$("as-newdl").value:"";
+  var newKey=$("as-newkey")?$("as-newkey").value:"";
+  var repic=$("as-repic")?$("as-repic").checked:true;
+
+  var picked=[];
+  assignOpenSubs().forEach(function(o){
+    if(S.assignSel && S.assignSel[o.s.no]){
+      picked.push({ no:o.s.no, row:o.s.row, name:o.s.name||o.s.subTask||"", keyTask:o.k.keyTask||"",
+                    deadline:effDate(o.s)||"", status:o.s.status||"", pic:to });
+    }
+  });
+  if(!picked.length && !newName){ toast("⚠️ Chưa chọn việc nào để giao"); return; }
+
+  var btn=$("as-send"); if(btn) btn.disabled=true;
+  overlay(true,"Đang giao việc","Cập nhật PIC & gửi email…");
+
+  var jobs=[];
+  /* (a) đổi PIC các việc đã chọn */
+  if(repic && picked.length){
+    picked.forEach(function(it){
+      jobs.push(apiPost({action:"updateSub", no:it.no, row:it.row, updates:{pic:to}}));
+    });
+  }
+  /* (b) tạo việc mới rồi giao luôn */
+  if(newName){
+    jobs.push(apiPost({action:"addSub", parentNo:newKey, keyNo:newKey, name:newName, subTask:newName,
+                       pic:to, planned:newDl, status:"To Do", progress:0 }));
+    picked.push({ no:"(mới)", name:newName, keyTask:"", deadline:newDl, status:"To Do", pic:to });
+  }
+
+  Promise.all(jobs).catch(function(){/* lỗi ghi sheet vẫn tiếp tục gửi email */}).then(function(){
+    return apiPost({ action:"assign", toPic:to, note:note, items:JSON.stringify(picked) });
+  }).then(function(r){
+    overlay(false); closeModal();
+    S.assignSel={}; S.assignNote="";
+    toast("✓ "+((r&&r.message)||("Đã giao "+picked.length+" việc cho "+to)));
+    reloadSoft();
+  }).catch(function(e){
+    overlay(false); if(btn)btn.disabled=false;
+    toast("⚠️ "+e.message);
+  });
+}
 
 /* ── SỬA SUB-TASK (kèm kết quả/link — payload có thể DÀI → apiPost tự POST) ── */
 function openEdit(sno){
@@ -4110,7 +4331,7 @@ function populateActivityPicFilter(){
   (S.activityLog||[]).forEach(function(a){ var p=a.pic||a.who||a.user; if(p)pics[p]=1; });
   picListAll().forEach(function(p){ pics[p]=1; });
   var names=Object.keys(pics).sort();
-  sel.innerHTML='<option value="">👥 All PIC</option>'+names.map(function(p){
+  sel.innerHTML='<option value="">👥 Tất cả nhân sự</option>'+names.map(function(p){
     return '<option value="'+esc(p)+'"'+(p===cur?' selected':'')+'>'+esc(p)+'</option>';
   }).join("");
 }
