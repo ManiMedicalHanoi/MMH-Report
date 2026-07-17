@@ -1097,6 +1097,7 @@ button{cursor:pointer}
   .report-toolbar .btn-primary{width:100%;justify-content:center}
 }
 
+
 /* ══════════════════════════════════════════════════════════════════════
    ⭐ MMH CALENDAR — Lịch tổng hợp (Công tác · Đào tạo · Marketing)
    Overlay toàn màn hình, độc lập với hệ thống báo cáo theo phòng ban.
@@ -1209,8 +1210,8 @@ button{cursor:pointer}
 .cal-dow div{color:#dbe6f7;font-size:12.5px;font-weight:800;text-align:center;padding:13px 0;letter-spacing:1px;text-transform:uppercase}
 .cal-dow div.we{color:var(--mmh-yellow)}
 .cal-weeks{display:grid;grid-template-columns:repeat(7,1fr)}
-.cal-cell{min-height:138px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);
-  padding:8px 8px 10px;display:flex;flex-direction:column;gap:5px;position:relative;cursor:pointer;transition:background .12s}
+.cal-cell{min-height:138px;min-width:0;border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:8px 8px 10px;display:flex;flex-direction:column;gap:5px;position:relative;cursor:pointer;transition:background .12s;overflow:hidden}
 .cal-cell:nth-child(7n){border-right:none}
 .cal-cell:hover{background:var(--pale)}
 .cal-cell.out{background:#fafbfd}
@@ -1220,12 +1221,12 @@ button{cursor:pointer}
 .cal-dnum{align-self:flex-start;font-size:14px;font-weight:800;color:var(--text);
   width:29px;height:29px;display:flex;align-items:center;justify-content:center;border-radius:9px}
 .cal-cell.we .cal-dnum{color:var(--mmh-blue)}
-.cal-chips{display:flex;flex-direction:column;gap:4px;overflow:hidden}
+.cal-chips{display:flex;flex-direction:column;gap:4px;overflow:hidden;min-width:0;width:100%;max-width:100%}
 .cal-chip{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#fff;
   padding:4px 8px;border-radius:7px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  box-shadow:0 1px 3px rgba(0,0,0,.12);min-width:0;max-width:100%}
 .cal-chip .cdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.85);flex-shrink:0}
-.cal-chip .ctxt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cal-chip .ctxt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1;display:block}
 .cal-chip.k-trip{background:#0E8A6E}
 .cal-chip.k-training{background:#7c3aed}
 .cal-chip.k-event{background:#2457c5}
@@ -1346,8 +1347,8 @@ button{cursor:pointer}
     <div class="tb-title"><h1>MMH Report</h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
-    <button class="cal-launch" onclick="openMMHCalendar()" title="Mở lịch tổng hợp MMH">📅 <span>MMH Calendar</span></button>
-    <div class="tb-sp"></div>
+    <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
+<div class="tb-sp"></div>
     <div id="lang-switch" class="lang-sw"></div>   <!-- ⭐ v5.5: VN / EN -->
     <div class="tb-user">
       <div class="tb-av" id="u-av">?</div>
@@ -1417,6 +1418,7 @@ button{cursor:pointer}
     </div>
   </div>
 </div>
+
 
 <!-- ═══ MMH CALENDAR (overlay toàn màn hình) ═══ -->
 <div id="cal-app">
@@ -5079,6 +5081,7 @@ function renderActivity(){
   }
 }
 
+
 /* ══════════════════════════════════════════════════════════════════════════
    ⭐ MMH CALENDAR — module lịch tổng hợp (độc lập, JSONP tới 3 backend riêng)
    Công tác (Business trip) · Đào tạo (Training) · Marketing (Event + Product)
@@ -5138,7 +5141,6 @@ window.openMMHCalendar=function(){
   if(!CAL.ym){ var n=new Date(); CAL.ym={y:n.getFullYear(),m:n.getMonth()}; }
   buildCats(); render();
   if(!CAL.loaded && !CAL.loading) CAL.reload();
-  else if(CAL.loaded && (Date.now()-(CAL._ts||0))>90000) CAL.reload();  // reopen → làm mới ngầm nếu dữ liệu cũ >90s
 };
 window.closeMMHCalendar=function(){
   $("cal-app").classList.remove("show"); document.body.style.overflow=""; CAL.closeDay();
@@ -5162,7 +5164,7 @@ CAL.reload=function(){
     if(mkt && mkt.ok && mkt.events) mkt.events.forEach(function(ev){ (ev.kind==="product"?mp:me).push(ev); });
     CAL.raw.event=me; CAL.raw.product=mp;
     CAL.updated={ trip:(trip&&trip.updated)||"", training:(trn&&trn.updated)||"", marketing:(mkt&&mkt.updated)||"" };
-    CAL.loaded=true; CAL.loading=false; CAL._ts=Date.now();
+    CAL.loaded=true; CAL.loading=false;
     if(btn) btn.classList.remove("spin");
     render();
   });
