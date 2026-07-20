@@ -1352,7 +1352,7 @@ button{cursor:pointer}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v7.0</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v7.1</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -3395,7 +3395,7 @@ function renderDetailList(){
   var kts=allKeyTasks();
   var q=(S.detailQ||"").toLowerCase();
   var selTypes=S.detailTypes||[], selPics=S.detailPics||[];
-  var selStatus=S.detailStatusFilter||["In Progress","To Do"];   /* ⭐ v7.0 */
+  var selStatus=S.detailStatusFilter||stFilterDefault();   /* ⭐ v7.1 */
   var tm=S.detailTimeMode||"all";
   var wFrom = tm!=="all" ? S.dateFrom : null;
   var wTo   = tm!=="all" ? S.dateTo   : null;
@@ -3414,11 +3414,10 @@ function renderDetailList(){
       if(!subs.length) return false;
       if(!subs.some(function(s){return subInRangeStrict(s, wFrom, wTo);})) return false;
     }
-    /* ⭐ v7.0: filter theo status — ẩn key nếu TẤT CẢ sub-task không khớp với status filter */
-    if(selStatus.length<3){
-      var stSubs=k.subs||[];
-      if(!stSubs.length) return selStatus.indexOf(ktStatus(k))>=0;
-      if(!stSubs.some(function(s){return selStatus.indexOf(s.status||"To Do")>=0;})) return false;
+    /* ⭐ v7.1: lọc theo TRẠNG THÁI TỔNG của key task (đúng với badge đang hiển thị).
+       Trước đây lọc theo "có bất kỳ sub nào khớp" ⇒ key In Progress vẫn lọt vào khi chọn Completed. */
+    if(selStatus.length<stFilterAll().length){
+      if(selStatus.indexOf(ktStatus(k))<0) return false;
     }
     return true;
   });
@@ -3434,42 +3433,43 @@ function setDetailTime(mode){
   else renderDetail();
 }
 /* ⭐ v7.0: status filter — mặc định ẩn Completed */
+/* ⭐ v7.1: mặc định lọc = To Do + In Progress (ẩn Completed & Cancelled) */
+function stFilterDefault(){ return ["To Do","In Progress"]; }
+function stFilterAll(){ return (S.statusOptions||["To Do","In Progress","Completed","Cancelled"]).slice(); }
 function statusFilterToggle(){
-  var selStatus=S.detailStatusFilter||["In Progress","To Do"];
-  var statuses=["To Do","In Progress","Completed"];
+  var statuses=stFilterAll();
+  var selStatus=S.detailStatusFilter||stFilterDefault();
   var open=(S.detailFilterOpen==="status");
-  var cnt=selStatus.length;
-  var head='<button class="mfd-btn'+(cnt!==3?' active':'')+'" onclick="toggleDetailFilter(\'status\')">'
+  var cnt=selStatus.length, total=statuses.length;
+  var allOn=(cnt===total);
+  var head='<button class="mfd-btn'+(allOn?'':' active')+'" onclick="toggleDetailFilter(\'status\')">'
     +'<svg class="mfd-ic" viewBox="0 0 24 24"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><circle cx="7" cy="17" r="3"/><circle cx="17" cy="17" r="3"/></svg>'
-    +'Trạng thái'+(cnt!==3?' ('+cnt+')':'')
+    +'Trạng thái'+(allOn?'':' ('+cnt+')')
     +'<svg class="mfd-caret" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>';
-  var allOn=(cnt===3);
-  var allItem='<div class="mfd-item mfd-all'+(allOn?' on':'')+'" onclick="toggleStatusFilter(null,true)">'
+  var allItem='<div class="mfd-item mfd-all'+(allOn?' on':'')+'" onclick="toggleStatusFilter(null,\'showall\')">'
     +'<span class="mfd-check'+(allOn?' on':'')+'">'+(allOn?'✓':'')+'</span>'
-    +'<span class="mfd-name" style="font-weight:800">Tất cả (3)</span></div>';
+    +'<span class="mfd-name" style="font-weight:800">Tất cả ('+total+')</span></div>';
   var list=statuses.map(function(st){
     var on=selStatus.indexOf(st)>=0;
-    var meta=stMeta(st);
-    var dot='<span class="mfd-dot" style="background:'+meta.dot+'"></span>';
     return '<div class="mfd-item" onclick="toggleStatusFilter(\''+jsq(st)+'\')">'
-      +'<span class="mfd-check'+(on?' on':'')+'">'+(on?'✓':'')+'</span>'+dot
+      +'<span class="mfd-check'+(on?' on':'')+'">'+(on?'✓':'')+'</span>'
+      +'<span class="mfd-dot" style="background:'+stMeta(st).dot+'"></span>'
       +'<span class="mfd-name">'+esc(st)+'</span></div>';
   }).join("");
   list = allItem + '<div class="mfd-sep"></div>' + list;
   return '<div class="mfd'+(open?' open':'')+'">'+head
     +'<div class="mfd-panel"><div class="mfd-head"><b>Trạng thái</b>'
-    +(cnt!==3?'<button class="mfd-clear" onclick="toggleStatusFilter(null,true)">Xóa lọc</button>':'')
+    +(allOn?'':'<button class="mfd-clear" onclick="toggleStatusFilter(null,\'reset\')">Mặc định</button>')
     +'</div><div class="mfd-list">'+list+'</div></div></div>';
 }
-function toggleStatusFilter(status,all){
-  if(all==='showall'){ S.detailStatusFilter=["To Do","In Progress","Completed"]; }
-  else if(all){ S.detailStatusFilter=["In Progress","To Do"]; }
+function toggleStatusFilter(status,mode){
+  if(mode==='showall'){ S.detailStatusFilter=stFilterAll(); }
+  else if(mode==='reset'||mode===true){ S.detailStatusFilter=stFilterDefault(); }
   else{
-    var arr=S.detailStatusFilter||["In Progress","To Do"];
+    var arr=(S.detailStatusFilter||stFilterDefault()).slice();
     var idx=arr.indexOf(status);
-    if(idx>=0) arr.splice(idx,1);
-    else arr.push(status);
-    if(!arr.length) arr=["In Progress","To Do"];
+    if(idx>=0) arr.splice(idx,1); else arr.push(status);
+    if(!arr.length) arr=stFilterDefault();
     S.detailStatusFilter=arr;
   }
   mfdRender("status");
@@ -3562,11 +3562,11 @@ function detailKeyPanels(keys, from, to, picFilter){
       hiddenCount=subs.length-inr.length;
       subsInRange=inr;
     }
-    /* ⭐ v7.0: lọc theo TRẠNG THÁI — chỉ áp dụng ở tab "Cập nhật công việc" */
+    /* ⭐ v7.1: lọc theo TRẠNG THÁI — chỉ áp dụng ở tab "Cập nhật công việc" */
     var stHidden=0;
     if(S.tab==="detail" && !picFilter){
-      var selSt=S.detailStatusFilter||["In Progress","To Do"];
-      if(selSt.length<3){
+      var selSt=S.detailStatusFilter||stFilterDefault();
+      if(selSt.length<stFilterAll().length){
         var stKeep=subsInRange.filter(function(s){return selSt.indexOf(s.status||"To Do")>=0;});
         stHidden=subsInRange.length-stKeep.length;
         subsInRange=stKeep;
