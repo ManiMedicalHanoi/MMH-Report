@@ -247,12 +247,36 @@ button{cursor:pointer}
 
 /* ══ KT DETAIL PANELS ══ */
 .kt-panel{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm);margin-bottom:14px;overflow:hidden}
-.kt-head{display:flex;align-items:center;gap:12px;padding:15px 18px;cursor:pointer;flex-wrap:wrap}
+/* ⭐ v7.6: dòng KEY TASK dùng chung lưới 9 cột với sub-task */
+.kt-head{display:grid;grid-template-columns:14px 34px 1.6fr 112px 76px 158px 128px 1.25fr 16px;align-items:center;gap:9px;padding:12px 14px;cursor:pointer;background:var(--pale);border-bottom:1px solid var(--border)}
+.kt-no{font-size:11.5px;font-weight:800;color:var(--mmh-blue);text-align:center}
+.kt-namecell{display:flex;align-items:center;gap:7px;min-width:0;flex-wrap:wrap}
+.kt-progcell{display:flex;align-items:center;gap:6px;min-width:0}
+.kt-progcell .khm-pct{font-size:11.5px;font-weight:800;flex-shrink:0}
+.kt-progcell .khm-sub{font-size:10.5px;color:var(--faint);font-weight:700;flex-shrink:0}
+.kt-actwrap{display:flex;justify-content:flex-end;position:relative}
+/* nút sửa/xoá chỉ hiện khi rê chuột, neo mép phải, có nền mờ để không che chữ */
+.kt-head .kt-actions{position:absolute;right:0;top:50%;transform:translateY(-50%);opacity:0;pointer-events:none;transition:.14s;background:linear-gradient(90deg,rgba(240,244,250,0) 0%,var(--pale) 22%);padding-left:22px}
+.kt-head:hover .kt-actions{opacity:1;pointer-events:auto}
+.kt-head .icon-btn{width:26px;height:26px;font-size:12px}
+.kt-panel{position:relative}
+/* ô PIC CHÍNH trên dòng key task — dạng pill (giờ là con trực tiếp của .kt-head) */
+.kt-head > .khm-pic{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--mmh-navy);background:var(--lb3);border:1px solid var(--lb1);border-radius:20px;padding:2px 8px 2px 3px;min-width:0;overflow:hidden}
+.kt-head > .khm-pic .khm-av{width:17px;height:17px;border-radius:50%;color:#fff;font-size:8.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.kt-head > .khm-date{font-size:11.5px;color:var(--sub);font-weight:600;text-align:center}
+.kt-title{flex:0 1 auto}
+/* màn hình hẹp: dòng key task xếp dọc cho dễ đọc */
+@media(max-width:900px){
+  .kt-head{grid-template-columns:14px 1fr auto;grid-auto-rows:auto;row-gap:6px;padding:12px}
+  .kt-head > .kt-no{display:none}
+  .kt-head > .kt-namecell{grid-column:2 / -1}
+  .kt-head > .sr-result{grid-column:1 / -1}
+}
 .kt-head:hover{background:var(--pale)}
 .kt-caret{width:17px;height:17px;stroke:var(--sub);fill:none;stroke-width:2.5;transition:transform .2s;flex-shrink:0}
 .kt-head.open .kt-caret{transform:rotate(90deg)}
 .kt-type-tag{font-size:11px;font-weight:700;padding:3px 11px;border-radius:12px;white-space:nowrap}
-.kt-title{font-size:15px;font-weight:700;color:var(--text);flex:1;min-width:150px}
+.kt-title{font-size:15px;font-weight:700;color:var(--text);flex:1 1 auto;min-width:140px}
 .kt-meta{display:flex;align-items:center;gap:14px;font-size:12.5px;color:var(--sub);flex-wrap:wrap}
 .kt-prog{width:120px}
 .kt-actions{display:flex;gap:6px}
@@ -545,7 +569,7 @@ button{cursor:pointer}
 @media(max-width:640px){ .flip-row{grid-template-columns:1fr 1fr;gap:10px} .flip-card{height:130px} .flip-val{font-size:34px} }
 
 /* ══ KEY HEADER META ══ */
-.kt-hmeta{display:grid;grid-template-columns:130px 150px 46px 90px 40px 120px;align-items:center;gap:10px;flex:0 0 auto}
+.kt-hmeta{display:grid;grid-template-columns:150px 46px 90px 40px 120px;align-items:center;gap:10px;flex:0 0 auto}
 .khm{font-size:12.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .khm-pic{display:flex;align-items:center;gap:6px;font-weight:600}
 .khm-av{width:22px;height:22px;border-radius:50%;color:#fff;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
@@ -573,7 +597,17 @@ button{cursor:pointer}
 .sr-result a:hover{text-decoration:underline}
 .sr-result .rlink{display:inline-flex;align-items:center;gap:3px;background:var(--lb3);color:var(--mmh-blue);border-radius:6px;padding:1px 7px;font-size:11px;font-weight:700;margin-right:4px;text-decoration:none}
 .sr-result .rlink:hover{background:var(--mmh-blue);color:#fff}
+/* ⭐ v7.6: ô kết quả sửa trực tiếp */
 .sr-result-empty{font-size:12px;color:var(--faint);font-style:italic}
+.rc-empty{font-size:11.5px;color:var(--faint);font-style:italic}
+.rc-txt{display:inline}
+.rc-editable{cursor:text;border-radius:7px;padding:3px 6px;margin:-3px -6px;transition:.12s;border:1px dashed transparent}
+.rc-editable:hover{background:#fff;border-color:var(--lb1)}
+.rc-editable:hover .rc-empty{color:var(--mmh-blue);font-style:normal;font-weight:700}
+.sr-result.rc-editing{display:block;-webkit-line-clamp:unset;background:#fff;border:1.5px solid var(--mmh-blue);border-radius:8px;padding:6px;margin:0;box-shadow:0 3px 12px rgba(14,47,95,.14);position:relative;z-index:5}
+.rc-input{width:100%;min-height:62px;border:none;outline:none;resize:vertical;font-family:inherit;font-size:12px;line-height:1.45;color:var(--text);background:transparent}
+.rc-hint{font-size:9.5px;color:var(--faint);text-align:right;margin-top:3px;font-weight:600}
+.sr-result.rc-key{font-weight:600}
 /* ⭐ Kết quả Key Task inline */
 .kt-result{padding:9px 18px 11px 44px;font-size:12.5px;color:var(--sub);line-height:1.5;background:var(--pale);border-top:1px dashed var(--border);word-break:break-word}
 .kt-result-lbl{font-weight:700;color:var(--mmh-navy);font-size:11.5px}
@@ -831,7 +865,7 @@ button{cursor:pointer}
 .sub-row.out-range{opacity:.82}
 .sub-row.out-range .sr-dot{opacity:.5}
 /* ⭐ v7.2: DÒNG TIÊU ĐỀ CỘT cho sub-list (đồng bộ với bảng Weekly) */
-.sr-head{display:grid;grid-template-columns:14px 34px 1.6fr 112px 76px 158px 128px 1.25fr 16px;align-items:center;gap:9px;padding:7px 12px;background:var(--mmh-navy);border-radius:8px;margin-bottom:4px}
+.sr-head{display:grid;grid-template-columns:14px 34px 1.6fr 112px 76px 158px 128px 1.25fr 16px;align-items:center;gap:9px;padding:9px 14px;background:var(--mmh-navy);border-radius:10px;margin:0 0 8px;position:sticky;top:0;z-index:6;box-shadow:0 2px 8px rgba(14,47,95,.18)}
 .sr-head span{font-size:10.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:#c7d6ef;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:900px){ .sr-head{display:none} }
 .sub-toggle-all{padding:9px 14px;margin:2px 0;font-size:12.5px;font-weight:700;color:var(--mmh-blue);cursor:pointer;text-align:center;background:var(--pale);border-radius:8px;transition:.12s;border:1px dashed var(--lb2)}
@@ -844,6 +878,13 @@ button{cursor:pointer}
 .ic-badge.main-b{background:var(--mmh-blue);margin-left:5px}
 .ic-tag.ic-more{background:var(--gray);border-color:var(--border-2);color:var(--sub);padding:2px 8px;cursor:default}
 .khm-pic{white-space:nowrap}
+/* ⭐ v7.5: cụm PIC trên dòng Key Task (tab Cập nhật công việc) — trình bày
+   giống hệt dòng key task bên tab "Báo cáo tuần": PIC chính dạng pill, rồi tag người khác. */
+.kt-pics{display:inline-flex;align-items:center;gap:5px;flex:0 1 auto;min-width:0;overflow:hidden}
+.kt-pics .khm-pic{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--mmh-navy);background:var(--lb3);border:1px solid var(--lb1);border-radius:20px;padding:2px 9px 2px 3px;max-width:170px}
+.kt-pics .khm-av{width:17px;height:17px;border-radius:50%;color:#fff;font-size:8.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.kt-pics .ic-tags{margin-left:0}
+@media(max-width:900px){ .kt-pics{flex-basis:100%;order:9;margin-top:4px} }
 /* tag trong bảng Báo cáo tuần */
 .rp-key-pics{display:inline-flex;align-items:center;gap:4px;margin-left:10px;vertical-align:middle;min-width:0;overflow:hidden}
 .rp-key-pics .khm-pic{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--mmh-navy);background:var(--lb3);border-radius:20px;padding:2px 8px 2px 3px}
@@ -1378,7 +1419,7 @@ button{cursor:pointer}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v7.4</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v7.6</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -3369,6 +3410,74 @@ function linkify(txt){
 }
 /* ⭐ Ô kết quả hiển thị NGAY BÊN CẠNH subtask ở tab "Tất cả công việc".
    - Gọn: text preview + chip link (nếu có link). Bấm chip mở link, bấm phần còn lại mở sửa. */
+/* ═══ ⭐ v7.6: Ô KẾT QUẢ / LINK SỬA TRỰC TIẾP TRÊN DÒNG ═══
+   Bấm 1 phát vào ô → biến thành textarea ngay tại chỗ, không xổ panel bên dưới.
+   Ctrl/Cmd+Enter hoặc bấm ra ngoài = lưu · Esc = huỷ.
+   Dùng action 'updateResult' của backend (ghi thẳng cột I). */
+function resultCellEditable(o, isKey){
+  var raw=String((o&&o.result)||"").trim();
+  var can=canEditPic(o.pic)||canAssign();
+  var inner;
+  if(raw){
+    var links=extractLinks(raw);
+    var chips=links.slice(0,2).map(function(u){
+      return '<a class="rlink" href="'+esc(u)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">🔗 link</a>';
+    }).join("");
+    var txt=raw.replace(/https?:\/\/\S+/g,"").trim();
+    inner=chips+(txt?'<span class="rc-txt">'+esc(txt.slice(0,220))+(txt.length>220?'…':'')+'</span>':'');
+  } else {
+    inner='<span class="rc-empty">'+(can?'+ Thêm kết quả':'—')+'</span>';
+  }
+  return '<div class="sr-result'+(can?' rc-editable':'')+(isKey?' rc-key':'')+'"'
+    +' data-no="'+esc(o.no)+'" data-raw="'+esc(raw)+'"'
+    +' title="'+esc(raw.slice(0,300)||(can?'Bấm để nhập kết quả':''))+'"'
+    +(can?' onclick="event.stopPropagation();startResEdit(this)"':'')
+    +'>'+inner+'</div>';
+}
+function startResEdit(el){
+  if(el.querySelector("textarea")) return;
+  var cur=el.getAttribute("data-raw")||"";
+  el.classList.add("rc-editing");
+  el.innerHTML='<textarea class="rc-input" spellcheck="false" placeholder="Nhập kết quả / dán link…">'+esc(cur)+'</textarea>'
+    +'<div class="rc-hint">Ctrl+Enter lưu · Esc huỷ</div>';
+  var ta=el.querySelector("textarea");
+  ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+  ta.onclick=function(e){ e.stopPropagation(); };
+  ta.onblur=function(){ commitResEdit(el, ta.value); };
+  ta.onkeydown=function(e){
+    e.stopPropagation();
+    if(e.key==="Escape"){ ta.onblur=null; cancelResEdit(el); }
+    else if(e.key==="Enter" && (e.ctrlKey||e.metaKey)){ ta.blur(); }
+  };
+}
+function cancelResEdit(el){
+  el.classList.remove("rc-editing");
+  var no=el.getAttribute("data-no");
+  var o=findAnyByNo(no);
+  el.outerHTML=resultCellEditable(o||{no:no,result:el.getAttribute("data-raw")}, el.classList.contains("rc-key"));
+}
+function commitResEdit(el, val){
+  var no=el.getAttribute("data-no");
+  var old=el.getAttribute("data-raw")||"";
+  var nv=String(val==null?"":val).trim();
+  el.classList.remove("rc-editing");
+  var o=findAnyByNo(no);
+  if(nv===old){ cancelResEdit(el); return; }
+  if(o) o.result=nv;                       /* cập nhật ngay trên màn hình */
+  el.setAttribute("data-raw", nv);
+  el.outerHTML=resultCellEditable(o||{no:no,result:nv}, el.classList.contains("rc-key"));
+  quietSave(no, {action:"updateResult", no:no, result:nv});
+  toast("✓ Đã lưu kết quả "+no);
+}
+/* tìm key task HOẶC sub-task theo mã số */
+function findAnyByNo(no){
+  var f=null;
+  (S.keyTasks||[]).forEach(function(k){
+    if(k.no===no) f=k;
+    (k.subs||[]).forEach(function(sb){ if(sb.no===no) f=sb; });
+  });
+  return f;
+}
 /* ⭐ v7.2: ô KẾT QUẢ cho cột phải của Gantt */
 function ganttResCell(o){
   var raw=String((o&&o.result)||"").trim();
@@ -3455,6 +3564,9 @@ function renderDetail(){
       +(S.priorityMode?'★ Đang chọn việc ưu tiên':'☆ Nhắc việc ưu tiên')+'</button>';
   }
   h+='</div>';
+  /* ⭐ v7.6: HEADER CỘT dùng chung — nằm ngay dưới thanh tìm kiếm/lọc,
+     dính khi cuộn, không lặp lại bên trong từng key task nữa. */
+  h+=detailColHead();
   h+='<div id="detail-list"></div>';
   $("tab-detail").innerHTML=h;
   renderDetailList();   // render danh sách lần đầu
@@ -3512,6 +3624,13 @@ function clearDetailFilters(){
   S.detailFilterOpen="";
   renderDetail();
   toast("✓ Đã xóa toàn bộ bộ lọc");
+}
+/* ⭐ v7.6: một dòng header cột duy nhất cho cả tab */
+function detailColHead(){
+  return '<div class="sr-head" id="detail-colhead">'
+    +'<span></span><span>STT</span><span>Key Task / Sub Task</span><span>PIC</span>'
+    +'<span>Deadline</span><span>Tiến độ</span><span>Trạng thái</span><span>Kết quả / Link</span><span></span>'
+    +'</div>';
 }
 function renderDetailList(){
   var el=$("detail-list"); if(!el) return;
@@ -3746,32 +3865,33 @@ function detailKeyPanels(keys, from, to, picFilter){
     var canEditK=canEditPic(k.pic)||canAssign();
     var _pcInfo=picChargeInfo(k, subsAll);   /* ⭐ v7.4 */
     var h='<div class="kt-panel'+(kOver?' od-key':'')+'" data-kno="'+esc(k.no)+'">';
+    /* ⭐ v7.6: dòng KEY TASK dùng CHUNG lưới 9 cột với dòng sub-task
+       ⇒ thẳng hàng tuyệt đối với header toàn cục ở đầu tab.
+       Cột cuối là ô Kết quả/Link — bấm để sửa ngay tại chỗ. */
     h+='<div class="kt-head'+(open?' open':'')+'" onclick="toggleDetail(\''+jsq(k.no)+'\')"'
       +(canEditK?' ondblclick="event.stopPropagation();openEditKey(\''+jsq(k.no)+'\')" title="Double-click để cập nhật Key Task"':'')+'>'
       +'<svg class="kt-caret" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>'
-      +'<span class="kt-type-tag" style="background:'+typeColor(k.type)+'22;color:'+typeColor(k.type)+'">'+esc(k.type||'—')+'</span>'
-      +'<span class="kt-title">'+esc(k.keyTask)+(kOver?'<span class="od-chip">QUÁ HẠN</span>':'')+'</span>'
-      +_pcInfo.tags                   /* ⭐ v7.4: chỉ tag của NGƯỜI KHÁC, 1 hàng */
-      +'<div class="kt-hmeta">'
-        +_pcInfo.cell                  /* ô PIC chính + badge số sub-task */
-        +'<span class="khm khm-date">🕒 '+(k.start?fmtVN(k.start):'—')+' → '+(effDate(k)?fmtVN(effDate(k)):'—')+'</span>'
-        +'<span class="khm khm-sub">'+doneCnt+'/'+subs.length+'</span>'
-        +'<span class="khm khm-prog"><span class="kt-progbar"><span class="kt-progfill" style="width:'+kpct+'%;background:'+progColor(kpct)+'"></span></span></span>'
-        +'<span class="khm khm-pct" style="color:'+progColor(kpct)+'">'+kpct+'%</span>'
-        +'<span class="khm khm-status"><span class="tc-status '+km.cls+'">'+esc(kst)+'</span></span>'
-      +'</div>';
+      +'<span class="kt-no">'+esc(k.no)+'</span>'
+      +'<div class="kt-namecell">'
+        +'<span class="kt-type-tag" style="background:'+typeColor(k.type)+'22;color:'+typeColor(k.type)+'">'+esc(k.type||'—')+'</span>'
+        +'<span class="kt-title">'+esc(k.keyTask)+(kOver?'<span class="od-chip">QUÁ HẠN</span>':'')+'</span>'
+        +'<span class="kt-pics">'+_pcInfo.tags+'</span>'
+      +'</div>'
+      +_pcInfo.cell
+      +'<span class="khm khm-date">'+(effDate(k)?fmtVN(effDate(k)):'—')+'</span>'
+      +'<div class="kt-progcell"><span class="kt-progbar"><span class="kt-progfill" style="width:'+kpct+'%;background:'+progColor(kpct)+'"></span></span>'
+        +'<span class="khm-pct" style="color:'+progColor(kpct)+'">'+kpct+'%</span>'
+        +'<span class="khm-sub">'+doneCnt+'/'+subs.length+'</span></div>'
+      +'<span class="khm khm-status"><span class="tc-status '+km.cls+'">'+esc(kst)+'</span></span>'
+      +resultCellEditable(k, true)
+      +'<span class="kt-actwrap">';
     if(canEditPic(k.pic) || canAssign()){
       h+='<div class="kt-actions" onclick="event.stopPropagation()">'
         +'<button class="icon-btn" title="Sửa Key Task" onclick="openEditKey(\''+jsq(k.no)+'\')">✏️</button>';
       if(canAssign()) h+='<button class="icon-btn" title="Xóa Key Task" onclick="delKey(\''+jsq(k.no)+'\')">🗑️</button>';
       h+='</div>';
     }
-    h+='</div>';
-    // ⭐ #3: Kết quả của Key Task hiển thị NGAY (nếu có), không cần mở
-    var kres=String(k.result||"").trim();
-    if(kres){
-      h+='<div class="kt-result">'+keyResultInline(k)+'</div>';
-    }
+    h+='</span></div>';
     h+='<div class="kt-body'+(open?' open':'')+'">';
     if(hiddenCount>0){
       h+='<div class="sub-toggle-all" onclick="toggleShowAllSubs(\''+jsq(k.no)+'\')">▾ Hiện thêm '+hiddenCount+' sub-task ngoài khoảng thời gian</div>';
@@ -3783,12 +3903,7 @@ function detailKeyPanels(keys, from, to, picFilter){
     }
     h+='<div class="sub-list">';
     if(!subsInRange.length){ h+='<div class="sub-empty">Chưa có sub-task nào'+(hiddenCount?' trong khoảng thời gian':'')+(stHidden?' khớp bộ lọc trạng thái':'')+'.</div>'; }
-    else {
-      /* ⭐ v7.2: tiêu đề cột giống bảng Weekly */
-      h+='<div class="sr-head"><span></span><span>STT</span><span>Sub Task</span><span>PIC</span>'
-        +'<span>Deadline</span><span>Tiến độ</span><span>Trạng thái</span><span>Kết quả / Link</span><span></span></div>';
-      subsInRange.forEach(function(s){ h+=subRowVertical(k,s,from,to); });
-    }
+    else subsInRange.forEach(function(s){ h+=subRowVertical(k,s,from,to); });   /* ⭐ v7.6: header đã lên cấp toàn cục */
     h+='</div>';
     if(canAddSub) h+='<div class="sub-add-row" onclick="openAddSub(\''+jsq(k.no)+'\')">➕ Thêm sub-task vào "'+esc(k.keyTask)+'"</div>';
     h+='</div></div>';
@@ -3852,8 +3967,8 @@ function subRowVertical(k,s,from,to){
   } else {
     h+='<span class="sr-st tc-status '+m.cls+'">'+esc(s.status||'To Do')+'</span>';
   }
-  /* ⭐ v7.2: KẾT QUẢ nằm sát phải, giống bảng Weekly */
-  h+=resultCell(s);
+  /* ⭐ v7.6: KẾT QUẢ sát phải — sửa trực tiếp trên dòng */
+  h+=resultCellEditable(s, false);
   h+='<svg class="sr-caret'+(subOpen?' open':'')+'" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
   // hover box xem nhanh
   h+='<div class="sr-hoverbox"><div class="sr-hb-arrow"></div>'
