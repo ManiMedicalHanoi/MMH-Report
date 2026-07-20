@@ -189,8 +189,8 @@ button{cursor:pointer}
 
 /* ══ GANTT ══ */
 .gantt-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow-x:auto;padding-bottom:6px}
-.gantt-grid{min-width:1100px}
-.gantt-hrow{display:grid;grid-template-columns:380px 1fr;border-bottom:1.5px solid var(--border);position:sticky;top:0;background:#fff;z-index:2}
+.gantt-grid{min-width:1360px}
+.gantt-hrow{display:grid;grid-template-columns:380px 1fr 250px;border-bottom:1.5px solid var(--border);position:sticky;top:0;background:#fff;z-index:2}
 .gantt-hlabel{padding:11px 16px;font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:6px}
 .gantt-hlabel-sub{font-size:9.5px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--faint)}
 .gantt-days{display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
@@ -200,9 +200,9 @@ button{cursor:pointer}
 .gantt-dcell.wknd{background:#f7f8fb}
 .gantt-dcell.today{background:var(--mmh-blue);border-radius:6px 6px 0 0}
 .gantt-dcell.today .gd-dow,.gantt-dcell.today .gd-num{color:#fff}
-.gantt-krow{display:grid;grid-template-columns:380px 1fr;border-bottom:1.5px solid var(--border);align-items:flex-start;min-height:56px;background:#fafbfe;padding-top:2px;padding-bottom:2px}
+.gantt-krow{display:grid;grid-template-columns:380px 1fr 250px;border-bottom:1.5px solid var(--border);align-items:flex-start;min-height:56px;background:#fafbfe;padding-top:2px;padding-bottom:2px}
 .gantt-krow:hover{background:#f2f6fd}
-.gantt-srow{display:grid;grid-template-columns:380px 1fr;border-bottom:1px solid var(--border);align-items:center;min-height:44px}
+.gantt-srow{display:grid;grid-template-columns:380px 1fr 250px;border-bottom:1px solid var(--border);align-items:center;min-height:44px}
 .gantt-srow:hover{background:var(--pale)}
 .gantt-rlabel{padding:9px 14px;font-size:12.5px;color:var(--text);display:flex;align-items:center;gap:8px;overflow:hidden}
 .gantt-rlabel .gantt-kname{flex:1;min-width:0;line-height:1.28;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;font-size:12px}
@@ -215,6 +215,14 @@ button{cursor:pointer}
 .gantt-ksub{font-size:10.5px;color:var(--faint);font-weight:600;flex:0 0 auto;margin-left:6px}
 .gantt-rdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:5px}
 .gantt-rlabel .gantt-caret{margin-top:3px}
+/* ⭐ v7.2: CỘT KẾT QUẢ bên phải Gantt (giống bảng Weekly) */
+.gantt-res{padding:8px 12px;font-size:11.5px;color:var(--sub);line-height:1.4;border-left:1.5px solid var(--border);overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;word-break:break-word;align-self:center}
+.gantt-res a{color:var(--mmh-blue);text-decoration:none}
+.gantt-res a:hover{text-decoration:underline}
+.gantt-res .rlink{display:inline-flex;align-items:center;gap:3px;background:var(--lb3);color:var(--mmh-blue);border-radius:6px;padding:1px 7px;font-size:10.5px;font-weight:700;margin-right:4px;text-decoration:none}
+.gantt-res .rlink:hover{background:var(--mmh-blue);color:#fff}
+.gantt-res-empty{color:var(--faint);font-style:italic}
+.gantt-hres{padding:11px 12px;font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-left:1.5px solid var(--border);display:flex;align-items:center}
 .gantt-track{position:relative;height:100%;display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
 .gantt-tcell{border-left:1px solid var(--border);height:100%}
 .gantt-tcell.wknd{background:#f7f8fb}
@@ -478,7 +486,7 @@ button{cursor:pointer}
   .mr-grid{grid-template-columns:1fr}
   .gantt-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .gantt-hlabel,.gantt-rlabel{width:200px;min-width:200px}
-  .gantt-hrow,.gantt-krow,.gantt-srow{grid-template-columns:180px 1fr}
+  .gantt-hrow,.gantt-krow,.gantt-srow{grid-template-columns:180px 1fr 170px}
   .gnav-label{min-width:96px;font-size:14px}
 }
 @media(max-width:400px){ .mf-grid{grid-template-columns:1fr} .kpi-row{grid-template-columns:1fr 1fr} }
@@ -557,7 +565,7 @@ button{cursor:pointer}
 .sub-row{border-bottom:1px solid var(--border);position:relative}
 .sub-row:last-of-type{border-bottom:none}
 .sub-row.locked{opacity:.9}
-.sr-main{display:grid;grid-template-columns:14px 34px 1.3fr 1fr 190px 110px 78px 140px 16px;align-items:center;gap:9px;padding:10px 12px;cursor:pointer;transition:background .12s}
+.sr-main{display:grid;grid-template-columns:14px 34px 1.6fr 168px 104px 76px 132px 1.25fr 16px;align-items:center;gap:9px;padding:10px 12px;cursor:pointer;transition:background .12s}
 .sr-main:hover{background:var(--pale)}
 /* ⭐ Cột kết quả hiển thị NGAY BÊN CẠNH subtask (không cần click) */
 .sr-result{font-size:12.5px;color:var(--sub);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
@@ -808,7 +816,7 @@ button{cursor:pointer}
 .pb-info{font-size:14px;color:#8A5A00;font-weight:600}
 .pb-info b{font-size:16px}
 .sr-pri{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:24px}
-.sr-main.has-pri{grid-template-columns:24px 14px 34px 1.3fr 1fr 190px 110px 78px 140px 16px}
+.sr-main.has-pri{grid-template-columns:24px 14px 34px 1.6fr 168px 104px 76px 132px 1.25fr 16px}
 .sr-pri-check{font-size:18px;cursor:pointer;line-height:1;color:#C9A227;transition:transform .1s}
 .sr-pri-check:hover{transform:scale(1.2)}
 .sr-pri-check.on{color:#E0900A}
@@ -822,6 +830,10 @@ button{cursor:pointer}
 .sr-outtag.todo{background:#EEF1F6;color:#5A6A8A}
 .sub-row.out-range{opacity:.82}
 .sub-row.out-range .sr-dot{opacity:.5}
+/* ⭐ v7.2: DÒNG TIÊU ĐỀ CỘT cho sub-list (đồng bộ với bảng Weekly) */
+.sr-head{display:grid;grid-template-columns:14px 34px 1.6fr 168px 104px 76px 132px 1.25fr 16px;align-items:center;gap:9px;padding:7px 12px;background:var(--mmh-navy);border-radius:8px;margin-bottom:4px}
+.sr-head span{font-size:10.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:#c7d6ef;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:900px){ .sr-head{display:none} }
 .sub-toggle-all{padding:9px 14px;margin:2px 0;font-size:12.5px;font-weight:700;color:var(--mmh-blue);cursor:pointer;text-align:center;background:var(--pale);border-radius:8px;transition:.12s;border:1px dashed var(--lb2)}
 /* ⭐ v7.0: ghi chú PIC phụ trách sub-task + hint lọc trạng thái */
 .pic-note{background:#fffbeb;border:1px solid #fde68a;border-left:4px solid var(--warn);border-radius:9px;padding:10px 13px;margin:2px 0 8px;font-size:12.5px;line-height:1.65;color:#7c4a03}
@@ -1352,7 +1364,7 @@ button{cursor:pointer}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v7.1</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v7.2</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -2079,6 +2091,7 @@ function buildSourceTabs(){
 var SRC_CACHE={};        // src → dữ liệu boot gần nhất
 function cacheBoot(src,res){
   SRC_CACHE[src]={ ts:Date.now(), res:res };
+  S._picSet=null;   /* ⭐ v7.2: có thêm nhân sự từ nguồn khác → dựng lại whitelist */
 }
 function applySource(src, res, silent){
   applyBootData(res);
@@ -2611,6 +2624,13 @@ function picKnownSet(){
   var set={};
   (S.pics||[]).forEach(function(p){ var v=String(p||"").trim(); if(v) set[v.toLowerCase()]=1; });
   (S.picList||[]).forEach(function(u){ var v=String(u&&u.pic||"").trim(); if(v) set[v.toLowerCase()]=1; });
+  /* ⭐ v7.2: nhận cả nhân sự của 2 nguồn còn lại — nếu không, người được gán chéo
+     (vd PIC Marketing gán vào task Management) sẽ bị coi là rác ⇒ hiện "— chưa gán —". */
+  ["marketing","backoffice","management"].forEach(function(src){
+    var r=(SRC_CACHE[src]||{}).res; if(!r) return;
+    (r.pics||[]).forEach(function(p){ var v=String(p||"").trim(); if(v) set[v.toLowerCase()]=1; });
+    (r.picList||[]).forEach(function(u){ var v=String(u&&u.pic||"").trim(); if(v) set[v.toLowerCase()]=1; });
+  });
   S._picSet=set; return set;
 }
 /* Heuristic: chuỗi nào KHÔNG thể là tên người */
@@ -2641,20 +2661,51 @@ function picListAll(){
   S.monthly.forEach(function(m){ add(m.pic); });
   return Object.keys(set).sort();
 }
+/* ⭐ v7.2: gộp danh sách PIC từ CẢ 3 NGUỒN (Marketing / Back Office / Management).
+   Trước đây chỉ lấy S.picList của nguồn đang xem ⇒ ở Management không chọn được
+   người của Marketing/Back Office. SRC_CACHE đã được prefetch sẵn sau khi đăng nhập. */
+function picListCrossSource(){
+  var order=["marketing","backoffice","management"];
+  var seen={}, groups=[];
+  order.forEach(function(src){
+    var names=[];
+    var pl=(src===S.source) ? (S.picList||[])
+         : (((SRC_CACHE[src]||{}).res||{}).picList||[]);
+    pl.forEach(function(u){
+      var v=String((u&&u.pic)||"").trim();
+      if(!v || seen[v.toLowerCase()]) return;
+      seen[v.toLowerCase()]=1; names.push(v);
+    });
+    if(names.length) groups.push({src:src, label:(SOURCE_META[src]&&SOURCE_META[src].label)||src, names:names.sort()});
+  });
+  /* PIC xuất hiện trong task nhưng không có trong picList nào */
+  var extra=[];
+  picListAll().forEach(function(p){
+    if(!seen[String(p).toLowerCase()]){ seen[String(p).toLowerCase()]=1; extra.push(p); }
+  });
+  if(extra.length) groups.push({src:"other", label:"Khác (đang có trong task)", names:extra.sort()});
+  return groups;
+}
 /* ⭐ Danh sách PIC đầy đủ từ picList (không phụ thuộc task đã có) — dùng cho dropdown chọn PIC.
    Đưa 'selected' lên ĐẦU và đảm bảo luôn có mặt để <select> mặc định đúng người. */
 function picOptionsHtml(selected){
-  var names=(S.picList||[]).map(function(u){return u.pic;});
-  if(!names.length) names=picListAll();
-  // thêm các PIC xuất hiện trong task nhưng không có trong picList
-  picListAll().forEach(function(p){ if(names.indexOf(p)<0) names.push(p); });
-  if(selected && names.indexOf(selected)<0) names.unshift(selected);
-  // đưa selected lên đầu
-  names=names.filter(function(p,i){return names.indexOf(p)===i;});
-  if(selected){ names=[selected].concat(names.filter(function(p){return p!==selected;})); }
-  return names.map(function(p){
-    return '<option'+(p===selected?' selected':'')+'>'+esc(p)+'</option>';
-  }).join("");
+  var groups=picListCrossSource();
+  var total=groups.reduce(function(a,g){return a+g.names.length;},0);
+  if(!total){
+    var names=picListAll();
+    if(selected && names.indexOf(selected)<0) names.unshift(selected);
+    return names.map(function(p){ return '<option'+(p===selected?' selected':'')+'>'+esc(p)+'</option>'; }).join("");
+  }
+  var h="";
+  /* người đang được chọn luôn hiện đầu tiên để <select> mặc định đúng */
+  var found=groups.some(function(g){return g.names.indexOf(selected)>=0;});
+  if(selected && !found) h+='<option selected>'+esc(selected)+'</option>';
+  groups.forEach(function(g){
+    h+='<optgroup label="'+esc(g.label)+'">'
+      +g.names.map(function(p){ return '<option'+(p===selected?' selected':'')+'>'+esc(p)+'</option>'; }).join("")
+      +'</optgroup>';
+  });
+  return h;
 }
 function fmtVN(iso){ if(!iso)return ""; var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso)); return m?(m[3]+"/"+m[2]):String(iso); }
 function fmtVNFull(iso){ if(!iso)return ""; var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso)); return m?(m[3]+"/"+m[2]+"/"+m[1]):String(iso); }
@@ -3197,7 +3248,9 @@ function renderGantt(bodyOnly){
       +'</div>'
       +'<div class="gantt-track">'+trackCells(cols)
       +(kbar?ganttBarHtml(kbar,kpct,kpct+'%',kTip,"gotoSub('"+jsq(k.no)+"',null)"):'')
-      +'</div></div>';
+      +'</div>'
+      +ganttResCell(k)
+      +'</div>';
     if(open){
       subs.forEach(function(x){
         var seff=x.revised||x.planned;
@@ -3215,10 +3268,12 @@ function renderGantt(bodyOnly){
           +'</div>'
           +'<div class="gantt-track">'+trackCells(cols)
           +(sbar?ganttBarHtml(sbar,spct,esc(x.pic||'')+' · '+spct+'%',sTip,"ganttToggleSub('"+jsq(x.no)+"')",true):'')
-          +'</div></div>';
+          +'</div>'
+          +ganttResCell(x)
+          +'</div>';
         // ⭐ Bấm sub → xổ panel KẾT QUẢ ngay trên Gantt
         if(sOpen){
-          body+='<div class="gantt-resrow">'
+          body+='<div class="gantt-resrow" style="grid-column:1 / -1">'
             +'<div class="g-res-box">'
               +'<div class="g-res-head">'
                 +'<span class="g-res-t">'+esc(x.name||x.subTask)+'</span>'
@@ -3250,7 +3305,9 @@ function renderGantt(bodyOnly){
     +'<div class="gantt-days" style="position:relative">'
       +dayCells
       +(todayLeft>=0&&todayLeft<=100?'<div class="gantt-today-line" style="left:'+todayLeft+'%"><span class="gantt-today-lb">Hôm nay</span></div>':'')
-    +'</div></div>'
+    +'</div>'
+    +'<div class="gantt-hres">Kết quả / Link</div>'
+    +'</div>'
     +body
     +'</div></div>';
   hBody+='<div class="gantt-legend">'
@@ -3301,6 +3358,12 @@ function linkify(txt){
 }
 /* ⭐ Ô kết quả hiển thị NGAY BÊN CẠNH subtask ở tab "Tất cả công việc".
    - Gọn: text preview + chip link (nếu có link). Bấm chip mở link, bấm phần còn lại mở sửa. */
+/* ⭐ v7.2: ô KẾT QUẢ cho cột phải của Gantt */
+function ganttResCell(o){
+  var raw=String((o&&o.result)||"").trim();
+  if(!raw) return '<div class="gantt-res"><span class="gantt-res-empty">—</span></div>';
+  return '<div class="gantt-res" title="'+esc(raw.slice(0,300))+'">'+linkify(raw)+'</div>';
+}
 function resultCell(s){
   var raw=String(s.result||"").trim();
   if(!raw) return '<div class="sr-result"><span class="sr-result-empty">—</span></div>';
@@ -3633,7 +3696,12 @@ function detailKeyPanels(keys, from, to, picFilter){
     }
     h+='<div class="sub-list">';
     if(!subsInRange.length){ h+='<div class="sub-empty">Chưa có sub-task nào'+(hiddenCount?' trong khoảng thời gian':'')+(stHidden?' khớp bộ lọc trạng thái':'')+'.</div>'; }
-    else subsInRange.forEach(function(s){ h+=subRowVertical(k,s,from,to); });
+    else {
+      /* ⭐ v7.2: tiêu đề cột giống bảng Weekly */
+      h+='<div class="sr-head"><span></span><span>STT</span><span>Sub Task</span><span>Tiến độ</span>'
+        +'<span>PIC</span><span>Deadline</span><span>Trạng thái</span><span>Kết quả / Link</span><span></span></div>';
+      subsInRange.forEach(function(s){ h+=subRowVertical(k,s,from,to); });
+    }
     h+='</div>';
     if(canAddSub) h+='<div class="sub-add-row" onclick="openAddSub(\''+jsq(k.no)+'\')">➕ Thêm sub-task vào "'+esc(k.keyTask)+'"</div>';
     h+='</div></div>';
@@ -3674,8 +3742,7 @@ function subRowVertical(k,s,from,to){
     +(s.__isKeyRow?'<span class="key-self-chip" title="Key task này chưa có sub-task — kết quả ghi thẳng trên dòng Key Task">KẾT QUẢ CHUNG</span>':'')
     +(od?'<span class="od-chip">QUÁ HẠN</span>':'')+'</span>'
     +(outRange?'<span class="sr-outtag '+(isDone(s.status)?'done':'todo')+'">'+(isDone(s.status)?'✓ đã xong (ngoài kỳ)':'ngoài khoảng lọc')+'</span>':'')+'</div>';
-  // ⭐ KẾT QUẢ hiển thị NGAY BÊN CẠNH (không cần click mở ở dưới)
-  h+=resultCell(s);
+  /* ⭐ v7.2: cột KẾT QUẢ đã chuyển sang sát PHẢI (sau Trạng thái) — xem bên dưới */
   // tiến độ: PIC được sửa nhanh; người khác chỉ xem
   if(canEdit && !isDone(s.status) && !isCancelled(s.status)){
     h+='<div class="sr-prog-edit" onclick="event.stopPropagation()">'
@@ -3697,6 +3764,8 @@ function subRowVertical(k,s,from,to){
   } else {
     h+='<span class="sr-st tc-status '+m.cls+'">'+esc(s.status||'To Do')+'</span>';
   }
+  /* ⭐ v7.2: KẾT QUẢ nằm sát phải, giống bảng Weekly */
+  h+=resultCell(s);
   h+='<svg class="sr-caret'+(subOpen?' open':'')+'" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
   // hover box xem nhanh
   h+='<div class="sr-hoverbox"><div class="sr-hb-arrow"></div>'
