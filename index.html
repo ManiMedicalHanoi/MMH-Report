@@ -190,7 +190,7 @@ button{cursor:pointer}
 /* ══ GANTT ══ */
 .gantt-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow-x:auto;padding-bottom:6px}
 .gantt-grid{min-width:1360px}
-.gantt-hrow{display:grid;grid-template-columns:380px 1fr 250px;border-bottom:1.5px solid var(--border);position:sticky;top:0;background:#fff;z-index:2}
+.gantt-hrow{display:grid;grid-template-columns:380px 250px 1fr;border-bottom:1.5px solid var(--border);position:sticky;top:0;background:#fff;z-index:2}
 .gantt-hlabel{padding:11px 16px;font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:6px}
 .gantt-hlabel-sub{font-size:9.5px;font-weight:600;text-transform:none;letter-spacing:0;color:var(--faint)}
 .gantt-days{display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
@@ -200,9 +200,9 @@ button{cursor:pointer}
 .gantt-dcell.wknd{background:#f7f8fb}
 .gantt-dcell.today{background:var(--mmh-blue);border-radius:6px 6px 0 0}
 .gantt-dcell.today .gd-dow,.gantt-dcell.today .gd-num{color:#fff}
-.gantt-krow{display:grid;grid-template-columns:380px 1fr 250px;border-bottom:1.5px solid var(--border);align-items:flex-start;min-height:56px;background:#fafbfe;padding-top:2px;padding-bottom:2px}
+.gantt-krow{display:grid;grid-template-columns:380px 250px 1fr;border-bottom:1.5px solid var(--border);align-items:flex-start;min-height:56px;background:#fafbfe;padding-top:2px;padding-bottom:2px}
 .gantt-krow:hover{background:#f2f6fd}
-.gantt-srow{display:grid;grid-template-columns:380px 1fr 250px;border-bottom:1px solid var(--border);align-items:center;min-height:44px}
+.gantt-srow{display:grid;grid-template-columns:380px 250px 1fr;border-bottom:1px solid var(--border);align-items:center;min-height:44px}
 .gantt-srow:hover{background:var(--pale)}
 .gantt-rlabel{padding:9px 14px;font-size:12.5px;color:var(--text);display:flex;align-items:center;gap:8px;overflow:hidden}
 .gantt-rlabel .gantt-kname{flex:1;min-width:0;line-height:1.28;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;font-size:12px}
@@ -216,13 +216,13 @@ button{cursor:pointer}
 .gantt-rdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:5px}
 .gantt-rlabel .gantt-caret{margin-top:3px}
 /* ⭐ v7.2: CỘT KẾT QUẢ bên phải Gantt (giống bảng Weekly) */
-.gantt-res{padding:8px 12px;font-size:11.5px;color:var(--sub);line-height:1.4;border-left:1.5px solid var(--border);overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;word-break:break-word;align-self:center}
+.gantt-res{padding:8px 12px;font-size:11.5px;color:var(--sub);line-height:1.4;border-left:1.5px solid var(--border);border-right:1.5px solid var(--border);overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;word-break:break-word;align-self:center}
 .gantt-res a{color:var(--mmh-blue);text-decoration:none}
 .gantt-res a:hover{text-decoration:underline}
 .gantt-res .rlink{display:inline-flex;align-items:center;gap:3px;background:var(--lb3);color:var(--mmh-blue);border-radius:6px;padding:1px 7px;font-size:10.5px;font-weight:700;margin-right:4px;text-decoration:none}
 .gantt-res .rlink:hover{background:var(--mmh-blue);color:#fff}
 .gantt-res-empty{color:var(--faint);font-style:italic}
-.gantt-hres{padding:11px 12px;font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-left:1.5px solid var(--border);display:flex;align-items:center}
+.gantt-hres{padding:11px 12px;font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-left:1.5px solid var(--border);border-right:1.5px solid var(--border);display:flex;align-items:center}
 .gantt-track{position:relative;height:100%;display:grid;grid-auto-flow:column;grid-auto-columns:1fr}
 .gantt-tcell{border-left:1px solid var(--border);height:100%}
 .gantt-tcell.wknd{background:#f7f8fb}
@@ -486,7 +486,7 @@ button{cursor:pointer}
   .mr-grid{grid-template-columns:1fr}
   .gantt-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .gantt-hlabel,.gantt-rlabel{width:200px;min-width:200px}
-  .gantt-hrow,.gantt-krow,.gantt-srow{grid-template-columns:180px 1fr 170px}
+  .gantt-hrow,.gantt-krow,.gantt-srow{grid-template-columns:180px 150px 1fr}
   .gnav-label{min-width:96px;font-size:14px}
 }
 @media(max-width:400px){ .mf-grid{grid-template-columns:1fr} .kpi-row{grid-template-columns:1fr 1fr} }
@@ -835,14 +835,23 @@ button{cursor:pointer}
 .sr-head span{font-size:10.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:#c7d6ef;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:900px){ .sr-head{display:none} }
 .sub-toggle-all{padding:9px 14px;margin:2px 0;font-size:12.5px;font-weight:700;color:var(--mmh-blue);cursor:pointer;text-align:center;background:var(--pale);border-radius:8px;transition:.12s;border:1px dashed var(--lb2)}
-/* ⭐ v7.0: ghi chú PIC phụ trách sub-task + hint lọc trạng thái */
-.pic-note{background:#fffbeb;border:1px solid #fde68a;border-left:4px solid var(--warn);border-radius:9px;padding:10px 13px;margin:2px 0 8px;font-size:12.5px;line-height:1.65;color:#7c4a03}
-.pic-note .pn-main{font-weight:800;color:#92400e}
-.pic-note .pn-row{display:flex;align-items:center;gap:7px;margin-top:4px}
-.pic-note .pn-av{width:19px;height:19px;border-radius:50%;color:#fff;font-size:9.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.pic-note b{font-weight:800}
+/* ⭐ v7.3: TAG "in charge" gọn nằm trên dòng Key Task */
+.ic-tags{display:inline-flex;align-items:center;gap:5px;flex-shrink:0;margin-left:2px}
+.ic-tag{display:inline-flex;align-items:center;gap:4px;background:#fffbeb;border:1px solid #fde68a;border-radius:20px;padding:2px 8px 2px 3px;font-size:11px;font-weight:700;color:#92400e;white-space:nowrap;line-height:1.5}
+.ic-tag.main{background:var(--lb3);border-color:var(--lb1);color:var(--mmh-navy)}
+.ic-av{width:17px;height:17px;border-radius:50%;color:#fff;font-size:8.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.ic-main{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;background:var(--mmh-navy);color:#fff;border-radius:5px;padding:1px 5px}
+.ic-badge{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--warn);color:#fff;font-size:10px;font-weight:800}
+.ic-tag.main .ic-badge{background:var(--mmh-blue)}
+@media(max-width:900px){ .ic-tag{font-size:10px} .ic-tag .ic-main{display:none} }
 .st-hidden-hint{padding:8px 13px;margin:2px 0 6px;font-size:12px;font-weight:600;color:var(--sub);background:var(--gray);border:1px dashed var(--border-2);border-radius:8px;text-align:center}
 .st-hidden-hint span{color:var(--mmh-blue);font-weight:800;cursor:pointer;text-decoration:underline}
+/* ⭐ v7.3: nút Xóa lọc */
+.clear-flt-btn{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 13px;border:1.5px solid #f0b4b4;background:#fff5f5;color:#B02A2A;border-radius:10px;font-size:12.5px;font-weight:800;cursor:pointer;transition:.14s;white-space:nowrap}
+.clear-flt-btn:hover{background:#B02A2A;border-color:#B02A2A;color:#fff}
+.clear-flt-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.6}
+.cf-badge{display:inline-flex;align-items:center;justify-content:center;min-width:17px;height:17px;padding:0 5px;border-radius:9px;background:#B02A2A;color:#fff;font-size:10.5px;font-weight:800}
+.clear-flt-btn:hover .cf-badge{background:#fff;color:#B02A2A}
 .sub-toggle-all:hover{background:var(--lb3)}
 .sp-preview{max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--r-md);padding:6px}
 .sp-pic{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;margin-top:6px;background:var(--mmh-navy);color:#fff;border-radius:8px}
@@ -1364,7 +1373,7 @@ button{cursor:pointer}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v7.2</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v7.3</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -3246,11 +3255,10 @@ function renderGantt(bodyOnly){
         +'<span class="gantt-kpct" style="color:'+progColor(kpct)+'">'+kpct+'%</span>'
         +(subs.length?'<span class="gantt-ksub">'+doneCnt+'/'+subs.length+'</span>':'')
       +'</div>'
+      +ganttResCell(k)          /* ⭐ v7.3: kết quả nằm ngay cạnh tên task */
       +'<div class="gantt-track">'+trackCells(cols)
       +(kbar?ganttBarHtml(kbar,kpct,kpct+'%',kTip,"gotoSub('"+jsq(k.no)+"',null)"):'')
-      +'</div>'
-      +ganttResCell(k)
-      +'</div>';
+      +'</div></div>';
     if(open){
       subs.forEach(function(x){
         var seff=x.revised||x.planned;
@@ -3266,11 +3274,10 @@ function renderGantt(bodyOnly){
             +'<span class="gantt-rdot" style="background:'+stMeta(x.status).dot+'"></span>'
             +'<span class="gantt-sname">'+esc(x.name||x.subTask)+(od?' <span class="od-chip">QUÁ HẠN</span>':'')+'</span>'
           +'</div>'
+          +ganttResCell(x)      /* ⭐ v7.3 */
           +'<div class="gantt-track">'+trackCells(cols)
           +(sbar?ganttBarHtml(sbar,spct,esc(x.pic||'')+' · '+spct+'%',sTip,"ganttToggleSub('"+jsq(x.no)+"')",true):'')
-          +'</div>'
-          +ganttResCell(x)
-          +'</div>';
+          +'</div></div>';
         // ⭐ Bấm sub → xổ panel KẾT QUẢ ngay trên Gantt
         if(sOpen){
           body+='<div class="gantt-resrow" style="grid-column:1 / -1">'
@@ -3302,12 +3309,11 @@ function renderGantt(bodyOnly){
   var hBody="";
   hBody+='<div class="gantt-wrap"><div class="gantt-grid">'
     +'<div class="gantt-hrow"><div class="gantt-hlabel">Key Task <small class="gantt-hlabel-sub">— bấm để xem sub · bấm sub để xem kết quả</small></div>'
+    +'<div class="gantt-hres">Kết quả / Link</div>'
     +'<div class="gantt-days" style="position:relative">'
       +dayCells
       +(todayLeft>=0&&todayLeft<=100?'<div class="gantt-today-line" style="left:'+todayLeft+'%"><span class="gantt-today-lb">Hôm nay</span></div>':'')
-    +'</div>'
-    +'<div class="gantt-hres">Kết quả / Link</div>'
-    +'</div>'
+    +'</div></div>'
     +body
     +'</div></div>';
   hBody+='<div class="gantt-legend">'
@@ -3431,6 +3437,8 @@ function renderDetail(){
   h+=multiFilterDropdown("pic","Nhân sự",pics.map(function(p){return {val:p,label:p,av:true};}),selPics);
   /* ⭐ v7.0: STATUS FILTER — mặc định ẩn Completed, hiện In Progress + Todo */
   h+=statusFilterToggle();
+  /* ⭐ v7.3: XÓA LỌC — chỉ hiện khi đang có bộ lọc nào đó bật */
+  h+=clearFilterBtn();
   /* ⭐ v6.0: TÀI LIỆU THAM CHIẾU — tab ngay cạnh bộ lọc Nhân sự */
   h+='<button class="doc-tab-btn'+(S.docTab?" on":"")+'" onclick="toggleDocTab()" title="Kho link/tài liệu đính kèm trong ô Task result">'
     +'<svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>'
@@ -3452,6 +3460,54 @@ function toggleDocTab(){          /* ⭐ v6.0 */
   if(S.docTab) S.docFocus=true;
   renderDetail();
 }
+/* ⭐ v7.3: SMART SEARCH — bỏ dấu tiếng Việt, tách nhiều từ khoá, khớp kiểu AND.
+   Lỗi cũ: so khớp thô cả chuỗi ⇒ gõ "thuong" không ra "Thương",
+   gõ "giang webapp" không ra vì phải trùng nguyên cụm. */
+function _sq(v){
+  return String(v==null?"":v).normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/đ/g,"d").replace(/Đ/g,"D").toLowerCase().replace(/\s+/g," ").trim();
+}
+function smartMatch(hay, query){
+  var h=_sq(hay); if(!h) return false;
+  var toks=_sq(query).split(" ").filter(Boolean);
+  if(!toks.length) return true;
+  for(var i=0;i<toks.length;i++){ if(h.indexOf(toks[i])<0) return false; }
+  return true;
+}
+/* Chuỗi tra cứu của 1 key task: gồm tên key, loại việc, PIC key, và mọi sub-task + PIC sub */
+function keyHaystack(k){
+  var parts=[k.keyTask||"", k.type||"", k.pic||"", k.no||""];
+  (k.subs||[]).forEach(function(s){
+    parts.push(s.name||s.subTask||""); parts.push(s.pic||""); parts.push(s.no||"");
+    parts.push(s.status||"");
+  });
+  return parts.join(" ");
+}
+/* ⭐ v7.3: đếm số bộ lọc đang bật & nút Xóa lọc */
+function activeFilterCount(){
+  var n=0;
+  if((S.detailTypes||[]).length) n++;
+  if((S.detailPics||[]).length) n++;
+  if(String(S.detailQ||"").trim()) n++;
+  if((S.detailStatusFilter||stFilterDefault()).length < stFilterAll().length) n++;
+  if((S.detailTimeMode||"all")!=="all") n++;
+  return n;
+}
+function clearFilterBtn(){
+  var n=activeFilterCount();
+  if(!n) return "";
+  return '<button class="clear-flt-btn" onclick="clearDetailFilters()" title="Bỏ toàn bộ bộ lọc — xem tất cả công việc">'
+    +'<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+    +'Xóa lọc <span class="cf-badge">'+n+'</span></button>';
+}
+function clearDetailFilters(){
+  S.detailTypes=[]; S.detailPics=[]; S.detailQ="";
+  S.detailStatusFilter=stFilterAll();
+  S.detailTimeMode="all";
+  S.detailFilterOpen="";
+  renderDetail();
+  toast("✓ Đã xóa toàn bộ bộ lọc");
+}
 function renderDetailList(){
   var el=$("detail-list"); if(!el) return;
   if(S.docTab){ renderDocs(); return; }      /* ⭐ v6.0: kho Tài liệu tham chiếu */
@@ -3468,10 +3524,7 @@ function renderDetailList(){
       var hit=(selPics.indexOf(k.pic)>=0) || (k.subs||[]).some(function(s){return selPics.indexOf(s.pic)>=0;});
       if(!hit) return false;
     }
-    if(q){
-      var hay=(k.keyTask||"")+" "+(k.type||"")+" "+(k.pic||"")+" "+(k.subs||[]).map(function(s){return (s.name||s.subTask||"")+" "+(s.pic||"");}).join(" ");
-      if(hay.toLowerCase().indexOf(q)<0) return false;
-    }
+    if(q){ if(!smartMatch(keyHaystack(k), q)) return false; }   /* ⭐ v7.3 */
     if(wFrom && wTo){
       var subs=k.subs||[];
       if(!subs.length) return false;
@@ -3611,12 +3664,43 @@ document.addEventListener("click",function(e){
 
 /* Panels key + sub — DÙNG CHUNG cho Overview(lọc PIC) và Detail.
    ⭐ #1: mỗi .kt-panel có data-kno; mỗi sub-row có id="sub-<no>" để scroll+highlight. */
+/* ⭐ v7.3: TAG "IN CHARGE" gọn trên dòng Key Task.
+   Chỉ hiện cho PIC đang được quan tâm — người đang lọc ở bộ lọc Nhân sự,
+   hoặc chính người đang đăng nhập. Không đổ ra cả danh sách như bản v7.2
+   (khung vàng chiếm chỗ khiến không nhìn thấy sub-task để cập nhật). */
+function picChargeTags(k, subsAll){
+  if(S.tab!=="detail") return "";
+  var want=(S.detailPics||[]).slice();
+  if(!want.length){ var me=(S.user&&S.user.pic)||""; if(me) want=[me]; }
+  if(!want.length) return "";
+  var cnt={};
+  (subsAll||[]).forEach(function(s){ var p=picOf(s); cnt[p]=(cnt[p]||0)+1; });
+  var out="";
+  want.forEach(function(p){
+    var isMain = String(k.pic||"").trim().toLowerCase()===String(p||"").trim().toLowerCase();
+    var n = cnt[p]||0;
+    if(!n && !isMain) return;                      // người này không dính key task này
+    out+='<span class="ic-tag'+(isMain?' main':'')+'" title="'+esc(p)+(isMain?' là PIC chính của key task này':'')
+      +(n?' · đang giữ '+n+' sub-task':'')+'">'
+      +'<span class="ic-av" style="background:'+avColor(p)+'">'+esc(initials(p))+'</span>'
+      +esc(p)
+      +(isMain?'<span class="ic-main">main</span>':'')
+      +(n?'<span class="ic-badge">'+n+'</span>':'')
+      +'</span>';
+  });
+  return out ? '<span class="ic-tags">'+out+'</span>' : "";
+}
 function detailKeyPanels(keys, from, to, picFilter){
   return keys.map(function(k){
     var open=!!S.detailOpen[k.no];
-    var subs=(k.subs||[]).slice();
+    var subsAll=(k.subs||[]).slice();          /* giữ bản đầy đủ để đếm tag PIC */
+    var subs=subsAll.slice();
     // lọc theo PIC nếu đang ở overview-per-pic
     if(picFilter) subs=subs.filter(function(s){return picOf(s)===picFilter;});
+    /* ⭐ v7.3: ở tab Cập nhật công việc — nếu đang lọc Nhân sự thì CHỈ hiện
+       sub-task của người đó (trước đây hiện hết ⇒ khó tìm việc của mình). */
+    var selPicsD=(S.tab==="detail" && !picFilter) ? (S.detailPics||[]) : [];
+    if(selPicsD.length) subs=subs.filter(function(s){return selPicsD.indexOf(picOf(s))>=0;});
     // lọc thời gian (nếu có) — trừ khi user yêu cầu hiện tất cả
     var showAll=!!S.detailShowAllSubs[k.no];
     var subsInRange=subs, hiddenCount=0;
@@ -3646,6 +3730,7 @@ function detailKeyPanels(keys, from, to, picFilter){
       +'<svg class="kt-caret" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>'
       +'<span class="kt-type-tag" style="background:'+typeColor(k.type)+'22;color:'+typeColor(k.type)+'">'+esc(k.type||'—')+'</span>'
       +'<span class="kt-title">'+esc(k.keyTask)+(kOver?'<span class="od-chip">QUÁ HẠN</span>':'')+'</span>'
+      +picChargeTags(k, subsAll)      /* ⭐ v7.3: tag "ai đang giữ mấy sub-task" */
       +'<div class="kt-hmeta">'
         +'<span class="khm khm-pic"><span class="khm-av" style="background:'+avColor(k.pic)+'">'+esc(initials(k.pic||'?'))+'</span>'+esc(k.pic||'—')+'</span>'
         +'<span class="khm khm-date">🕒 '+(k.start?fmtVN(k.start):'—')+' → '+(effDate(k)?fmtVN(effDate(k)):'—')+'</span>'
@@ -3667,25 +3752,6 @@ function detailKeyPanels(keys, from, to, picFilter){
       h+='<div class="kt-result">'+keyResultInline(k)+'</div>';
     }
     h+='<div class="kt-body'+(open?' open':'')+'">';
-    /* ⭐ v7.0: Note PIC khác — nếu có sub-task từ PIC khác main PIC */
-    if(subsInRange.length>0){
-      var picCounts={};
-      subsInRange.forEach(function(s){
-        var p=s.pic||"—";
-        picCounts[p]=(picCounts[p]||0)+1;
-      });
-      var otherPics=Object.keys(picCounts).filter(function(p){return p!==k.pic && p!=="—";});
-      if(otherPics.length>0){
-        h+='<div class="pic-note">'
-          +'<div class="pn-row"><span class="pn-av" style="background:'+avColor(k.pic)+'">'+esc(initials(k.pic||'?'))+'</span>'
-          +'<span class="pn-main">'+esc(k.pic||'Chưa gán')+' — Main PIC</span></div>';
-        otherPics.forEach(function(p){
-          h+='<div class="pn-row"><span class="pn-av" style="background:'+avColor(p)+'">'+esc(initials(p))+'</span>'
-            +'<span><b>'+esc(p)+'</b> in charge <b>'+picCounts[p]+'</b> sub-task</span></div>';
-        });
-        h+='</div>';
-      }
-    }
     if(hiddenCount>0){
       h+='<div class="sub-toggle-all" onclick="toggleShowAllSubs(\''+jsq(k.no)+'\')">▾ Hiện thêm '+hiddenCount+' sub-task ngoài khoảng thời gian</div>';
     } else if(showAll && from && to && subs.length>subsInRange.length){
