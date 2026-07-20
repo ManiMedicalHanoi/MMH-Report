@@ -565,7 +565,7 @@ button{cursor:pointer}
 .sub-row{border-bottom:1px solid var(--border);position:relative}
 .sub-row:last-of-type{border-bottom:none}
 .sub-row.locked{opacity:.9}
-.sr-main{display:grid;grid-template-columns:14px 34px 1.6fr 168px 104px 76px 132px 1.25fr 16px;align-items:center;gap:9px;padding:10px 12px;cursor:pointer;transition:background .12s}
+.sr-main{display:grid;grid-template-columns:14px 34px 1.6fr 112px 76px 158px 128px 1.25fr 16px;align-items:center;gap:9px;padding:10px 12px;cursor:pointer;transition:background .12s}
 .sr-main:hover{background:var(--pale)}
 /* ⭐ Cột kết quả hiển thị NGAY BÊN CẠNH subtask (không cần click) */
 .sr-result{font-size:12.5px;color:var(--sub);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
@@ -816,7 +816,7 @@ button{cursor:pointer}
 .pb-info{font-size:14px;color:#8A5A00;font-weight:600}
 .pb-info b{font-size:16px}
 .sr-pri{flex:0 0 auto;display:flex;align-items:center;justify-content:center;width:24px}
-.sr-main.has-pri{grid-template-columns:24px 14px 34px 1.6fr 168px 104px 76px 132px 1.25fr 16px}
+.sr-main.has-pri{grid-template-columns:24px 14px 34px 1.6fr 112px 76px 158px 128px 1.25fr 16px}
 .sr-pri-check{font-size:18px;cursor:pointer;line-height:1;color:#C9A227;transition:transform .1s}
 .sr-pri-check:hover{transform:scale(1.2)}
 .sr-pri-check.on{color:#E0900A}
@@ -831,19 +831,24 @@ button{cursor:pointer}
 .sub-row.out-range{opacity:.82}
 .sub-row.out-range .sr-dot{opacity:.5}
 /* ⭐ v7.2: DÒNG TIÊU ĐỀ CỘT cho sub-list (đồng bộ với bảng Weekly) */
-.sr-head{display:grid;grid-template-columns:14px 34px 1.6fr 168px 104px 76px 132px 1.25fr 16px;align-items:center;gap:9px;padding:7px 12px;background:var(--mmh-navy);border-radius:8px;margin-bottom:4px}
+.sr-head{display:grid;grid-template-columns:14px 34px 1.6fr 112px 76px 158px 128px 1.25fr 16px;align-items:center;gap:9px;padding:7px 12px;background:var(--mmh-navy);border-radius:8px;margin-bottom:4px}
 .sr-head span{font-size:10.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:#c7d6ef;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:900px){ .sr-head{display:none} }
 .sub-toggle-all{padding:9px 14px;margin:2px 0;font-size:12.5px;font-weight:700;color:var(--mmh-blue);cursor:pointer;text-align:center;background:var(--pale);border-radius:8px;transition:.12s;border:1px dashed var(--lb2)}
-/* ⭐ v7.3: TAG "in charge" gọn nằm trên dòng Key Task */
-.ic-tags{display:inline-flex;align-items:center;gap:5px;flex-shrink:0;margin-left:2px}
-.ic-tag{display:inline-flex;align-items:center;gap:4px;background:#fffbeb;border:1px solid #fde68a;border-radius:20px;padding:2px 8px 2px 3px;font-size:11px;font-weight:700;color:#92400e;white-space:nowrap;line-height:1.5}
-.ic-tag.main{background:var(--lb3);border-color:var(--lb1);color:var(--mmh-navy)}
-.ic-av{width:17px;height:17px;border-radius:50%;color:#fff;font-size:8.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.ic-main{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;background:var(--mmh-navy);color:#fff;border-radius:5px;padding:1px 5px}
-.ic-badge{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--warn);color:#fff;font-size:10px;font-weight:800}
-.ic-tag.main .ic-badge{background:var(--mmh-blue)}
-@media(max-width:900px){ .ic-tag{font-size:10px} .ic-tag .ic-main{display:none} }
+/* ⭐ v7.4: TAG "in charge" — 1 hàng, không dàn trải, không lặp PIC chính */
+.ic-tags{display:inline-flex;align-items:center;gap:4px;flex-shrink:1;min-width:0;overflow:hidden;margin-left:4px}
+.ic-tag{display:inline-flex;align-items:center;gap:4px;background:#fffbeb;border:1px solid #fde68a;border-radius:20px;padding:2px 7px 2px 3px;font-size:10.5px;font-weight:700;color:#92400e;white-space:nowrap;line-height:1.5;max-width:150px}
+.ic-tag .ic-nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ic-av{width:16px;height:16px;border-radius:50%;color:#fff;font-size:8px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.ic-badge{display:inline-flex;align-items:center;justify-content:center;min-width:15px;height:15px;padding:0 4px;border-radius:8px;background:var(--warn);color:#fff;font-size:9.5px;font-weight:800;flex-shrink:0}
+.ic-badge.main-b{background:var(--mmh-blue);margin-left:5px}
+.ic-tag.ic-more{background:var(--gray);border-color:var(--border-2);color:var(--sub);padding:2px 8px;cursor:default}
+.khm-pic{white-space:nowrap}
+/* tag trong bảng Báo cáo tuần */
+.rp-key-pics{display:inline-flex;align-items:center;gap:4px;margin-left:10px;vertical-align:middle;min-width:0;overflow:hidden}
+.rp-key-pics .khm-pic{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--mmh-navy);background:var(--lb3);border-radius:20px;padding:2px 8px 2px 3px}
+.rp-key-pics .khm-av{width:16px;height:16px;border-radius:50%;color:#fff;font-size:8px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+@media(max-width:900px){ .ic-tag{font-size:9.5px;max-width:110px} .rp-key-pics{display:none} }
 .st-hidden-hint{padding:8px 13px;margin:2px 0 6px;font-size:12px;font-weight:600;color:var(--sub);background:var(--gray);border:1px dashed var(--border-2);border-radius:8px;text-align:center}
 .st-hidden-hint span{color:var(--mmh-blue);font-weight:800;cursor:pointer;text-decoration:underline}
 /* ⭐ v7.3: nút Xóa lọc */
@@ -1373,7 +1378,7 @@ button{cursor:pointer}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v7.3</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v7.4</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -3664,31 +3669,46 @@ document.addEventListener("click",function(e){
 
 /* Panels key + sub — DÙNG CHUNG cho Overview(lọc PIC) và Detail.
    ⭐ #1: mỗi .kt-panel có data-kno; mỗi sub-row có id="sub-<no>" để scroll+highlight. */
-/* ⭐ v7.3: TAG "IN CHARGE" gọn trên dòng Key Task.
-   Chỉ hiện cho PIC đang được quan tâm — người đang lọc ở bộ lọc Nhân sự,
-   hoặc chính người đang đăng nhập. Không đổ ra cả danh sách như bản v7.2
-   (khung vàng chiếm chỗ khiến không nhìn thấy sub-task để cập nhật). */
-function picChargeTags(k, subsAll){
-  if(S.tab!=="detail") return "";
-  var want=(S.detailPics||[]).slice();
-  if(!want.length){ var me=(S.user&&S.user.pic)||""; if(me) want=[me]; }
-  if(!want.length) return "";
-  var cnt={};
-  (subsAll||[]).forEach(function(s){ var p=picOf(s); cnt[p]=(cnt[p]||0)+1; });
-  var out="";
-  want.forEach(function(p){
-    var isMain = String(k.pic||"").trim().toLowerCase()===String(p||"").trim().toLowerCase();
-    var n = cnt[p]||0;
-    if(!n && !isMain) return;                      // người này không dính key task này
-    out+='<span class="ic-tag'+(isMain?' main':'')+'" title="'+esc(p)+(isMain?' là PIC chính của key task này':'')
-      +(n?' · đang giữ '+n+' sub-task':'')+'">'
-      +'<span class="ic-av" style="background:'+avColor(p)+'">'+esc(initials(p))+'</span>'
-      +esc(p)
-      +(isMain?'<span class="ic-main">main</span>':'')
-      +(n?'<span class="ic-badge">'+n+'</span>':'')
-      +'</span>';
+/* ⭐ v7.4: TAG "in charge" — KHÔNG lặp lại PIC chính.
+   · Chỉ 1 người phụ trách  → không sinh tag nào; số sub-task gắn thẳng vào ô PIC
+     của dòng key task (xem picMainCell) ⇒ tránh hiện 2 lần chữ "Giang".
+   · Có người khác          → sinh tag cho NHỮNG NGƯỜI KHÁC, gọn trên 1 hàng.
+   Trả về {cell: html ô PIC, tags: html các tag người khác}. */
+function picChargeInfo(k, subsAll){
+  var mainPic = String(k.pic||"").trim();
+  var mainKey = mainPic.toLowerCase();
+  var cnt={}, order=[];
+  (subsAll||[]).forEach(function(sb){
+    var p=picOf(sb);
+    if(!cnt[p]){ cnt[p]=0; order.push(p); }
+    cnt[p]++;
   });
-  return out ? '<span class="ic-tags">'+out+'</span>' : "";
+  var mainCnt=0;
+  order.forEach(function(p){ if(String(p).trim().toLowerCase()===mainKey) mainCnt+=cnt[p]; });
+  /* người khác PIC chính — bỏ trùng, bỏ "chưa gán" */
+  var others=order.filter(function(p){
+    return String(p).trim().toLowerCase()!==mainKey && p!==NO_PIC;
+  });
+  var cell='<span class="khm khm-pic"><span class="khm-av" style="background:'+avColor(mainPic)+'">'
+    +esc(initials(mainPic||'?'))+'</span>'+esc(mainPic||'—')
+    +(mainCnt?'<span class="ic-badge main-b" title="'+esc(mainPic)+' phụ trách '+mainCnt+' sub-task">'+mainCnt+'</span>':'')
+    +'</span>';
+  var tags="";
+  if(others.length){
+    var MAXT=3;
+    var show=others.slice(0,MAXT), rest=others.length-show.length;
+    tags=show.map(function(p){
+      return '<span class="ic-tag" title="'+esc(p)+' phụ trách '+cnt[p]+' sub-task trong key task này">'
+        +'<span class="ic-av" style="background:'+avColor(p)+'">'+esc(initials(p))+'</span>'
+        +'<span class="ic-nm">'+esc(p)+'</span><span class="ic-badge">'+cnt[p]+'</span></span>';
+    }).join("");
+    if(rest>0){
+      var restTip=others.slice(MAXT).map(function(p){return p+' ('+cnt[p]+')';}).join(', ');
+      tags+='<span class="ic-tag ic-more" title="'+esc(restTip)+'">+'+rest+'</span>';
+    }
+    tags='<span class="ic-tags">'+tags+'</span>';
+  }
+  return { cell:cell, tags:tags, mainCnt:mainCnt, others:others.length };
 }
 function detailKeyPanels(keys, from, to, picFilter){
   return keys.map(function(k){
@@ -3724,15 +3744,16 @@ function detailKeyPanels(keys, from, to, picFilter){
     var canAddSub=isManager()||true;
     var kOver=subs.some(isOverdue)||isOverdue(k);   // ⭐ key có sub quá hạn
     var canEditK=canEditPic(k.pic)||canAssign();
+    var _pcInfo=picChargeInfo(k, subsAll);   /* ⭐ v7.4 */
     var h='<div class="kt-panel'+(kOver?' od-key':'')+'" data-kno="'+esc(k.no)+'">';
     h+='<div class="kt-head'+(open?' open':'')+'" onclick="toggleDetail(\''+jsq(k.no)+'\')"'
       +(canEditK?' ondblclick="event.stopPropagation();openEditKey(\''+jsq(k.no)+'\')" title="Double-click để cập nhật Key Task"':'')+'>'
       +'<svg class="kt-caret" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>'
       +'<span class="kt-type-tag" style="background:'+typeColor(k.type)+'22;color:'+typeColor(k.type)+'">'+esc(k.type||'—')+'</span>'
       +'<span class="kt-title">'+esc(k.keyTask)+(kOver?'<span class="od-chip">QUÁ HẠN</span>':'')+'</span>'
-      +picChargeTags(k, subsAll)      /* ⭐ v7.3: tag "ai đang giữ mấy sub-task" */
+      +_pcInfo.tags                   /* ⭐ v7.4: chỉ tag của NGƯỜI KHÁC, 1 hàng */
       +'<div class="kt-hmeta">'
-        +'<span class="khm khm-pic"><span class="khm-av" style="background:'+avColor(k.pic)+'">'+esc(initials(k.pic||'?'))+'</span>'+esc(k.pic||'—')+'</span>'
+        +_pcInfo.cell                  /* ô PIC chính + badge số sub-task */
         +'<span class="khm khm-date">🕒 '+(k.start?fmtVN(k.start):'—')+' → '+(effDate(k)?fmtVN(effDate(k)):'—')+'</span>'
         +'<span class="khm khm-sub">'+doneCnt+'/'+subs.length+'</span>'
         +'<span class="khm khm-prog"><span class="kt-progbar"><span class="kt-progfill" style="width:'+kpct+'%;background:'+progColor(kpct)+'"></span></span></span>'
@@ -3764,8 +3785,8 @@ function detailKeyPanels(keys, from, to, picFilter){
     if(!subsInRange.length){ h+='<div class="sub-empty">Chưa có sub-task nào'+(hiddenCount?' trong khoảng thời gian':'')+(stHidden?' khớp bộ lọc trạng thái':'')+'.</div>'; }
     else {
       /* ⭐ v7.2: tiêu đề cột giống bảng Weekly */
-      h+='<div class="sr-head"><span></span><span>STT</span><span>Sub Task</span><span>Tiến độ</span>'
-        +'<span>PIC</span><span>Deadline</span><span>Trạng thái</span><span>Kết quả / Link</span><span></span></div>';
+      h+='<div class="sr-head"><span></span><span>STT</span><span>Sub Task</span><span>PIC</span>'
+        +'<span>Deadline</span><span>Tiến độ</span><span>Trạng thái</span><span>Kết quả / Link</span><span></span></div>';
       subsInRange.forEach(function(s){ h+=subRowVertical(k,s,from,to); });
     }
     h+='</div>';
@@ -3809,6 +3830,9 @@ function subRowVertical(k,s,from,to){
     +(od?'<span class="od-chip">QUÁ HẠN</span>':'')+'</span>'
     +(outRange?'<span class="sr-outtag '+(isDone(s.status)?'done':'todo')+'">'+(isDone(s.status)?'✓ đã xong (ngoài kỳ)':'ngoài khoảng lọc')+'</span>':'')+'</div>';
   /* ⭐ v7.2: cột KẾT QUẢ đã chuyển sang sát PHẢI (sau Trạng thái) — xem bên dưới */
+  /* ⭐ v7.4: thứ tự cột đồng bộ bảng "Báo cáo tuần": PIC → Deadline → Tiến độ */
+  h+='<span class="sr-pic"><span class="sr-pic-av" style="background:'+avColor(s.pic)+'">'+esc(initials(s.pic||'?'))+'</span>'+esc(s.pic||'—')+'</span>';
+  h+='<span class="sr-date">'+(effDate(s)?fmtVN(effDate(s)):'—')+'</span>';
   // tiến độ: PIC được sửa nhanh; người khác chỉ xem
   if(canEdit && !isDone(s.status) && !isCancelled(s.status)){
     h+='<div class="sr-prog-edit" onclick="event.stopPropagation()">'
@@ -3820,8 +3844,6 @@ function subRowVertical(k,s,from,to){
   } else {
     h+='<div class="sr-prog-lock"><span class="sr-progbar"><span class="sr-progfill" style="width:'+pct+'%;background:'+progColor(pct)+'"></span></span><span class="sr-progpct" style="color:'+progColor(pct)+'">'+pct+'%</span></div>';
   }
-  h+='<span class="sr-pic"><span class="sr-pic-av" style="background:'+avColor(s.pic)+'">'+esc(initials(s.pic||'?'))+'</span>'+esc(s.pic||'—')+'</span>';
-  h+='<span class="sr-date">'+(effDate(s)?fmtVN(effDate(s)):'—')+'</span>';
   // trạng thái: PIC đổi nhanh qua select
   if(canEdit){
     h+='<span class="sr-st-wrap" onclick="event.stopPropagation()"><select class="sr-st-sel '+m.cls+'" onchange="quickStatus(\''+jsq(s.no)+'\',this.value)">'
@@ -4011,9 +4033,13 @@ function reportSection(kind,label,from,to,data){
     +'</tr></thead><tbody>';
   data.forEach(function(g){
     var k=g.k, kpct=ktProgress(k), km=stMeta(ktStatus(k));
+    /* ⭐ v7.4: tag PIC giống tab "Cập nhật công việc" — đếm trên TOÀN BỘ sub-task
+       của key task (k.subs), không phải phần đã lọc, để thấy đủ ai đang giữ việc gì. */
+    var _rp=picChargeInfo(k, k.subs||[]);
     h+='<tr class="rp-keyrow"><td colspan="6">'
       +'<span class="rp-key-tag" style="background:'+typeColor(k.type)+'22;color:'+typeColor(k.type)+'">'+esc(k.type||'—')+'</span>'
       +'<span class="rp-key-name">'+esc(k.keyTask)+'</span>'
+      +'<span class="rp-key-pics">'+_rp.cell+_rp.tags+'</span>'
       +'<span class="rp-key-pct" style="color:'+progColor(kpct)+'">'+kpct+'%</span></td></tr>';
     g.subs.forEach(function(s){
       var m=stMeta(s.status), pct=subPct(s);
