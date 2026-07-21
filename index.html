@@ -641,6 +641,12 @@ button{cursor:pointer}
 .sr-ref-btn{margin-top:9px;font-size:12.5px;font-weight:700;color:var(--mmh-navy);background:#fff;border:1.5px solid var(--lb1);border-radius:8px;padding:8px 12px;cursor:pointer;transition:.14s}
 .sr-ref-btn:hover{border-color:var(--mmh-blue);background:var(--lb3);color:var(--mmh-blue)}
 .sub-empty{padding:16px;text-align:center;font-size:13px;color:var(--faint)}
+.sub-add-wrap{padding:6px 12px 8px 18px;display:flex;justify-content:flex-start}
+.sub-add-btn{display:inline-flex;align-items:center;gap:0;background:var(--lb3);color:var(--mmh-blue);border:1px dashed var(--lb1);border-radius:16px;padding:3px;height:26px;cursor:pointer;font-family:inherit;transition:.14s;overflow:hidden}
+.sub-add-btn .sab-plus{width:19px;height:19px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;line-height:1}
+.sub-add-btn .sab-lbl{max-width:0;opacity:0;white-space:nowrap;font-size:12px;font-weight:700;transition:max-width .18s,opacity .14s,padding .18s;padding:0}
+.sub-add-btn:hover{background:var(--mmh-blue);color:#fff;border-style:solid;border-color:var(--mmh-blue)}
+.sub-add-btn:hover .sab-lbl{max-width:90px;opacity:1;padding:0 6px 0 3px}
 .sub-add-row{padding:12px 14px;text-align:center;font-size:14px;font-weight:700;color:var(--mmh-blue);cursor:pointer;border-top:1.5px dashed var(--lb1);transition:.14s}
 .sub-add-row:hover{background:var(--lb3)}
 @media(max-width:900px){
@@ -3947,7 +3953,7 @@ function detailKeyPanels(keys, from, to, picFilter){
     if(!subsInRange.length){ h+='<div class="sub-empty">Chưa có sub-task nào'+(hiddenCount?' trong khoảng thời gian':'')+(stHidden?' khớp bộ lọc trạng thái':'')+'.</div>'; }
     else subsInRange.forEach(function(s){ h+=subRowVertical(k,s,from,to); });   /* ⭐ v7.6: header đã lên cấp toàn cục */
     h+='</div>';
-    if(canAddSub) h+='<div class="sub-add-row" onclick="openAddSub(\''+jsq(k.no)+'\')">➕ Thêm sub-task vào "'+esc(k.keyTask)+'"</div>';
+    if(canAddSub) h+='<div class="sub-add-wrap"><button class="sub-add-btn" title="Thêm sub-task vào \''+esc(k.keyTask)+'\'" onclick="event.stopPropagation();openAddSub(\''+jsq(k.no)+'\')"><span class="sab-plus">+</span><span class="sab-lbl">Sub-task</span></button></div>';
     h+='</div></div>';
     return h;
   }).join("");
