@@ -1906,6 +1906,7 @@ function boot(){
   apiGet("boot").then(function(res){
     applyBootData(res);
     cacheBoot(S.source, res);      /* ⭐ v5.6: cache nguồn đầu tiên */
+    loadRosterAllSources();        /* ⭐ v7.8: gộp danh bạ từ CẢ 3 backend */
     var saved="";
     try{ saved=localStorage.getItem("mmh_pic")||""; }catch(_){}
     var found=saved ? S.picList.filter(function(u){return u.pic===saved;})[0] : null;
@@ -2008,6 +2009,7 @@ function picsInDept(deptId){
   return S.picList;
 }
 function showPicPicker(){
+  S._gateView={ mode:"dept" };          /* ⭐ v7.8: nhớ màn đang mở để vẽ lại khi có thêm nhân sự */
   $("gate-spin").style.display="none";
   $("gate-status").style.display="none";
   $("gate-err").classList.remove("show");
@@ -2025,6 +2027,7 @@ function showPicPicker(){
     '<div class="dept-list">'+cards+'</div>';
 }
 function pickDept(deptId){
+  S._gateView={ mode:"people", id:deptId };   /* ⭐ v7.8 */
   var dept=DEPT_DEFS.filter(function(d){return d.id===deptId;})[0];
   var people=picsInDept(deptId);
   var opts=people.map(function(u){
@@ -2046,6 +2049,59 @@ function pickPic(name){
   if(!u) return;
   setUser(u); S.bootByPic=u.pic;
   startApp();
+}
+/* ══════ ⭐ v7.8: GỘP DANH BẠ TỪ CẢ 3 BACKEND Ở MÀN ĐĂNG NHẬP ══════
+   VẤN ĐỀ CŨ: app luôn boot bằng backend Marketing (S.source="marketing"), nên màn
+   đăng nhập chỉ dựng từ picList của DUY NHẤT backend Marketing. Nhân sự mới chỉ được
+   thêm vào USER_MAP của Back Office / Management sẽ KHÔNG hiện ra để chọn — dù backend
+   phòng đó đã deploy đúng (vd: Lan / Accounting).
+   CÁCH XỬ LÝ: vẫn hiện picker NGAY bằng danh bạ nguồn chính (không thêm thời gian chờ),
+   song song nạp nền 2 nguồn còn lại → bổ sung người còn thiếu rồi vẽ lại danh sách.
+   Lợi ích kèm theo: SRC_CACHE được làm ấm sớm ⇒ bấm chuyển phòng ban nhanh hơn. */
+var _rosterLoaded={};
+function mergeRoster(list){
+  var seen={}, added=0;
+  (S.picList||[]).forEach(function(u){
+    var v=String((u&&u.pic)||"").trim().toLowerCase(); if(v) seen[v]=1;
+  });
+  (list||[]).forEach(function(u){
+    var v=String((u&&u.pic)||"").trim(); if(!v) return;
+    if(seen[v.toLowerCase()]) return;          /* đã có (so khớp không phân biệt hoa/thường) */
+    seen[v.toLowerCase()]=1; S.picList.push(u); added++;
+  });
+  if(added) S._picSet=null;                    /* dựng lại whitelist PIC */
+  return added;
+}
+function loadRosterAllSources(){
+  ["marketing","backoffice","management"].forEach(function(src){
+    if(src===S.source || _rosterLoaded[src] || !GAS_URLS[src]) return;
+    _rosterLoaded[src]=1;
+    jsonpTo(GAS_URLS[src], { action:"boot", pic:"" }).then(function(r){
+      if(!r || !r.ok || !r.picList || !r.picList.length) return;
+      if(!SRC_CACHE[src]) cacheBoot(src, r);   /* làm ấm cache luôn */
+      if(!mergeRoster(r.picList)) return;      /* không có ai mới → khỏi vẽ lại */
+      refreshGateView();
+      autoLoginIfSaved();
+    }).catch(function(){});
+  });
+}
+/* Vẽ lại đúng màn đang mở ở cổng đăng nhập — chỉ khi người dùng VẪN đang ở đó */
+function refreshGateView(){
+  var g=$("gate"); if(!g || g.style.display==="none") return;
+  var v=S._gateView; if(!v) return;
+  if(v.mode==="dept")        showPicPicker();
+  else if(v.mode==="people") pickDept(v.id);
+}
+/* Người đã từng đăng nhập nhưng nguồn chính chưa có tên ⇒ sau khi gộp mới nhận ra.
+   Chỉ tự vào app khi người dùng CHƯA thao tác (vẫn ở màn chọn phòng). */
+function autoLoginIfSaved(){
+  var g=$("gate"); if(!g || g.style.display==="none") return;
+  if(!S._gateView || S._gateView.mode!=="dept") return;
+  var saved=""; try{ saved=localStorage.getItem("mmh_pic")||""; }catch(_){}
+  if(!saved) return;
+  var u=(S.picList||[]).filter(function(x){ return x.pic===saved; })[0];
+  if(!u) return;
+  setUser(u); S.bootByPic=u.pic; startApp();
 }
 function switchUser(){
   try{ localStorage.removeItem("mmh_pic"); }catch(_){}
