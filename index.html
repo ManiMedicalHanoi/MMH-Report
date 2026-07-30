@@ -1860,6 +1860,7 @@ function jsonp(params, timeoutMs){
    Không đọc được response do no-cors → coi như thành công nếu không throw; caller sẽ reloadSoft để xác nhận. */
 function apiPostBody(body){
   if(!body.action) return Promise.reject(new Error("thiếu action"));
+  S._lastSelfSave=Date.now();   /* ⭐ v7.9 FIX #1 */
   if(S.user && S.user.pic && !("pic" in body)) body.pic = S.user.pic;
   if(S.user && S.user.pic && !("actor" in body)) body.actor = S.user.pic;  /* ⭐ FIX GIAO VIỆC */
   return fetch(GAS_URL, {
@@ -1886,6 +1887,7 @@ function apiGet(action,extra){
    trả về cờ soft-timeout để caller refetch xác nhận (hết tình trạng "timeout ảo"). */
 function apiPost(body){
   if(!body.action) throw new Error("thiếu action");
+  S._lastSelfSave=Date.now();   /* ⭐ v7.9 FIX #1: đánh dấu "thay đổi này là của tôi" */
   var params={}; Object.keys(body).forEach(function(k){
     var v=body[k];
     params[k]=(v!==null && typeof v==="object") ? JSON.stringify(v) : v;
@@ -1910,7 +1912,8 @@ function boot(){
     var saved="";
     try{ saved=localStorage.getItem("mmh_pic")||""; }catch(_){}
     var found=saved ? S.picList.filter(function(u){return u.pic===saved;})[0] : null;
-    if(found){ setUser(found); S.bootByPic=found.pic; startApp(); return; }
+    /* ⭐ v7.9: đi qua pickPic để người Back Office vào thẳng nguồn Back Office */
+    if(found){ pickPic(found.pic); return; }
     showPicPicker();
   }).catch(function(e){
     var msg=e.message||"";
@@ -1943,6 +1946,33 @@ function normalizeKeyTasks(list){
   });
   return list||[];
 }
+/* ══════ ⭐ v7.9 FIX #2: DANH BẠ DỰ PHÒNG (nhân sự luôn hiện ở màn đăng nhập) ══════
+   NGUYÊN NHÂN LỖI CŨ: app boot bằng backend Marketing, còn 2 backend kia bị GATE
+   (action=boot bị từ chối khi chưa biết pic) ⇒ mergeRoster không bao giờ chạy ⇒
+   nhân sự chỉ khai trong USER_MAP của Back Office / Management (vd: LAN — Accounting)
+   KHÔNG hiện ra ở màn chọn người khi đăng nhập.
+   CÁCH XỬ LÝ: (1) nhúng sẵn danh bạ đầy đủ ngay trong web — luôn có, không phụ thuộc
+   backend; (2) vẫn nạp nền từ 3 backend qua action "roster" (không bị gate) để nhân sự
+   mới thêm ở Google Apps Script tự động xuất hiện mà KHÔNG cần sửa file HTML.
+   Dữ liệu backend LUÔN được ưu tiên; danh bạ dưới đây chỉ bù người còn thiếu. */
+var FALLBACK_ROSTER=[
+ {pic:"Nguyen Ha", initials:"NH", role:"manager", level:"director", title:"Director",                     dept:"Sales & Marketing VN", team:"Management",          canAssign:true},
+ {pic:"Tuyen",     initials:"TU", role:"manager", level:"hod",      title:"Head of Sales & Marketing VN",  dept:"Sales & Marketing VN", team:"Sales & Marketing VN", canAssign:true},
+ {pic:"Giang",     initials:"GI", role:"manager", level:"lead",     title:"Product Team Leader",           dept:"Sales & Marketing VN", team:"Product Team",         canAssign:true},
+ {pic:"Thuong",    initials:"TH", role:"manager", level:"lead",     title:"Marketing Team Leader",         dept:"Sales & Marketing VN", team:"Marketing Team",       canAssign:true},
+ {pic:"Duc Anh",   initials:"DA", role:"pic",     level:"pic",      title:"Marketing PIC \u2014 Design",     dept:"Sales & Marketing VN", team:"Marketing Team",       canAssign:false},
+ {pic:"Quynh Anh", initials:"QA", role:"pic",     level:"pic",      title:"Marketing PIC \u2014 Digital",    dept:"Sales & Marketing VN", team:"Marketing Team",       canAssign:false},
+ {pic:"Trang",     initials:"TR", role:"pic",     level:"pic",      title:"Marketing PIC",                 dept:"Sales & Marketing VN", team:"Marketing Team",       canAssign:false},
+ {pic:"Minh Viet", initials:"MV", role:"manager", level:"lead",     title:"Dental Sales Team Leader",      dept:"Sales & Marketing VN", team:"Dental Sales Team",    canAssign:true},
+ {pic:"Vinh",      initials:"VI", role:"pic",     level:"pic",      title:"Dental Sales PIC",              dept:"Sales & Marketing VN", team:"Dental Sales Team",    canAssign:false},
+ {pic:"Phuong",    initials:"PH", role:"pic",     level:"pic",      title:"Dental Sales PIC",              dept:"Sales & Marketing VN", team:"Dental Sales Team",    canAssign:false},
+ {pic:"Hoa",       initials:"HO", role:"manager", level:"hod",      title:"Head of Back Office",           dept:"Back-office",          team:"Back-office",          canAssign:true},
+ {pic:"Dam Ha",    initials:"DH", role:"pic",     level:"lead",     title:"Stock Team Leader",             dept:"Back-office",          team:"Stock Team",           canAssign:false},
+ {pic:"Hau",       initials:"HU", role:"pic",     level:"pic",      title:"Stock PIC",                     dept:"Back-office",          team:"Stock Team",           canAssign:false},
+ {pic:"Ngoc",      initials:"NG", role:"pic",     level:"pic",      title:"Accounting & Import-Export",    dept:"Back-office",          team:"Accounting",           canAssign:false},
+ {pic:"Lan",       initials:"LA", role:"pic",     level:"pic",      title:"Accounting PIC",                dept:"Back-office",          team:"Accounting",           canAssign:false},
+ {pic:"Dam Viet",  initials:"DV", role:"pic",     level:"pic",      title:"Purchasing & Sales Support",    dept:"Back-office",          team:"Purchasing",           canAssign:false}
+];
 function applyBootData(res){
   S.keyTasks=normalizeKeyTasks(res.keyTasks||[]);
   S.monthly=res.monthly||[];
@@ -1953,6 +1983,7 @@ function applyBootData(res){
   S.statusOptions=res.statusOptions||S.statusOptions;
   S.typeOptions=res.typeOptions||[];
   S.picList=res.picList||[];
+  mergeRoster(FALLBACK_ROSTER);   /* ⭐ v7.9 FIX #2: luôn bù đủ danh bạ (Lan, Ngoc, Dam Viet…) */
   S._picSet=null;                 /* ⭐ v5.2: dựng lại whitelist PIC cho nguồn mới */
   S.ovPics=[]; S.ovTypes=[];
 }
@@ -2044,10 +2075,40 @@ function pickDept(deptId){
     '<div class="pic-picker-title" style="--dept-c:'+dept.color+'">'+dept.icon+' '+esc(dept.label)+'</div>'+
     '<div class="pic-picker-list">'+opts+'</div>';
 }
+/* ⭐ v7.9: nhân sự Back Office đăng nhập → vào thẳng nguồn "Back Office"
+   (trước đây ai cũng rơi vào nguồn Marketing ⇒ PIC Back Office như Lan / Ngoc /
+   Dam Viet thấy dữ liệu không phải của mình, hoặc bị chặn "chưa có công việc"). */
+function preferredSourceFor(u){
+  if(!u) return S.source;
+  if(isTopLevel(u)) return S.source;                 /* Director / HOD giữ nguyên */
+  if(picDeptId(u)==="bo" && GAS_URLS.backoffice) return "backoffice";
+  return S.source;
+}
 function pickPic(name){
   var u=S.picList.filter(function(x){return x.pic===name;})[0];
   if(!u) return;
   setUser(u); S.bootByPic=u.pic;
+  var want=preferredSourceFor(u);
+  if(want && want!==S.source){
+    var c=SRC_CACHE[want];
+    if(c && c.res && c.res.ok && !c.res.denied){           /* đã có sẵn trong cache → vào ngay */
+      S.source=want; GAS_URL=GAS_URLS[want]; S.dataVersion="";
+      applyBootData(c.res); startApp(); return;
+    }
+    $("gate-spin").style.display="block";
+    $("gate-status").style.display="block";
+    gateStatus("Đang tải công việc của bạn…");
+    var prevSrc=S.source;
+    S.source=want; GAS_URL=GAS_URLS[want]; S.dataVersion="";
+    apiGet("boot").then(function(res){
+      if(res && res.ok && !res.denied){ applyBootData(res); cacheBoot(want,res); }
+      else { S.source=prevSrc; GAS_URL=GAS_URLS[prevSrc]; }   /* bị chặn → quay về nguồn cũ */
+      startApp();
+    }).catch(function(){
+      S.source=prevSrc; GAS_URL=GAS_URLS[prevSrc]; startApp();
+    });
+    return;
+  }
   startApp();
 }
 /* ══════ ⭐ v7.8: GỘP DANH BẠ TỪ CẢ 3 BACKEND Ở MÀN ĐĂNG NHẬP ══════
@@ -2076,7 +2137,13 @@ function loadRosterAllSources(){
   ["marketing","backoffice","management"].forEach(function(src){
     if(src===S.source || _rosterLoaded[src] || !GAS_URLS[src]) return;
     _rosterLoaded[src]=1;
-    jsonpTo(GAS_URLS[src], { action:"boot", pic:"" }).then(function(r){
+    /* ⭐ v7.9 FIX #2: dùng action "roster" (backend KHÔNG gate) — action "boot" bị
+       từ chối vì chưa biết pic, nên trước đây danh bạ 2 nguồn kia không bao giờ về.
+       Nếu backend chưa deploy bản mới (chưa có "roster") thì tự lùi về "boot". */
+    jsonpTo(GAS_URLS[src], { action:"roster", pic:"" }).then(function(r0){
+      if(r0 && r0.ok && r0.picList && r0.picList.length) return r0;
+      return jsonpTo(GAS_URLS[src], { action:"boot", pic:"" });
+    }).then(function(r){
       if(!r || !r.ok || !r.picList || !r.picList.length) return;
       if(!SRC_CACHE[src]) cacheBoot(src, r);   /* làm ấm cache luôn */
       if(!mergeRoster(r.picList)) return;      /* không có ai mới → khỏi vẽ lại */
@@ -2101,7 +2168,7 @@ function autoLoginIfSaved(){
   if(!saved) return;
   var u=(S.picList||[]).filter(function(x){ return x.pic===saved; })[0];
   if(!u) return;
-  setUser(u); S.bootByPic=u.pic; startApp();
+  pickPic(u.pic);   /* ⭐ v7.9 */
 }
 function switchUser(){
   try{ localStorage.removeItem("mmh_pic"); }catch(_){}
@@ -2286,6 +2353,7 @@ function switchSource(src){
       S.keyTasks=normalizeKeyTasks(res.keyTasks||[]); S.monthly=res.monthly||[];
       S.activityLog=res.activityLog||[]; S.pics=res.pics||[];
       S.managers=res.managers||[]; S.picList=res.picList||[];
+      mergeRoster(FALLBACK_ROSTER);            /* ⭐ v7.9 FIX #2 */
       S.typeOptions=res.typeOptions||[]; S._picSet=null;
       syncPriorityMarks();
       rerenderActive(); buildSourceTabs(); renderActivity(); renderMyTaskBar();
@@ -3523,6 +3591,9 @@ function resultCellEditable(o, isKey){
     +(can?' onclick="event.stopPropagation();startResEdit(this)"':'')
     +'>'+inner+'</div>';
 }
+/* ⭐ v7.9 FIX #1: bản nháp đang gõ ở ô "Kết quả".
+   Giữ ngoài DOM để nếu màn hình có bị vẽ lại thì vẫn khôi phục được nguyên văn. */
+var _resEdit=null;   /* {no, val, isKey} */
 function startResEdit(el){
   if(el.querySelector("textarea")) return;
   var cur=el.getAttribute("data-raw")||"";
@@ -3530,22 +3601,47 @@ function startResEdit(el){
   el.innerHTML='<textarea class="rc-input" spellcheck="false" placeholder="Nhập kết quả / dán link…">'+esc(cur)+'</textarea>'
     +'<div class="rc-hint">Ctrl+Enter lưu · Esc huỷ</div>';
   var ta=el.querySelector("textarea");
+  _resEdit={ no:el.getAttribute("data-no"), val:cur, isKey:el.classList.contains("rc-key") };
   ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+  ta.oninput=function(){ if(_resEdit) _resEdit.val=ta.value; };   /* ⭐ lưu nháp mỗi ký tự */
   ta.onclick=function(e){ e.stopPropagation(); };
   ta.onblur=function(){ commitResEdit(el, ta.value); };
   ta.onkeydown=function(e){
     e.stopPropagation();
-    if(e.key==="Escape"){ ta.onblur=null; cancelResEdit(el); }
+    if(e.key==="Escape"){ ta.onblur=null; _resEdit=null; cancelResEdit(el); }
     else if(e.key==="Enter" && (e.ctrlKey||e.metaKey)){ ta.blur(); }
   };
 }
+/* ⭐ v7.9 FIX #1: sau mỗi lần vẽ lại màn hình, mở lại ô đang gõ dở & trả nguyên văn bản nháp */
+function restoreResEdit(){
+  if(!_resEdit || !_resEdit.no) return;
+  if(document.querySelector(".rc-editing")) return;         /* vẫn đang mở → khỏi làm gì */
+  var draft=_resEdit.val, no=_resEdit.no, target=null;
+  var list=document.querySelectorAll(".sr-result.rc-editable");
+  for(var i=0;i<list.length;i++){ if(list[i].getAttribute("data-no")===no){ target=list[i]; break; } }
+  if(!target){                    /* dòng không còn trên màn hình (bị lọc / đã xoá trên sheet) */
+    _resEdit=null;                /* ⭐ phải xoá nháp, nếu không auto-refresh sẽ bị khoá vĩnh viễn */
+    if(String(draft||"").trim()) toast("⚠️ Dòng "+no+" không còn hiển thị — kết quả vừa gõ chưa lưu");
+    return;
+  }
+  _resEdit=null;
+  startResEdit(target);
+  var ta=target.querySelector("textarea");
+  if(ta){
+    ta.value=draft;
+    if(_resEdit) _resEdit.val=draft;
+    ta.setSelectionRange(draft.length, draft.length);
+  }
+}
 function cancelResEdit(el){
+  _resEdit=null;
   el.classList.remove("rc-editing");
   var no=el.getAttribute("data-no");
   var o=findAnyByNo(no);
   el.outerHTML=resultCellEditable(o||{no:no,result:el.getAttribute("data-raw")}, el.classList.contains("rc-key"));
 }
 function commitResEdit(el, val){
+  _resEdit=null;                       /* ⭐ v7.9 FIX #1: đã chốt → bỏ bản nháp */
   var no=el.getAttribute("data-no");
   var old=el.getAttribute("data-raw")||"";
   var nv=String(val==null?"":val).trim();
@@ -3557,6 +3653,7 @@ function commitResEdit(el, val){
   el.outerHTML=resultCellEditable(o||{no:no,result:nv}, el.classList.contains("rc-key"));
   quietSave(no, {action:"updateResult", no:no, result:nv});
   toast("✓ Đã lưu kết quả "+no);
+  setTimeout(flushPendingRefresh, 800);   /* ⭐ v7.9 FIX #1: gõ xong mới cho làm mới */
 }
 /* tìm key task HOẶC sub-task theo mã số */
 function findAnyByNo(no){
@@ -4195,7 +4292,11 @@ function renderReport(){
     +'<button class="tf-arrow" onclick="shiftReport(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button></div>';
   h+='<div class="sp" style="flex:1"></div>';
   h+=multiFilterDropdownReport(pics,selPics);
-  if(canAssign()) h+='<button class="btn-primary" onclick="openSendReport()"><svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z"/></svg>Gửi báo cáo</button>';
+  /* ⭐ v7.9 FIX #3: TRƯỚC ĐÂY nút này bị bọc trong if(canAssign()) ⇒ chỉ Quản lý
+     (Nguyen Ha, Tuyen, Hoa, Giang, Thuong, Minh Viet) mới thấy. Toàn bộ PIC Back Office
+     (Dam Ha, Hau, Ngoc, Lan, Dam Viet) và PIC khác KHÔNG có nút gửi báo cáo tuần.
+     Backend không hề chặn — chỉ frontend ẩn. Nay MỌI người đăng nhập đều thấy nút. */
+  if(S.user && S.user.pic) h+='<button class="btn-primary" onclick="openSendReport()"><svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z"/></svg>Gửi báo cáo</button>';
   h+='</div>';
   // ── #4: CẢ 2 phần dùng CHUNG bảng có cột Kết quả ──
   h+=reportSection("this","Kết quả tuần này", thisFrom,thisTo, thisData);
@@ -4358,7 +4459,7 @@ function delMonth(row,no,title,month){
 
 /* ══════════════ MODAL chung ══════════════ */
 function showModal(html){ $("modals").innerHTML='<div class="modal-overlay show" onclick="if(event.target===this)closeModal()">'+html+'</div>'; if(typeof LANG!=="undefined"&&LANG==="en") translateNode($("modals")); }
-function closeModal(){ $("modals").innerHTML=""; }
+function closeModal(){ $("modals").innerHTML=""; setTimeout(flushPendingRefresh, 300); /* ⭐ v7.9 FIX #1 */ }
 
 /* ⭐ v5.10: KHÔNG còn hộp thoại "Giao việc" riêng.
    · Giao việc = TẠO TASK như bình thường: PIC thường chỉ tạo dưới tên mình;
@@ -5096,8 +5197,44 @@ function reload(){
 }
 /* đồng bộ nền — KHÔNG overlay, KHÔNG chặn thao tác */
 var _softBusy=false;
-function reloadSoft(){
+/* ══════ ⭐ v7.9 FIX #1: KHOÁ TỰ ĐỘNG LÀM MỚI KHI NGƯỜI DÙNG ĐANG NHẬP LIỆU ══════
+   LỖI CŨ (đúng như phản ánh "đang gõ phần kết quả thì nó tắt đi và báo dữ liệu đã cập nhật"):
+   cứ 20 giây — và mỗi lần cửa sổ lấy lại focus — checkVersion() hỏi backend "vân tay dữ liệu".
+   Chỉ cần ai đó (kể cả CHÍNH BẠN vừa lưu 1 ô khác) đụng vào Google Sheet là vân tay đổi
+   ⇒ reloadSoft() → rerenderActive() vẽ lại toàn bộ bảng ⇒ thẻ <textarea> đang gõ bị XOÁ khỏi
+   DOM. Trình duyệt KHÔNG bắn sự kiện blur cho thẻ bị gỡ ⇒ nội dung vừa gõ MẤT TRẮNG,
+   kèm toast "🔄 Dữ liệu vừa thay đổi trên Google Sheet — đã cập nhật".
+   CÁCH XỬ LÝ: đang gõ thì HOÃN việc làm mới lại (không huỷ), gõ xong mới chạy. */
+var _pendingRefresh=false;
+function isEditingUI(){
+  try{
+    var md=$("modals");  if(md && md.innerHTML.replace(/\s/g,"")!=="") return true;   /* đang mở hộp thoại */
+    var ov=$("overlay"); if(ov && ov.classList.contains("show")) return true;         /* đang lưu/gửi */
+    if(_resEdit && _resEdit.no) return true;                                          /* đang gõ ô Kết quả */
+    if(document.querySelector(".rc-editing")) return true;
+    var a=document.activeElement;
+    if(a){
+      var tg=String(a.tagName||"").toUpperCase();
+      if(tg==="TEXTAREA") return true;
+      if(tg==="INPUT"){
+        var ty=String(a.type||"text").toLowerCase();
+        if(ty!=="checkbox" && ty!=="radio" && ty!=="button" && ty!=="submit") return true;
+      }
+      if(a.isContentEditable) return true;
+    }
+  }catch(_){}
+  return false;
+}
+/* Chạy nốt lần làm mới đã bị hoãn — chỉ khi người dùng đã ngưng nhập liệu */
+function flushPendingRefresh(){
+  if(!_pendingRefresh) return;
+  if(isEditingUI()) return;
+  _pendingRefresh=false;
+  reloadSoft();
+}
+function reloadSoft(force){
   if(_softBusy) return Promise.resolve();
+  if(!force && isEditingUI()){ _pendingRefresh=true; return Promise.resolve(); }  /* ⭐ hoãn lại */
   _softBusy=true;
   return apiGet("boot").then(function(res){
     _softBusy=false;
@@ -5119,6 +5256,7 @@ var SYNC_MS=20000, _syncTimer=null;
 function bumpVersion(v){ S.dataVersion=v||""; }
 function checkVersion(force){
   if(!S.user || S.syncing) return;
+  if(isEditingUI()){ _pendingRefresh=true; return; } /* ⭐ v7.9 FIX #1: đang gõ → tuyệt đối không vẽ lại */
   if(!force && document.hidden) return;              // tab ẩn thì khỏi hỏi cho đỡ tốn quota
   var src=S.source;
   jsonpTo(GAS_URLS[src], { action:"version", pic:S.user.pic })
@@ -5127,21 +5265,27 @@ function checkVersion(force){
       if(S.source!==src) return;
       if(!S.dataVersion){ bumpVersion(r.v); return; }  // lần đầu: chỉ ghi nhận
       if(r.v===S.dataVersion) return;                  // không đổi
+      if(isEditingUI()){ _pendingRefresh=true; return; }   /* ⭐ v7.9 FIX #1 */
       bumpVersion(r.v);
       delete SRC_CACHE[src];                           // cache cũ đã hỏng → bỏ
       S.syncing=true;
       var y=window.scrollY||0;
-      reloadSoft().then(function(){
+      /* ⭐ v7.9: nếu thay đổi là do CHÍNH MÌNH vừa lưu (trong 45 giây) thì làm mới ÂM THẦM,
+         không hiện thông báo "dữ liệu vừa thay đổi" gây hiểu nhầm là người khác sửa. */
+      var mine=(Date.now()-(S._lastSelfSave||0) < 45000);
+      reloadSoft(true).then(function(){
         S.syncing=false;
         window.scrollTo(0,y);
-        toast("🔄 Dữ liệu vừa thay đổi trên Google Sheet — đã cập nhật");
+        if(!mine) toast("🔄 Dữ liệu vừa thay đổi trên Google Sheet — đã cập nhật");
       });
     })
     .catch(function(){});
 }
 function startSync(){
   clearInterval(_syncTimer);
-  _syncTimer=setInterval(checkVersion, SYNC_MS);
+  _syncTimer=setInterval(function(){ flushPendingRefresh(); checkVersion(); }, SYNC_MS);
+  /* ⭐ v7.9 FIX #1: rời ô nhập liệu → 1,5 giây sau mới chạy nốt lần làm mới bị hoãn */
+  document.addEventListener("focusout", function(){ setTimeout(flushPendingRefresh, 1500); }, true);
   document.addEventListener("visibilitychange", function(){ if(!document.hidden) checkVersion(true); });
   window.addEventListener("focus", function(){ checkVersion(true); });
   checkVersion(true);
@@ -5175,6 +5319,7 @@ function rerenderActive(){
   else if(S.tab==="detail")renderDetail();
   else if(S.tab==="month")renderMonth();
   else if(S.tab==="report")renderReport();
+  restoreResEdit();   /* ⭐ v7.9 FIX #1: lưới nội dung an toàn — mở lại ô Kết quả đang gõ dở */
 }
 
 /* ══════════════ PRIORITY (đánh dấu ưu tiên) ══════════════ */
