@@ -1437,7 +1437,7 @@ button{cursor:pointer}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v7.6</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v8.1</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -1811,17 +1811,44 @@ function inRangeISO(d, from, to){
   var x=String(d).slice(0,10);
   return x>=from && x<=to;
 }
+/* ⭐ v8.1 — QUY TẮC "GIAO NHAU VỚI TUẦN" (overlap). Web và backend dùng CHUNG.
+   Bản v8.0 lọc quá chặt:
+     • "Kết quả tuần này" chỉ nhận task có deadline trong tuần ⇒ trên bảng gần như
+       chỉ còn task đã Completed; task To Do / In Progress hạn tuần sau biến mất.
+     • "Plan tuần sau" chỉ nhận task có START DATE trong tuần sau ⇒ sheet bỏ trống
+       cột Start date thì phần này LUÔN rỗng (cả web, email lẫn PDF).
+   Nay: task thuộc về tuần [from,to] nếu khoảng sống của nó CHẠM vào tuần đó,
+   và mọi mức tiến độ (To Do / In Progress / Completed / Cancelled) đều hiển thị. */
+function stKey(st){
+  st=String(st||"");
+  if(isDone(st)) return "Completed";
+  if(isCancelled(st)) return "Cancelled";
+  if(isInProgress(st)) return "In Progress";
+  return "To Do";
+}
 function subInReportThis(s, from, to){
-  if(isCancelled(s.status)) return false;
-  var eff=String(s.revised||s.planned||"").slice(0,10);
-  if(!eff) return false;
-  if(eff>=from && eff<=to) return true;              // deadline trong tuần báo cáo
-  if(!isDone(s.status) && eff<from) return true;      // quá hạn chưa hoàn thành
+  var st  = String(s.start||"").slice(0,10);
+  var eff = String(s.revised||s.planned||"").slice(0,10);
+  var act = String(s.actual||"").slice(0,10);
+  var open = !isDone(s.status) && !isCancelled(s.status);
+  if(eff && eff>=from && eff<=to) return true;                     // hạn rơi trong tuần
+  if(st  && st >=from && st <=to) return true;                     // bắt đầu trong tuần
+  if(act && act>=from && act<=to) return true;                     // hoàn thành trong tuần
+  if(open && st && st<from && (!eff || eff>to)) return true;       // chạy xuyên tuần
+  if(open && eff && eff<from) return true;                         // quá hạn chưa xong
+  if(open && !st && !eff) return true;                             // chưa điền ngày, còn mở
   return false;
 }
 function subInReportNext(s, from, to){
-  if(isCancelled(s.status) || isDone(s.status)) return false;
-  return inRangeISO(s.start, from, to);               // chỉ theo START DATE
+  if(isCancelled(s.status) || isDone(s.status)) return false;      // plan không chứa việc đã xong/huỷ
+  var st  = String(s.start||"").slice(0,10);
+  var eff = String(s.revised||s.planned||"").slice(0,10);
+  if(st  && st >=from && st <=to) return true;                     // bắt đầu trong tuần sau
+  if(eff && eff>=from && eff<=to) return true;                     // hạn rơi vào tuần sau
+  if(st  && st <=to && (!eff || eff>=from)) return true;           // đang chạy sang tuần sau
+  if(eff && eff<from) return true;                                 // quá hạn → gánh sang tuần sau
+  if(!st && !eff) return true;                                     // chưa điền ngày, còn mở
+  return false;
 }
 function keyInRange(k, from, to){
   var subs=k.subs||[];
@@ -4300,14 +4327,24 @@ function renderReport(){
   var nextFrom=addDaysISO(thisTo,1), nextTo=addDaysISO(thisTo,7);
   var pics=picListAll();
   var selPics=S.reportPics||[];
+  if(!S.reportSt) S.reportSt=[];          /* ⭐ v8.1: [] = hiện MỌI trạng thái */
+  var selSt=S.reportSt;
   function collect(from,to,fn){
     var out=[];
     S.keyTasks.forEach(function(k){
       var subs=(k.subs||[]).filter(function(s){
         if(selPics.length && selPics.indexOf(s.pic)<0) return false;
+        if(selSt.length && selSt.indexOf(stKey(s.status))<0) return false;
         return fn(s,from,to);
       });
-      if(subs.length) out.push({k:k,subs:subs});
+      if(subs.length){ out.push({k:k,subs:subs}); return; }
+      /* ⭐ v8.1: key task KHÔNG có sub-task nào → chính nó là một đầu việc,
+         trước đây bị bỏ hoàn toàn khỏi tab Báo cáo tuần. */
+      if(!(k.subs||[]).length){
+        if(selPics.length && selPics.indexOf(k.pic)<0) return;
+        if(selSt.length && selSt.indexOf(stKey(k.status))<0) return;
+        if(fn(k,from,to)) out.push({k:k,subs:[]});
+      }
     });
     return out;
   }
@@ -4321,10 +4358,13 @@ function renderReport(){
     +'<button class="tf-arrow" onclick="shiftReport(1)"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button></div>';
   h+='<div class="sp" style="flex:1"></div>';
   h+=multiFilterDropdownReport(pics,selPics);
+  h+=reportStatusChips(selSt);   /* ⭐ v8.1 */
   /* ⭐ v7.9 FIX #3: TRƯỚC ĐÂY nút này bị bọc trong if(canAssign()) ⇒ chỉ Quản lý
      (Nguyen Ha, Tuyen, Hoa, Giang, Thuong, Minh Viet) mới thấy. Toàn bộ PIC Back Office
      (Dam Ha, Hau, Ngoc, Lan, Dam Viet) và PIC khác KHÔNG có nút gửi báo cáo tuần.
      Backend không hề chặn — chỉ frontend ẩn. Nay MỌI người đăng nhập đều thấy nút. */
+  /* ⭐ v8.1: KHÔNG gắn canAssign()/isManager() vào nút này. Mọi PIC đã đăng nhập
+     (kể cả Back Office: Dam Ha, Hau, Ngoc, Lan, Dam Viet) đều phải gửi được báo cáo. */
   if(S.user && S.user.pic) h+='<button class="btn-primary" onclick="openSendReport()"><svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z"/></svg>Gửi báo cáo</button>';
   h+='</div>';
   // ── #4: CẢ 2 phần dùng CHUNG bảng có cột Kết quả ──
@@ -4332,6 +4372,28 @@ function renderReport(){
   h+=reportSection("next","Plan tuần sau",   nextFrom,nextTo, nextData);
   $("tab-report").innerHTML=h;
   buildSourceTabs();   /* ⭐ v5.5: badge theo bộ lọc */
+}
+/* ⭐ v8.1: chip lọc theo tiến độ. Không chọn gì = hiện TẤT CẢ. */
+var REPORT_ST_LIST=["To Do","In Progress","Completed","Cancelled"];
+function reportStatusChips(sel){
+  var all=(sel.length===0);
+  function chip(label,on,onclick,color){
+    return '<button onclick="'+onclick+'" style="border:1px solid '+(on?color:'var(--border-2)')+';'
+      +'background:'+(on?color:'#fff')+';color:'+(on?'#fff':'var(--sub)')+';'
+      +'border-radius:999px;padding:6px 13px;font-size:12.5px;font-weight:700;white-space:nowrap">'+esc(label)+'</button>';
+  }
+  var h='<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">';
+  h+=chip("Tất cả tiến độ",all,"S.reportSt=[];renderReport()","var(--mmh-blue)");
+  REPORT_ST_LIST.forEach(function(st){
+    var on=sel.indexOf(st)>=0;
+    h+=chip(st,on,"toggleReportSt('"+jsq(st)+"')",stMeta(st).dot||"var(--mmh-blue)");
+  });
+  return h+'</div>';
+}
+function toggleReportSt(st){
+  var i=S.reportSt.indexOf(st);
+  if(i>=0) S.reportSt.splice(i,1); else S.reportSt.push(st);
+  renderReport();
 }
 function multiFilterDropdownReport(pics,sel){
   var open=(S.reportFilterOpen==="pic");
@@ -4388,6 +4450,18 @@ function reportSection(kind,label,from,to,data){
       +'<span class="rp-key-name">'+esc(k.keyTask)+'</span>'
       +'<span class="rp-key-pics">'+_rp.cell+_rp.tags+'</span>'
       +'<span class="rp-key-pct" style="color:'+progColor(kpct)+'">'+kpct+'%</span></td></tr>';
+    if(!g.subs.length){
+      /* ⭐ v8.1: key task tự nó là đầu việc (không có sub-task) */
+      var _od=isOverdue(k);
+      h+='<tr class="rp-subrow'+(_od?' od-row':'')+'">'
+        +'<td class="rp-c-task"><span class="rp-sub-no">'+esc(k.no)+'</span>'+esc(k.keyTask)+(_od?'<span class="od-chip">QUÁ HẠN</span>':'')+'</td>'
+        +'<td class="rp-c-pic"><span class="rp-pic-av" style="background:'+avColor(k.pic)+'">'+esc(initials(k.pic||'?'))+'</span>'+esc(k.pic||'—')+'</td>'
+        +'<td class="rp-c-dl">'+(effDate(k)?fmtVN(effDate(k)):'—')+'</td>'
+        +'<td class="rp-c-prog"><span class="rp-bar"><span class="rp-bar-fill" style="width:'+kpct+'%;background:'+progColor(kpct)+'"></span></span><span class="rp-bar-pct" style="color:'+progColor(kpct)+'">'+kpct+'%</span></td>'
+        +'<td class="rp-c-st"><span class="tc-status '+km.cls+'">'+esc(k.status||'To Do')+'</span></td>'
+        +'<td class="rp-c-res">'+(String(k.result||'').trim()?esc(String(k.result).slice(0,180)):'<span style="color:var(--faint)">—</span>')+'</td>'
+        +'</tr>';
+    }
     g.subs.forEach(function(s){
       var m=stMeta(s.status), pct=subPct(s);
       var resTxt=String(s.result||"").trim();
@@ -5072,8 +5146,10 @@ function openSendReport(){
       +'📅 <b>Kết quả tuần:</b> '+fmtVNFull(wFrom)+' – '+fmtVNFull(wTo)+'<br>'
       +'🗓️ <b>Plan tuần sau:</b> '+fmtVNFull(nFrom)+' – '+fmtVNFull(nTo)+'<br>'
       +'<span style="color:var(--faint)">Email + PDF gồm 2 phần. Thanh % có màu theo mức, dòng <b style="color:#D9433F">quá hạn</b> được bôi đỏ.<br>'
-      +'<b>Kết quả tuần</b> = task có deadline trong tuần + task quá hạn chưa hoàn thành. '
-      +'<b>Plan tuần sau</b> = task có start date trong tuần sau.</span>'
+      +'<b>Kết quả tuần</b> = mọi task có ngày bắt đầu / hạn / ngày hoàn thành chạm vào tuần, '
+      +'cộng task quá hạn chưa xong (đủ mọi mức tiến độ). '
+      +'<b>Plan tuần sau</b> = task chưa xong có ngày bắt đầu hoặc hạn chạm vào tuần sau, '
+      +'kể cả việc đang chạy dở và việc quá hạn gánh sang.</span>'
     +'</div>'
     +'<label style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:10px">Chọn cách gửi</label>'
     +'<div class="radio-cards">'
