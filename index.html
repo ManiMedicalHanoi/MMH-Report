@@ -2812,6 +2812,15 @@ var LANG = (function(){ try{ return localStorage.getItem("mmh_lang")||"vi"; }cat
 
 /* Chuỗi có key (dùng trực tiếp trong code mới) */
 var T_KEYS = {
+  "chart.visitRate":   { vi:"Customer Visiting Rate — Sales", en:"Customer Visiting Rate — Sales" },
+  "chart.visiting":    { vi:"Customer visiting",  en:"Customer visiting" },
+  "chart.otherTasks":  { vi:"Other tasks",        en:"Other tasks" },
+  "chart.visitCenter": { vi:"customer visits",    en:"customer visits" },
+  "chart.visitNote":   { vi:"Tỉ lệ sub-task đi gặp khách hàng trên tổng công việc của đội Sales",
+                         en:"Share of customer-visiting sub-tasks in the Sales team's total workload" },
+  "chart.custType":    { vi:"Customer Type Breakdown", en:"Customer Type Breakdown" },
+  "chart.custNote":    { vi:"Đếm theo Type task ở sheet Field Report: Hospital · Clinic · University · Distributor · Dealer",
+                         en:"Counted from the Type task field in the Field Report sheet: Hospital · Clinic · University · Distributor · Dealer" },
   "chart.byType":   { vi:"Sub-task theo loại công việc", en:"Sub-tasks by work type" },
   "chart.byStatus": { vi:"Sub-task theo trạng thái",     en:"Sub-tasks by status" },
   "chart.progress": { vi:"Tiến độ hoàn thành từ",         en:"Completion progress from" },
@@ -3673,33 +3682,35 @@ function salesCustType(tt){
   return "";
 }
 function salesChartsHTML(pool){
-  var field=0, office=0, byCust={};
+  var visiting=0, other=0, byCust={};
   (pool||[]).forEach(function(o){
-    var m=o.s&&o.s.vMeta; if(!m) return;                       /* chỉ tính dòng đồng bộ từ Sales */
-    /* ⭐ v9.8: phân loại theo TYPE TASK ở sheet nguồn (Sale-Hospital / Sale-Clinics /
-       Sale-University / Sale-Distributor / Sale-Dealer), KHÔNG lấy accType tách từ tên
-       account — chỗ đó lẫn cả tên chuyên khoa nên mới lòi ra "Surgical". */
-    var ct=salesCustType(m.tt);
-    if(ct){ field++; byCust[ct]=(byCust[ct]||0)+1; return; }
-    if(m.of || /office/i.test(String(m.tt||"")) || /_Office_/i.test(String(o.s.name||o.s.subTask||""))) office++;
+    var pic=picOf(o.s);
+    if(SALES_ALL_PICS.indexOf(pic)<0) return;                  /* chỉ tính công việc đội Sales */
+    if(isCancelled(o.s.status)) return;
+    var m=o.s.vMeta, ct=m?salesCustType(m.tt):"";
+    /* ⭐ v9.9 — Customer visiting = sub-task ĐỒNG BỘ tự động từ sheet Field Report.
+       Other tasks = mọi việc còn lại của đội Sales, do chính họ tạo trên webapp
+       (dùng chung backend với Marketing) — không còn nhánh "Working at office". */
+    if(ct){ visiting++; byCust[ct]=(byCust[ct]||0)+1; }
+    else other++;
   });
-  var tot=field+office;
+  var tot=visiting+other;
   if(!tot) return "";
-  var rate=Math.round(field/tot*100);
+  var rate=Math.round(visiting/tot*100);
   var ORDER=["Hospital","Clinic","University","Distributor","Dealer"];
   var custEntries=ORDER.filter(function(k){ return byCust[k]; })
                        .map(function(k){ return [k,byCust[k],CUSTOMER_TYPE_COLORS[k]]; });
 
   var h='<div class="chart-grid" style="margin-top:16px">';
-  h+='<div class="panel panel-pad chart-card"><h3>Field Engagement Rate — Sales</h3>'
-    +donutBig([["Gặp khách hàng",field,"#2A5DB0"],["Làm tại văn phòng",office,"#94a3b8"]],
-              rate+'%', 'gặp khách')
-    +'<div class="pb-note">Sub-task đi gặp khách hàng ('+field+') trên tổng công việc đồng bộ của đội Sales ('+tot+'), phần còn lại là Working at office ('+office+').</div>'
+  h+='<div class="panel panel-pad chart-card"><h3>'+t("chart.visitRate")+'</h3>'
+    +donutBig([[t("chart.visiting"),visiting,"#2A5DB0"],[t("chart.otherTasks"),other,"#94a3b8"]],
+              rate+'%', t("chart.visitCenter"))
+    +'<div class="pb-note">'+t("chart.visitNote")+' — '+visiting+'/'+tot+'</div>'
     +'</div>';
-  h+='<div class="panel panel-pad chart-card"><h3>Cơ cấu Customer type</h3>'
-    +(custEntries.length?donutBig(custEntries, String(field), 'lượt gặp')
+  h+='<div class="panel panel-pad chart-card"><h3>'+t("chart.custType")+'</h3>'
+    +(custEntries.length?donutBig(custEntries, String(visiting), t("chart.visitCenter"))
         :'<div class="chart-empty">'+t("chart.nodata")+'</div>')
-    +'<div class="pb-note">Đếm theo Type task ở sheet Field Report: Hospital · Clinic · University · Distributor · Dealer.</div>'
+    +'<div class="pb-note">'+t("chart.custNote")+'</div>'
     +'</div>';
   return h+'</div>';
 }
