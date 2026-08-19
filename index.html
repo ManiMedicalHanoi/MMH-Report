@@ -419,6 +419,7 @@ button{cursor:pointer}
 .bar-fill{height:100%;border-radius:6px;width:0;animation:barGrow .7s cubic-bezier(.4,0,.2,1) forwards}
 .bar-row:hover .bar-fill{filter:brightness(1.08)}
 @keyframes barGrow{from{width:0}}
+.detail-stchips{flex-basis:100%;margin-top:8px}
 .pg-bar{display:inline-flex;gap:4px;padding:3px;background:#EEF2F8;border-radius:9px;margin-right:8px}
 .pg-btn{padding:6px 12px;border:0;background:transparent;border-radius:7px;font-size:12.5px;font-weight:700;color:var(--faint);cursor:pointer}
 .pg-btn.on{background:#0F2E5A;color:#fff}
@@ -4257,6 +4258,8 @@ function renderDetail(){
   h+=statusFilterToggle();
   /* ⭐ v7.3: XÓA LỌC — chỉ hiện khi đang có bộ lọc nào đó bật */
   h+=clearFilterBtn();
+  /* ⭐ v9.10: hàng chip chọn nhanh tiến độ, giống tab "Báo cáo tuần" */
+  h+='<div class="detail-stchips">'+detailStatusChips()+'</div>';
   /* ⭐ v6.0: TÀI LIỆU THAM CHIẾU — tab ngay cạnh bộ lọc Nhân sự */
   h+='<button class="doc-tab-btn'+(S.docTab?" on":"")+'" onclick="toggleDocTab()" title="Kho link/tài liệu đính kèm trong ô Task result">'
     +'<svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>'
@@ -4406,6 +4409,37 @@ function statusFilterToggle(){
     +(allOn?'':'<button class="mfd-clear" onclick="toggleStatusFilter(null,\'reset\')">Mặc định</button>')
     +'</div><div class="mfd-list">'+list+'</div></div></div>';
 }
+/* ══ ⭐ v9.10 — CHIP CHỌN NHANH TRẠNG THÁI cho tab "Cập nhật công việc" ══
+   Giống hệt hàng chip bên "Báo cáo tuần", nhưng gắn vào S.detailStatusFilter sẵn có nên
+   dropdown "Trạng thái" và hàng chip luôn đồng bộ với nhau — bấm bên nào cũng ăn cả hai.
+   "Tất cả tiến độ" = chọn hết; bỏ chọn hết thì tự quay về mặc định (To Do + In Progress). */
+function detailStatusChips(){
+  var sel=S.detailStatusFilter||stFilterDefault();
+  var list=stFilterAll(), allOn=(sel.length===list.length);
+  function chip(label,on,onclick,color){
+    return '<button onclick="'+onclick+'" style="border:1px solid '+(on?color:'var(--border-2)')+';'
+      +'background:'+(on?color:'#fff')+';color:'+(on?'#fff':'var(--sub)')+';'
+      +'border-radius:999px;padding:6px 13px;font-size:12.5px;font-weight:700;white-space:nowrap;cursor:pointer">'+esc(label)+'</button>';
+  }
+  var h='<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">';
+  h+=chip(t("Tất cả tiến độ"),allOn,"toggleStatusFilter(null,'showall');renderDetail()","var(--mmh-blue)");
+  list.forEach(function(st){
+    var on=sel.indexOf(st)>=0 && !allOn;
+    h+=chip(st,on,"detailStChip('"+jsq(st)+"')",stMeta(st).dot||"var(--mmh-blue)");
+  });
+  return h+'</div>';
+}
+function detailStChip(st){
+  var sel=(S.detailStatusFilter||stFilterDefault()).slice();
+  var all=stFilterAll();
+  if(sel.length===all.length) sel=[];                 /* đang ở "Tất cả" → bấm 1 chip là lọc riêng nó */
+  var i=sel.indexOf(st);
+  if(i>=0) sel.splice(i,1); else sel.push(st);
+  if(!sel.length) sel=stFilterDefault();
+  S.detailStatusFilter=sel;
+  renderDetail();
+}
+
 function toggleStatusFilter(status,mode){
   if(mode==='showall'){ S.detailStatusFilter=stFilterAll(); }
   else if(mode==='reset'||mode===true){ S.detailStatusFilter=stFilterDefault(); }
