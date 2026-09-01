@@ -2321,7 +2321,7 @@ var FALLBACK_ROSTER=[
  {pic:"Dam Ha",    initials:"DH", role:"pic",     level:"lead",     title:"Stock Team Leader",             dept:"Back-office",          team:"Stock Team",           canAssign:false},
  {pic:"Hau",       initials:"HU", role:"pic",     level:"pic",      title:"Stock PIC",                     dept:"Back-office",          team:"Stock Team",           canAssign:false},
  {pic:"Ngoc",      initials:"NG", role:"pic",     level:"pic",      title:"Accounting & Import-Export",    dept:"Back-office",          team:"Accounting",           canAssign:false},
- {pic:"Lan",       initials:"LA", role:"pic",     level:"pic",      title:"Accounting PIC",                dept:"Back-office",          team:"Accounting",           canAssign:false},
+ {pic:"Mai",       initials:"MA", role:"pic",     level:"pic",      title:"Accounting PIC",                dept:"Back-office",          team:"Accounting",           canAssign:false},
  {pic:"Dam Viet",  initials:"DV", role:"pic",     level:"pic",      title:"Purchasing & Sales Support",    dept:"Back-office",          team:"Purchasing",           canAssign:false}
 ];
 function applyBootData(res){
@@ -2335,7 +2335,7 @@ function applyBootData(res){
   S.typeOptions=res.typeOptions||[];
   S.picList=res.picList||[];
   S.visitApp=res.visitApp||S.visitApp||{};        /* ⭐ v9: URL webapp Field Report theo nguồn */
-  mergeRoster(FALLBACK_ROSTER);   /* ⭐ v7.9 FIX #2: luôn bù đủ danh bạ (Lan, Ngoc, Dam Viet…) */
+  mergeRoster(FALLBACK_ROSTER);   /* ⭐ v7.9 FIX #2: luôn bù đủ danh bạ (Mai, Ngoc, Dam Viet…) */
   S._picSet=null;                 /* ⭐ v5.2: dựng lại whitelist PIC cho nguồn mới */
   S.ovPics=[]; S.ovTypes=[];
 }
@@ -2429,7 +2429,7 @@ function pickDept(deptId){
     '<div class="pic-picker-list">'+opts+'</div>';
 }
 /* ⭐ v7.9: nhân sự Back Office đăng nhập → vào thẳng nguồn "Back Office"
-   (trước đây ai cũng rơi vào nguồn Marketing ⇒ PIC Back Office như Lan / Ngoc /
+   (trước đây ai cũng rơi vào nguồn Marketing ⇒ PIC Back Office như Mai / Ngoc /
    Dam Viet thấy dữ liệu không phải của mình, hoặc bị chặn "chưa có công việc"). */
 function preferredSourceFor(u){
   if(!u) return S.source;
@@ -2468,7 +2468,7 @@ function pickPic(name){
    VẤN ĐỀ CŨ: app luôn boot bằng backend Marketing (S.source="marketing"), nên màn
    đăng nhập chỉ dựng từ picList của DUY NHẤT backend Marketing. Nhân sự mới chỉ được
    thêm vào USER_MAP của Back Office / Management sẽ KHÔNG hiện ra để chọn — dù backend
-   phòng đó đã deploy đúng (vd: Lan / Accounting).
+   phòng đó đã deploy đúng (vd: Mai / Accounting).
    CÁCH XỬ LÝ: vẫn hiện picker NGAY bằng danh bạ nguồn chính (không thêm thời gian chờ),
    song song nạp nền 2 nguồn còn lại → bổ sung người còn thiếu rồi vẽ lại danh sách.
    Lợi ích kèm theo: SRC_CACHE được làm ấm sớm ⇒ bấm chuyển phòng ban nhanh hơn. */
@@ -4872,10 +4872,10 @@ function renderReport(){
   h+=reportStatusChips(selSt);   /* ⭐ v8.1 */
   /* ⭐ v7.9 FIX #3: TRƯỚC ĐÂY nút này bị bọc trong if(canAssign()) ⇒ chỉ Quản lý
      (Nguyen Ha, Tuyen, Hoa, Giang, Thuong, Minh Viet) mới thấy. Toàn bộ PIC Back Office
-     (Dam Ha, Hau, Ngoc, Lan, Dam Viet) và PIC khác KHÔNG có nút gửi báo cáo tuần.
+     (Dam Ha, Hau, Ngoc, Mai, Dam Viet) và PIC khác KHÔNG có nút gửi báo cáo tuần.
      Backend không hề chặn — chỉ frontend ẩn. Nay MỌI người đăng nhập đều thấy nút. */
   /* ⭐ v8.1: KHÔNG gắn canAssign()/isManager() vào nút này. Mọi PIC đã đăng nhập
-     (kể cả Back Office: Dam Ha, Hau, Ngoc, Lan, Dam Viet) đều phải gửi được báo cáo. */
+     (kể cả Back Office: Dam Ha, Hau, Ngoc, Mai, Dam Viet) đều phải gửi được báo cáo. */
   if(S.user && S.user.pic) h+='<button class="btn-primary" onclick="openSendReport()"><svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2 15 22l-4-9-9-4 20-7z"/></svg>Gửi báo cáo</button>';
   h+='</div>';
   // ── #4: CẢ 2 phần dùng CHUNG bảng có cột Kết quả ──
