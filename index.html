@@ -1618,6 +1618,11 @@ body.sheet-open{overflow:hidden;position:relative}
   select,input[type=date]{font-size:16px}   /* iOS không tự phóng to trang */
 }
 
+/* ⭐ v8.1 — chặn đóng nhầm hộp thoại: lắc nhẹ báo "đang nhập dở" */
+@keyframes mshake{0%,100%{transform:translateX(0)}15%{transform:translateX(-8px)}
+  30%{transform:translateX(7px)}45%{transform:translateX(-5px)}60%{transform:translateX(4px)}80%{transform:translateX(-2px)}}
+.modal-box.shake{animation:mshake .36s var(--ease)}
+.modal-box.shake .modal-head h3{color:var(--danger-fg)}
 </style>
 </head>
 <body>
@@ -1642,7 +1647,7 @@ body.sheet-open{overflow:hidden;position:relative}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v9 · 8.0</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v8.1</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -5335,18 +5340,131 @@ function delMonth(row,no,title,month){
 /* ⭐ v8.0: khoá cuộn nền khi mở hộp thoại — trên điện thoại nền cuộn theo ngón tay
    làm bottom-sheet nhảy lung tung và dễ chạm nhầm ra ngoài gây đóng hộp thoại. */
 var _scrollY0=0;
+
+/* ══════════════════════════════════════════════════════════════════════
+   ⭐ v8.1 — HỘP THOẠI KHÔNG CÒN TỰ TẮT GIỮA CHỪNG
+
+   NGUYÊN NHÂN LỖI CŨ: lớp nền mờ được gắn onclick="nếu bấm đúng vào nền thì đóng".
+   Nghe thì hợp lý, nhưng trình duyệt sinh sự kiện "click" ở phần tử TỔ TIÊN CHUNG
+   của điểm nhấn chuột xuống và điểm nhả chuột ra. Nghĩa là chỉ cần:
+     · bấm mở ô "PIC phụ trách" rồi chọn tên — danh sách xổ ra TRÙM LÊN nền mờ,
+       nhả chuột rơi vào vùng nền  ⇒ trình duyệt báo "bấm vào nền" ⇒ ĐÓNG HỘP THOẠI
+     · bấm biểu tượng lịch ở ô Bắt đầu / Hạn rồi chọn ngày — y hệt như trên
+     · bôi đen chữ trong ô rồi nhả chuột hơi lố ra ngoài khung trắng
+     · trên điện thoại: chạm rồi trượt nhẹ ngón tay
+   ⇒ Đang điền dở thì hộp thoại biến mất, mất trắng nội dung.
+
+   CÁCH XỬ LÝ (áp dụng cho MỌI hộp thoại của web, không riêng Thêm Key Task):
+     ① Chỉ đóng khi CẢ HAI đầu thao tác đều nằm trên nền mờ — nhấn xuống ở nền
+        VÀ nhả ra cũng ở nền. Thao tác bắt đầu từ bên trong khung thì bỏ qua hoàn toàn.
+     ② Vừa chạm vào bất cứ thứ gì bên trong khung trong vòng 1,2 giây ⇒ không đóng.
+     ③ Hộp thoại vừa mở dưới 0,6 giây ⇒ không đóng (dư âm của chính cú bấm mở).
+     ④ Nếu người dùng ĐÃ nhập/chọn bất cứ thứ gì ⇒ TUYỆT ĐỐI không đóng bằng cách
+        bấm ra ngoài; hộp thoại lắc nhẹ và nhắc bấm ✕ hoặc Hủy. Không bao giờ mất dữ liệu.
+   ══════════════════════════════════════════════════════════════════════ */
+var _ovDown=null, _modalOpenAt=0, _lastInsideAt=0, _modalTouched=false;
+
 function showModal(html){
   _scrollY0=window.scrollY||0;
-  $("modals").innerHTML='<div class="modal-overlay show" onclick="if(event.target===this)closeModal()">'+html+'</div>';
+  $("modals").innerHTML='<div class="modal-overlay show">'+html+'</div>';
   document.body.classList.add("sheet-open");
+  _modalOpenAt=Date.now(); _lastInsideAt=Date.now();
+  _ovDown=null; _modalTouched=false;
+  armModal();
   if(typeof LANG!=="undefined"&&LANG==="en") translateNode($("modals"));
+}
+
+function armModal(){
+  var ov=$("modals").querySelector(".modal-overlay"); if(!ov) return;
+  var box=ov.querySelector(".modal-box");
+
+  if(box){
+    /* Chụp lại giá trị ban đầu: ô điền sẵn (ngày hôm nay, PIC mặc định) KHÔNG tính
+       là "đã nhập" — nếu tính thì hộp thoại vừa mở ra đã bị coi là có dữ liệu. */
+    try{
+      var f0=box.querySelectorAll("input,select,textarea");
+      for(var i0=0;i0<f0.length;i0++){
+        var e0=f0[i0], t0=String(e0.type||"").toLowerCase();
+        e0.setAttribute("data-init", (t0==="checkbox"||t0==="radio")
+          ? (e0.checked?"1":"0") : String(e0.value==null?"":e0.value));
+      }
+    }catch(_){}
+    /* Ghi nhận mọi va chạm bên trong khung. KHÔNG dùng capture và KHÔNG chặn
+       lan truyền — nếu chặn thì chính các ô nhập sẽ không nhận được sự kiện. */
+    ["pointerdown","mousedown","touchstart","pointerup","mouseup","touchend",
+     "focusin","click","keydown","wheel","scroll"].forEach(function(ev){
+      box.addEventListener(ev, function(){ _lastInsideAt=Date.now(); }, false);
+    });
+    /* Đã nhập/chọn gì đó ⇒ coi như có dữ liệu cần giữ */
+    ["input","change"].forEach(function(ev){
+      box.addEventListener(ev, function(){ _lastInsideAt=Date.now(); _modalTouched=true; }, false);
+    });
+  }
+
+  /* Nhấn chuột/ngón tay xuống: ghi lại xem có đúng là bắt đầu từ nền mờ không */
+  ["pointerdown","mousedown","touchstart"].forEach(function(ev){
+    ov.addEventListener(ev, function(e){
+      _ovDown=(e.target===ov)?ov:null;
+      if(e.target!==ov) _lastInsideAt=Date.now();
+    }, true);
+  });
+
+  ov.addEventListener("click", function(e){
+    if(e.target!==ov) return;                       /* bấm vào trong khung → kệ */
+    var started=_ovDown; _ovDown=null;
+    if(started!==ov) return;                        /* ① thao tác bắt đầu từ bên trong */
+    if(Date.now()-_modalOpenAt  < 600) return;      /* ③ vừa mở xong */
+    if(Date.now()-_lastInsideAt < 1200) return;     /* ② vừa đụng vào khung */
+    tryCloseModal();
+  }, false);
+}
+
+/* Hộp thoại đang có dữ liệu người dùng nhập dở? */
+function modalDirty(){
+  if(_modalTouched) return true;
+  var box=document.querySelector("#modals .modal-box"); if(!box) return false;
+  var els=box.querySelectorAll("input,select,textarea");
+  for(var i=0;i<els.length;i++){
+    var el=els[i], t=String(el.type||"").toLowerCase();
+    if(t==="button"||t==="submit"||t==="hidden") continue;
+    var init=el.getAttribute("data-init");
+    if(init===null){                       /* ô sinh ra sau khi mở → có chữ là tính */
+      if(t!=="checkbox" && t!=="radio" && String(el.value||"").trim()!=="") return true;
+      continue;
+    }
+    var now=(t==="checkbox"||t==="radio") ? (el.checked?"1":"0") : String(el.value==null?"":el.value);
+    if(now!==init) return true;            /* khác lúc mở ⇒ người dùng đã sửa */
+  }
+  return false;
+}
+/* Đóng bằng cách bấm ra ngoài — chỉ khi chắc chắn không mất gì */
+function tryCloseModal(){
+  if(modalDirty()){
+    var box=document.querySelector("#modals .modal-box");
+    if(box){ box.classList.remove("shake"); void box.offsetWidth; box.classList.add("shake");
+             setTimeout(function(){ box.classList.remove("shake"); }, 420); }
+    toast("✋ Đang nhập dở — bấm ✕ hoặc Hủy nếu muốn đóng");
+    return;
+  }
+  closeModal();
 }
 function closeModal(){
   $("modals").innerHTML="";
   document.body.classList.remove("sheet-open");
+  _ovDown=null; _modalTouched=false;
   try{ window.scrollTo(0,_scrollY0); }catch(_){}
   setTimeout(flushPendingRefresh, 900);   /* ⭐ v8.0: đóng xong, rảnh tay mới làm mới */
 }
+/* Phím Esc: cũng đi qua bộ kiểm tra "đang nhập dở" */
+document.addEventListener("keydown", function(e){
+  if(e.key!=="Escape") return;
+  var md=$("modals");
+  if(md && md.innerHTML.replace(/\s/g,"")!==""){
+    var a=document.activeElement;
+    if(a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName||"")){ a.blur(); return; }
+    e.stopPropagation(); tryCloseModal();
+  }
+}, true);
 
 /* ⭐ v5.10: KHÔNG còn hộp thoại "Giao việc" riêng.
    · Giao việc = TẠO TASK như bình thường: PIC thường chỉ tạo dưới tên mình;
