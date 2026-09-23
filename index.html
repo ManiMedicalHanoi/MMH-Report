@@ -1649,6 +1649,9 @@ body.sheet-open{overflow:hidden;position:relative}
 .v10-viewseg button svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
 .v10-viewseg button.on{background:#fff;color:var(--mmh-navy);box-shadow:var(--sh-sm)}
 
+
+.v10-odpill{border:1.5px solid #F3B4B2;background:#FFF5F5;color:#B3261E;border-radius:10px;padding:7px 12px;font-size:12.5px;font-weight:800;white-space:nowrap}
+.v10-odpill.on{background:#D9433F;border-color:#D9433F;color:#fff}
 /* ── DẠNG BẢNG ── */
 .v10-tbl-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--sh-sm);overflow:auto;max-height:calc(100vh - 210px)}
 .v10-tbl{width:100%;border-collapse:separate;border-spacing:0;min-width:1280px;font-size:13.5px;table-layout:fixed}
@@ -1863,6 +1866,39 @@ body.sheet-open{overflow:hidden;position:relative}
   .sr-main>.sr-st-wrap,.sr-main>.sr-st{order:5;margin-left:auto}
   .sr-main>.sr-actions{order:6;flex:0 0 auto;padding:0!important}
 }
+
+/* ⭐ v10.1 — Lịch làm việc: to hơn, toàn màn hình, nút thêm sub-task */
+.c10-wrap.full{position:fixed;inset:0;z-index:650;background:var(--gray);padding:16px 20px 20px;overflow:auto}
+body.c10-fullmode{overflow:hidden}
+body.c10-fullmode #topbar{z-index:1}
+body.c10-fullmode #fab-wrap,body.c10-fullmode .act-toggle,body.c10-fullmode #activity-rail,body.c10-fullmode #mnav{display:none!important}
+.c10-fullbtn{margin-left:4px}
+.c10-wrap.full .c10-fullbtn{background:var(--mmh-navy);border-color:var(--mmh-navy);color:#fff}
+.c10-week{grid-template-columns:repeat(7,minmax(170px,1fr))}
+.c10-wc{min-height:calc(100vh - 330px)}
+.c10-wrap.full .c10-wc{min-height:calc(100vh - 190px)}
+.c10-wb{gap:9px;padding:9px}
+.c10-card{padding:10px 11px;border-radius:12px;position:relative}
+.c10-card b{font-size:14px;line-height:1.4}
+.c10-card .k{font-size:11.5px;margin-top:4px;color:var(--sub)}
+.c10-card .m{font-size:11.5px;margin-top:7px}
+.c10-card.keyonly{border-style:dashed;border-left-style:solid;background:#FBFCFF}
+.c10-keytag{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.3px;color:var(--mmh-blue);background:#EAF1FC;border-radius:6px;padding:2px 7px;margin-bottom:5px}
+.c10-acts{display:flex;gap:6px;margin-top:8px;align-items:center}
+.c10-subbtn{flex:1;border:1.5px dashed var(--mmh-blue);background:#fff;color:var(--mmh-blue);border-radius:9px;padding:6px 8px;font-size:12px;font-weight:800;cursor:pointer}
+.c10-subbtn:hover{background:var(--mmh-blue);color:#fff;border-style:solid}
+.c10-subbtn.big{background:#EAF1FC;border-style:solid;padding:8px}
+.c10-ebtn{width:32px;height:30px;border:1.5px solid var(--border);border-radius:9px;background:#fff;font-size:13px}
+@media(hover:hover){
+  .c10-card:not(.keyonly) .c10-acts{max-height:0;opacity:0;overflow:hidden;margin-top:0;transition:.15s}
+  .c10-card:not(.keyonly):hover .c10-acts{max-height:40px;opacity:1;margin-top:8px}
+}
+.c10-ev .kt{flex:0 0 auto;font-size:9px;font-weight:800;color:#fff;background:var(--mmh-blue);border-radius:4px;padding:0 4px}
+.c10-keybox{background:#EAF1FC;border-radius:10px;padding:9px 12px;font-size:13px;color:var(--mmh-navy);margin-bottom:12px}
+.c10-cal .dc{min-height:132px}
+.c10-wrap.full .c10-cal .dc{min-height:calc((100vh - 250px) / 5)}
+@media(max-width:1100px){ .c10-week{grid-template-columns:repeat(4,minmax(0,1fr))} }
+@media(max-width:700px){ .c10-week{grid-template-columns:1fr} .c10-wc{min-height:0} .c10-wrap.full{padding:10px} }
 /* ── MOBILE: sửa các lỗi giao diện ── */
 .qlink svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2;opacity:.7;flex:0 0 auto}   /* hết ô vuông đen */
 @media(max-width:900px){
@@ -1931,7 +1967,7 @@ body.sheet-open{overflow:hidden;position:relative}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v10</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v10.1</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -2434,19 +2470,33 @@ function subInRangeStrict(s, from, to){
      · hạn / ngày bắt đầu / ngày hoàn thành rơi trong khoảng
      · đang chạy xuyên qua khoảng (bắt đầu trước, hạn sau)
      · việc QUÁ HẠN chưa xong được kéo vào khoảng có chứa HÔM NAY                  */
+  /* ⭐ v10.1: CHẶT theo đúng khoảng đang xem ⇒ Ngày / Tuần / Tháng cho kết quả khác nhau.
+     Việc QUÁ HẠN chưa xong KHÔNG tự kéo vào nữa — bật nút "🔴 Quá hạn" để xem kèm. */
   if(isJustAdded(s.no)) return true;
+  if(S.detailShowOverdue && isOverdue(s)) return true;
+  return taskTouchesRange(s, from, to);
+}
+function taskTouchesRange(s, from, to){
   var st=String(s.start||"").slice(0,10), eff=String(s.revised||s.planned||"").slice(0,10), act=String(s.actual||"").slice(0,10);
-  var open=!isDone(s.status)&&!isCancelled(s.status);
-  var today=toISO(new Date()), hasToday=(from<=today && to>=today);
-  if(eff && eff>=from && eff<=to) return true;
-  if(st && st>=from && st<=to) return true;
-  if(act && act>=from && act<=to) return true;
-  if(st && eff && st<=to && eff>=from) return true;
-  if(open && st && !eff && st<=to && hasToday) return true;
-  if(open && eff && eff<from && hasToday) return true;
-  if(open && !st && !eff && hasToday) return true;
+  if(eff && eff>=from && eff<=to) return true;                 // hạn rơi trong khoảng
+  if(st && st>=from && st<=to) return true;                    // bắt đầu trong khoảng
+  if(act && act>=from && act<=to) return true;                 // hoàn thành trong khoảng
+  if(st && eff && st<=to && eff>=from) return true;            // đang chạy xuyên qua khoảng
   return false;
 }
+/* đếm việc quá hạn (theo bộ lọc nhân sự/loại) KHÔNG nằm trong khoảng đang xem */
+function overdueOutside(from, to){
+  var selP=S.detailPics||[], selT=S.detailTypes||[], n=0;
+  (S.keyTasks||[]).forEach(function(k){
+    if(selT.length && selT.indexOf(k.type)<0) return;
+    (k.subs||[]).forEach(function(sb){
+      if(selP.length && selP.indexOf(picOf(sb))<0) return;
+      if(isOverdue(sb) && !taskTouchesRange(sb,from,to)) n++;
+    });
+  });
+  return n;
+}
+function toggleOverdue(){ S.detailShowOverdue=!S.detailShowOverdue; renderDetail(); }
 /* ⭐ v10: thứ tự hiển thị To Do → In Progress → Completed → Cancelled, rồi theo hạn gần nhất */
 function stRank(st){ st=String(st||""); if(isCancelled(st)) return 3; if(isDone(st)) return 2; if(isInProgress(st)) return 1; return 0; }
 function byStatusThenDue(a,b){
@@ -2637,8 +2687,8 @@ function applyDefaultPicFilters(){
 }
 function v10DefaultTime(){
   /* ⭐ v10: nhớ chế độ xem lần trước; lần đầu thì PIC xem THEO NGÀY, quản lý xem TUẦN */
-  var dtm=""; try{ dtm=localStorage.getItem("mmh_dtm")||""; }catch(_){}
-  S.detailTimeMode = dtm || (canViewOthers() ? "week" : "day");
+  /* ⭐ v10.1: đăng nhập là mở sẵn việc của NGÀY HÔM NAY (mọi người) */
+  S.detailTimeMode = "day";
   try{ S.detailView=localStorage.getItem("mmh_dview")||"list"; }catch(_){ S.detailView="list"; }
   if(S.detailTimeMode==="day"){ S.dateFrom=S.dateTo=toISO(new Date()); S.dateMode="day"; }
   else if(S.detailTimeMode==="month"){ var _t=new Date(); S.dateFrom=toISO(new Date(_t.getFullYear(),_t.getMonth(),1)); S.dateTo=toISO(new Date(_t.getFullYear(),_t.getMonth()+1,0)); S.dateMode="month"; }
@@ -2741,6 +2791,16 @@ function apiPost(body){
   S._lastSelfSave=Date.now();   /* ⭐ v7.9 FIX #1: đánh dấu "thay đổi này là của tôi" */
   var isW=!!WRITE_ACT[body.action];
   if(isW && !body.rid) body.rid=newRid();
+  /* ⭐ v10.1: gửi kèm tên task để backend kiểm tra đúng dòng (số No có thể vừa bị đánh lại) */
+  var _obj=null;
+  if(isW && body.no && !/Month/.test(body.action) && !body.expect){
+    _obj=findAnyByNo(body.no);
+    if(_obj && _obj.__srvName) body.expect=_obj.__srvName;
+  }
+  if(isW && body.action==="addSub" && !body.expectKey){
+    var _pk=(S.keyTasks||[]).filter(function(k){ return k.no===String(body.parentNo||body.keyNo||""); })[0];
+    if(_pk && _pk.__srvName) body.expectKey=_pk.__srvName;
+  }
   var params={}; Object.keys(body).forEach(function(k){
     var v=body[k];
     params[k]=(v!==null && typeof v==="object") ? JSON.stringify(v) : v;
@@ -2751,7 +2811,10 @@ function apiPost(body){
     S._inflight=Math.max(0,S._inflight-1);
     if(!S._inflight){ syncDot(ok?"ok":"err"); }
   };
-  return jsonp(params, 60000).then(function(j){ if(j&&j.ok===false)throw new Error(j.error||"Lỗi"); return j; })
+  return jsonp(params, 60000).then(function(j){
+      if(j && j.keyTasks){ var _kt=j.keyTasks, _v=j.v; setTimeout(function(){ applyWeekly(_kt,_v,true); },0); }   /* ⭐ v10.1 */
+      if(j&&j.ok===false) throw new Error(j.error||"Lỗi");
+      return j; })
     .catch(function(e){
       if(e && e.message==="__TOO_LONG__"){ return apiPostBody(body).then(function(){ return { ok:true, softTimeout:true }; }); }
       if(e && e.message==="__TIMEOUT__"){ return { ok:true, softTimeout:true }; }  // có thể đã ghi xong → refetch
@@ -2759,6 +2822,10 @@ function apiPost(body){
     })
     .then(function(r){
       if(r && r.v && isW) S.dataVersion=r.v;         /* ⭐ v10: thay đổi của chính mình → không cần tải lại cả trang */
+      if(r && r.ok && !r.softTimeout && _obj){                /* ⭐ v10.1: đổi tên xong → nhớ tên mới */
+        if(body.keyTask!=null && body.keyTask!=="") _obj.__srvName=body.keyTask;
+        else if(body.name!=null && body.name!=="") _obj.__srvName=body.name;
+      }
       done(true);
       if(isW) lightRefreshSoon(r && (r.softTimeout||r.uncertain) ? 1500 : 900);
       return r;
@@ -2869,11 +2936,15 @@ function boot(){
    (cùng row ⇒ mọi thao tác sửa kết quả / % / trạng thái đều ghi đúng cột I, N, O của dòng key).  */
 function normalizeKeyTasks(list){
   (list||[]).forEach(function(k){
+    /* ⭐ v10.1: nhớ TÊN đang có trên sheet — gửi kèm mỗi lệnh ghi để backend nhận đúng dòng
+       kể cả khi số No đã bị đánh lại (sau khi xoá task ở giữa sheet). */
+    if(k.__srvName===undefined) k.__srvName=k.keyTask||"";
+    (k.subs||[]).forEach(function(sb){ if(sb.__srvName===undefined) sb.__srvName=sb.__isKeyRow?(k.keyTask||""):(sb.subTask||sb.name||""); });
     if(k.subs && k.subs.length) return;
     k.selfTask=true;                       // đánh dấu: key task tự nó là 1 đầu việc
     k.subs=[{
       no:k.no, row:k.row, __isKeyRow:true,
-      subTask:k.keyTask, name:k.keyTask, type:k.type,
+      subTask:k.keyTask, name:k.keyTask, type:k.type, __srvName:k.__srvName,
       pic:k.pic, status:k.status, progress:k.progress,
       start:k.start, planned:k.planned, revised:k.revised,
       result:k.result, actual:k.actual, priority:k.priority,
@@ -3377,7 +3448,7 @@ var TABS=[
   {id:"detail",label:"Cập nhật công việc",icon:'<path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/>'},
   {id:"report",label:"Báo cáo tuần",icon:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>'},
   {id:"month",label:"Monthly Report",icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>'},
-  {id:"calendar",label:"Lịch công việc",icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h2M12 14h2M16 14h.01M8 18h2M12 18h2"/>'},
+  {id:"calendar",label:"Lịch làm việc",icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h2M12 14h2M16 14h.01M8 18h2M12 18h2"/>'},
 ];
 function buildTabs(){
   $("tabnav").style.display="flex";
@@ -4858,6 +4929,7 @@ function renderDetail(){
       +(tm==="day"?'<input type="date" class="v10-daypick" value="'+esc(S.dateFrom)+'" onchange="setDayDate(this.value)" title="Chọn ngày"/>'
         +(S.dateFrom!==toISO(new Date())?'<button class="v10-today" onclick="setDetailTime(\'day\')">Hôm nay</button>':''):'')
       +'</div>':'<span class="dt-hint">Đang hiển thị <b>toàn bộ</b> công việc</span>')
+    +(tm!=="all"?(function(){ var n=overdueOutside(S.dateFrom,S.dateTo); return n?'<button class="v10-odpill'+(S.detailShowOverdue?' on':'')+'" onclick="toggleOverdue()" title="Việc quá hạn chưa xong nằm ngoài khoảng đang xem">🔴 '+(S.detailShowOverdue?'Đang hiện ':'+ ')+n+' việc quá hạn</button>':''; })():'')
     +'<div class="v10-viewseg" role="tablist">'
       +'<button class="'+(dv==="list"?"on":"")+'" onclick="setDetailView(\'list\')" title="Dạng danh sách theo Key Task"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="lbl">Danh sách</span></button>'
       +'<button class="'+(dv==="table"?"on":"")+'" onclick="setDetailView(\'table\')" title="Dạng bảng — rộng, đọc được nhiều chữ, sửa trực tiếp"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16"/></svg><span class="lbl">Bảng</span></button>'
@@ -6062,7 +6134,7 @@ function openEdit(sno){
   var s=findSub(sno), k=findKeyOfSub(sno);
   if(!s){ toast("Không tìm thấy sub-task"); return; }
   if(!canEditPic(s.pic)){ toast("🔒 Chỉ "+(s.pic||"PIC")+" sửa được"); return; }
-  S.editCtx={no:sno};
+  S.editCtx={no:sno, expect:s.__srvName||s.name||s.subTask, keyRow:!!s.__isKeyRow};   /* ⭐ v10.1 */
   var pct=subPct(s);
   var picOpts=picListAll();
   var html='<div class="modal-box modal-lg"><div class="modal-head"><h3>✏️ Cập nhật sub-task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
@@ -6133,7 +6205,9 @@ function saveEdit(){
   localPatchSub(sno,{ name:name, subTask:name, pic:pic, status:status,
                       progress:prog/100, start:start, revised:revised, result:result });
   closeModal(); toast("✓ Đã lưu");
-  apiPost({action:"updateSub",no:sno,name:name,pic:pic,status:status,progress:prog,start:start,revised:revised,result:result})
+  var _b={action:"updateSub",no:sno,pic:pic,status:status,progress:prog,start:start,revised:revised,result:result,expect:S.editCtx.expect};
+  if(S.editCtx.keyRow) _b.keyTask=name; else _b.name=name;     /* key tự là đầu việc → đổi tên ở cột Key Task, không ghi vào cột Sub */
+  apiPost(_b)
     .then(function(){ softRefreshLater(); })
     .catch(function(e){ toast("⚠️ Lỗi ghi sheet: "+e.message); softRefreshLater(); });
 }
@@ -6338,6 +6412,7 @@ function doAddSub(o){
 function openEditKey(kno){
   var k=S.keyTasks.filter(function(x){return x.no===kno;})[0];
   if(!k){ toast("Không tìm thấy"); return; }
+  S._ekExpect=k.__srvName||k.keyTask;            /* ⭐ v10.1 */
   var picOpts=picListAll();
   var typeOpts=typeOptionsAllowed(S.typeOptions.length?S.typeOptions:[...new Set(S.keyTasks.map(function(x){return x.type;}).filter(Boolean))]);
   var html='<div class="modal-box"><div class="modal-head"><h3>✏️ Sửa Key Task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
@@ -6363,12 +6438,13 @@ function saveEditKey(kno){
   $("ek-save").disabled=true;
   localPatchKey(kno,{ keyTask:_n, type:_t, pic:_pic, start:_s, planned:_p });
   closeModal(); toast("✓ Đã lưu");
-  apiPost({action:"updateKey",no:kno,keyTask:_n,type:_t,pic:_pic,start:_s,planned:_p})
+  apiPost({action:"updateKey",no:kno,keyTask:_n,type:_t,pic:_pic,start:_s,planned:_p,expect:S._ekExpect||srvNameOf(kno)})
     .then(function(){ softRefreshLater(); })
     .catch(function(e){ toast("⚠️ "+e.message); softRefreshLater(); });
 }
 function delKey(kno){
   var k=S.keyTasks.filter(function(x){return x.no===kno;})[0]; if(!k)return;
+  S._delExpect=k.__srvName||k.keyTask;        /* ⭐ v10.1: khoá đúng task theo tên */
   var n=(k.subs||[]).length;
   var html='<div class="modal-box"><div class="modal-head"><h3>🗑️ Xóa Key Task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body"><p style="font-size:14.5px;line-height:1.6">Xóa <b>"'+esc(k.keyTask)+'"</b>'
@@ -6383,7 +6459,7 @@ function doDelKey(kno){
   closeModal();
   localRemoveKey(kno);              // ⭐ biến mất khỏi UI ngay
   toast("✓ Đã xóa key task");
-  apiPost({action:"deleteKey",no:kno})
+  apiPost({action:"deleteKey",no:kno,expect:S._delExpect||srvNameOf(kno)})
     .then(function(){ softRefreshLater(); })
     .catch(function(e){ toast("⚠️ "+e.message); softRefreshLater(); });
 }
@@ -6391,6 +6467,7 @@ function doDelKey(kno){
 /* ── XÓA SUB ── */
 function delRow(sno){
   var s=findSub(sno); if(!s)return;
+  S._delExpect=s.__srvName||s.name||s.subTask;   /* ⭐ v10.1 */
   var html='<div class="modal-box"><div class="modal-head"><h3>🗑️ Xóa Sub-task</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body"><p style="font-size:14.5px;line-height:1.6">Xóa <b>"'+esc(s.name||s.subTask)+'"</b>?<br><span style="color:var(--danger-fg)">Không thể hoàn tác.</span></p>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
@@ -6403,7 +6480,7 @@ function doDelRow(sno){
   closeModal();
   localRemoveSub(sno);              // ⭐ biến mất khỏi UI ngay
   toast("✓ Đã xóa sub-task");
-  apiPost({action:"deleteSub",no:sno})
+  apiPost({action:(findSub(sno)&&findSub(sno).__isKeyRow)?"deleteKey":"deleteSub",no:sno,expect:S._delExpect||srvNameOf(sno)})
     .then(function(){ softRefreshLater(); })
     .catch(function(e){ toast("⚠️ "+e.message); softRefreshLater(); });
 }
@@ -6744,6 +6821,37 @@ function softRefreshLater(delay){ lightRefreshSoon(Math.min(delay||1200, 2500));
    · Đang gõ / mở hộp thoại ⇒ vẫn NẠP dữ liệu, nhưng hoãn vẽ lại tới lúc rảnh tay.
    · Giữ lại các dòng "đang lưu" (tạm) chưa có trên sheet.                               */
 var _lightT=null, _lightBusy=false, _lightAgain=false, _weeklyUnsupported={};
+/* ⭐ v10.1: nạp danh sách task mới từ sheet (giữ các dòng "đang lưu"), đang thao tác thì hoãn vẽ lại */
+function applyWeekly(list, v, fromWrite){
+  if(!list) return;
+  if(fromWrite && S._inflight>0) return;          /* còn lệnh ghi khác đang chạy → để lần tải nhẹ sau lo */
+  var src=S.source, res={keyTasks:list};
+  if(v) S.dataVersion=v;
+    var temps=(S.keyTasks||[]).filter(function(k){ return k.__tmp && k.__pending; });
+  var tempSubs=[];
+  (S.keyTasks||[]).forEach(function(k){ (k.subs||[]).forEach(function(sb){ if(sb.__tmp && sb.__pending) tempSubs.push({kno:k.no,s:sb}); }); });
+  var openState=S.detailOpen;
+  S.keyTasks=normalizeKeyTasks(res.keyTasks||[]);
+  temps.forEach(function(k){ S.keyTasks.push(k); });
+  tempSubs.forEach(function(o){
+    var k=S.keyTasks.filter(function(x){return x.no===o.kno;})[0];
+    if(k){ if(k.selfTask){ k.subs=[]; k.selfTask=false; } k.subs.push(o.s); }
+  });
+  S.detailOpen=openState;
+  syncPriorityMarks();
+  try{ var c=SRC_CACHE[src]; if(c&&c.res){ c.res.keyTasks=res.keyTasks; lsSet(LS_BOOT(src), slimBoot(c.res)); } }catch(_){}
+  /* sau XOÁ/CHÈN (fromWrite) số No đã đổi ⇒ vẽ lại NGAY để mọi nút bấm mang số mới;
+     chỉ hoãn khi đang gõ chữ hoặc đang mở hộp thoại */
+  var typing=false;
+  try{ var a=document.activeElement, tg=a&&String(a.tagName||"").toUpperCase();
+       typing = tg==="TEXTAREA" || (tg==="INPUT" && !/checkbox|radio|button|submit/i.test(a.type||"")) || !!(typeof _resEdit!=="undefined"&&_resEdit&&_resEdit.no); }catch(_){}
+  var modalOpen=!!($("modals") && $("modals").innerHTML.replace(/\s/g,"")!=="");
+  if(fromWrite ? (typing||modalOpen) : isBusyUI()){ _pendingRender=true; }
+  else { rerenderKeepScroll(); try{ renderMyTaskBar(); }catch(_){} }
+  try{ if(document.getElementById("qk").classList.contains("show")) QK.render(); }catch(_){}
+}
+/* tên task trên sheet theo số No (dùng khi mở hộp thoại để khoá đúng task) */
+function srvNameOf(no){ var o=findAnyByNo(no); return o ? (o.__srvName||o.name||o.subTask||o.keyTask||"") : ""; }
 function lightRefreshSoon(ms){
   clearTimeout(_lightT);
   _lightT=setTimeout(lightRefresh, ms||900);
@@ -6761,22 +6869,7 @@ function lightRefresh(){
     if(S._inflight>0){ lightRefreshSoon(700); return; }
     if(!res || !res.keyTasks){ return; }
     if(res.v) S.dataVersion=res.v;
-    var temps=(S.keyTasks||[]).filter(function(k){ return k.__tmp && k.__pending; });
-    var tempSubs=[];
-    (S.keyTasks||[]).forEach(function(k){ (k.subs||[]).forEach(function(sb){ if(sb.__tmp && sb.__pending) tempSubs.push({kno:k.no,s:sb}); }); });
-    var openState=S.detailOpen;
-    S.keyTasks=normalizeKeyTasks(res.keyTasks||[]);
-    temps.forEach(function(k){ S.keyTasks.push(k); });
-    tempSubs.forEach(function(o){
-      var k=S.keyTasks.filter(function(x){return x.no===o.kno;})[0];
-      if(k){ if(k.selfTask){ k.subs=[]; k.selfTask=false; } k.subs.push(o.s); }
-    });
-    S.detailOpen=openState;
-    syncPriorityMarks();
-    try{ var c=SRC_CACHE[src]; if(c&&c.res){ c.res.keyTasks=res.keyTasks; lsSet(LS_BOOT(src), slimBoot(c.res)); } }catch(_){}
-    if(isBusyUI()){ _pendingRender=true; }
-    else { rerenderKeepScroll(); try{ renderMyTaskBar(); }catch(_){} }
-    try{ if(document.getElementById("qk").classList.contains("show")) QK.render(); }catch(_){}
+    applyWeekly(res.keyTasks, res.v);
     if(_lightAgain){ _lightAgain=false; lightRefreshSoon(400); }
   }).catch(function(e){
     _lightBusy=false;
@@ -7897,7 +7990,7 @@ if(typeof window.ddmmyyyy!=="function"){
 })();
 
 /* lưu 1 trường (dùng chung cho Bảng + Lịch). Cập nhật trên máy ngay, ghi sheet ở nền. */
-function v10SaveFields(no, patch){
+function v10SaveFields(no, patch, expect){
   var s=findSub(no), k=findKeyOfSub(no);
   if(!s){ toast("Không tìm thấy task "+no); return; }
   if(!canEditPic(s.pic) || vIsSync(s)){ toast("🔒 Chỉ "+(s.pic||"PIC")+" sửa được"); return; }
@@ -7909,6 +8002,7 @@ function v10SaveFields(no, patch){
   }
   /* luôn gửi kèm PIC hiện tại của task — nếu thiếu, backend sẽ hiểu nhầm PIC = người đang sửa */
   var body={action:"updateSub", no:no, pic:(patch.pic!==undefined?patch.pic:(s.pic||"")), actor:S.user.pic};
+  if(expect) body.expect=expect;
   if(patch.name!=null){ if(s.__isKeyRow){ body.keyTask=patch.name; } else body.name=patch.name; }
   ["status","start","revised","result"].forEach(function(f){ if(patch[f]!==undefined) body[f]=patch[f]; });
   if(patch.progress!==undefined) body.progress=Math.round(patch.progress*100);
@@ -8047,8 +8141,9 @@ function v10QuickAdd(){
    · Trưởng nhóm / HOD / Director: xem cả đội, chọn 1 hoặc nhiều người
    · Bấm vào việc → cập nhật nhanh ngay trên lịch · bấm "+" ở ô ngày → thêm việc
    · Máy tính: kéo-thả việc sang ngày khác để dời hạn                           */
-var C10={ view:"month", ref:null, pics:null, hideDone:false };
-try{ C10.view=localStorage.getItem("mmh_c10view")||"month"; C10.hideDone=localStorage.getItem("mmh_c10hide")==="1"; }catch(_){}
+/* ⭐ v10.1: mở sẵn dạng TUẦN; có chế độ toàn màn hình */
+var C10={ view:"week", ref:null, pics:null, hideDone:false, full:false };
+try{ C10.hideDone=localStorage.getItem("mmh_c10hide")==="1"; }catch(_){}
 var C10_WD=["CN","T2","T3","T4","T5","T6","T7"];
 function c10Pics(){
   if(!canViewOthers()) return [S.user.pic];
@@ -8075,18 +8170,28 @@ function c10Chip(o, multi){
     +(can&&!IS_MOBILE?' draggable="true" ondragstart="c10Drag(event,\''+jsq(s.no)+'\')"':'')
     +' onclick="event.stopPropagation();c10Open(\''+jsq(s.no)+'\')" title="'+esc((s.name||s.subTask||"")+" · "+picOf(s)+" · "+(s.status||"To Do")+" "+subPct(s)+"%")+'">'
     +(multi?'<span class="av" style="background:'+avColor(picOf(s))+'">'+esc(initials(picOf(s)))+'</span>':'')
+    +(s.__isKeyRow?'<span class="kt" title="Key task chưa có sub-task">K</span>':'')
     +'<span class="t">'+esc(s.name||s.subTask||"")+'</span></button>';
 }
-function c10Card(o, multi){
-  var s=o.s, m=stMeta(s.status||"To Do"), pct=subPct(s);
+function c10Card(o, multi, iso){
+  var s=o.s, k=o.k, m=stMeta(s.status||"To Do"), pct=subPct(s);
   var can=canEditPic(s.pic)&&!vIsSync(s)&&!isTmpNo(s.no);
-  return '<div class="c10-card'+(isDone(s.status)?" done":"")+(isOverdue(s)?" od":"")+'" style="--c:'+c10Color(s)+'" data-tno="'+esc(s.no)+'"'
+  var keyOnly=!!s.__isKeyRow;                                   /* key task CHƯA có sub-task */
+  var canSub=!vIsSync(k) && (canEditPic(k.pic)||canAssign());
+  var d=iso||o.d||toISO(new Date());
+  return '<div class="c10-card'+(keyOnly?" keyonly":"")+(isDone(s.status)?" done":"")+(isOverdue(s)?" od":"")+'" style="--c:'+c10Color(s)+'" data-tno="'+esc(s.no)+'"'
     +(can&&!IS_MOBILE?' draggable="true" ondragstart="c10Drag(event,\''+jsq(s.no)+'\')"':'')
     +' onclick="c10Open(\''+jsq(s.no)+'\')">'
+    +(keyOnly?'<span class="c10-keytag">KEY TASK · chưa có sub-task</span>':'')
     +'<b>'+esc(s.name||s.subTask||"")+(s.__pending?' <span class="v10-pend">⏳</span>':'')+'</b>'
-    +(s.__isKeyRow?'':'<div class="k">📂 '+esc(o.k.keyTask||"")+'</div>')
-    +'<div class="m">'+(multi?'<span class="c10-pc" style="border:none;padding:0;background:none;font-size:11px"><span class="av" style="width:18px;height:18px;font-size:8px;background:'+avColor(picOf(s))+'">'+esc(initials(picOf(s)))+'</span>'+esc(picOf(s))+'</span>':'')
-    +'<span class="st '+m.cls+'">'+esc(s.status||"To Do")+'</span><b style="margin-left:auto;display:inline;font-size:11.5px;color:'+progColor(pct)+'">'+pct+'%</b></div></div>';
+    +(keyOnly?'':'<div class="k" title="Key task: '+esc(k.keyTask||"")+'">📂 '+esc(k.keyTask||"")+'</div>')
+    +'<div class="m">'+(multi?'<span class="c10-pc" style="border:none;padding:0;background:none;font-size:11.5px"><span class="av" style="width:19px;height:19px;font-size:8px;background:'+avColor(picOf(s))+'">'+esc(initials(picOf(s)))+'</span>'+esc(picOf(s))+'</span>':'')
+    +'<span class="st '+m.cls+'">'+esc(s.status||"To Do")+'</span><b style="margin-left:auto;display:inline;font-size:12px;color:'+progColor(pct)+'">'+pct+'%</b></div>'
+    +(canSub?'<div class="c10-acts" onclick="event.stopPropagation()">'
+      +'<button class="c10-subbtn'+(keyOnly?' big':'')+'" onclick="c10Add(\''+d+'\',\''+jsq(k.no)+'\')" title="Thêm sub-task vào key task “'+esc(k.keyTask||"")+'”">＋ Sub-task'+(keyOnly?' cho key này':'')+'</button>'
+      +(can?'<button class="c10-ebtn" onclick="c10Open(\''+jsq(s.no)+'\')" title="Cập nhật nhanh">✏️</button>':'')
+      +'</div>':'')
+    +'</div>';
 }
 function renderCalendarTab(){
   var el=$("tab-calendar"); if(!el) return;
@@ -8105,7 +8210,7 @@ function renderCalendarTab(){
       var iso=toISO(d), ev=by[iso]||[];
       return '<div class="c10-wc'+(iso===today?" today":"")+'" data-day="'+iso+'" ondragover="c10Over(event,this)" ondragleave="this.classList.remove(\'drop\')" ondrop="c10Drop(event,\''+iso+'\',this)">'
         +'<div class="c10-wh"><span>'+C10_WD[d.getDay()]+(iso===today?' · Hôm nay':'')+'</span><b>'+d.getDate()+'/'+(d.getMonth()+1)+'</b></div>'
-        +'<div class="c10-wb">'+(ev.length?ev.map(function(o){ return c10Card(o,multi); }).join(""):'<div class="c10-empty">—</div>')
+        +'<div class="c10-wb">'+(ev.length?ev.map(function(o){ return c10Card(o,multi,iso); }).join(""):'<div class="c10-empty">—</div>')
         +'<button class="c10-wadd" onclick="c10Add(\''+iso+'\')">＋ Thêm việc</button></div></div>';
     }).join("")+'</div>';
   } else if(view==="list"){
@@ -8155,17 +8260,19 @@ function renderCalendarTab(){
           +'<span class="av" style="background:'+avColor(p)+'">'+esc(initials(p))+'</span>'+esc(p)+(cntBy[p]?' <span class="n">'+cntBy[p]+'</span>':'')+'</button>'; }).join("")
       +'</div>';
   }
-  el.innerHTML='<div class="c10-head"><h2>'+title+'</h2>'
+  el.innerHTML='<div class="c10-wrap'+(C10.full?' full':'')+'"><div class="c10-head"><h2>'+title+'</h2>'
     +'<button class="c10-ib" onclick="c10Nav(-1)" title="Trước"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>'
     +'<button class="c10-ib" onclick="c10Nav(1)" title="Sau"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>'
     +'<button class="c10-btn" onclick="c10Nav(0)">Hôm nay</button>'
     +'<div class="c10-seg">'+[["month","Tháng"],["week","Tuần"],["list","Danh sách"]].map(function(x){ return '<button class="'+(view===x[0]?"on":"")+'" onclick="c10View(\''+x[0]+'\')">'+x[1]+'</button>'; }).join("")+'</div>'
     +'<label class="c10-tog"><input type="checkbox"'+(C10.hideDone?" checked":"")+' onchange="c10Hide(this.checked)"/> Ẩn việc đã xong</label>'
     +'<button class="c10-btn pri" onclick="c10Add(toISO(new Date()))">＋ Thêm việc</button>'
+    +'<button class="c10-btn c10-fullbtn" onclick="c10Full()" title="'+(C10.full?'Thoát toàn màn hình (Esc)':'Xem toàn màn hình')+'">'+(C10.full?'✕ Thu nhỏ':'⛶ Toàn màn hình')+'</button>'
     +'<div class="c10-legend"><span><i style="background:#94a3b8"></i>To Do</span><span><i style="background:#3b82f6"></i>In Progress</span><span><i style="background:#22c55e"></i>Completed</span><span><i style="background:#D9433F"></i>Quá hạn</span></div>'
     +'</div>'+people+body
     +(nodate.length?'<div class="c10-nodate">📌 <b>'+nodate.length+'</b> việc chưa có ngày bắt đầu/hạn nên chưa hiện trên lịch — '
-      +nodate.slice(0,6).map(function(o){ return '<a href="javascript:void(0)" onclick="c10Open(\''+jsq(o.s.no)+'\')">'+esc(o.s.name||o.s.subTask||"")+'</a>'; }).join(", ")+(nodate.length>6?"…":"")+'</div>':'');
+      +nodate.slice(0,6).map(function(o){ return '<a href="javascript:void(0)" onclick="c10Open(\''+jsq(o.s.no)+'\')">'+esc(o.s.name||o.s.subTask||"")+'</a>'; }).join(", ")+(nodate.length>6?"…":"")+'</div>':'')
+    +'</div>';
 }
 function c10Nav(n){
   if(!n){ C10.ref=new Date(); }
@@ -8173,7 +8280,15 @@ function c10Nav(n){
   else C10.ref=new Date(C10.ref.getFullYear(), C10.ref.getMonth()+n, 1);
   renderCalendarTab();
 }
-function c10View(v){ C10.view=v; try{ localStorage.setItem("mmh_c10view",v); }catch(_){} renderCalendarTab(); }
+function c10View(v){ C10.view=v; renderCalendarTab(); }
+function c10Full(on){
+  C10.full=(on===undefined)?!C10.full:!!on;
+  document.body.classList.toggle("c10-fullmode", C10.full);
+  renderCalendarTab();
+}
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape" && C10.full && !($("modals")&&$("modals").innerHTML.trim())){ c10Full(false); }
+});
 function c10Hide(on){ C10.hideDone=!!on; try{ localStorage.setItem("mmh_c10hide",on?"1":"0"); }catch(_){} renderCalendarTab(); }
 function c10SetPics(mode){ C10.pics = mode==="me" ? [S.user.pic] : []; renderCalendarTab(); }
 function c10TogglePic(p){
@@ -8192,7 +8307,7 @@ function c10Day(iso){
   var d=new Date(iso+"T00:00:00"), multi=(c10Pics().length!==1);
   showModal('<div class="modal-box"><div class="modal-head"><h3>📅 '+["Chủ nhật","Thứ 2","Thứ 3","Thứ 4","Thứ 5","Thứ 6","Thứ 7"][d.getDay()]+', '+fmtVNFull(iso)+'</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body"><div style="display:flex;flex-direction:column;gap:8px">'
-    +(list.length?list.map(function(o){ return c10Card(o,multi).replace('onclick="c10Open','onclick="closeModal();c10Open'); }).join(""):'<div class="c10-empty">Chưa có việc nào trong ngày này.</div>')
+    +(list.length?list.map(function(o){ return c10Card(o,multi,iso).replace(/onclick="c10Open/g,'onclick="closeModal();c10Open').replace(/onclick="c10Add/g,'onclick="closeModal();c10Add'); }).join(""):'<div class="c10-empty">Chưa có việc nào trong ngày này.</div>')
     +'</div><div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Đóng</button>'
     +'<button class="btn-primary" onclick="closeModal();c10Add(\''+iso+'\')">＋ Thêm việc ngày này</button></div></div></div>');
 }
@@ -8216,7 +8331,7 @@ function c10Open(no){
   if(isTmpNo(no)){ var w=S._noWait[no]; if(w){ toast("⏳ Đang lưu task — mở khi lưu xong"); w.then(c10Open).catch(function(){}); } return; }
   var s=findSub(no), k=findKeyOfSub(no); if(!s) return;
   var can=canEditPic(s.pic) && !vIsSync(s);
-  Q10={ no:no, status:s.status||"To Do", pct:subPct(s) };
+  Q10={ no:no, status:s.status||"To Do", pct:subPct(s), expect:s.__srvName||s.name||s.subTask, kno:k?k.no:"" };
   var head='<div class="modal-box"><div class="modal-head"><h3>'+(can?'⚡ Cập nhật nhanh':'👁️ Chi tiết công việc')+'</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body">';
   var meta='<div class="q10-meta"><span>#'+esc(s.no)+'</span><span>👤 '+esc(picOf(s))+'</span>'+(s.__isKeyRow?'':'<span>📂 '+esc(k?k.keyTask:"")+'</span>')+(isOverdue(s)?'<span style="background:#FEECEC;color:#B3261E;font-weight:800">QUÁ HẠN</span>':'')+'</div>';
   if(!can){
@@ -8235,6 +8350,7 @@ function c10Open(no){
     +'<div class="field-row"><div class="field"><label>Bắt đầu</label><input type="date" id="q10-start" value="'+esc(toISO(s.start))+'"/></div>'
       +'<div class="field"><label>Hạn</label><input type="date" id="q10-due" value="'+esc(toISO(effDate(s)))+'"/></div></div>'
     +'<div class="field"><label>Kết quả / Ghi chú / Link</label><textarea id="q10-res" rows="4" placeholder="Nhập kết quả, ghi chú hoặc dán link…">'+esc(s.result||"")+'</textarea></div>'
+    +((k && !vIsSync(k) && (canEditPic(k.pic)||canAssign()))?'<button type="button" class="c10-subbtn big" style="width:100%;margin:2px 0 4px" onclick="closeModal();c10Add(\''+(toISO(effDate(s))||toISO(new Date()))+'\',\''+jsq(k.no)+'\')">＋ Thêm sub-task cho key “'+esc(k.keyTask||"")+'”</button>':'')
     +'<div class="modal-footer">'+(isManager()?'<button class="q10-del" onclick="closeModal();'+(s.__isKeyRow?'delKey':'delRow')+'(\''+jsq(no)+'\')">🗑️ Xoá</button>':'')
       +'<button class="btn-secondary" onclick="closeModal()">Huỷ</button><button class="btn-primary" id="q10-save" onclick="q10Save()">💾 Lưu</button></div></div></div>');
   q10Paint();
@@ -8281,24 +8397,26 @@ function q10Save(){
   closeModal();
   if(!Object.keys(p).length){ return; }
   if(p.progress!==undefined && p.status===undefined) p.status=Q10.status;
-  v10SaveFields(no,p);
+  v10SaveFields(no,p,Q10.expect);
   toast("✓ Đã lưu");
   rerenderKeepScroll(); flashTask(no);
 }
 /* thêm việc từ lịch: Key Task mới, hoặc Sub-task của Key Task có sẵn */
-function c10Add(iso){
+function c10Add(iso, kno){
   iso=iso||toISO(new Date());
   var canAsg=canAssign(), me=S.user.pic;
   var keys=(S.keyTasks||[]).filter(function(k){ return !vIsSync(k) && (canEditPic(k.pic)||canAsg); })
     .sort(function(a,b){ return stRank(ktStatus(a))-stRank(ktStatus(b)); });
   var typeOpts=typeOptionsAllowed(S.typeOptions.length?S.typeOptions:[]);
   var defPic=(canAsg && c10Pics().length===1)?c10Pics()[0]:me;
-  showModal('<div class="modal-box"><div class="modal-head"><h3>➕ Thêm việc — '+fmtVNFull(iso)+'</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body">'
-    +'<div class="field"><label>Tên công việc</label><input id="c10a-name" placeholder="Nhập tên công việc…"/></div>'
+  var kSel=kno?(S.keyTasks||[]).filter(function(k){return k.no===kno;})[0]:null;
+  showModal('<div class="modal-box"><div class="modal-head"><h3>'+(kSel?'➕ Thêm sub-task — '+fmtVNFull(iso):'➕ Thêm việc — '+fmtVNFull(iso))+'</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body">'
+    +(kSel?'<div class="c10-keybox">📂 Key task: <b>'+esc(kSel.keyTask)+'</b></div>':'')
+    +'<div class="field"><label>'+(kSel?'Tên sub-task':'Tên công việc')+'</label><input id="c10a-name" placeholder="'+(kSel?'Nhập tên sub-task…':'Nhập tên công việc…')+'"/></div>'
     +'<div class="field"><label>Thuộc</label><select id="c10a-key" onchange="$(\'c10a-typew\').style.display=this.value?\'none\':\'\'">'
       +'<option value="">— Tạo KEY TASK mới —</option>'
-      +keys.map(function(k){ return '<option value="'+esc(k.no)+'">Sub-task của: '+esc(k.keyTask)+'</option>'; }).join("")+'</select></div>'
-    +'<div class="field-row"><div class="field" id="c10a-typew"><label>Loại việc</label><input id="c10a-type" class="combo-input" list="c10a-tl" placeholder="Chọn/nhập loại"/>'
+      +keys.map(function(k){ return '<option value="'+esc(k.no)+'"'+(k.no===kno?' selected':'')+'>Sub-task của: '+esc(k.keyTask)+'</option>'; }).join("")+'</select></div>'
+    +'<div class="field-row"><div class="field" id="c10a-typew"'+(kno?' style="display:none"':'')+'><label>Loại việc</label><input id="c10a-type" class="combo-input" list="c10a-tl" placeholder="Chọn/nhập loại"/>'
       +'<datalist id="c10a-tl">'+typeOpts.map(function(t){ return '<option value="'+esc(t)+'">'; }).join("")+'</datalist></div>'
       +'<div class="field"><label>PIC</label>'+(canAsg?'<select id="c10a-pic">'+picOptionsHtml(defPic)+'</select>':'<select id="c10a-pic" disabled><option selected>'+esc(me)+'</option></select>')+'</div></div>'
     +'<div class="field-row"><div class="field"><label>Bắt đầu</label><input type="date" id="c10a-start" value="'+iso+'"/></div>'
