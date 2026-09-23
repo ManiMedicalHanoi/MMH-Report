@@ -2126,6 +2126,40 @@ body.first-load #stale-chip{pointer-events:auto}
 .c10-ipchip.has-od{border-color:#F2B8B5}
 .c10-ipchip.on{background:#EAF1FC;border-color:var(--mmh-blue)}
 .c10-ipchip .x{color:var(--faint);font-size:11px}
+/* ⭐ v12.5 */
+.c10-odbtn{display:inline-flex;align-items:center;gap:8px;height:38px;border:1.5px solid #F2B8B5;background:#FFF1F0;border-radius:10px;padding:0 12px;font-size:12.5px;font-weight:800;color:#B3261E;cursor:pointer}
+.c10-odbtn:hover{background:#FEE2E0}
+.c10-odbtn .go{font-size:11.5px;color:#8A1C17;opacity:.8}
+.c10-odok{display:inline-flex;align-items:center;height:38px;font-size:12px;font-weight:800;color:#1E7B45}
+.c10-morebtn{border:1.5px dashed var(--border);background:#fff;color:var(--mmh-blue);border-radius:10px;padding:7px 8px;font-size:12px;font-weight:800;cursor:pointer;width:100%}
+.c10-morebtn:hover{border-color:var(--mmh-blue);background:#F4F8FE}
+.c10-gh{border:1.5px dashed #C9D6EA;background:repeating-linear-gradient(135deg,#F7FAFE,#F7FAFE 6px,#FFFFFF 6px,#FFFFFF 12px);border-radius:12px;padding:7px 8px;display:flex;flex-direction:column;gap:4px}
+.c10-gh-h{font-size:11px;font-weight:800;color:var(--sub);letter-spacing:.2px;display:flex;align-items:center;gap:6px}
+.c10-gh-h b{background:#DCE6F5;color:var(--mmh-navy);border-radius:7px;padding:0 6px;font-size:10.5px}
+.c10-ghr{display:flex;align-items:center;gap:6px;opacity:.62;font-size:12px;font-weight:700;color:var(--mmh-navy);padding:4px 6px;border-radius:8px;border-left:3px solid #8FA8CC;background:rgba(255,255,255,.7);cursor:pointer;transition:opacity .15s}
+.c10-ghr:hover{opacity:1}
+.c10-ghr.near{border-left-color:#E0A21B}
+.c10-ghr{flex-wrap:wrap;row-gap:1px}
+.c10-ghr .t{flex:1 1 100px;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
+.c10-ghr .n{flex:0 0 100%;font-size:10.5px;font-weight:800;color:#5A6A8A}
+.c10-ghr.near .n{color:#8A5A00}
+.c10-ghr .av{width:17px;height:17px;border-radius:50%;color:#fff;font-size:7.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.c10-ghmore{border:none;background:none;color:var(--mmh-blue);font-size:11.5px;font-weight:800;cursor:pointer;text-align:left;padding:2px 4px}
+.od-hint{background:#F4F8FE;border:1px solid #DCE6F5;border-radius:10px;padding:9px 12px;font-size:12.5px;color:var(--sub);margin-bottom:10px;line-height:1.5}
+.od-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--border);border-left:4px solid #D9433F;border-radius:12px;margin-bottom:8px;background:#fff;transition:opacity .3s,transform .3s}
+.od-row.gone{opacity:0;transform:translateX(20px)}
+.od-main{flex:1 1 260px;min-width:0}
+.od-main>b{font-size:13.5px;color:var(--mmh-navy)}
+.od-sub{font-size:11.5px;color:var(--sub);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.od-sub .av{width:18px;height:18px;border-radius:50%;color:#fff;font-size:8px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.od-n{font-size:11.5px;font-weight:800;color:#B3261E;background:#FEECEC;border-radius:7px;padding:3px 8px;white-space:nowrap}
+.od-act{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.od-act button,.od-ext{height:32px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:0 10px}
+.od-done{border:none;background:#1E7B45;color:#fff}
+.od-ext{border:1.5px solid var(--border);background:#fff;color:var(--mmh-navy);position:relative}
+.od-ext input{width:118px;border:none;font:inherit;font-size:11.5px;color:var(--mmh-navy);background:transparent}
+.od-open{border:1.5px solid var(--border);background:#fff;color:var(--mmh-navy)}
+@media(max-width:700px){ .od-act{width:100%} .od-act .od-done{flex:1} }
 .c10-subbtn.mini{flex:0 0 auto;padding:2px 8px;font-size:11px;border-radius:7px;line-height:1.4}
 .tp-err{background:#FFF1F0;border:1.5px solid #F2B8B5;color:#8A1C17;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;margin:10px 0 0}
 .tp-err a{color:#8A1C17;font-weight:800}
@@ -2168,7 +2202,7 @@ body.first-load #stale-chip{pointer-events:auto}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12.4</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12.5</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -8504,6 +8538,7 @@ function c10Items(){
       if(sel.length && sel.indexOf(p)<0) return;
       if(C10.hideDone && (isDone(s.status)||isCancelled(s.status))) return;
       if(C10.onlyIP && !c10IsRolling(s)) return;                  /* ⭐ v12.4: chỉ xem việc đang thực hiện */
+      if(c10IsOD(s)) return;                                      /* ⭐ v12.5: quá hạn → danh sách riêng */
       /* ⭐ v11: chuyến công tác nhiều ngày → hiện trên TỪNG ngày đi */
       var st0=toISO(s.start||""), en0=toISO(effDate(s)||"");
       if(isTripRow(s) && st0 && en0 && en0>st0){
@@ -8516,24 +8551,101 @@ function c10Items(){
   });
   return out;
 }
-/* ══════ ⭐ v12.4 — QUY TẮC HIỂN THỊ TRÊN LỊCH (mỗi việc chỉ hiện 1 lần) ══════
-   · In Progress : hiện từ 6 NGÀY TRƯỚC hạn hoàn thành dự kiến (không sớm hơn ngày bắt đầu).
-                   Chưa xong thì mỗi ngày TỰ NHẢY sang ngày hôm nay — kể cả khi đã quá hạn —
-                   cho tới khi chuyển Completed.
-   · Completed   : nằm ở ngày hoàn thành (hệ thống tự đặt hạn điều chỉnh = ngày bấm Completed).
-   · To Do       : nằm ở ngày bắt đầu (tới ngày đó hệ thống tự chuyển In Progress).
-   · Cancelled   : nằm ở ngày hạn.
-   · Chuyến công tác: vẫn hiện trên từng ngày đi (là lịch vắng mặt, không phải đầu việc).       */
+/* ══════ ⭐ v12.5 — QUY TẮC HIỂN THỊ TRÊN LỊCH (mỗi việc 1 thẻ chính) ══════
+   · In Progress : thẻ chính nằm ở NGÀY HẠN hoàn thành (finish date).
+                   Trong 7 ngày trước hạn → mỗi ngày hiện thêm 1 dòng NHẮC mờ ở cột HÔM NAY
+                   ("🔔 Sắp đến hạn · còn N ngày"); chưa xong thì hôm sau lại nhắc tiếp.
+   · Quá hạn     : KHÔNG nằm trên lịch — gom vào danh sách "🔴 Quá hạn" (bấm nút trên đầu lịch)
+                   để cập nhật nhanh. Bấm ✓ Hoàn thành → task hiện ngay ở ngày hôm đó (Completed).
+   · Completed   : ngày hoàn thành (hệ thống tự đặt hạn điều chỉnh = ngày bấm Completed).
+   · To Do       : ngày bắt đầu (tới ngày đó hệ thống tự chuyển In Progress).
+   · Cancelled   : ngày hạn.
+   · Chuyến công tác: hiện trên từng ngày đi (là lịch vắng mặt, không phải đầu việc).          */
 function c10IsRolling(s){ return isInProgress(s.status||"") && !isTripRow(s); }
+function c10IsOD(s){ return !isTripRow(s) && isOverdue(s); }             /* quá hạn → danh sách riêng */
 function c10DispDate(s){
   var today=toISO(new Date()), st=toISO(s.start||""), en=toISO(effDate(s)||"");
-  if(c10IsRolling(s)){
-    var w = en ? addDaysISO(en,-6) : (st||today);
-    if(st && st>w) w=st;
-    return w>today ? w : today;
-  }
+  if(c10IsRolling(s)) return en||st||today;
   if(isDone(s.status)||isCancelled(s.status)) return en||st;
   return st||en;
+}
+/* ══════ ⭐ v12.5 — NHẮC VIỆC SẮP ĐẾN HẠN · DANH SÁCH QUÁ HẠN · GIỚI HẠN 5 VIỆC/NGÀY ══════ */
+function c10Exp(iso){ C10.exp=C10.exp||{}; C10.exp[iso]=!C10.exp[iso]; renderCalendarTab(); }
+function c10Sel(s){
+  var sel=c10Pics(); if(sel.length && sel.indexOf(picOf(s))<0) return false;
+  return true;
+}
+/* việc In Progress còn 1–7 ngày tới hạn → nhắc (mờ) ở cột hôm nay, gần hạn nhất lên trước */
+function c10Ghosts(){
+  var out=[];
+  (S.keyTasks||[]).forEach(function(k){ (k.subs||[]).forEach(function(s){
+    if(!c10Sel(s) || !c10IsRolling(s) || c10IsOD(s)) return;
+    var n=c10DaysLeft(s); if(n===null || n<1 || n>7) return;
+    out.push({k:k,s:s,n:n});
+  }); });
+  out.sort(function(a,b){ return a.n-b.n; });
+  return out;
+}
+function c10GhostBlock(gh, multi){
+  if(!gh.length) return "";
+  var open=!!C10.ghOpen, LIM=4, list=open?gh:gh.slice(0,LIM);
+  return '<div class="c10-gh" onclick="event.stopPropagation()" ondblclick="event.stopPropagation()">'
+    +'<div class="c10-gh-h">🔔 Sắp đến hạn <b>'+gh.length+'</b></div>'
+    +list.map(function(o){ var s=o.s;
+      return '<div class="c10-ghr'+(o.n<=2?' near':'')+'" data-tno="'+esc(s.no)+'"'+c10OpenAttr(s.no)+' title="'+esc((s.name||s.subTask||"")+' · '+picOf(s)+' · '+subPct(s)+'% — '+(IS_MOBILE?'chạm':'nhấp đúp')+' để cập nhật')+'">'
+        +(multi?'<span class="av" style="background:'+avColor(picOf(s))+'">'+esc(initials(picOf(s)))+'</span>':'')
+        +'<span class="t">'+esc(s.name||s.subTask||"")+'</span><span class="n">còn '+o.n+' ngày</span></div>';
+    }).join("")
+    +(gh.length>LIM?'<button class="c10-ghmore" onclick="C10.ghOpen=!C10.ghOpen;renderCalendarTab()">'+(open?'Thu gọn ▴':'＋ '+(gh.length-LIM)+' việc khác')+'</button>':'')
+    +'</div>';
+}
+/* danh sách việc quá hạn (theo nhân sự đang chọn trên lịch), quá hạn lâu nhất lên đầu */
+function c10OverdueList(){
+  var out=[];
+  (S.keyTasks||[]).forEach(function(k){ (k.subs||[]).forEach(function(s){
+    if(!c10Sel(s) || !c10IsOD(s)) return;
+    out.push({k:k,s:s,n:-c10DaysLeft(s)});
+  }); });
+  out.sort(function(a,b){ return b.n-a.n; });
+  return out;
+}
+function c10OverdueOpen(){
+  var list=c10OverdueList(), sel=c10Pics(), multi=(sel.length!==1), tmr=addDaysISO(toISO(new Date()),1);
+  var rows=list.map(function(o){
+    var s=o.s, k=o.k, pct=subPct(s), can=canEditPic(s.pic)&&!vIsSync(s)&&!isTmpNo(s.no), no=jsq(s.no);
+    return '<div class="od-row" data-tno="'+esc(s.no)+'">'
+      +'<div class="od-main"><b>'+esc(s.name||s.subTask||"")+'</b>'
+      +'<div class="od-sub">'+(multi?'<span class="av" style="background:'+avColor(picOf(s))+'">'+esc(initials(picOf(s)))+'</span>'+esc(picOf(s))+' · ':'')
+      +(s.__isKeyRow?'':'📂 '+esc(k.keyTask||"")+' · ')+'<span class="st '+stMeta(s.status||"To Do").cls+'">'+esc(s.status||"To Do")+'</span> <b style="color:'+progColor(pct)+'">'+pct+'%</b></div></div>'
+      +'<span class="od-n">🔴 Quá hạn '+o.n+' ngày</span>'
+      +(can?'<div class="od-act">'
+        +'<button class="od-done" onclick="c10OdDone(\''+no+'\')" title="Đánh dấu hoàn thành — task hiện ở ngày hôm nay">✓ Hoàn thành</button>'
+        +'<label class="od-ext" title="Chọn hạn mới — task quay lại lịch ở ngày hạn mới">📅 Gia hạn <input type="date" min="'+tmr+'" onchange="c10OdExtend(\''+no+'\',this.value)"/></label>'
+        +'<button class="od-open" onclick="c10Open(\''+no+'\')" title="Mở để cập nhật chi tiết">✏️</button></div>'
+        :'<div class="od-act"><button class="od-open" onclick="c10Open(\''+no+'\')">Xem</button></div>')
+      +'</div>';
+  }).join("");
+  showModal('<div class="modal-box modal-lg" id="od-modal"><div class="modal-head"><h3>🔴 Việc quá hạn <span style="font-weight:700;color:var(--faint);font-size:14px">('+list.length+')</span></h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
+    +'<div class="modal-body"><div class="od-hint">Các việc này không hiện trên lịch để lịch gọn hơn. Cập nhật ngay tại đây: <b>✓ Hoàn thành</b> → task hiện ở ngày hôm nay; <b>📅 Gia hạn</b> → task quay lại lịch ở ngày hạn mới.</div>'
+    +(rows||'<div class="c10-empty" style="padding:24px 0">🎉 Không còn việc quá hạn.</div>')+'</div></div>');
+}
+function c10OdRefresh(no, msg){
+  toast(msg);
+  var r=document.querySelector('#od-modal .od-row[data-tno="'+(window.CSS&&CSS.escape?CSS.escape(no):no)+'"]');
+  if(r){ r.classList.add("gone"); setTimeout(function(){ if(document.getElementById("od-modal")) c10OverdueOpen(); }, 350); }
+  try{ renderCalendarTab(); }catch(_){}
+}
+function c10OdDone(no){
+  var s=findSub(no); if(!s) return;
+  v10SaveFields(no, v10StatusPatch(s,"Completed"));
+  c10OdRefresh(no, "✓ Đã hoàn thành “"+(s.name||s.subTask||"")+"” — hiện ở ngày hôm nay");
+}
+function c10OdExtend(no, iso){
+  var s=findSub(no); if(!s || !iso) return;
+  if(iso<=toISO(new Date())){ toast("⚠️ Hạn mới phải sau hôm nay"); return; }
+  var p={ revised:iso }; if(isDone(s.status)||/to\s*do/i.test(s.status||"")) p=Object.assign(p, v10StatusPatch(s,"In Progress"));
+  v10SaveFields(no, p);
+  c10OdRefresh(no, "📅 Đã gia hạn “"+(s.name||s.subTask||"")+"” tới "+fmtVNFull(iso));
 }
 function c10DaysLeft(s){
   var en=toISO(effDate(s)||""); if(!en) return null;
@@ -8592,6 +8704,7 @@ function c10ItemsInRange(allPeople){
       if(C10.onlyIP && !c10IsRolling(s)) return;
       var d;
       if(isTripRow(s)){ var dt=c10TaskDates(s); if(!dt.st || dt.st>rg.to || dt.en<rg.from) return; d=dt.st; }
+      else if(c10IsOD(s)){ d=toISO(new Date()); if(d<rg.from || d>rg.to) return; }   /* ⭐ v12.5: việc quá hạn tính vào khoảng có hôm nay */
       else { d=c10DispDate(s); if(!d || d<rg.from || d>rg.to) return; }   /* ⭐ v12.4: đếm theo ngày HIỂN THỊ */
       out.push({k:k,s:s,d:d});
     });
@@ -8605,7 +8718,8 @@ function c10ProgressHtml(){
   list.forEach(function(o){ var st=o.s.status||"To Do"; sum+=(isDone(st)?100:(/to\s*do/i.test(st)||!st)?0:subPct(o.s));
     if(isDone(st)) cD++; else if(isInProgress(st)) cP++; else cT++; });
   var pct=n?Math.round(sum/n):0;
-  var ipN=0, odN=0; list.forEach(function(o){ if(c10IsRolling(o.s)){ ipN++; if(isOverdue(o.s)) odN++; } });
+  var ipN=0; list.forEach(function(o){ if(c10IsRolling(o.s) && !c10IsOD(o.s)) ipN++; });
+  var odN=c10OverdueList().length;
   var hue=Math.round(pct*1.2);                                  /* 0 đỏ → 60 vàng → 120 xanh lá */
   var col="hsl("+hue+",72%,"+(pct>=100?"38%":"46%")+")";
   return '<div class="c10-prog" title="Tiến độ chung = trung bình % tiến độ của '+n+' việc trong khoảng đang xem (mỗi việc cùng tỉ trọng, To Do tính 0%)">'
@@ -8614,8 +8728,11 @@ function c10ProgressHtml(){
     +'<span class="c10-pst"><span class="d">✓ '+cD+' Completed</span><span class="p">◐ '+cP+' In Progress</span><span class="t">○ '+cT+' To Do</span></span>'
     +'</div>'
     /* ⭐ v12.4: "Việc đang thực hiện" — bấm để chỉ xem các việc này */
-    +'<button class="c10-ipchip'+(C10.onlyIP?' on':'')+(odN?' has-od':'')+'" onclick="C10.onlyIP=!C10.onlyIP;renderCalendarTab()" title="Bấm để chỉ xem / bỏ lọc việc đang thực hiện">'
-    +'<span>📌 Việc đang thực hiện</span><b>'+ipN+'</b>'+(odN?'<span class="od">🔴 '+odN+' quá hạn</span>':'')+(C10.onlyIP?'<span class="x">✕</span>':'')+'</button>';
+    +'<button class="c10-ipchip'+(C10.onlyIP?' on':'')+'" onclick="C10.onlyIP=!C10.onlyIP;renderCalendarTab()" title="Bấm để chỉ xem / bỏ lọc việc đang thực hiện">'
+    +'<span>📌 Việc đang thực hiện</span><b>'+ipN+'</b>'+(C10.onlyIP?'<span class="x">✕</span>':'')+'</button>'
+    /* ⭐ v12.5: việc QUÁ HẠN không nằm trên lịch — bấm để mở danh sách cập nhật nhanh */
+    +(odN?'<button class="c10-odbtn" onclick="c10OverdueOpen()" title="Việc quá hạn không hiện trên lịch — bấm để xem & cập nhật"><span>🔴 '+odN+' quá hạn</span><span class="go">Xem ›</span></button>'
+         :'<span class="c10-odok">✓ Không có việc quá hạn</span>');
 }
 /* ⭐ v12 — MÔ HÌNH TUẦN: chia việc thành thẻ theo NGÀY và thanh XUYÊN NGÀY / TỒN ĐỌNG */
 function c10TaskDates(s){
@@ -8727,12 +8844,17 @@ function renderCalendarTab(){
     var mon=mondayOf(ref), days=[];
     for(var i=0;i<7;i++){ var d=new Date(mon); d.setDate(mon.getDate()+i); days.push(d); }
     title="Tuần "+fmtVN(toISO(days[0]))+" – "+fmtVNFull(toISO(days[6]));
-    /* ⭐ v12.4: bỏ dải phía trên lịch — mọi việc nằm TRONG cột ngày theo quy tắc c10DispDate */
+    /* ⭐ v12.5: mỗi ngày tối đa 5 thẻ (bấm "+N việc khác" để mở hết) · cột HÔM NAY có khối nhắc "Sắp đến hạn" */
+    var LIM=5, ghosts=c10Ghosts();
     body='<div class="c10-week">'+days.map(function(d){
-      var iso=toISO(d), ev=by[iso]||[];
+      var iso=toISO(d), ev=by[iso]||[], open=!!(C10.exp&&C10.exp[iso]), shown=open?ev:ev.slice(0,LIM);
+      var gh=(iso===today)?ghosts:[];
       return '<div class="c10-wc'+(iso===today?" today":"")+'" data-day="'+iso+'" '+(IS_MOBILE?'onclick':'ondblclick')+'="c10ColClick(event,\''+iso+'\')" title="'+(IS_MOBILE?'Chạm':'Nhấp đúp')+' vào chỗ trống để thêm việc ngày '+fmtVN(iso)+'">'
-        +'<div class="c10-wh"><span>'+C10_WD[d.getDay()]+(iso===today?' · Hôm nay':'')+'</span><b>'+d.getDate()+'/'+(d.getMonth()+1)+'</b></div>'
-        +'<div class="c10-wb">'+(ev.length?ev.map(function(o){ return c10Card(o,multi,iso); }).join(""):'<div class="c10-empty">—</div>')
+        +'<div class="c10-wh"><span>'+C10_WD[d.getDay()]+(iso===today?' · Hôm nay':'')+'</span><b>'+d.getDate()+'/'+(d.getMonth()+1)+'</b>'
+        +(ev.length>LIM?'<i class="c10-spanct" title="Tổng số việc trong ngày">'+ev.length+'</i>':'')+'</div>'
+        +'<div class="c10-wb">'+c10GhostBlock(gh, multi)
+        +(shown.length?shown.map(function(o){ return c10Card(o,multi,iso); }).join(""):(gh.length?'':'<div class="c10-empty">—</div>'))
+        +(ev.length>LIM?'<button class="c10-morebtn" onclick="event.stopPropagation();c10Exp(\''+iso+'\')">'+(open?'Thu gọn ▴':'＋ '+(ev.length-LIM)+' việc khác')+'</button>':'')
         +'<button class="c10-wadd" onclick="c10Add(\''+iso+'\',null,true)">＋ Thêm việc</button></div></div>';
     }).join("")+'</div>';
   } else if(view==="list"){
@@ -9197,7 +9319,7 @@ function renderSideMe(){
       +'<span class="n">'+n+'</span>'+(o?'<span class="n od">'+o+'</span>':'')+'</button>';
   }).join("");
   box.innerHTML='<div class="sd-me"><div class="big"><b>'+total+'</b> việc chưa xong</div>'
-    +(od?'<div class="od">🔴 '+od+' việc quá hạn</div>':'<div class="ok">✓ Không có việc quá hạn</div>')
+    +(od?'<div class="od" style="cursor:pointer" title="Mở danh sách việc quá hạn để cập nhật" onclick="switchTab(\'calendar\');C10.pics=[S.user.pic];renderCalendarTab();setTimeout(c10OverdueOpen,50)">🔴 '+od+' việc quá hạn ›</div>':'<div class="ok">✓ Không có việc quá hạn</div>')
     +(src?'<div class="sd-src">'+src+'</div>':'')+'</div>';
   var tm=document.getElementById("sd-team"); if(!tm) return;
   if(!canViewOthers()){ tm.innerHTML=""; return; }
@@ -9268,10 +9390,12 @@ function rhxErrMsg(e){
 })();
 (function(){
   if(typeof DICT_EN!=="object") return;
-  var D={ "📌 Việc đang thực hiện":"📌 Tasks in progress","⏰ Đến hạn hôm nay":"⏰ Due today","Quá hạn":"Overdue", "Phòng ban":"Departments","Việc của tôi":"My tasks","Chức năng":"Menu","Liên kết nhanh":"Quick links","👥 Tình hình đội":"👥 Team status",
+  var D={ "🔔 Sắp đến hạn":"🔔 Due soon","Xem ›":"View ›","✓ Không có việc quá hạn":"✓ No overdue tasks","🔴 Việc quá hạn":"🔴 Overdue tasks","✓ Hoàn thành":"✓ Complete","📅 Gia hạn":"📅 Extend","Xem":"View","🎉 Không còn việc quá hạn.":"🎉 No overdue tasks left.",
+    "Các việc này không hiện trên lịch để lịch gọn hơn. Cập nhật ngay tại đây:":"These tasks are kept off the calendar to keep it clean. Update them here:",
+    "📌 Việc đang thực hiện":"📌 Tasks in progress","⏰ Đến hạn hôm nay":"⏰ Due today","Quá hạn":"Overdue", "Phòng ban":"Departments","Việc của tôi":"My tasks","Chức năng":"Menu","Liên kết nhanh":"Quick links","👥 Tình hình đội":"👥 Team status",
     "📌 Việc xuyên tuần & tồn đọng":"📌 Multi-day & carried-over tasks","Thu gọn ▴":"Collapse ▴","Hiện ▾":"Show ▾","✓ Không có việc quá hạn":"✓ No overdue tasks" };
   Object.keys(D).forEach(function(k){ DICT_EN[k]=D[k]; });
-  if(RULES_EN&&RULES_EN.push) RULES_EN.push([/^ việc chưa xong$/," open tasks"],[/^🔴 (\d+) việc quá hạn$/,"🔴 $1 overdue"],[/^Tồn từ (\S+) · quá hạn (\d+) ngày$/,"Carried from $1 · $2 days overdue"],[/^(\d+) việc$/,"$1 tasks"],[/^🔴 Quá hạn (\d+) ngày$/,"🔴 $1 days overdue"],[/^⏳ Còn (\d+) ngày$/,"⏳ $1 days left"],[/^🔴 (\d+) quá hạn$/,"🔴 $1 overdue"],[/^(\d+) người$/,"$1 people"],[/^👥 (.+) ▾$/,"👥 $1 ▾"]);
+  if(RULES_EN&&RULES_EN.push) RULES_EN.push([/^ việc chưa xong$/," open tasks"],[/^🔴 (\d+) việc quá hạn$/,"🔴 $1 overdue"],[/^Tồn từ (\S+) · quá hạn (\d+) ngày$/,"Carried from $1 · $2 days overdue"],[/^(\d+) việc$/,"$1 tasks"],[/^🔴 Quá hạn (\d+) ngày$/,"🔴 $1 days overdue"],[/^⏳ Còn (\d+) ngày$/,"⏳ $1 days left"],[/^🔴 (\d+) quá hạn$/,"🔴 $1 overdue"],[/^＋ (\d+) việc khác$/,"＋ $1 more"],[/^còn (\d+) ngày$/,"$1 days left"],[/^🔴 Quá hạn (\d+) ngày$/,"🔴 $1 days overdue"],[/^🔴 (\d+) việc quá hạn ›$/,"🔴 $1 overdue ›"],[/^(\d+) người$/,"$1 people"],[/^👥 (.+) ▾$/,"👥 $1 ▾"]);
 })();
 </script>
 
