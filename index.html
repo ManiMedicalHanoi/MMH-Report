@@ -7,6 +7,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <title>MMH Report Hub — Marketing & Product</title>
+<link rel="preconnect" href="https://script.google.com" crossorigin/>
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin/>
+<link rel="dns-prefetch" href="https://script.googleusercontent.com"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=DM+Mono:wght@500&display=swap" rel="stylesheet"/>
@@ -2107,6 +2110,9 @@ body.sheet-open #fab-wrap,body.sheet-open .act-toggle{display:none!important}
 /* v12.1 — tinh chỉnh bố cục khi có sidebar */
 @media(max-width:900px){ body.has-side #side .sd-h{display:none} }
 @media(max-width:700px){ .c10-wb>.c10-empty{display:none} .c10-wb{padding-top:6px;padding-bottom:6px} }
+body.first-load .tabpage{opacity:.55;pointer-events:none;transition:opacity .2s}
+body.first-load #fab-wrap{pointer-events:none;opacity:.5}
+body.first-load #stale-chip{pointer-events:auto}
 .c10-subbtn.mini{flex:0 0 auto;padding:2px 8px;font-size:11px;border-radius:7px;line-height:1.4}
 .tp-err{background:#FFF1F0;border:1.5px solid #F2B8B5;color:#8A1C17;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;margin:10px 0 0}
 .tp-err a{color:#8A1C17;font-weight:800}
@@ -2149,7 +2155,7 @@ body.sheet-open #fab-wrap,body.sheet-open .act-toggle{display:none!important}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12.2</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -3064,11 +3070,53 @@ function markStale(on,txt){
   if(txt) el.querySelector("span").textContent=txt;
   el.classList.toggle("on",!!on);
 }
+/* ══════ ⭐ v12.2 — TĂNG TỐC MỞ APP ══════ */
+/* lưu cache xuống máy an toàn: đầy bộ nhớ trình duyệt thì dọn cache cũ rồi lưu bản rút gọn */
+function lsTry(k,v){ try{ localStorage.setItem(k, typeof v==="string"?v:JSON.stringify(v)); return true; }catch(e){ return false; } }
+function saveBootLS(src,res){
+  if(!res || res.ok===false || res.denied) return false;
+  var key=LS_BOOT(src), o={ ts:Date.now(), res:slimBoot(res) };
+  if(lsTry(key,o)) return true;
+  try{   /* dọn cache phiên bản cũ + cache của phòng ban khác */
+    var ks=[]; for(var i=0;i<localStorage.length;i++){ ks.push(localStorage.key(i)); }
+    ks.forEach(function(k){ if(/^mmh_rep_boot_/.test(k) && k!==key) localStorage.removeItem(k); });
+  }catch(_){}
+  if(lsTry(key,o)) return true;
+  try{   /* vẫn đầy → chỉ giữ việc CHƯA XONG + việc 60 ngày gần đây (bản đầy đủ tải nền ngay sau đó) */
+    var cut=new Date(Date.now()-60*86400000).toISOString().slice(0,10), r=slimBoot(res);
+    r.keyTasks=(res.keyTasks||[]).filter(function(k){
+      var all=[k].concat(k.subs||[]);
+      return all.some(function(x){ return !isDone(x.status) || String(x.planned||x.revised||x.start||"").slice(0,10)>=cut; });
+    });
+    r.activityLog=[]; r.partial=true;
+    return lsTry(key,{ ts:Date.now(), res:r });
+  }catch(_){ return false; }
+}
+/* lần đầu trên máy (chưa có cache): app đã mở — đổ dữ liệu vào khi Google trả về */
+function firstLoadData(attempt){
+  markStale(true, attempt? "Đang thử kết nối lại…" : "Đang tải dữ liệu công việc…");
+  var chip=document.getElementById("stale-chip"); if(chip) chip.onclick=null;
+  return apiGet("boot").then(function(res){
+    if(res && res.denied){ S.firstLoad=false; document.body.classList.remove("first-load"); markStale(false); showDeniedPage(); return; }
+    applyBootData(res); cacheBoot(S.source,res);
+    var u=S.picList.filter(function(x){ return x.pic===S.user.pic; })[0];
+    if(u){ S.user.role=u.role; S.user.title=u.title; S.user.level=u.level; }
+    S.firstLoad=false; document.body.classList.remove("first-load"); markStale(false);
+    try{ applyDefaultPicFilter(); S.detailPics=[S.user.pic]; }catch(_){}
+    try{ rerenderKeepScroll(); }catch(_){ try{ switchTab(S.tab||"calendar"); }catch(__){} }
+    try{ renderActivity(); renderMyTaskBar(); buildSourceTabs(); buildTabs(); }catch(_){}
+    if(LANG==="en") translateNode(document.body);
+  }).catch(function(e){
+    if(attempt<2) return firstLoadData(attempt+1);
+    markStale(true, "⚠️ Chưa tải được dữ liệu — bấm vào đây để thử lại");
+    var c=document.getElementById("stale-chip"); if(c){ c.style.cursor="pointer"; c.onclick=function(){ firstLoadData(0); }; }
+  });
+}
 function boot(){
   var src=savedSrc()||S.source, pic=savedPic();
   S.source=src; GAS_URL=GAS_URLS[src]||GAS_URLS.marketing;
   var cache=lsGet(LS_BOOT(src));
-  var res0=cache&&cache.res;
+  var res0=cache&&(cache.res || (cache.picList&&cache.keyTasks ? cache : null));   /* ⭐ v12.2: đọc được cả cache dạng cũ */
 
   /* ① ĐÃ CÓ DỮ LIỆU TRÊN MÁY → vào thẳng app, không chờ mạng */
   if(res0 && !res0.denied && res0.picList && res0.picList.length){
@@ -3091,7 +3139,27 @@ function boot(){
     }catch(_){ /* cache hỏng → rơi xuống nhánh ② */ }
   }
 
-  /* ② LẦN ĐẦU DÙNG (hoặc vừa xoá dữ liệu trình duyệt) → tải như cũ */
+  /* ⭐ v12.2 — ② CHƯA CÓ DỮ LIỆU TRÊN MÁY nhưng ĐÃ biết là ai (đã đăng nhập trước đó):
+     mở NGAY khung app bằng danh bạ nhúng sẵn, dữ liệu công việc đổ vào khi Google trả về.
+     Không còn phải nhìn màn hình chờ "Máy chủ Google đang khởi động". */
+  if(pic){
+    var mu=lsGet("mmh_user"); if(mu && mu.pic!==pic) mu=null;
+    var fb=mu || FALLBACK_ROSTER.filter(function(x){ return x.pic===pic; })[0];
+    if(fb){
+      try{
+        applyBootData({ picList:[], keyTasks:[], monthly:[], activityLog:[] });
+        if(!S.picList.some(function(x){ return x.pic===pic; })) S.picList.push(fb);
+        var u2=S.picList.filter(function(x){ return x.pic===pic; })[0]||fb;
+        setUser(u2); S.bootByPic=u2.pic; S.firstLoad=true;
+        document.body.classList.add("first-load");
+        startApp();
+        firstLoadData(0);
+        setTimeout(loadRosterAllSources, 4000);
+        return;
+      }catch(_){ S.firstLoad=false; document.body.classList.remove("first-load"); }
+    }
+  }
+  /* ③ LẦN ĐẦU DÙNG TRÊN MÁY NÀY (chưa chọn người) → tải như cũ */
   gateStatus("Đang tải danh sách người dùng…");
   /* ⭐ v10.2: báo tiến trình + TỰ THỬ LẠI 1 lần trước khi hiện màn lỗi */
   var _gt=setTimeout(function(){ gateStatus("Máy chủ Google đang khởi động, vui lòng đợi vài giây…"); }, 6000);
@@ -3190,6 +3258,7 @@ function applyBootData(res){
 function setUser(u){
   S.user={ email:"", pic:u.pic, role:u.role, title:u.title, level:u.level, known:true };
   try{ localStorage.setItem("mmh_pic", u.pic); }catch(_){}
+  try{ localStorage.setItem("mmh_user", JSON.stringify({pic:u.pic,role:u.role,title:u.title,level:u.level,initials:u.initials,dept:u.dept,team:u.team,canAssign:!!u.canAssign})); }catch(_){}   /* ⭐ v12.2 */
   try{ applyDefaultPicFilters(); }catch(_){}      /* ⭐ v9.3 (#3) */
 }
 /* ⭐ Nhóm PIC theo Department cho màn hình đăng nhập.
@@ -3516,7 +3585,7 @@ function cacheBoot(src,res){
     if(!cacheBoot._at) cacheBoot._at={};
     if(now-(cacheBoot._at[src]||0) > 25000){            /* tiết chế: tối đa 25 giây/lần */
       cacheBoot._at[src]=now;
-      lsSet(LS_BOOT(src), { ts:now, res:slimBoot(res) });
+      saveBootLS(src, res);
     }
   }
 }
@@ -7022,7 +7091,7 @@ function applyWeekly(list, v, fromWrite){
   });
   S.detailOpen=openState;
   syncPriorityMarks();
-  try{ var c=SRC_CACHE[src]; if(c&&c.res){ c.res.keyTasks=res.keyTasks; lsSet(LS_BOOT(src), slimBoot(c.res)); } }catch(_){}
+  try{ var c=SRC_CACHE[src]; if(c&&c.res){ c.res.keyTasks=res.keyTasks; c.res.v=S.dataVersion||c.res.v; saveBootLS(src, c.res); } }catch(_){}   /* ⭐ v12.2: SỬA LỖI lưu sai dạng ⇒ lần mở sau không dùng được cache */
   /* sau XOÁ/CHÈN (fromWrite) số No đã đổi ⇒ vẽ lại NGAY để mọi nút bấm mang số mới;
      chỉ hoãn khi đang gõ chữ hoặc đang mở hộp thoại */
   var typing=false;
