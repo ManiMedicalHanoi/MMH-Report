@@ -2155,7 +2155,7 @@ body.first-load #stale-chip{pointer-events:auto}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12.2</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12.3</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -9084,10 +9084,12 @@ function tripProposeSend(){
 /* đồng bộ lịch công tác ở 2 backend rồi tải nhẹ lại danh sách */
 function tripSyncNow(btn, quiet){
   if(btn){ btn.disabled=true; btn.classList.add("spin"); }
-  var list=["marketing","backoffice"].map(function(src){ return jsonpTo(GAS_URLS[src], { action:"tripSync", pic:S.user.pic, actor:S.user.pic }); });
+  /* ⭐ v12.3: đồng bộ cả Management (lịch công tác của Director) */
+  var srcs=["marketing","backoffice","management"].filter(function(k){ return !!GAS_URLS[k]; });
+  var list=srcs.map(function(src){ return jsonpTo(GAS_URLS[src], { action:"tripSync", pic:S.user.pic, actor:S.user.pic }).catch(function(){ return null; }); });
   Promise.all(list).then(function(rs){
     if(btn){ btn.disabled=false; btn.classList.remove("spin"); }
-    var mine=rs[S.source==="backoffice"?1:0];
+    var mine=rs[Math.max(0,srcs.indexOf(S.source))];
     if(!quiet) toast("✈️ "+((mine&&mine.message)||"Đã đồng bộ lịch công tác"));
     lightRefreshSoon(300);
   });
