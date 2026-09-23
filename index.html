@@ -1967,6 +1967,38 @@ input.c10-ro{background:#F3F6FB;color:var(--mmh-navy);font-weight:700}
 }
 </style>
 
+<style>
+/* ⭐ v11 — đính kèm, công tác, hộp soạn email */
+.c10-atts{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.c10-att{display:inline-flex;align-items:center;gap:3px;max-width:100%;font-size:11px;font-weight:800;color:var(--mmh-blue);background:#EAF1FC;border:1px solid #CFE0F8;border-radius:7px;padding:2px 7px;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.c10-att:hover{background:var(--mmh-blue);color:#fff;border-color:var(--mmh-blue)}
+.c10-att.more{background:none;border:none;color:var(--faint);cursor:default}
+.c10-clip{flex:0 0 auto;text-decoration:none;font-size:11px;margin-left:2px}
+.c10-ev .tr{flex:0 0 auto;font-size:10px}
+.c10-ev.trip,.c10-card.trip,.c10-lr.trip{--c:#0E8A6E}
+.c10-card.trip{background:linear-gradient(180deg,#F1FAF6,#fff 60%)}
+.c10-keytag.trip{color:#0E6B52;background:#DDF3EA}
+.v-sync-chip.trip{background:#0E8A6E;color:#fff}
+.c10-mailopt{margin-top:4px}
+body.sheet-open #fab-wrap,body.sheet-open .act-toggle{display:none!important}
+.c10-ib.spin svg{animation:stspin .8s linear infinite}
+.tp-days{font-size:12.5px;font-weight:800;color:var(--mmh-blue);margin:-6px 0 10px}
+.m11 .modal-body{display:flex;flex-direction:column;gap:0}
+.m11-row{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);padding:8px 0;min-height:48px}
+.m11-lb{flex:0 0 58px;font-size:13px;font-weight:700;color:var(--sub)}
+.m11-chips{flex:1;display:flex;gap:6px;flex-wrap:wrap;min-width:0}
+.m11-chip{display:inline-flex;align-items:center;gap:6px;background:#EEF3FB;border:1px solid #D6E2F5;border-radius:18px;padding:3px 4px 3px 4px;font-size:13px;font-weight:700;color:var(--mmh-navy)}
+.m11-chip .av{width:22px;height:22px;border-radius:50%;color:#fff;font-size:9px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.m11-chip button{border:none;background:none;color:var(--faint);font-size:16px;line-height:1;padding:0 5px;cursor:pointer}
+.m11-chip button:hover{color:#B3261E}
+.m11-empty{font-size:12.5px;color:var(--faint)}
+.m11-add{flex:0 0 auto;border:1.5px solid var(--border);border-radius:9px;padding:6px 8px;font-size:12.5px;font-weight:700;background:#fff;color:var(--mmh-blue);max-width:170px}
+.m11-sub{flex:1;border:none;outline:none;font-size:15px;font-weight:700;color:var(--text);padding:6px 0;background:transparent}
+.m11-body{width:100%;border:none;outline:none;resize:vertical;font:inherit;font-size:14.5px;line-height:1.6;padding:14px 2px;min-height:260px;color:var(--text)}
+.m11-hint{font-size:11.5px;color:var(--faint);border-top:1px solid var(--border);padding-top:8px}
+@media(max-width:700px){ .m11-lb{flex-basis:48px} .m11-add{max-width:120px} .m11-body{min-height:200px} }
+</style>
+
 </head>
 <body>
 
@@ -1990,7 +2022,7 @@ input.c10-ro{background:#F3F6FB;color:var(--mmh-navy);font-weight:700}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v10.3</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v11</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -2271,6 +2303,7 @@ var FIELD_APP_URLS={
   dental:""     /* điền URL webapp Dental Field Report khi có */
 };
 function vIsSync(o){ return !!(o && o.vSrc); }
+function isTripRow(o){ return !!(o && /^trip/.test(String(o.vSrc||""))); }   /* ⭐ v11: dòng lịch công tác */
 function vAppUrl(o){
   var src=(o&&o.vMeta&&o.vMeta.s)||"";
   var u=(S.visitApp&&S.visitApp[src])||FIELD_APP_URLS[src]||"";
@@ -5367,7 +5400,7 @@ function detailKeyPanels(keys, from, to, picFilter){
       +'<div class="kt-namecell">'
         +'<span class="kt-type-tag" style="background:'+typeColor(k.type)+'22;color:'+typeColor(k.type)+'">'+esc(k.type||'—')+'</span>'
         +'<span class="kt-title">'+esc(k.keyTask)+(k.__pending?'<span class="v10-pend">⏳ đang lưu</span>':'')
-          +(vIsSync(k)?'<span class="v-sync-chip" title="Tự động đồng bộ từ sheet Field Report của Sales">🔄 TỰ ĐỘNG</span>':'')
+          +(vIsSync(k)?(isTripRow(k)?'<span class="v-sync-chip trip" title="Tự động đồng bộ từ file Business Trip — sửa trên file đó">✈️ CÔNG TÁC</span>':'<span class="v-sync-chip" title="Tự động đồng bộ từ sheet Field Report của Sales">🔄 TỰ ĐỘNG</span>'):'')
           +(kOver?'<span class="od-chip">QUÁ HẠN</span>':'')+'</span>'
         +'<span class="kt-pics">'+_pcInfo.tags+'</span>'
       +'</div>'
@@ -6266,7 +6299,7 @@ function openAddKey(){
       +'<div class="field"><label>Hạn</label><input type="date" id="ak-planned" value="'+today+'" min="'+today+'"/></div>'
     +'</div>'
     +(canAsg?'<label class="as-check"><input type="checkbox" id="ak-mail" checked/>'
-      +'<span>📨 Gửi <b>email giao việc</b> nếu PIC không phải là bạn</span></label>':'')
+      +'<span>📨 Soạn <b>email giao việc</b> ngay sau khi thêm (nếu PIC không phải là bạn)</span></label>':'')
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
     +'<button class="btn-primary" id="ak-save" onclick="saveAddKey()">➕ Thêm</button></div>'
     +'</div></div>';
@@ -6319,6 +6352,7 @@ function doAddKey(o){
     result:o.result||"", actual:"", subs:[] };
   S.keyTasks.push(nk); normalizeKeyTasks([nk]);
   markJustAdded(tno); S.detailOpen[tno]=true;
+  if(o.mail) setTimeout(function(){ mailComposeAssign({ pic:o.pic, name:o.name, key:"", start:o.start, due:o.planned }); }, 250);
   rerenderKeepScroll(); flashTask(tno);
   toast("✓ Đã thêm “"+o.name+"” — đang lưu lên sheet…");
   var pr=apiPost({action:"addKey",keyTask:o.name,type:o.type||"",pic:o.pic,start:o.start||"",planned:o.planned||"",status:o.status||"To Do",result:o.result||""})
@@ -6331,12 +6365,7 @@ function doAddKey(o){
         nk.no=no; nk.row=r.row||t.row||0; nk.__tmp=false; nk.__srvName=o.name;
         ["fy","month","type","pic","start","planned","revised","status","result"].forEach(function(f){ if(t[f]!=null && t[f]!=="") nk[f]=t[f]; });
         (nk.subs||[]).forEach(function(sb){ if(sb.__isKeyRow){ sb.no=no; sb.row=nk.row; } });
-        if(o.mail){
-          apiPost({ action:"assign", toPic:o.pic, note:"",
-                    items:JSON.stringify([{ no:no, name:o.name, keyTask:o.name, deadline:o.planned, status:"To Do", pic:o.pic }]) })
-            .then(function(rr){ toast("📨 "+((rr&&rr.message)||("Đã gửi email giao việc cho "+o.pic))); })
-            .catch(function(e){ toast("⚠️ Đã tạo việc nhưng gửi email lỗi: "+e.message); });
-        }
+        /* ⭐ v11: email giao việc nay soạn trên hộp thư của web (mở ngay khi bấm Thêm) */
         if(r.dedup) toast("ℹ️ Lệnh thêm bị gửi trùng — hệ thống đã bỏ qua bản trùng");
       }
       renderNowIfFree();                /* ⭐ v10.3: hết ⏳ ngay khi sheet lưu xong */
@@ -6376,7 +6405,7 @@ function openAddSub(kno){
       +'<div class="field"><label>Hạn</label><input type="date" id="as-planned" value="'+today+'" min="'+today+'"/></div>'
     +'</div>'
     +(canAsg?'<label class="as-check"><input type="checkbox" id="as-mail" checked/>'
-      +'<span>📨 Gửi <b>email giao việc</b> nếu PIC không phải là bạn</span></label>':'')
+      +'<span>📨 Soạn <b>email giao việc</b> ngay sau khi thêm (nếu PIC không phải là bạn)</span></label>':'')
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Hủy</button>'
     +'<button class="btn-primary" id="as-save" onclick="saveAddSub()">➕ Thêm</button></div>'
     +'</div></div>';
@@ -6410,6 +6439,7 @@ function doAddSub(o){
   markJustAdded(tno);
   rerenderKeepScroll(); flashTask(tno);
   toast("✓ Đã thêm sub-task — đang lưu…");
+  if(o.mail) setTimeout(function(){ mailComposeAssign({ pic:o.pic, name:o.name, key:k?k.keyTask:"", start:o.start, due:o.planned }); }, 250);
   var pr=(S._noWait[o.kno]||Promise.resolve(o.kno)).then(function(realK){
     return apiPost({action:"addSub",keyNo:realK,parentNo:realK,name:o.name,pic:o.pic,status:o.status||"To Do",start:o.start||"",planned:o.planned||"",result:o.result||""});
   }).then(function(r){
@@ -6419,12 +6449,7 @@ function doAddSub(o){
       var t=r.task||{};
       renameNo(tno,no); S._tmpMap[tno]=no; ns.no=no; ns.row=r.row||t.row||0; ns.__tmp=false; ns.__srvName=o.name;
       ["start","planned","revised","status"].forEach(function(f){ if(t[f]) ns[f]=t[f]; });
-      if(o.mail){
-        apiPost({ action:"assign", toPic:o.pic, note:"",
-                  items:JSON.stringify([{ no:no, name:o.name, keyTask:"", deadline:o.planned, status:o.status, pic:o.pic }]) })
-          .then(function(rr){ toast("📨 "+((rr&&rr.message)||("Đã gửi email giao việc cho "+o.pic))); })
-          .catch(function(e){ toast("⚠️ Đã tạo việc nhưng gửi email lỗi: "+e.message); });
-      }
+      /* ⭐ v11: email giao việc soạn trên hộp thư của web */
     }
     renderNowIfFree();                  /* ⭐ v10.3 */
     return no;
@@ -7004,7 +7029,11 @@ function localPatchKey(kno, patch){
 }
 function localRemoveSub(sno){
   S.keyTasks.forEach(function(k){
-    if(k.subs) k.subs=k.subs.filter(function(x){ return x.no!==sno; });
+    if(!k.subs) return;
+    var before=k.subs.length;
+    k.subs=k.subs.filter(function(x){ return x.no!==sno; });
+    /* ⭐ v11: xoá sub-task CUỐI CÙNG ⇒ key task tự là 1 đầu việc ⇒ hiện lại NGAY trên lịch/danh sách */
+    if(before && !k.subs.length){ k.selfTask=false; normalizeKeyTasks([k]); }
   });
   rerenderActive();
 }
@@ -8263,10 +8292,38 @@ function c10Items(){
       var p=picOf(s);
       if(sel.length && sel.indexOf(p)<0) return;
       if(C10.hideDone && (isDone(s.status)||isCancelled(s.status))) return;
+      /* ⭐ v11: chuyến công tác nhiều ngày → hiện trên TỪNG ngày đi */
+      var st0=toISO(s.start||""), en0=toISO(effDate(s)||"");
+      if(isTripRow(s) && st0 && en0 && en0>st0){
+        var d=new Date(st0+"T00:00:00"), n=0;
+        while(toISO(d)<=en0 && n<31){ out.push({k:k,s:s,d:toISO(d)}); d.setDate(d.getDate()+1); n++; }
+        return;
+      }
       out.push({k:k,s:s,d:toISO(effDate(s)||s.start||"")});
     });
   });
   return out;
+}
+/* ⭐ v11: link trong Kết quả → nhãn đính kèm bấm được */
+function attLabel(u){
+  if(/drive\.google\.com\/drive\/(u\/\d+\/)?folders/.test(u)) return "📁 Folder";
+  if(/docs\.google\.com\/document/.test(u)) return "📄 Docs";
+  if(/docs\.google\.com\/spreadsheets/.test(u)) return "📊 Sheet";
+  if(/docs\.google\.com\/presentation/.test(u)) return "📽️ Slides";
+  if(/drive\.google\.com/.test(u)) return "📎 File";
+  try{ return "🔗 "+new URL(u).hostname.replace(/^www\./,""); }catch(e){ return "🔗 Link"; }
+}
+function attChips(txt, max){
+  var links=extractLinks(txt||""); if(!links.length) return "";
+  max=max||3;
+  return '<div class="c10-atts">'+links.slice(0,max).map(function(u){
+      return '<a class="c10-att" href="'+esc(u)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()" ondblclick="event.stopPropagation()" title="'+esc(u)+'">'+esc(attLabel(u))+'</a>';
+    }).join("")+(links.length>max?'<span class="c10-att more">+'+(links.length-max)+'</span>':'')+'</div>';
+}
+/* ⭐ v11: máy tính NHẤP ĐÚP để mở/sửa (nhấp 1 lần dành cho link đính kèm); điện thoại chạm 1 lần */
+function c10OpenAttr(no){
+  var js="c10Open('"+jsq(no)+"')";
+  return IS_MOBILE ? ' onclick="event.stopPropagation();'+js+'"' : ' ondblclick="event.stopPropagation();'+js+'" onclick="event.stopPropagation()"';
 }
 /* ⭐ v10.3: khoảng thời gian đang xem trên lịch (tuần → T2..CN; tháng/danh sách → cả tháng) */
 function c10Range(){
@@ -8305,19 +8362,23 @@ function c10ProgressHtml(){
 /* bấm vào CHỖ TRỐNG của cột ngày → thêm việc (ngày bắt đầu cố định = ngày đó) */
 function c10ColClick(ev, iso){
   var t=ev.target;
-  if(t.closest && t.closest(".c10-card,.c10-ev,button,a,input,.c10-acts")) return;
+  if(t.closest && t.closest(".c10-card,.c10-ev,button,a,input,.c10-acts,.c10-att")) return;
   c10Add(iso, null, true);
 }
 function c10Color(s){ return isOverdue(s)?"#D9433F":stMeta(s.status||"To Do").dot; }
 function c10Chip(o, multi){
   var s=o.s, can=canEditPic(s.pic)&&!vIsSync(s)&&!isTmpNo(s.no);
   var cls="c10-ev"+(isDone(s.status)?" done":"")+(isCancelled(s.status)?" cancel":"")+(isOverdue(s)?" od":"")+(s.__pending?" pend":"");
-  return '<button class="'+cls+'" style="--c:'+c10Color(s)+'" data-tno="'+esc(s.no)+'"'
+  var lk=extractLinks(s.result||"");
+  return '<div role="button" tabindex="0" class="'+cls+(isTripRow(s)?' trip':'')+'" style="--c:'+c10Color(s)+'" data-tno="'+esc(s.no)+'"'
     +(can&&!IS_MOBILE?' draggable="true" ondragstart="c10Drag(event,\''+jsq(s.no)+'\')"':'')
-    +' onclick="event.stopPropagation();c10Open(\''+jsq(s.no)+'\')" title="'+esc((s.name||s.subTask||"")+" · "+picOf(s)+" · "+(s.status||"To Do")+" "+subPct(s)+"%")+'">'
+    +c10OpenAttr(s.no)+' title="'+esc((s.name||s.subTask||"")+" · "+picOf(s)+" · "+(s.status||"To Do")+" "+subPct(s)+"%"+(IS_MOBILE?"":" — nhấp đúp để mở"))+'">'
     +(multi?'<span class="av" style="background:'+avColor(picOf(s))+'">'+esc(initials(picOf(s)))+'</span>':'')
     +(s.__isKeyRow?'<span class="kt" title="Key task chưa có sub-task">K</span>':'')
-    +'<span class="t">'+esc(s.name||s.subTask||"")+'</span></button>';
+    +(isTripRow(s)?'<span class="tr">✈️</span>':'')
+    +'<span class="t">'+esc(s.name||s.subTask||"")+'</span>'
+    +(lk.length?'<a class="c10-clip" href="'+esc(lk[0])+'" target="_blank" rel="noopener" onclick="event.stopPropagation()" ondblclick="event.stopPropagation()" title="'+esc(lk.length>1?lk.length+" link — mở link đầu":lk[0])+'">📎</a>':'')
+    +'</div>';
 }
 function c10Card(o, multi, iso){
   var s=o.s, k=o.k, m=stMeta(s.status||"To Do"), pct=subPct(s);
@@ -8325,15 +8386,17 @@ function c10Card(o, multi, iso){
   var keyOnly=!!s.__isKeyRow;                                   /* key task CHƯA có sub-task */
   var canSub=!vIsSync(k) && (canEditPic(k.pic)||canAssign());
   var d=iso||o.d||toISO(new Date());
-  return '<div class="c10-card'+(keyOnly?" keyonly":"")+(isDone(s.status)?" done":"")+(isOverdue(s)?" od":"")+'" style="--c:'+c10Color(s)+'" data-tno="'+esc(s.no)+'"'
+  return '<div class="c10-card'+(keyOnly?" keyonly":"")+(isTripRow(s)?" trip":"")+(isDone(s.status)?" done":"")+(isOverdue(s)?" od":"")+'" style="--c:'+c10Color(s)+'" data-tno="'+esc(s.no)+'"'
     +(can&&!IS_MOBILE?' draggable="true" ondragstart="c10Drag(event,\''+jsq(s.no)+'\')"':'')
-    +' onclick="c10Open(\''+jsq(s.no)+'\')">'
-    +(keyOnly?'<span class="c10-keytag">KEY TASK · chưa có sub-task</span>':'')
+    +c10OpenAttr(s.no)+(IS_MOBILE?'':' title="Nhấp đúp để mở / cập nhật"')+'>'
+    +(isTripRow(s)?'<span class="c10-keytag trip">✈️ CÔNG TÁC · tự đồng bộ</span>':'')
+    +(keyOnly&&!isTripRow(s)?'<span class="c10-keytag">KEY TASK · chưa có sub-task</span>':'')
     +'<b>'+esc(s.name||s.subTask||"")+(s.__pending?' <span class="v10-pend">⏳</span>':'')+'</b>'
     +(keyOnly?'':'<div class="k" title="Key task: '+esc(k.keyTask||"")+'">📂 '+esc(k.keyTask||"")+'</div>')
     +'<div class="m">'+(multi?'<span class="c10-pc" style="border:none;padding:0;background:none;font-size:11.5px"><span class="av" style="width:19px;height:19px;font-size:8px;background:'+avColor(picOf(s))+'">'+esc(initials(picOf(s)))+'</span>'+esc(picOf(s))+'</span>':'')
     +'<span class="st '+m.cls+'">'+esc(s.status||"To Do")+'</span><b style="margin-left:auto;display:inline;font-size:12px;color:'+progColor(pct)+'">'+pct+'%</b></div>'
-    +(canSub?'<div class="c10-acts" onclick="event.stopPropagation()">'
+    +attChips(s.result, 3)
+    +(canSub?'<div class="c10-acts" onclick="event.stopPropagation()" ondblclick="event.stopPropagation()">'
       +'<button class="c10-subbtn'+(keyOnly?' big':'')+'" onclick="c10Add(\''+d+'\',\''+jsq(k.no)+'\',true)" title="Thêm sub-task vào key task “'+esc(k.keyTask||"")+'”">＋ Sub-task'+(keyOnly?' cho key này':'')+'</button>'
       +(can?'<button class="c10-ebtn" onclick="c10Open(\''+jsq(s.no)+'\')" title="Cập nhật nhanh">✏️</button>':'')
       +'</div>':'')
@@ -8354,7 +8417,7 @@ function renderCalendarTab(){
     title="Tuần "+fmtVN(toISO(days[0]))+" – "+fmtVNFull(toISO(days[6]));
     body='<div class="c10-week">'+days.map(function(d){
       var iso=toISO(d), ev=by[iso]||[];
-      return '<div class="c10-wc'+(iso===today?" today":"")+'" data-day="'+iso+'" onclick="c10ColClick(event,\''+iso+'\')" title="Bấm vào chỗ trống để thêm việc ngày '+fmtVN(iso)+'" ondragover="c10Over(event,this)" ondragleave="this.classList.remove(\'drop\')" ondrop="c10Drop(event,\''+iso+'\',this)">'
+      return '<div class="c10-wc'+(iso===today?" today":"")+'" data-day="'+iso+'" '+(IS_MOBILE?'onclick':'ondblclick')+'="c10ColClick(event,\''+iso+'\')" title="'+(IS_MOBILE?'Chạm':'Nhấp đúp')+' vào chỗ trống để thêm việc ngày '+fmtVN(iso)+'" ondragover="c10Over(event,this)" ondragleave="this.classList.remove(\'drop\')" ondrop="c10Drop(event,\''+iso+'\',this)">'
         +'<div class="c10-wh"><span>'+C10_WD[d.getDay()]+(iso===today?' · Hôm nay':'')+'</span><b>'+d.getDate()+'/'+(d.getMonth()+1)+'</b></div>'
         +'<div class="c10-wb">'+(ev.length?ev.map(function(o){ return c10Card(o,multi,iso); }).join(""):'<div class="c10-empty">—</div>')
         +'<button class="c10-wadd" onclick="c10Add(\''+iso+'\',null,true)">＋ Thêm việc</button></div></div>';
@@ -8367,11 +8430,11 @@ function renderCalendarTab(){
     body='<div class="c10-list">'+(ds.length?ds.map(function(d){
       var dd=new Date(d+"T00:00:00");
       return '<div class="cl-day'+(d===today?" today":"")+'">'+C10_WD[dd.getDay()]+', '+fmtVNFull(d)+(d===today?' · Hôm nay':'')
-        +'<button class="c10-btn" style="height:30px" onclick="c10Add(\''+d+'\')">＋</button></div>'
+        +'<button class="c10-btn" style="height:30px" onclick="c10Add(\''+d+'\',null,true)">＋</button></div>'
         +by[d].map(function(o){ var s=o.s, pct=subPct(s), m=stMeta(s.status||"To Do");
-          return '<div class="c10-lr" style="--c:'+c10Color(s)+'" data-tno="'+esc(s.no)+'" onclick="c10Open(\''+jsq(s.no)+'\')">'
+          return '<div class="c10-lr'+(isTripRow(s)?' trip':'')+'" style="--c:'+c10Color(s)+'" data-tno="'+esc(s.no)+'"'+c10OpenAttr(s.no)+'>'
             +'<span class="c10-pc" style="border:none;padding:0;background:none"><span class="av" style="background:'+avColor(picOf(s))+'">'+esc(initials(picOf(s)))+'</span></span>'
-            +'<div class="mn"><b>'+esc(s.name||s.subTask||"")+'</b><div class="k">'+esc(picOf(s))+(s.__isKeyRow?'':' · 📂 '+esc(o.k.keyTask||""))+'</div></div>'
+            +'<div class="mn"><b>'+(isTripRow(s)?'✈️ ':'')+esc(s.name||s.subTask||"")+'</b><div class="k">'+esc(picOf(s))+(s.__isKeyRow?'':' · 📂 '+esc(o.k.keyTask||""))+'</div>'+attChips(s.result,4)+'</div>'
             +'<span class="tc-status '+m.cls+'">'+esc(s.status||"To Do")+'</span><b style="color:'+progColor(pct)+';font-size:13px;min-width:38px;text-align:right">'+pct+'%</b></div>';
         }).join("");
     }).join(""):'<div class="empty"><div class="ic">📅</div><p>Không có công việc trong tháng này.</p></div>')+'</div>';
@@ -8385,7 +8448,7 @@ function renderCalendarTab(){
       var iso=toISO(dd), out=dd.getMonth()!==d0.getMonth();
       if(j===35 && out) break;
       var ev=by[iso]||[], we=(dd.getDay()===0||dd.getDay()===6);
-      cells+='<div class="dc'+(out?" out":"")+(we?" we":"")+(iso===today?" today":"")+'" data-day="'+iso+'" onclick="c10DayTap(\''+iso+'\')" ondragover="c10Over(event,this)" ondragleave="this.classList.remove(\'drop\')" ondrop="c10Drop(event,\''+iso+'\',this)">'
+      cells+='<div class="dc'+(out?" out":"")+(we?" we":"")+(iso===today?" today":"")+'" data-day="'+iso+'" '+(IS_MOBILE?'onclick':'ondblclick')+'="c10CellTap(event,\''+iso+'\')" title="'+(IS_MOBILE?'':'Nhấp đúp vào chỗ trống để thêm việc')+'" ondragover="c10Over(event,this)" ondragleave="this.classList.remove(\'drop\')" ondrop="c10Drop(event,\''+iso+'\',this)">'
         +'<div class="dtop"><span class="dn">'+dd.getDate()+'</span><button class="c10-add" title="Thêm việc ngày '+fmtVN(iso)+'" onclick="event.stopPropagation();c10Add(\''+iso+'\',null,true)">+</button></div>'
         +ev.slice(0,maxShow).map(function(o){ return c10Chip(o,multi); }).join("")
         +(ev.length>maxShow?'<button class="c10-more" onclick="event.stopPropagation();c10Day(\''+iso+'\')">+'+(ev.length-maxShow)+' việc</button>':'')
@@ -8414,6 +8477,9 @@ function renderCalendarTab(){
     +'<div class="c10-seg">'+[["month","Tháng"],["week","Tuần"],["list","Danh sách"]].map(function(x){ return '<button class="'+(view===x[0]?"on":"")+'" onclick="c10View(\''+x[0]+'\')">'+x[1]+'</button>'; }).join("")+'</div>'
     +'<label class="c10-tog"><input type="checkbox"'+(C10.hideDone?" checked":"")+' onchange="c10Hide(this.checked)"/> Ẩn việc đã xong</label>'
     +'<button class="c10-btn pri" onclick="c10Add(toISO(new Date()))">＋ Thêm việc</button>'
+    +'<button class="c10-btn" onclick="tripProposeOpen()" title="Tạo đề xuất công tác & gửi email xin duyệt">✈️ Đề xuất công tác</button>'
+    +'<button class="c10-btn" onclick="mailCompose({})" title="Soạn email giao việc / trao đổi với nhân sự">✉️ Gửi email</button>'
+    +'<button class="c10-ib" onclick="tripSyncNow(this)" title="Đồng bộ lịch công tác ngay"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></button>'
     +'<button class="c10-btn c10-fullbtn" onclick="c10Full()" title="'+(C10.full?'Thoát toàn màn hình (Esc)':'Xem toàn màn hình')+'">'+(C10.full?'✕ Thu nhỏ':'⛶ Toàn màn hình')+'</button>'
     +c10ProgressHtml()
 
@@ -8444,6 +8510,11 @@ function c10TogglePic(p){
   if(i>=0) a.splice(i,1); else a.push(p);
   C10.pics=a; renderCalendarTab();
 }
+function c10CellTap(ev, iso){
+  var t=ev.target;
+  if(t.closest && t.closest(".c10-ev,button,a,.c10-att")) return;
+  c10DayTap(iso);
+}
 function c10DayTap(iso){
   if(C10.view!=="month") return;
   var n=(c10Items().filter(function(o){ return o.d===iso; })).length;
@@ -8455,7 +8526,7 @@ function c10Day(iso){
   var d=new Date(iso+"T00:00:00"), multi=(c10Pics().length!==1);
   showModal('<div class="modal-box"><div class="modal-head"><h3>📅 '+["Chủ nhật","Thứ 2","Thứ 3","Thứ 4","Thứ 5","Thứ 6","Thứ 7"][d.getDay()]+', '+fmtVNFull(iso)+'</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
     +'<div class="modal-body"><div style="display:flex;flex-direction:column;gap:8px">'
-    +(list.length?list.map(function(o){ return c10Card(o,multi,iso).replace(/onclick="c10Open/g,'onclick="closeModal();c10Open').replace(/onclick="c10Add/g,'onclick="closeModal();c10Add'); }).join(""):'<div class="c10-empty">Chưa có việc nào trong ngày này.</div>')
+    +(list.length?list.map(function(o){ return c10Card(o,multi,iso).replace(/c10Open\(/g,'closeModal();c10Open(').replace(/onclick="c10Add/g,'onclick="closeModal();c10Add'); }).join(""):'<div class="c10-empty">Chưa có việc nào trong ngày này.</div>')
     +'</div><div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Đóng</button>'
     +'<button class="btn-primary" onclick="closeModal();c10Add(\''+iso+'\')">＋ Thêm việc ngày này</button></div></div></div>');
 }
@@ -8486,8 +8557,10 @@ function c10Open(no){
   if(!can){
     showModal(head+meta+'<h3 style="font-size:16px;color:var(--mmh-navy);margin-bottom:10px">'+esc(s.name||s.subTask||"")+'</h3>'
       +'<div class="q10-meta"><span>Bắt đầu: '+(s.start?fmtVNFull(s.start):"—")+'</span><span>Hạn: '+(effDate(s)?fmtVNFull(effDate(s)):"—")+'</span><span>'+esc(s.status||"To Do")+' · '+subPct(s)+'%</span></div>'
-      +'<div class="field"><label>Kết quả / Ghi chú</label><div class="v10-ro" style="background:var(--gray);border-radius:10px;padding:10px 12px">'+(s.result?linkify(s.result):'—')+'</div></div>'
-      +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Đóng</button></div></div></div>');
+      +'<div class="field"><label>Kết quả / Ghi chú</label><div class="v10-ro" style="background:var(--gray);border-radius:10px;padding:10px 12px">'+(s.result?linkify(s.result):'—')+'</div>'+attChips(s.result,6)+'</div>'
+      +(isTripRow(s)?'<div class="c10-keybox">✈️ Việc này đồng bộ tự động từ file <b>Business Trip</b>. Muốn sửa lịch / nhập báo cáo công tác, hãy cập nhật trên file đó — web sẽ tự đồng bộ lại. <a href="'+TRIP_SHEET_URL+'" target="_blank" rel="noopener">Mở file Business Trip ↗</a></div>':'')
+      +'<div class="modal-footer">'+(picOf(s)!==S.user.pic?'<button class="btn-secondary" onclick="closeModal();mailComposeTask(\''+jsq(no)+'\')">✉️ Gửi email</button>':'')
+      +'<button class="btn-secondary" onclick="closeModal()">Đóng</button></div></div></div>');
     return;
   }
   showModal(head+meta
@@ -8498,9 +8571,10 @@ function c10Open(no){
       +'<div class="q10-steps" id="q10-steps"></div></div>'
     +'<div class="field-row"><div class="field"><label>Bắt đầu</label><input type="date" id="q10-start" value="'+esc(toISO(s.start))+'"/></div>'
       +'<div class="field"><label>Hạn</label><input type="date" id="q10-due" value="'+esc(toISO(effDate(s)))+'"/></div></div>'
-    +'<div class="field"><label>Kết quả / Ghi chú / Link</label><textarea id="q10-res" rows="4" placeholder="Nhập kết quả, ghi chú hoặc dán link…">'+esc(s.result||"")+'</textarea></div>'
+    +'<div class="field"><label>Kết quả / Ghi chú / Link</label><textarea id="q10-res" rows="4" placeholder="Nhập kết quả, ghi chú hoặc dán link…">'+esc(s.result||"")+'</textarea>'+attChips(s.result,6)+'</div>'
     +((k && !vIsSync(k) && (canEditPic(k.pic)||canAssign()))?'<button type="button" class="c10-subbtn big" style="width:100%;margin:2px 0 4px" onclick="closeModal();c10Add(\''+(toISO(effDate(s))||toISO(new Date()))+'\',\''+jsq(k.no)+'\')">＋ Thêm sub-task cho key “'+esc(k.keyTask||"")+'”</button>':'')
     +'<div class="modal-footer">'+(isManager()?'<button class="q10-del" onclick="closeModal();'+(s.__isKeyRow?'delKey':'delRow')+'(\''+jsq(no)+'\')">🗑️ Xoá</button>':'')
+      +(picOf(s)!==S.user.pic?'<button class="btn-secondary" onclick="closeModal();mailComposeTask(\''+jsq(no)+'\')" title="Soạn email gửi '+esc(picOf(s))+' về việc này">✉️ Email</button>':'')
       +'<button class="btn-secondary" onclick="closeModal()">Huỷ</button><button class="btn-primary" id="q10-save" onclick="q10Save()">💾 Lưu</button></div></div></div>');
   q10Paint();
 }
@@ -8567,7 +8641,8 @@ function c10Add(iso, kno, lockStart){
       +keys.map(function(k){ return '<option value="'+esc(k.no)+'"'+(k.no===kno?' selected':'')+'>Sub-task của: '+esc(k.keyTask)+'</option>'; }).join("")+'</select></div>'
     +'<div class="field-row"><div class="field" id="c10a-typew"'+(kno?' style="display:none"':'')+'><label>Loại việc</label><input id="c10a-type" class="combo-input" list="c10a-tl" placeholder="Chọn/nhập loại"/>'
       +'<datalist id="c10a-tl">'+typeOpts.map(function(t){ return '<option value="'+esc(t)+'">'; }).join("")+'</datalist></div>'
-      +'<div class="field"><label>PIC</label>'+(canAsg?'<select id="c10a-pic">'+picOptionsHtml(defPic)+'</select>':'<select id="c10a-pic" disabled><option selected>'+esc(me)+'</option></select>')+'</div></div>'
+      +'<div class="field"><label>PIC</label>'+(canAsg?'<select id="c10a-pic" onchange="c10PicChange()">'+picOptionsHtml(defPic)+'</select>':'<select id="c10a-pic" disabled><option selected>'+esc(me)+'</option></select>')+'</div></div>'
+    +'<label class="as-check c10-mailopt" id="c10a-mailw" style="display:'+(canAsg && defPic!==me?'flex':'none')+'"><input type="checkbox" id="c10a-mail" checked/><span>📨 Soạn <b>email giao việc</b> cho <b id="c10a-mailpic">'+esc(defPic)+'</b> ngay sau khi thêm</span></label>'
     +'<div class="field-row"><div class="field"><label>Bắt đầu'+(lockStart?' <span class="c10-lock">🔒 theo ngày đã chọn</span>':'')+'</label><input type="date" id="c10a-start" value="'+iso+'"'+(lockStart?' readonly class="c10-ro"':'')+'/></div>'
       +'<div class="field"><label>Hạn</label><input type="date" id="c10a-due" value="'+iso+'" min="'+iso+'"/></div></div>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Huỷ</button><button class="btn-primary" id="c10a-save" onclick="c10AddSave()">➕ Thêm</button></div></div></div>');
@@ -8579,12 +8654,181 @@ function c10AddSave(){
   var kno=$("c10a-key").value, pic=canAssign()?($("c10a-pic").value||S.user.pic):S.user.pic;
   var st=$("c10a-start").value, du=$("c10a-due").value||st;
   if(st && du && st>du) st=du;
-  var mail=canAssign() && String(pic).toLowerCase()!==String(S.user.pic).toLowerCase();
+  var mail=canAssign() && String(pic).toLowerCase()!==String(S.user.pic).toLowerCase() && !!($("c10a-mail")&&$("c10a-mail").checked);
   var ty=($("c10a-type")||{}).value||"";
   closeModal();
   if(kno) doAddSub({ kno:kno, name:name, pic:pic, status:"To Do", start:st, planned:du, mail:mail });
   else doAddKey({ name:name, type:ty, pic:pic, start:st, planned:du, mail:mail });
 }
+</script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   ⭐ v11 — EMAIL GIAO VIỆC (soạn trên web) · ĐỀ XUẤT CÔNG TÁC · ĐỒNG BỘ LỊCH CÔNG TÁC
+   ══════════════════════════════════════════════════════════════════════ */
+var TRIP_SHEET_URL="https://docs.google.com/spreadsheets/d/15dAQYOG1aJRX-jByVmRFeSFOIPRtdVW7wDvwC_nxJUA/edit";
+/* lệnh gửi email / công tác: backend đang xem nếu có module, Management → gửi qua backend Marketing */
+function rhxSrc(){ return (S.source==="marketing"||S.source==="backoffice") ? S.source : "marketing"; }
+function rhxCall(body){
+  var keep=GAS_URL; GAS_URL=GAS_URLS[rhxSrc()]||GAS_URL;
+  try{ return apiPost(body); } finally { GAS_URL=keep; }
+}
+function staffNames(){
+  var set={}, out=[];
+  (S.picList||[]).concat(typeof FALLBACK_ROSTER!=="undefined"?FALLBACK_ROSTER:[]).forEach(function(u){
+    var p=String(u&&u.pic||"").trim(); if(!p || set[p.toLowerCase()] || /^test$/i.test(p)) return; set[p.toLowerCase()]=1; out.push(p);
+  });
+  return out.sort();
+}
+function c10PicChange(){
+  var v=($("c10a-pic")||{}).value||"", w=$("c10a-mailw");
+  if(!w) return;
+  var other=v && v.toLowerCase()!==String(S.user.pic).toLowerCase();
+  w.style.display=other?"flex":"none";
+  var b=$("c10a-mailpic"); if(b) b.textContent=v;
+}
+
+/* ───── HỘP SOẠN EMAIL (kiểu Gmail, văn bản thường) ───── */
+var M11={ to:[], cc:[], no:"" };
+function mailCompose(o){
+  o=o||{};
+  M11={ to:(o.to||[]).slice(), cc:(o.cc||[]).slice(), no:o.no||"" };
+  var opts='<option value="">＋ Thêm người…</option>'+staffNames().map(function(p){ return '<option value="'+esc(p)+'">'+esc(p)+'</option>'; }).join("");
+  showModal('<div class="modal-box modal-lg m11"><div class="modal-head"><h3>✉️ Soạn email</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body">'
+    +'<div class="m11-row"><span class="m11-lb">Đến</span><div class="m11-chips" id="m11-to"></div><select class="m11-add" onchange="m11Add(\'to\',this)">'+opts+'</select></div>'
+    +'<div class="m11-row"><span class="m11-lb">CC</span><div class="m11-chips" id="m11-cc"></div><select class="m11-add" onchange="m11Add(\'cc\',this)">'+opts+'</select></div>'
+    +'<div class="m11-row"><span class="m11-lb">Tiêu đề</span><input id="m11-sub" class="m11-sub" value="'+esc(o.subject||"")+'" placeholder="Tiêu đề email"/></div>'
+    +'<textarea id="m11-body" class="m11-body" rows="13" placeholder="Nội dung email…">'+esc(o.body||"")+'</textarea>'
+    +'<div class="m11-hint">Email gửi dạng văn bản thường từ hộp thư hệ thống Report Hub, bạn được tự động CC; người nhận bấm Trả lời sẽ về email của bạn.</div>'
+    +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Huỷ</button><button class="btn-primary" id="m11-send" onclick="m11Send()">✉️ Gửi</button></div></div></div>');
+  m11Paint();
+  setTimeout(function(){ var el=o.subject?$("m11-body"):$("m11-sub"); if(el){ el.focus(); } },120);
+}
+function m11Paint(){
+  ["to","cc"].forEach(function(f){
+    var el=$("m11-"+f); if(!el) return;
+    el.innerHTML=M11[f].map(function(p,i){
+      return '<span class="m11-chip"><span class="av" style="background:'+avColor(p)+'">'+esc(initials(p))+'</span>'+esc(p)
+        +'<button type="button" onclick="m11Del(\''+f+'\','+i+')" title="Bỏ">×</button></span>';
+    }).join("")||'<span class="m11-empty">'+(f==="to"?"Chọn người nhận →":"(không bắt buộc)")+'</span>';
+  });
+}
+function m11Add(f,sel){ var v=sel.value; sel.value=""; if(!v) return; if(M11[f].indexOf(v)<0) M11[f].push(v); _modalTouched=true; m11Paint(); }
+function m11Del(f,i){ M11[f].splice(i,1); m11Paint(); }
+function m11Send(){
+  var sub=$("m11-sub").value.trim(), body=$("m11-body").value.trim();
+  if(!M11.to.length){ toast("Chọn người nhận"); return; }
+  if(!sub||!body){ toast("Nhập tiêu đề và nội dung"); return; }
+  var b=$("m11-send"); if(b.disabled) return; b.disabled=true; b.textContent="Đang gửi…";
+  rhxCall({ action:"mailSend", to:JSON.stringify(M11.to), cc:JSON.stringify(M11.cc), subject:sub, body:body, no:M11.no })
+    .then(function(r){ closeModal(); toast("📨 "+((r&&r.message)||"Đã gửi email")+(r&&r.softTimeout?" (đang xác nhận)":"")); })
+    .catch(function(e){ b.disabled=false; b.textContent="✉️ Gửi"; toast("⚠️ Chưa gửi được: "+e.message); });
+}
+/* mẫu email giao việc — trang trọng, văn bản thường */
+function mailAssignBody(o){
+  var me=S.user.pic;
+  return "Chào "+o.pic+",\n\n"
+    +me+" giao cho "+o.pic+" công việc dưới đây, nhờ "+o.pic+" sắp xếp hoàn thành đúng hạn:\n\n"
+    +"• Công việc: "+o.name+"\n"
+    +(o.key?"• Thuộc Key Task: "+o.key+"\n":"")
+    +(o.start?"• Ngày bắt đầu: "+fmtVNFull(o.start)+"\n":"")
+    +(o.due?"• Hạn hoàn thành: "+fmtVNFull(o.due)+"\n":"")
+    +"\nYêu cầu / kết quả cần đạt:\n- \n\n"
+    +"Trong quá trình thực hiện, "+o.pic+" vui lòng cập nhật tiến độ và kết quả trên MMH Report Hub. Nếu có vướng mắc, hãy phản hồi lại email này.\n\n"
+    +"Trân trọng,\n"+me;
+}
+function mailComposeAssign(o){
+  mailCompose({ to:[o.pic], subject:"[MMH] Giao việc: "+o.name+(o.due?" — hạn "+fmtVNFull(o.due):""), body:mailAssignBody(o) });
+}
+function mailComposeTask(no){
+  var s=findSub(no), k=findKeyOfSub(no); if(!s) return;
+  var pic=picOf(s);
+  mailCompose({ no:no, to:pic&&pic!==NO_PIC&&pic!==S.user.pic?[pic]:[],
+    subject:"[MMH] "+(s.name||s.subTask||"")+(effDate(s)?" — hạn "+fmtVNFull(effDate(s)):""),
+    body:mailAssignBody({ pic:pic, name:s.name||s.subTask||"", key:s.__isKeyRow?"":(k?k.keyTask:""), start:toISO(s.start), due:toISO(effDate(s)) }) });
+}
+
+/* ───── ĐỀ XUẤT CÔNG TÁC ───── */
+var TP={ master:null };
+function tripProposeOpen(){
+  showModal('<div class="modal-box modal-lg"><div class="modal-head"><h3>✈️ Đề xuất công tác</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
+    +'<div class="modal-body"><div class="c10-empty" style="padding:30px 0">Đang tải danh mục điểm đến, người đi cùng, thiết bị…</div></div></div>');
+  var go=function(r){ TP.master=r; tripProposeForm(r); };
+  if(TP.master && TP.master.forPic===S.user.pic){ go(TP.master); return; }
+  var keep=GAS_URL; GAS_URL=GAS_URLS[rhxSrc()];
+  var pr=apiGet("tripMaster"); GAS_URL=keep;
+  pr.then(function(r){ r.forPic=S.user.pic; go(r); }).catch(function(e){ closeModal(); toast("⚠️ Không tải được danh mục công tác: "+e.message); });
+}
+function tripProposeForm(r){
+  var m=(r&&r.master)||{destinations:[],coTravelers:[],equipment:[]}, today=toISO(new Date());
+  var dl=function(id,arr){ return '<datalist id="'+id+'">'+(arr||[]).map(function(x){ return '<option value="'+esc(x)+'">'; }).join("")+'</datalist>'; };
+  $("modals").querySelector(".modal-body").innerHTML=
+     '<div class="c10-keybox">Đề xuất sẽ được ghi vào file <b>Business Trip</b> (Approval Status = <b>Not Yet</b>) và gửi email xin duyệt '
+    +'<b>To:</b> '+esc(r.to||"")+' · <b>CC:</b> '+esc(r.cc||"")+'. Quản lý duyệt bằng <b>HOD Menu</b> trên Google Sheet như bình thường; '
+    +'sau khi gửi, chuyến đi hiện ngay trong <b>Lịch công tác</b> của bạn.</div>'
+    +'<div class="field-row"><div class="field"><label>Start date *</label><input type="date" id="tp-start" value="'+today+'" onchange="tpDays()"/></div>'
+      +'<div class="field"><label>Finish date *</label><input type="date" id="tp-finish" value="'+today+'" min="'+today+'" onchange="tpDays()"/></div></div>'
+    +'<div class="tp-days" id="tp-days">1 ngày</div>'
+    +'<div class="field-row"><div class="field"><label>Destination *</label><input id="tp-dest" list="tp-dl-dest" placeholder="Chọn / nhập điểm đến"/>'+dl("tp-dl-dest",m.destinations)+'</div>'
+      +'<div class="field"><label>Co-traveler *</label><input id="tp-co" list="tp-dl-co" value="No" placeholder="Người / đơn vị đi cùng, hoặc No"/>'+dl("tp-dl-co",m.coTravelers)+'</div></div>'
+    +'<div class="field"><label>Purpose (Mục đích) *</label><textarea id="tp-purpose" rows="2"></textarea></div>'
+    +'<div class="field"><label>Expected result (Kết quả mong đợi) *</label><textarea id="tp-expect" rows="2"></textarea></div>'
+    +'<div class="field-row"><div class="field"><label>Estimated costs VND *</label><textarea id="tp-cost" rows="3" placeholder="Công tác phí: 200000&#10;Vé xe: 300000" oninput="tpSum()"></textarea></div>'
+      +'<div class="field"><label>Total estimated costs VND *</label><input id="tp-total" inputmode="numeric" placeholder="Tự cộng từ dòng chi phí"/></div></div>'
+    +'<div class="field"><label>Schedule (Lịch trình) *</label><textarea id="tp-sched" rows="2" placeholder="24/9: HN - HP - HN"></textarea></div>'
+    +'<div class="field"><label>Equipment-assets in/out *</label><input id="tp-equip" list="tp-dl-eq" value="Laptop"/>'+dl("tp-dl-eq",m.equipment)+'</div>'
+    +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Huỷ</button><button class="btn-primary" id="tp-send" onclick="tripProposeSend()">📨 Gửi đề xuất</button></div>';
+  armModal();
+}
+function tpDays(){
+  var a=$("tp-start").value, b=$("tp-finish").value;
+  if(a){ $("tp-finish").min=a; if(b && b<a){ $("tp-finish").value=a; b=a; } }
+  var n=(a&&b)?Math.round((new Date(b)-new Date(a))/86400000)+1:0;
+  $("tp-days").textContent=n>0?(n+" ngày"):"";
+}
+function tpSum(){   /* cộng các số ≥ 1.000 trong ô chi phí (giống hệ thống Business Trip) */
+  var t=$("tp-cost").value, sum=0, m, re=/([\d.,]{4,})\s*(?:vnd|đ|d)?/gi;
+  while((m=re.exec(t))!==null){ var n=parseInt(String(m[1]).replace(/[.,]/g,""),10); if(!isNaN(n)&&n>=1000) sum+=n; }
+  if(sum) $("tp-total").value=sum.toLocaleString("vi-VN");
+}
+function tripProposeSend(){
+  var f={ startDate:$("tp-start").value, finishDate:$("tp-finish").value, destination:$("tp-dest").value.trim(),
+    coTraveler:$("tp-co").value.trim(), purpose:$("tp-purpose").value.trim(), expectedResult:$("tp-expect").value.trim(),
+    estimatedCost:$("tp-cost").value.trim(), totalCost:String($("tp-total").value||"").replace(/[^\d]/g,""),
+    schedule:$("tp-sched").value.trim(), equipment:$("tp-equip").value.trim() };
+  var miss=[]; Object.keys(f).forEach(function(k){ if(!f[k]) miss.push(k); });
+  if(miss.length){ toast("⚠️ Vui lòng điền đủ các ô có dấu *"); return; }
+  var b=$("tp-send"); if(b.disabled) return; b.disabled=true; b.textContent="Đang gửi…";
+  rhxCall({ action:"tripPropose", trip:JSON.stringify(f) })
+    .then(function(r){
+      closeModal();
+      toast("✈️ "+((r&&r.message)||"Đã gửi đề xuất công tác"));
+      tripSyncNow(null, true);
+    })
+    .catch(function(e){ b.disabled=false; b.textContent="📨 Gửi đề xuất"; toast("⚠️ "+e.message); });
+}
+/* đồng bộ lịch công tác ở 2 backend rồi tải nhẹ lại danh sách */
+function tripSyncNow(btn, quiet){
+  if(btn){ btn.disabled=true; btn.classList.add("spin"); }
+  var list=["marketing","backoffice"].map(function(src){ return jsonpTo(GAS_URLS[src], { action:"tripSync", pic:S.user.pic, actor:S.user.pic }); });
+  Promise.all(list).then(function(rs){
+    if(btn){ btn.disabled=false; btn.classList.remove("spin"); }
+    var mine=rs[S.source==="backoffice"?1:0];
+    if(!quiet) toast("✈️ "+((mine&&mine.message)||"Đã đồng bộ lịch công tác"));
+    lightRefreshSoon(300);
+  });
+}
+/* dịch EN */
+(function(){
+  if(typeof DICT_EN!=="object") return;
+  var D={ "✈️ Đề xuất công tác":"✈️ Propose business trip","✉️ Gửi email":"✉️ Send email","✉️ Soạn email":"✉️ Compose email","✉️ Email":"✉️ Email",
+    "Đến":"To","Tiêu đề":"Subject","✉️ Gửi":"✉️ Send","Chọn người nhận →":"Choose recipients →","(không bắt buộc)":"(optional)","＋ Thêm người…":"＋ Add person…",
+    "✈️ CÔNG TÁC":"✈️ BUSINESS TRIP","✈️ CÔNG TÁC · tự đồng bộ":"✈️ BUSINESS TRIP · auto-synced","📨 Gửi đề xuất":"📨 Send proposal",
+    "Purpose (Mục đích) *":"Purpose *","Expected result (Kết quả mong đợi) *":"Expected result *","Schedule (Lịch trình) *":"Schedule *",
+    "Mở file Business Trip ↗":"Open Business Trip file ↗","Đóng":"Close" };
+  Object.keys(D).forEach(function(k){ DICT_EN[k]=D[k]; });
+  if(RULES_EN && RULES_EN.push) RULES_EN.push([/^(\d+) ngày$/, "$1 day(s)"],[/^✈️ Đã gửi đề xuất công tác(.*)$/, "✈️ Business trip proposal sent$1"],[/^📨 Đã gửi email(.*)$/, "📨 Email sent$1"]);
+})();
 </script>
 
 </body>
