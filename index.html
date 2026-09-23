@@ -1899,6 +1899,29 @@ body.c10-fullmode #fab-wrap,body.c10-fullmode .act-toggle,body.c10-fullmode #act
 .c10-wrap.full .c10-cal .dc{min-height:calc((100vh - 250px) / 5)}
 @media(max-width:1100px){ .c10-week{grid-template-columns:repeat(4,minmax(0,1fr))} }
 @media(max-width:700px){ .c10-week{grid-template-columns:1fr} .c10-wc{min-height:0} .c10-wrap.full{padding:10px} }
+
+/* ⭐ v10.3 — thanh tiến độ lịch, chỗ trống bấm được, số đếm */
+.c10-prog{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1.5px solid var(--border);border-radius:11px;padding:6px 12px;height:38px}
+.c10-pbar{width:150px;height:9px;background:#EEF1F6;border-radius:6px;overflow:hidden}
+.c10-pbar i{display:block;height:100%;border-radius:6px;transition:width .5s var(--ease),background .5s}
+.c10-prog>b{font-size:14px;font-weight:800;min-width:38px}
+.c10-pst{display:inline-flex;gap:8px;font-size:11.5px;font-weight:800;white-space:nowrap}
+.c10-pst .d{color:var(--success-fg)} .c10-pst .p{color:var(--info-fg)} .c10-pst .t{color:var(--todo-fg)}
+.c10-pc .n.z{opacity:.35}
+.c10-wb{cursor:copy}
+.c10-wb .c10-card{cursor:pointer}
+.c10-wc:hover .c10-wadd{border-color:var(--mmh-blue);color:var(--mmh-blue)}
+.c10-cal .dc{cursor:copy}
+.c10-lock{font-size:10.5px;font-weight:700;color:var(--mmh-blue);text-transform:none;letter-spacing:0}
+input.c10-ro{background:#F3F6FB;color:var(--mmh-navy);font-weight:700}
+@media(max-width:900px){ .c10-prog{width:100%;height:auto;flex-wrap:wrap} .c10-pbar{flex:1;width:auto} }
+
+.c10-head{gap:8px}
+.c10-head h2{min-width:0;margin-right:6px}
+.c10-pbar{width:120px}
+.c10-card .m{flex-wrap:wrap;row-gap:4px}
+.c10-card .st{white-space:nowrap;font-size:10.5px;padding:2px 6px}
+.c10-card .m>b{white-space:nowrap}
 /* ── MOBILE: sửa các lỗi giao diện ── */
 .qlink svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.2;opacity:.7;flex:0 0 auto}   /* hết ô vuông đen */
 @media(max-width:900px){
@@ -1967,7 +1990,7 @@ body.c10-fullmode #fab-wrap,body.c10-fullmode .act-toggle,body.c10-fullmode #act
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v10.1</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v10.3</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -2760,7 +2783,8 @@ function apiPostBody(body){
 function apiGet(action,extra){
   var params={action:action};
   if(extra) Object.keys(extra).forEach(function(k){params[k]=extra[k];});
-  return jsonp(params).then(function(j){ if(j&&j.ok===false)throw new Error(j.error||"Lỗi"); return j; })
+  /* ⭐ v10.2: lần tải đầu (boot) cho phép chờ tới 60 giây — Apps Script "ngủ" lâu thì lần gọi đầu khởi động chậm */
+  return jsonp(params, action==="boot"?60000:30000).then(function(j){ if(j&&j.ok===false)throw new Error(j.error||"Lỗi"); return j; })
     .catch(function(e){
       if(e && e.message==="__TIMEOUT__") throw new Error("Máy chủ phản hồi chậm. Kiểm tra link /exec và quyền Web App (Anyone).");
       throw e;
@@ -2909,7 +2933,13 @@ function boot(){
 
   /* ② LẦN ĐẦU DÙNG (hoặc vừa xoá dữ liệu trình duyệt) → tải như cũ */
   gateStatus("Đang tải danh sách người dùng…");
-  apiGet("boot").then(function(res){
+  /* ⭐ v10.2: báo tiến trình + TỰ THỬ LẠI 1 lần trước khi hiện màn lỗi */
+  var _gt=setTimeout(function(){ gateStatus("Máy chủ Google đang khởi động, vui lòng đợi vài giây…"); }, 6000);
+  var bootOnce=function(){ return apiGet("boot"); };
+  bootOnce().catch(function(e){
+    gateStatus("Đang thử kết nối lại…");
+    return bootOnce();
+  }).then(function(res){ clearTimeout(_gt); return res; }, function(e){ clearTimeout(_gt); throw e; }).then(function(res){
     applyBootData(res);
     cacheBoot(S.source, res);
     setTimeout(loadRosterAllSources, 500);   /* ⭐ v8.0: dời khỏi đường găng, đỡ nghẽn */
@@ -6264,9 +6294,10 @@ function saveAddKey(){
    lưu, bấm thêm lại ⇒ sheet có 2–3 dòng trùng.
    Nay: task hiện NGAY (nhãn "đang lưu"), được mở sẵn, cuộn tới và nháy sáng. Có thể thêm
    sub-task / đổi trạng thái / ghi kết quả ngay — thao tác tự chạy khi sheet trả số No thật. */
-S._tmpSeq=0; S._noWait={}; S._justAdded={};
+S._tmpSeq=0; S._noWait={}; S._justAdded={}; S._tmpMap={};   /* _tmpMap: mã tạm → số No thật */
 function tmpNo(){ return "tmp-"+Date.now().toString(36)+"-"+(++S._tmpSeq); }
-function isTmpNo(no){ return String(no||"").indexOf("tmp-")===0; }
+function isTmpNo(no){ return String(no||"").indexOf("tmp-")===0 && !S._tmpMap[no]; }
+function realNo(no){ return S._tmpMap[no]||no; }
 function markJustAdded(no){ S._justAdded[no]=Date.now(); }
 function isJustAdded(no){ var t=S._justAdded[no]; return !!(t && Date.now()-t < 15*60*1000); }
 function renameNo(oldNo,newNo){
@@ -6296,8 +6327,8 @@ function doAddKey(o){
       var no=r&&r.no?String(r.no):"";
       if(no){
         var t=r.task||{};
-        renameNo(tno,no);
-        nk.no=no; nk.row=r.row||t.row||0; nk.__tmp=false;
+        renameNo(tno,no); S._tmpMap[tno]=no;
+        nk.no=no; nk.row=r.row||t.row||0; nk.__tmp=false; nk.__srvName=o.name;
         ["fy","month","type","pic","start","planned","revised","status","result"].forEach(function(f){ if(t[f]!=null && t[f]!=="") nk[f]=t[f]; });
         (nk.subs||[]).forEach(function(sb){ if(sb.__isKeyRow){ sb.no=no; sb.row=nk.row; } });
         if(o.mail){
@@ -6308,7 +6339,7 @@ function doAddKey(o){
         }
         if(r.dedup) toast("ℹ️ Lệnh thêm bị gửi trùng — hệ thống đã bỏ qua bản trùng");
       }
-      safeRerender();
+      renderNowIfFree();                /* ⭐ v10.3: hết ⏳ ngay khi sheet lưu xong */
       return no;
     }, function(e){
       nk.__pending=false;
@@ -6386,7 +6417,7 @@ function doAddSub(o){
     var no=r&&r.no?String(r.no):"";
     if(no){
       var t=r.task||{};
-      renameNo(tno,no); ns.no=no; ns.row=r.row||t.row||0; ns.__tmp=false;
+      renameNo(tno,no); S._tmpMap[tno]=no; ns.no=no; ns.row=r.row||t.row||0; ns.__tmp=false; ns.__srvName=o.name;
       ["start","planned","revised","status"].forEach(function(f){ if(t[f]) ns[f]=t[f]; });
       if(o.mail){
         apiPost({ action:"assign", toPic:o.pic, note:"",
@@ -6395,7 +6426,7 @@ function doAddSub(o){
           .catch(function(e){ toast("⚠️ Đã tạo việc nhưng gửi email lỗi: "+e.message); });
       }
     }
-    safeRerender();
+    renderNowIfFree();                  /* ⭐ v10.3 */
     return no;
   }, function(e){
     ns.__pending=false;
@@ -6849,6 +6880,15 @@ function applyWeekly(list, v, fromWrite){
   if(fromWrite ? (typing||modalOpen) : isBusyUI()){ _pendingRender=true; }
   else { rerenderKeepScroll(); try{ renderMyTaskBar(); }catch(_){} }
   try{ if(document.getElementById("qk").classList.contains("show")) QK.render(); }catch(_){}
+}
+/* ⭐ v10.3: vẽ lại NGAY (chỉ hoãn khi đang gõ chữ / đang mở hộp thoại) — dùng sau khi thêm/xoá */
+function renderNowIfFree(){
+  var typing=false;
+  try{ var a=document.activeElement, tg=a&&String(a.tagName||"").toUpperCase();
+       typing = tg==="TEXTAREA" || (tg==="INPUT" && !/checkbox|radio|button|submit/i.test(a.type||"")) || !!(typeof _resEdit!=="undefined"&&_resEdit&&_resEdit.no); }catch(_){}
+  var modalOpen=!!($("modals") && $("modals").innerHTML.replace(/\s/g,"")!=="");
+  if(typing||modalOpen){ _pendingRender=true; return; }
+  _pendingRender=false; rerenderKeepScroll();
 }
 /* tên task trên sheet theo số No (dùng khi mở hộp thoại để khoá đúng task) */
 function srvNameOf(no){ var o=findAnyByNo(no); return o ? (o.__srvName||o.name||o.subTask||o.keyTask||"") : ""; }
@@ -7953,6 +7993,62 @@ document.addEventListener("keydown",function(e){
    ⭐ v10 — MODULE: chờ số No thật · DẠNG BẢNG · LỊCH CÔNG VIỆC
    ══════════════════════════════════════════════════════════════════════ */
 
+
+/* ───── ⭐ v10.3: BẢN DỊCH TIẾNG ANH cho các phần mới (Lịch làm việc, Dạng bảng, Cập nhật nhanh…) ───── */
+(function(){
+  if(typeof DICT_EN!=="object") return;
+  var D={
+    "Lịch làm việc":"Work calendar","Lịch":"Calendar","Hôm nay":"Today","Danh sách":"List","Bảng":"Table","Theo ngày":"By day",
+    "Ẩn việc đã xong":"Hide completed","＋ Thêm việc":"＋ Add task","Thêm việc":"Add task","＋ Thêm":"＋ Add",
+    "⛶ Toàn màn hình":"⛶ Full screen","✕ Thu nhỏ":"✕ Exit full screen","Toàn màn hình":"Full screen","Thu nhỏ":"Exit full screen",
+    "Nhân sự":"Staff","Cả đội":"Whole team","Chỉ tôi":"Only me","Quá hạn":"Overdue",
+    "KEY TASK · chưa có sub-task":"KEY TASK · no sub-task yet","＋ Sub-task":"＋ Sub-task","＋ Sub-task cho key này":"＋ Sub-task for this key",
+    "CN":"Sun","T2":"Mon","T3":"Tue","T4":"Wed","T5":"Thu","T6":"Fri","T7":"Sat",
+    "Chưa có việc nào trong ngày này.":"No tasks on this day.","Không có công việc trong tháng này.":"No tasks this month.",
+    "Đóng":"Close","＋ Thêm việc ngày này":"＋ Add task on this day",
+    "⚡ Cập nhật nhanh":"⚡ Quick update","👁️ Chi tiết công việc":"👁️ Task details","Tên công việc":"Task name","Tên sub-task":"Sub-task name",
+    "Trạng thái":"Status","Tiến độ":"Progress","○ To Do":"○ To Do","◐ Đang làm":"◐ In progress","✓ Xong":"✓ Done","✕ Huỷ":"✕ Cancel",
+    "Bắt đầu":"Start","Hạn":"Deadline","Kết quả / Ghi chú / Link":"Result / Notes / Link","Kết quả / Ghi chú":"Result / Notes",
+    "🗑️ Xoá":"🗑️ Delete","Huỷ":"Cancel","Thuộc":"Belongs to","— Tạo KEY TASK mới —":"— Create new KEY TASK —","Loại việc":"Task type",
+    "➕ Thêm":"➕ Add","🔒 theo ngày đã chọn":"🔒 fixed to the selected day","Key task: ":"Key task: ","📂 Key task: ":"📂 Key task: ",
+    "Nhập tên công việc…":"Enter task name…","Nhập tên sub-task…":"Enter sub-task name…","Chọn/nhập loại":"Select/enter type",
+    "Nhập kết quả, ghi chú hoặc dán link…":"Enter result, notes or paste a link…","+ Nhập kết quả / dán link…":"+ Enter result / paste link…",
+    "Key Task":"Key Task","Công việc":"Task","Kết quả / Ghi chú / Link":"Result / Notes / Link","(chính key task)":"(the key task itself)",
+    "Thêm":"Add","Danh sách":"List","⏳ đang lưu":"⏳ saving","Đang lưu…":"Saving…","✓ Đã lưu":"✓ Saved","⚠️ Lỗi lưu":"⚠️ Save error",
+    "Tất cả":"All","Tuần":"Week","Tháng":"Month","Không có công việc khớp bộ lọc.":"No tasks match the filters.","➕ Thêm việc mới":"➕ Add new task",
+    "Bấm vào chỗ trống để thêm việc":"Click an empty spot to add a task"
+  };
+  Object.keys(D).forEach(function(k){ DICT_EN[k]=D[k]; });
+  if(typeof RULES_EN==="object" && RULES_EN.push){
+    RULES_EN.push(
+      [/^(T[2-7]|CN) · Hôm nay$/, function(m,d){ return ({CN:"Sun",T2:"Mon",T3:"Tue",T4:"Wed",T5:"Thu",T6:"Fri",T7:"Sat"})[d]+" · Today"; }],
+      [/^Tuần (\S+) – (\S+)$/, "Week $1 – $2"],
+      [/^Tháng (\d+), (\d{4})$/, "Month $1, $2"],
+      [/^\+(\d+) việc$/, "+$1 more"],
+      [/^➕ Thêm việc — (.+)$/, "➕ Add task — $1"],
+      [/^➕ Thêm sub-task — (.+)$/, "➕ Add sub-task — $1"],
+      [/^Sub-task của: (.+)$/, "Sub-task of: $1"],
+      [/^＋ Thêm sub-task cho key “(.+)”$/, "＋ Add sub-task to key “$1”"],
+      [/^🔴 \+ (\d+) việc quá hạn$/, "🔴 + $1 overdue tasks"],
+      [/^🔴 Đang hiện (\d+) việc quá hạn$/, "🔴 Showing $1 overdue tasks"],
+      [/^✓ (\d+) Completed$/, "✓ $1 Completed"],
+      [/^ việc chưa có ngày bắt đầu\/hạn nên chưa hiện trên lịch — $/, " tasks have no start/deadline so they are not on the calendar — "],
+      [/^(\d+) công việc · To Do (\d+) · In Progress (\d+) · Completed (\d+)(.*) — bấm thẳng vào ô để sửa, tự lưu khi rời ô\.$/, "$1 tasks · To Do $2 · In Progress $3 · Completed $4$5 — click a cell to edit, saves when you leave it."],
+      [/^Tiến độ — $/, "Progress — "],
+      [/^✓ Đã thêm sub-task — đang lưu…$/, "✓ Sub-task added — saving…"],
+      [/^✓ Đã thêm “(.+)” — đang lưu lên sheet…$/, "✓ Added “$1” — saving to sheet…"],
+      [/^⏳ Đang lưu task — mở khi lưu xong$/, "⏳ Saving task — opens when saved"],
+      [/^⏳ Đang lưu task mới — thao tác sẽ tự chạy khi lưu xong$/, "⏳ Saving new task — your action will run when saved"],
+      [/^📅 Đã dời hạn “(.+)” sang (.+)$/, "📅 Moved deadline of “$1” to $2"],
+      [/^✓ Đã lưu$/, "✓ Saved"],
+      [/^🔄 Có cập nhật mới — đã làm mới$/, "🔄 New updates — refreshed"],
+      [/^➕ Gõ tên việc mới rồi nhấn Enter — tạo Key Task cho (.+)…$/, "➕ Type a new task and press Enter — creates a Key Task for $1…"],
+      [/^Bấm vào chỗ trống để thêm việc ngày (.+)$/, "Click an empty spot to add a task on $1"],
+      [/^Thêm việc ngày (.+)$/, "Add task on $1"],
+      [/^Tiến độ chung = trung bình % tiến độ của (\d+) việc trong khoảng đang xem.*$/, "Overall progress = average % progress of $1 tasks in the visible period (each task weighs equally, To Do counts as 0%)"]
+    );
+  }
+})();
 /* lỗi cũ: màn "Cập nhật nhanh" (nút tia sét trên mobile) gọi ddmmyyyy() — hàm này chỉ có
    bên trong module MMH Calendar ⇒ mở ra là lỗi trắng. Khai báo bản dùng chung. */
 if(typeof window.ddmmyyyy!=="function"){
@@ -7966,6 +8062,7 @@ if(typeof window.ddmmyyyy!=="function"){
     var orig=window[name]; if(typeof orig!=="function") return;
     window[name]=function(){
       var a=[].slice.call(arguments), no=a[0];
+      if(S._tmpMap[no]){ a[0]=S._tmpMap[no]; return orig.apply(this,a); }   /* thẻ cũ còn mang mã tạm → đổi sang số thật */
       if(isTmpNo(no)){
         var w=S._noWait[no];
         if(!w){ toast("⏳ Task đang được lưu, thử lại sau 1–2 giây"); return; }
@@ -7980,6 +8077,7 @@ if(typeof window.ddmmyyyy!=="function"){
   /* lưu ngầm (tiến độ, trạng thái, kết quả…) — đổi số tạm sang số thật rồi mới gửi */
   var _qs=window.quietSave;
   window.quietSave=function(sno, body){
+    if(S._tmpMap[sno]){ sno=S._tmpMap[sno]; body.no=sno; }
     if(isTmpNo(sno)){
       var w=S._noWait[sno]; if(!w) return;
       w.then(function(real){ body.no=real; _qs(real, body); }).catch(function(){});
@@ -7989,8 +8087,14 @@ if(typeof window.ddmmyyyy!=="function"){
   };
 })();
 
+/* thẻ cũ còn mang mã tạm (tmp-…) → tự đổi sang số No thật khi tra cứu */
+["findSub","findKeyOfSub","findAnyByNo"].forEach(function(nm){
+  var o=window[nm]; if(typeof o!=="function") return;
+  window[nm]=function(no){ return o(realNo(no)); };
+});
 /* lưu 1 trường (dùng chung cho Bảng + Lịch). Cập nhật trên máy ngay, ghi sheet ở nền. */
 function v10SaveFields(no, patch, expect){
+  no=realNo(no);
   var s=findSub(no), k=findKeyOfSub(no);
   if(!s){ toast("Không tìm thấy task "+no); return; }
   if(!canEditPic(s.pic) || vIsSync(s)){ toast("🔒 Chỉ "+(s.pic||"PIC")+" sửa được"); return; }
@@ -8108,6 +8212,7 @@ function v10Table(keys, from, to){
 }
 function v10Grow(el){ el.style.height="auto"; el.style.height=Math.min(el.scrollHeight+2, 320)+"px"; }
 function v10Blur(no, field, el){
+  no=realNo(no);
   var val=field==="name"?el.value.trim():el.value;
   if(val===(el.getAttribute("data-orig")||"")) return;
   if(field==="name" && !val){ el.value=el.getAttribute("data-orig")||""; toast("Tên công việc không được để trống"); return; }
@@ -8117,6 +8222,7 @@ function v10Blur(no, field, el){
   toast("✓ Đã lưu");
 }
 function v10Set(no, field, val){
+  no=realNo(no);
   var s=findSub(no); if(!s) return;
   var p;
   if(field==="status") p=v10StatusPatch(s,val);
@@ -8162,6 +8268,46 @@ function c10Items(){
   });
   return out;
 }
+/* ⭐ v10.3: khoảng thời gian đang xem trên lịch (tuần → T2..CN; tháng/danh sách → cả tháng) */
+function c10Range(){
+  var ref=C10.ref||new Date();
+  if(C10.view==="week"){ var mon=mondayOf(ref), sun=new Date(mon); sun.setDate(mon.getDate()+6); return {from:toISO(mon), to:toISO(sun)}; }
+  return {from:toISO(new Date(ref.getFullYear(),ref.getMonth(),1)), to:toISO(new Date(ref.getFullYear(),ref.getMonth()+1,0))};
+}
+/* tất cả việc (mọi nhân sự) nằm trong khoảng đang xem — dùng để đếm cạnh tên PIC */
+function c10ItemsInRange(allPeople){
+  var rg=c10Range(), sel=allPeople?[]:c10Pics(), out=[];
+  (S.keyTasks||[]).forEach(function(k){
+    (k.subs||[]).forEach(function(s){
+      var d=toISO(effDate(s)||s.start||""); if(!d || d<rg.from || d>rg.to) return;
+      if(sel.length && sel.indexOf(picOf(s))<0) return;
+      if(C10.hideDone && (isDone(s.status)||isCancelled(s.status))) return;
+      out.push({k:k,s:s,d:d});
+    });
+  });
+  return out;
+}
+/* thanh tiến độ: % = trung bình tiến độ của mọi việc (mỗi việc cùng tỉ trọng; To Do = 0%; bỏ việc đã huỷ) */
+function c10ProgressHtml(){
+  var list=c10ItemsInRange(false).filter(function(o){ return !isCancelled(o.s.status); });
+  var n=list.length, sum=0, cD=0, cP=0, cT=0;
+  list.forEach(function(o){ var st=o.s.status||"To Do"; sum+=(isDone(st)?100:(/to\s*do/i.test(st)||!st)?0:subPct(o.s));
+    if(isDone(st)) cD++; else if(isInProgress(st)) cP++; else cT++; });
+  var pct=n?Math.round(sum/n):0;
+  var hue=Math.round(pct*1.2);                                  /* 0 đỏ → 60 vàng → 120 xanh lá */
+  var col="hsl("+hue+",72%,"+(pct>=100?"38%":"46%")+")";
+  return '<div class="c10-prog" title="Tiến độ chung = trung bình % tiến độ của '+n+' việc trong khoảng đang xem (mỗi việc cùng tỉ trọng, To Do tính 0%)">'
+    +'<div class="c10-pbar"><i style="width:'+pct+'%;background:'+col+'"></i></div>'
+    +'<b style="color:'+col+'">'+pct+'%</b>'
+    +'<span class="c10-pst"><span class="d">✓ '+cD+' Completed</span><span class="p">◐ '+cP+' In Progress</span><span class="t">○ '+cT+' To Do</span></span>'
+    +'</div>';
+}
+/* bấm vào CHỖ TRỐNG của cột ngày → thêm việc (ngày bắt đầu cố định = ngày đó) */
+function c10ColClick(ev, iso){
+  var t=ev.target;
+  if(t.closest && t.closest(".c10-card,.c10-ev,button,a,input,.c10-acts")) return;
+  c10Add(iso, null, true);
+}
 function c10Color(s){ return isOverdue(s)?"#D9433F":stMeta(s.status||"To Do").dot; }
 function c10Chip(o, multi){
   var s=o.s, can=canEditPic(s.pic)&&!vIsSync(s)&&!isTmpNo(s.no);
@@ -8188,7 +8334,7 @@ function c10Card(o, multi, iso){
     +'<div class="m">'+(multi?'<span class="c10-pc" style="border:none;padding:0;background:none;font-size:11.5px"><span class="av" style="width:19px;height:19px;font-size:8px;background:'+avColor(picOf(s))+'">'+esc(initials(picOf(s)))+'</span>'+esc(picOf(s))+'</span>':'')
     +'<span class="st '+m.cls+'">'+esc(s.status||"To Do")+'</span><b style="margin-left:auto;display:inline;font-size:12px;color:'+progColor(pct)+'">'+pct+'%</b></div>'
     +(canSub?'<div class="c10-acts" onclick="event.stopPropagation()">'
-      +'<button class="c10-subbtn'+(keyOnly?' big':'')+'" onclick="c10Add(\''+d+'\',\''+jsq(k.no)+'\')" title="Thêm sub-task vào key task “'+esc(k.keyTask||"")+'”">＋ Sub-task'+(keyOnly?' cho key này':'')+'</button>'
+      +'<button class="c10-subbtn'+(keyOnly?' big':'')+'" onclick="c10Add(\''+d+'\',\''+jsq(k.no)+'\',true)" title="Thêm sub-task vào key task “'+esc(k.keyTask||"")+'”">＋ Sub-task'+(keyOnly?' cho key này':'')+'</button>'
       +(can?'<button class="c10-ebtn" onclick="c10Open(\''+jsq(s.no)+'\')" title="Cập nhật nhanh">✏️</button>':'')
       +'</div>':'')
     +'</div>';
@@ -8208,10 +8354,10 @@ function renderCalendarTab(){
     title="Tuần "+fmtVN(toISO(days[0]))+" – "+fmtVNFull(toISO(days[6]));
     body='<div class="c10-week">'+days.map(function(d){
       var iso=toISO(d), ev=by[iso]||[];
-      return '<div class="c10-wc'+(iso===today?" today":"")+'" data-day="'+iso+'" ondragover="c10Over(event,this)" ondragleave="this.classList.remove(\'drop\')" ondrop="c10Drop(event,\''+iso+'\',this)">'
+      return '<div class="c10-wc'+(iso===today?" today":"")+'" data-day="'+iso+'" onclick="c10ColClick(event,\''+iso+'\')" title="Bấm vào chỗ trống để thêm việc ngày '+fmtVN(iso)+'" ondragover="c10Over(event,this)" ondragleave="this.classList.remove(\'drop\')" ondrop="c10Drop(event,\''+iso+'\',this)">'
         +'<div class="c10-wh"><span>'+C10_WD[d.getDay()]+(iso===today?' · Hôm nay':'')+'</span><b>'+d.getDate()+'/'+(d.getMonth()+1)+'</b></div>'
         +'<div class="c10-wb">'+(ev.length?ev.map(function(o){ return c10Card(o,multi,iso); }).join(""):'<div class="c10-empty">—</div>')
-        +'<button class="c10-wadd" onclick="c10Add(\''+iso+'\')">＋ Thêm việc</button></div></div>';
+        +'<button class="c10-wadd" onclick="c10Add(\''+iso+'\',null,true)">＋ Thêm việc</button></div></div>';
     }).join("")+'</div>';
   } else if(view==="list"){
     var y=ref.getFullYear(), mo=ref.getMonth();
@@ -8240,7 +8386,7 @@ function renderCalendarTab(){
       if(j===35 && out) break;
       var ev=by[iso]||[], we=(dd.getDay()===0||dd.getDay()===6);
       cells+='<div class="dc'+(out?" out":"")+(we?" we":"")+(iso===today?" today":"")+'" data-day="'+iso+'" onclick="c10DayTap(\''+iso+'\')" ondragover="c10Over(event,this)" ondragleave="this.classList.remove(\'drop\')" ondrop="c10Drop(event,\''+iso+'\',this)">'
-        +'<div class="dtop"><span class="dn">'+dd.getDate()+'</span><button class="c10-add" title="Thêm việc ngày '+fmtVN(iso)+'" onclick="event.stopPropagation();c10Add(\''+iso+'\')">+</button></div>'
+        +'<div class="dtop"><span class="dn">'+dd.getDate()+'</span><button class="c10-add" title="Thêm việc ngày '+fmtVN(iso)+'" onclick="event.stopPropagation();c10Add(\''+iso+'\',null,true)">+</button></div>'
         +ev.slice(0,maxShow).map(function(o){ return c10Chip(o,multi); }).join("")
         +(ev.length>maxShow?'<button class="c10-more" onclick="event.stopPropagation();c10Day(\''+iso+'\')">+'+(ev.length-maxShow)+' việc</button>':'')
         +'</div>';
@@ -8251,13 +8397,14 @@ function renderCalendarTab(){
   var people="";
   if(canViewOthers()){
     var names=picOptionsAllowed(picListAll()).filter(function(p){ return p!==NO_PIC; });
-    var cntBy={}; (S.keyTasks||[]).forEach(function(k){ (k.subs||[]).forEach(function(s){ if(!isDone(s.status)&&!isCancelled(s.status)){ var p=picOf(s); cntBy[p]=(cntBy[p]||0)+1; } }); });
+    /* ⭐ v10.3: số cạnh tên = số việc của người đó TRONG khoảng đang xem (tuần/tháng) */
+    var cntBy={}; c10ItemsInRange(true).forEach(function(o){ var p=picOf(o.s); cntBy[p]=(cntBy[p]||0)+1; });
     people='<div class="c10-people"><span class="lb">Nhân sự</span>'
       +'<button class="c10-pc txt'+(!sel.length?" on":"")+'" onclick="c10SetPics(\'all\')">Cả đội</button>'
       +'<button class="c10-pc txt'+(sel.length===1&&sel[0]===S.user.pic?" on":"")+'" onclick="c10SetPics(\'me\')">Chỉ tôi</button>'
       +names.map(function(p){ var on=sel.indexOf(p)>=0;
         return '<button class="c10-pc'+(on?" on":"")+'" onclick="c10TogglePic(\''+jsq(p)+'\')" title="Bấm để chọn/bỏ chọn — chọn được nhiều người">'
-          +'<span class="av" style="background:'+avColor(p)+'">'+esc(initials(p))+'</span>'+esc(p)+(cntBy[p]?' <span class="n">'+cntBy[p]+'</span>':'')+'</button>'; }).join("")
+          +'<span class="av" style="background:'+avColor(p)+'">'+esc(initials(p))+'</span>'+esc(p)+' <span class="n'+(cntBy[p]?'':' z')+'">'+(cntBy[p]||0)+'</span></button>'; }).join("")
       +'</div>';
   }
   el.innerHTML='<div class="c10-wrap'+(C10.full?' full':'')+'"><div class="c10-head"><h2>'+title+'</h2>'
@@ -8268,7 +8415,8 @@ function renderCalendarTab(){
     +'<label class="c10-tog"><input type="checkbox"'+(C10.hideDone?" checked":"")+' onchange="c10Hide(this.checked)"/> Ẩn việc đã xong</label>'
     +'<button class="c10-btn pri" onclick="c10Add(toISO(new Date()))">＋ Thêm việc</button>'
     +'<button class="c10-btn c10-fullbtn" onclick="c10Full()" title="'+(C10.full?'Thoát toàn màn hình (Esc)':'Xem toàn màn hình')+'">'+(C10.full?'✕ Thu nhỏ':'⛶ Toàn màn hình')+'</button>'
-    +'<div class="c10-legend"><span><i style="background:#94a3b8"></i>To Do</span><span><i style="background:#3b82f6"></i>In Progress</span><span><i style="background:#22c55e"></i>Completed</span><span><i style="background:#D9433F"></i>Quá hạn</span></div>'
+    +c10ProgressHtml()
+
     +'</div>'+people+body
     +(nodate.length?'<div class="c10-nodate">📌 <b>'+nodate.length+'</b> việc chưa có ngày bắt đầu/hạn nên chưa hiện trên lịch — '
       +nodate.slice(0,6).map(function(o){ return '<a href="javascript:void(0)" onclick="c10Open(\''+jsq(o.s.no)+'\')">'+esc(o.s.name||o.s.subTask||"")+'</a>'; }).join(", ")+(nodate.length>6?"…":"")+'</div>':'')
@@ -8299,7 +8447,7 @@ function c10TogglePic(p){
 function c10DayTap(iso){
   if(C10.view!=="month") return;
   var n=(c10Items().filter(function(o){ return o.d===iso; })).length;
-  if(IS_MOBILE || n) c10Day(iso); else c10Add(iso);
+  if(IS_MOBILE && n) c10Day(iso); else c10Add(iso, null, true);   /* ⭐ v10.3: bấm chỗ trống ô ngày → thêm việc ngày đó */
 }
 /* danh sách việc 1 ngày (bottom sheet trên điện thoại) */
 function c10Day(iso){
@@ -8328,6 +8476,7 @@ function c10Drop(ev,iso,el){
 /* cập nhật nhanh 1 việc ngay trên lịch */
 var Q10=null;
 function c10Open(no){
+  no=realNo(no);
   if(isTmpNo(no)){ var w=S._noWait[no]; if(w){ toast("⏳ Đang lưu task — mở khi lưu xong"); w.then(c10Open).catch(function(){}); } return; }
   var s=findSub(no), k=findKeyOfSub(no); if(!s) return;
   var can=canEditPic(s.pic) && !vIsSync(s);
@@ -8402,7 +8551,7 @@ function q10Save(){
   rerenderKeepScroll(); flashTask(no);
 }
 /* thêm việc từ lịch: Key Task mới, hoặc Sub-task của Key Task có sẵn */
-function c10Add(iso, kno){
+function c10Add(iso, kno, lockStart){
   iso=iso||toISO(new Date());
   var canAsg=canAssign(), me=S.user.pic;
   var keys=(S.keyTasks||[]).filter(function(k){ return !vIsSync(k) && (canEditPic(k.pic)||canAsg); })
@@ -8419,8 +8568,8 @@ function c10Add(iso, kno){
     +'<div class="field-row"><div class="field" id="c10a-typew"'+(kno?' style="display:none"':'')+'><label>Loại việc</label><input id="c10a-type" class="combo-input" list="c10a-tl" placeholder="Chọn/nhập loại"/>'
       +'<datalist id="c10a-tl">'+typeOpts.map(function(t){ return '<option value="'+esc(t)+'">'; }).join("")+'</datalist></div>'
       +'<div class="field"><label>PIC</label>'+(canAsg?'<select id="c10a-pic">'+picOptionsHtml(defPic)+'</select>':'<select id="c10a-pic" disabled><option selected>'+esc(me)+'</option></select>')+'</div></div>'
-    +'<div class="field-row"><div class="field"><label>Bắt đầu</label><input type="date" id="c10a-start" value="'+iso+'"/></div>'
-      +'<div class="field"><label>Hạn</label><input type="date" id="c10a-due" value="'+iso+'"/></div></div>'
+    +'<div class="field-row"><div class="field"><label>Bắt đầu'+(lockStart?' <span class="c10-lock">🔒 theo ngày đã chọn</span>':'')+'</label><input type="date" id="c10a-start" value="'+iso+'"'+(lockStart?' readonly class="c10-ro"':'')+'/></div>'
+      +'<div class="field"><label>Hạn</label><input type="date" id="c10a-due" value="'+iso+'" min="'+iso+'"/></div></div>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Huỷ</button><button class="btn-primary" id="c10a-save" onclick="c10AddSave()">➕ Thêm</button></div></div></div>');
   setTimeout(function(){ var i=$("c10a-name"); if(i) i.focus(); },120);
 }
