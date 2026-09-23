@@ -1999,6 +1999,133 @@ body.sheet-open #fab-wrap,body.sheet-open .act-toggle{display:none!important}
 @media(max-width:700px){ .m11-lb{flex-basis:48px} .m11-add{max-width:120px} .m11-body{min-height:200px} }
 </style>
 
+<style>
+/* ══════════════════════════════════════════════════════════════════════
+   ⭐ v12 — SIDEBAR bên trái · dải VIỆC XUYÊN TUẦN · nút chọn nhân sự thu gọn
+   ══════════════════════════════════════════════════════════════════════ */
+#mytask-bar{display:none!important}                      /* banner chạy chữ → thay bằng khối "Việc của tôi" ở sidebar */
+.wrap>.qlinks{display:none!important}
+#side{display:none}
+@media(min-width:901px){
+  body.has-side #side{display:flex;flex-direction:column;gap:14px;position:fixed;left:0;top:var(--tb-h,76px);bottom:0;width:236px;
+    background:#fff;border-right:1px solid var(--border);padding:14px 12px 20px;overflow-y:auto;z-index:40;transition:transform .22s var(--ease)}
+  body.has-side .wrap{margin-left:236px;max-width:none;padding-left:22px;padding-right:22px;transition:margin .22s var(--ease)}
+  body.has-side.side-min #side{transform:translateX(-100%)}
+  body.has-side.side-min .wrap{margin-left:0}
+  body.has-side #tabnav{display:flex!important;flex-direction:column;gap:2px;border:none;margin:0;overflow:visible}
+  body.has-side #tabnav .tabbtn{justify-content:flex-start;border:none;border-left:3px solid transparent;border-radius:0 10px 10px 0;padding:9px 12px;font-size:13.5px;width:100%;text-align:left}
+  body.has-side #tabnav .tabbtn:hover{background:var(--pale)}
+  body.has-side #tabnav .tabbtn.active{background:#EAF1FC;border-left-color:var(--mmh-blue);color:var(--mmh-navy)}
+  body.has-side #sourcetabs{flex-direction:column;gap:4px;margin:0}
+  body.has-side #sourcetabs .src-tab{border:1.5px solid var(--border);border-radius:11px;padding:9px 11px;font-size:13.5px;justify-content:flex-start;width:100%;background:#fff}
+  body.has-side #sourcetabs .src-tab.active{background:var(--mmh-navy);color:#fff;border-color:var(--mmh-navy);box-shadow:none}
+  body.has-side #sourcetabs .src-tab .src-badge{margin-left:auto}
+  body.has-side .tabpage{padding-top:16px}
+}
+.sd-sec{display:flex;flex-direction:column;gap:6px}
+.sd-h{font-size:10.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--faint);padding:0 4px;display:flex;align-items:center}
+.sd-h .sp{flex:1}
+.sd-me{border:1.5px solid #F0D66A;background:linear-gradient(160deg,#FFFBEA,#FFF6D6);border-radius:14px;padding:11px 12px;display:flex;flex-direction:column;gap:8px}
+.sd-me .big{display:flex;align-items:baseline;gap:6px;font-size:12.5px;color:#7A5B00;font-weight:700}
+.sd-me .big b{font-size:24px;color:var(--mmh-navy);line-height:1}
+.sd-me .od{font-size:12px;font-weight:800;color:#B3261E}
+.sd-me .ok{font-size:12px;font-weight:800;color:#1E7B45}
+.sd-src{display:flex;flex-direction:column;gap:4px}
+.sd-src button{display:flex;align-items:center;gap:6px;border:1px solid #EAD89A;background:#fff;border-radius:9px;padding:5px 8px;font-size:12px;font-weight:700;color:var(--mmh-navy);cursor:pointer;text-align:left}
+.sd-src button.cur{border-color:var(--mmh-navy)}
+.sd-src .n{margin-left:auto;background:var(--mmh-blue);color:#fff;border-radius:9px;padding:0 6px;font-size:10.5px}
+.sd-src .n.od{background:#D9433F}
+.sd-team summary{cursor:pointer;list-style:none;font-size:12.5px;font-weight:800;color:var(--mmh-navy);padding:7px 10px;border:1.5px solid var(--border);border-radius:10px;display:flex;align-items:center;gap:6px}
+.sd-team summary::-webkit-details-marker{display:none}
+.sd-team summary .cv{margin-left:auto;transition:.15s}
+.sd-team[open] summary .cv{transform:rotate(180deg)}
+.sd-team .lst{display:flex;flex-direction:column;gap:3px;margin-top:6px;max-height:300px;overflow:auto}
+.sd-team .it{display:flex;align-items:center;gap:7px;padding:5px 6px;border-radius:8px;font-size:12px;cursor:pointer}
+.sd-team .it:hover{background:var(--pale)}
+.sd-team .it .av{width:22px;height:22px;border-radius:50%;color:#fff;font-size:9px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.sd-team .it b{flex:1;color:var(--text)}
+.sd-team .it .o{color:var(--sub);font-weight:700}
+.sd-team .it .x{background:#FEECEC;color:#B3261E;border-radius:6px;padding:0 5px;font-weight:800;font-size:10.5px}
+.sd-links a{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--sub);text-decoration:none;padding:6px 8px;border-radius:8px}
+.sd-links a:hover{background:var(--pale);color:var(--mmh-blue)}
+.sd-links svg{display:none}
+#side-toggle{display:none}
+@media(min-width:901px){
+  #side-toggle{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:#fff;margin-right:4px;flex:0 0 auto}
+  #side-toggle:hover{background:rgba(255,255,255,.24)}
+  #side-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2}
+}
+@media(max-width:900px){
+  body.has-side #side{display:flex;flex-direction:column;gap:8px;padding:8px 10px 0;background:transparent}
+  body.has-side #side .sd-nav,body.has-side #side .sd-links,body.has-side #side .sd-team{display:none}
+  body.has-side #sourcetabs{margin:0}
+  .sd-me{flex-direction:row;flex-wrap:wrap;align-items:center;padding:8px 10px}
+  .sd-me .sd-src{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;width:100%}
+  .sd-me .sd-src button{flex:0 0 auto}
+}
+
+/* ── nút chọn nhân sự thu gọn ── */
+.c10-pbtn{display:inline-flex;align-items:center;gap:7px;height:38px;border:1.5px solid var(--border);background:#fff;border-radius:10px;padding:0 12px 0 6px;font-size:13px;font-weight:800;color:var(--mmh-navy)}
+.c10-pbtn.on,.c10-pbtn:hover{border-color:var(--mmh-blue)}
+.c10-pbtn .av-stack{display:inline-flex}
+.c10-pbtn .av{width:24px;height:24px;border-radius:50%;color:#fff;font-size:9px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;border:2px solid #fff;margin-left:-6px}
+.c10-pbtn .av:first-child{margin-left:0}
+.c10-mini{border:1px solid var(--border);background:#fff;border-radius:8px;padding:4px 9px;font-size:11.5px;font-weight:800;color:var(--sub);cursor:pointer}
+
+/* ── dải việc xuyên tuần & tồn đọng ── */
+.c10-band{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--sh-sm);padding:10px 10px 12px;margin-bottom:10px}
+.c10-band-h{display:flex;align-items:center;gap:8px;padding:0 4px 8px;font-size:13px;color:var(--mmh-navy)}
+.c10-band-h span{font-size:12px;color:var(--faint);font-weight:700}
+.c10-band-h .sp{flex:1}
+.c10-band.min .c10-band-h{padding-bottom:0}
+.c10-band-g{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px 10px;grid-auto-flow:row dense;max-height:240px;overflow-y:auto;padding:2px}
+.c10-bar{position:relative;display:flex;align-items:center;gap:6px;min-width:0;height:32px;padding:0 9px;border-radius:9px;font-size:12.5px;font-weight:700;
+  color:var(--mmh-navy);background:color-mix(in srgb,var(--c) 14%,#fff);border-left:4px solid var(--c);cursor:pointer;overflow:hidden}
+.c10-bar:hover{filter:brightness(.96)}
+.c10-bar .t{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.c10-bar .nt{flex:0 0 auto;font-size:10.5px;font-weight:700;color:var(--sub);white-space:nowrap}
+.c10-bar .pc{flex:0 0 auto;font-size:11px}
+.c10-bar .ar{flex:0 0 auto;font-size:10px;color:var(--faint)}
+.c10-bar .av{width:18px;height:18px;border-radius:50%;color:#fff;font-size:8px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.c10-bar .pg{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(0,0,0,.05)}
+.c10-bar .pg i{display:block;height:100%}
+.c10-bar.pre{border-top-left-radius:2px;border-bottom-left-radius:2px}
+.c10-bar.post{border-top-right-radius:2px;border-bottom-right-radius:2px}
+.c10-bar.carry{--c:#D9433F;background:#FFF1F0;color:#8A1C17}
+.c10-bar.carry .nt{color:#B3261E}
+.c10-bar.od{box-shadow:inset 0 0 0 1.5px #E7A3A1}
+.c10-bar.done .t{text-decoration:line-through;opacity:.6}
+.c10-bar.trip{--c:#0E8A6E}
+.c10-spanct{margin-left:6px;font-style:normal;font-size:10px;font-weight:800;color:var(--mmh-blue);background:#EAF1FC;border-radius:6px;padding:1px 5px}
+@media(max-width:900px){ .c10-bar .nt{display:none} .c10-band-g{gap:4px} }
+@media(max-width:700px){
+  .c10-band-g{grid-template-columns:1fr}
+  .c10-band-g .c10-bar{grid-column:1 / -1!important}
+  .c10-bar .nt{display:inline}
+}
+
+/* v12.1 — tinh chỉnh bố cục khi có sidebar */
+@media(max-width:900px){ body.has-side #side .sd-h{display:none} }
+@media(max-width:700px){ .c10-wb>.c10-empty{display:none} .c10-wb{padding-top:6px;padding-bottom:6px} }
+.c10-subbtn.mini{flex:0 0 auto;padding:2px 8px;font-size:11px;border-radius:7px;line-height:1.4}
+.tp-err{background:#FFF1F0;border:1.5px solid #F2B8B5;color:#8A1C17;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;margin:10px 0 0}
+.tp-err a{color:#8A1C17;font-weight:800}
+.sd-team summary{white-space:nowrap}
+.sd-team summary>span:not(.cv){font-size:11px;overflow:hidden;text-overflow:ellipsis}
+@media(min-width:901px){
+  body.has-side .tb-links{display:none}
+  body.has-side .tb-title p{white-space:nowrap}
+  body.has-side .tb-inner{padding-top:11px;padding-bottom:11px}
+  body.has-side .c10-week{grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+  body.has-side .c10-band-g{gap:5px 8px}
+  body.has-side .act-toggle{top:auto;bottom:16px;left:12px;right:auto;width:212px;border-radius:12px}
+  body.has-side.side-min .act-toggle{width:auto;left:16px}
+  body.has-side .act-rail:not(.collapsed) .act-toggle{right:376px;left:auto;top:76px;bottom:auto;width:auto}
+  body.has-side #side{padding-bottom:70px}
+}
+@media(min-width:901px) and (max-width:1100px){ body.has-side:not(.side-min) .c10-week{grid-template-columns:repeat(4,minmax(0,1fr))} }
+</style>
+
 </head>
 <body>
 
@@ -2022,7 +2149,7 @@ body.sheet-open #fab-wrap,body.sheet-open .act-toggle{display:none!important}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v11</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -3278,7 +3405,7 @@ function startApp(){
     S.detailPics=[me];
     v10DefaultTime();               /* ⭐ v10: PIC mặc định xem THEO NGÀY, quản lý xem TUẦN; nhớ lựa chọn lần trước */
   }
-  switchTab("detail");
+  switchTab("calendar");            /* ⭐ v12: mở app là LỊCH LÀM VIỆC tuần này của chính mình */
   $("fab-wrap").style.display="flex";
   var rail=document.getElementById("activity-rail"); if(rail) rail.style.display="flex";
   renderActivity();
@@ -3401,7 +3528,7 @@ function applySource(src, res, silent){
   applyDefaultPicFilter();
   var me=String((S.user&&S.user.pic)||"");
   if(me){ S.detailPics=[me]; v10DefaultTime(); }
-  switchTab("detail");               // vào thẳng "Tất cả công việc" của mình
+  switchTab(S.tab||"calendar");      /* ⭐ v12: đổi phòng ban vẫn giữ tab đang xem */
   renderActivity();
   renderMyTaskBar();
   if(LANG==="en") translateNode(document.body);
@@ -8282,7 +8409,7 @@ try{ C10.hideDone=localStorage.getItem("mmh_c10hide")==="1"; }catch(_){}
 var C10_WD=["CN","T2","T3","T4","T5","T6","T7"];
 function c10Pics(){
   if(!canViewOthers()) return [S.user.pic];
-  if(C10.pics===null) C10.pics = isDirector()?[]:[S.user.pic];
+  if(C10.pics===null) C10.pics = [S.user.pic];      /* ⭐ v12: mở app là lịch tuần của CHÍNH MÌNH */
   return C10.pics;
 }
 function c10Items(){
@@ -8336,7 +8463,11 @@ function c10ItemsInRange(allPeople){
   var rg=c10Range(), sel=allPeople?[]:c10Pics(), out=[];
   (S.keyTasks||[]).forEach(function(k){
     (k.subs||[]).forEach(function(s){
-      var d=toISO(effDate(s)||s.start||""); if(!d || d<rg.from || d>rg.to) return;
+      /* ⭐ v12: tính việc CHẠM vào khoảng đang xem (kể cả chạy xuyên tuần) + việc tồn đọng quá hạn */
+      var dt=c10TaskDates(s), d=dt.en; if(!dt.st) return;
+      var touch = dt.st<=rg.to && dt.en>=rg.from;
+      var carry = !touch && !isDone(s.status) && !isCancelled(s.status) && dt.en<rg.from && toISO(new Date())>=rg.from;
+      if(!touch && !carry) return;
       if(sel.length && sel.indexOf(picOf(s))<0) return;
       if(C10.hideDone && (isDone(s.status)||isCancelled(s.status))) return;
       out.push({k:k,s:s,d:d});
@@ -8357,6 +8488,58 @@ function c10ProgressHtml(){
     +'<div class="c10-pbar"><i style="width:'+pct+'%;background:'+col+'"></i></div>'
     +'<b style="color:'+col+'">'+pct+'%</b>'
     +'<span class="c10-pst"><span class="d">✓ '+cD+' Completed</span><span class="p">◐ '+cP+' In Progress</span><span class="t">○ '+cT+' To Do</span></span>'
+    +'</div>';
+}
+/* ⭐ v12 — MÔ HÌNH TUẦN: chia việc thành thẻ theo NGÀY và thanh XUYÊN NGÀY / TỒN ĐỌNG */
+function c10TaskDates(s){
+  var st=toISO(s.start||""), en=toISO(effDate(s)||"");
+  if(!st) st=en; if(!en) en=st;
+  if(st && en && en<st){ var t=st; st=en; en=t; }
+  return {st:st, en:en};
+}
+function c10WeekModel(from, to){
+  var sel=c10Pics(), today=toISO(new Date()), by={}, band=[], span={};
+  (S.keyTasks||[]).forEach(function(k){
+    (k.subs||[]).forEach(function(s){
+      if(sel.length && sel.indexOf(picOf(s))<0) return;
+      var open=!isDone(s.status)&&!isCancelled(s.status);
+      if(C10.hideDone && !open) return;
+      var dt=c10TaskDates(s); if(!dt.st) return;
+      var multi=dt.en>dt.st;
+      if(multi && dt.st<=to && dt.en>=from){                                   /* chạy xuyên ngày trong tuần */
+        band.push({k:k,s:s,a:dt.st<from?from:dt.st,b:dt.en>to?to:dt.en,pre:dt.st<from,post:dt.en>to,st:dt.st,en:dt.en,od:isOverdue(s)});
+      } else if(open && dt.en<from && today>=from){                             /* tồn đọng từ tuần trước */
+        band.push({k:k,s:s,a:from,b:(today<=to?today:to),pre:true,post:today>to,st:dt.st,en:dt.en,od:true,carry:true});
+      } else if(!multi && dt.en>=from && dt.en<=to){
+        (by[dt.en]=by[dt.en]||[]).push({k:k,s:s,d:dt.en});
+      }
+    });
+  });
+  band.sort(function(x,y){ if(x.carry!==y.carry) return x.carry?-1:1; return x.a<y.a?-1:x.a>y.a?1:(x.en<y.en?-1:1); });
+  band.forEach(function(b){ var d=new Date(b.a+"T00:00:00"); while(toISO(d)<=b.b){ var i=toISO(d); span[i]=(span[i]||0)+1; d.setDate(d.getDate()+1); } });
+  Object.keys(by).forEach(function(d){ by[d].sort(function(a,b){ return byStatusThenDue(a.s,b.s); }); });
+  return {by:by, band:band, span:span};
+}
+function c10Bar(b, multi){
+  var s=b.s, pct=subPct(s), from=mondayOf(C10.ref||new Date());
+  var col=function(iso){ return Math.round((new Date(iso+"T00:00:00")-from)/86400000)+1; };
+  var c1=col(b.a), c2=col(b.b)+1;
+  var lk=extractLinks(s.result||"");
+  var note = b.carry ? ('Tồn từ '+fmtVN(b.en)+' · quá hạn '+Math.max(1,Math.round((new Date(toISO(new Date())+"T00:00:00")-new Date(b.en+"T00:00:00"))/86400000))+' ngày')
+           : ((b.pre?'từ '+fmtVN(b.st)+' ':'')+(b.post?'→ hạn '+fmtVN(b.en):'hạn '+fmtVN(b.en)));
+  return '<div class="c10-bar'+(b.carry?' carry':'')+(b.od&&!b.carry?' od':'')+(isDone(s.status)?' done':'')+(isTripRow(s)?' trip':'')+(b.pre?' pre':'')+(b.post?' post':'')+'"'
+    +' style="grid-column:'+c1+' / '+c2+';--c:'+c10Color(s)+'" data-tno="'+esc(s.no)+'"'+c10OpenAttr(s.no)
+    +' title="'+esc((s.name||s.subTask||"")+' · '+picOf(s)+' · '+(s.status||"To Do")+' '+pct+'% · '+fmtVNFull(b.st)+' → '+fmtVNFull(b.en)+(IS_MOBILE?'':' — nhấp đúp để mở'))+'">'
+    +(b.pre?'<span class="ar">◀</span>':'')
+    +(multi?'<span class="av" style="background:'+avColor(picOf(s))+'">'+esc(initials(picOf(s)))+'</span>':'')
+    +(isTripRow(s)?'<span>✈️</span>':'')
+    +'<span class="t">'+esc(s.name||s.subTask||"")+'</span>'
+    +'<span class="nt">'+esc(note)+'</span>'
+    +(lk.length?'<a class="c10-clip" href="'+esc(lk[0])+'" target="_blank" rel="noopener" onclick="event.stopPropagation()" ondblclick="event.stopPropagation()">📎</a>':'')
+    +(s.__isKeyRow&&!isTripRow(s)&&!vIsSync(s)&&(canEditPic(s.pic)||canAssign())?'<button class="c10-subbtn mini" onclick="event.stopPropagation();c10Add(\''+b.a+'\',\''+jsq(s.no)+'\',true)" ondblclick="event.stopPropagation()" title="Key task chưa có sub-task — thêm sub-task">＋ Sub</button>':'')
+    +'<b class="pc" style="color:'+progColor(pct)+'">'+pct+'%</b>'
+    +'<span class="pg"><i style="width:'+pct+'%;background:'+progColor(pct)+'"></i></span>'
+    +(b.post?'<span class="ar">▶</span>':'')
     +'</div>';
 }
 /* bấm vào CHỖ TRỐNG của cột ngày → thêm việc (ngày bắt đầu cố định = ngày đó) */
@@ -8415,10 +8598,23 @@ function renderCalendarTab(){
     var mon=mondayOf(ref), days=[];
     for(var i=0;i<7;i++){ var d=new Date(mon); d.setDate(mon.getDate()+i); days.push(d); }
     title="Tuần "+fmtVN(toISO(days[0]))+" – "+fmtVNFull(toISO(days[6]));
-    body='<div class="c10-week">'+days.map(function(d){
-      var iso=toISO(d), ev=by[iso]||[];
+    /* ⭐ v12 — VIỆC XUYÊN TUẦN & TỒN ĐỌNG
+       · Việc kéo dài nhiều ngày  → 1 thanh trải dài từ ngày bắt đầu tới hạn (◀ nếu bắt đầu từ tuần trước, ▶ nếu còn sang tuần sau)
+       · Việc QUÁ HẠN chưa xong từ tuần trước → thanh đỏ "Tồn từ dd/mm" kéo tới hôm nay
+       · Việc trong 1 ngày → thẻ trong cột ngày như cũ                                              */
+    var wk=c10WeekModel(toISO(days[0]), toISO(days[6]));
+    var band=wk.band;
+    var bandHtml='';
+    if(band.length){
+      bandHtml='<div class="c10-band'+(C10.bandMin?' min':'')+'"><div class="c10-band-h"><b>📌 Việc xuyên tuần & tồn đọng</b><span>'+band.length+' việc</span>'
+        +'<span class="sp"></span><button class="c10-mini" onclick="C10.bandMin=!C10.bandMin;renderCalendarTab()">'+(C10.bandMin?'Hiện ▾':'Thu gọn ▴')+'</button></div>'
+        +(C10.bandMin?'':'<div class="c10-band-g">'+band.map(function(b){ return c10Bar(b, multi); }).join("")+'</div>')+'</div>';
+    }
+    body=bandHtml+'<div class="c10-week">'+days.map(function(d){
+      var iso=toISO(d), ev=wk.by[iso]||[];
       return '<div class="c10-wc'+(iso===today?" today":"")+'" data-day="'+iso+'" '+(IS_MOBILE?'onclick':'ondblclick')+'="c10ColClick(event,\''+iso+'\')" title="'+(IS_MOBILE?'Chạm':'Nhấp đúp')+' vào chỗ trống để thêm việc ngày '+fmtVN(iso)+'" ondragover="c10Over(event,this)" ondragleave="this.classList.remove(\'drop\')" ondrop="c10Drop(event,\''+iso+'\',this)">'
-        +'<div class="c10-wh"><span>'+C10_WD[d.getDay()]+(iso===today?' · Hôm nay':'')+'</span><b>'+d.getDate()+'/'+(d.getMonth()+1)+'</b></div>'
+        +'<div class="c10-wh"><span>'+C10_WD[d.getDay()]+(iso===today?' · Hôm nay':'')+'</span><b>'+d.getDate()+'/'+(d.getMonth()+1)+'</b>'
+        +(wk.span[iso]?'<i class="c10-spanct" title="'+wk.span[iso]+' việc xuyên tuần đang chạy trong ngày này">+'+wk.span[iso]+'</i>':'')+'</div>'
         +'<div class="c10-wb">'+(ev.length?ev.map(function(o){ return c10Card(o,multi,iso); }).join(""):'<div class="c10-empty">—</div>')
         +'<button class="c10-wadd" onclick="c10Add(\''+iso+'\',null,true)">＋ Thêm việc</button></div></div>';
     }).join("")+'</div>';
@@ -8462,18 +8658,27 @@ function renderCalendarTab(){
     var names=picOptionsAllowed(picListAll()).filter(function(p){ return p!==NO_PIC; });
     /* ⭐ v10.3: số cạnh tên = số việc của người đó TRONG khoảng đang xem (tuần/tháng) */
     var cntBy={}; c10ItemsInRange(true).forEach(function(o){ var p=picOf(o.s); cntBy[p]=(cntBy[p]||0)+1; });
-    people='<div class="c10-people"><span class="lb">Nhân sự</span>'
+    people=!C10.peopleOpen?'':'<div class="c10-people"><span class="lb">Nhân sự</span>'
       +'<button class="c10-pc txt'+(!sel.length?" on":"")+'" onclick="c10SetPics(\'all\')">Cả đội</button>'
       +'<button class="c10-pc txt'+(sel.length===1&&sel[0]===S.user.pic?" on":"")+'" onclick="c10SetPics(\'me\')">Chỉ tôi</button>'
       +names.map(function(p){ var on=sel.indexOf(p)>=0;
         return '<button class="c10-pc'+(on?" on":"")+'" onclick="c10TogglePic(\''+jsq(p)+'\')" title="Bấm để chọn/bỏ chọn — chọn được nhiều người">'
           +'<span class="av" style="background:'+avColor(p)+'">'+esc(initials(p))+'</span>'+esc(p)+' <span class="n'+(cntBy[p]?'':' z')+'">'+(cntBy[p]||0)+'</span></button>'; }).join("")
-      +'</div>';
+      +'<button class="c10-mini" onclick="C10.peopleOpen=false;renderCalendarTab()">Thu gọn ▴</button></div>';
+  }
+  /* ⭐ v12: ô chọn nhân sự thu vào 1 nút — bấm mới mở danh sách */
+  var peopleBtn='';
+  if(canViewOthers()){
+    var lbl = !sel.length ? 'Cả đội' : (sel.length===1 ? (sel[0]===S.user.pic?'Chỉ tôi':sel[0]) : (sel.length+' người'));
+    peopleBtn='<button class="c10-pbtn'+(C10.peopleOpen?' on':'')+'" onclick="C10.peopleOpen=!C10.peopleOpen;renderCalendarTab()" title="Chọn nhân sự để xem">'
+      +'<span class="av-stack">'+(sel.length?sel.slice(0,3):[S.user.pic]).map(function(p){ return '<span class="av" style="background:'+avColor(p)+'">'+esc(initials(p))+'</span>'; }).join("")+'</span>'
+      +'<span>👥</span><span>'+esc(lbl)+'</span><span>▾</span></button>';
   }
   el.innerHTML='<div class="c10-wrap'+(C10.full?' full':'')+'"><div class="c10-head"><h2>'+title+'</h2>'
     +'<button class="c10-ib" onclick="c10Nav(-1)" title="Trước"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>'
     +'<button class="c10-ib" onclick="c10Nav(1)" title="Sau"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>'
     +'<button class="c10-btn" onclick="c10Nav(0)">Hôm nay</button>'
+    +peopleBtn
     +'<div class="c10-seg">'+[["month","Tháng"],["week","Tuần"],["list","Danh sách"]].map(function(x){ return '<button class="'+(view===x[0]?"on":"")+'" onclick="c10View(\''+x[0]+'\')">'+x[1]+'</button>'; }).join("")+'</div>'
     +'<label class="c10-tog"><input type="checkbox"'+(C10.hideDone?" checked":"")+' onchange="c10Hide(this.checked)"/> Ẩn việc đã xong</label>'
     +'<button class="c10-btn pri" onclick="c10Add(toISO(new Date()))">＋ Thêm việc</button>'
@@ -8828,6 +9033,126 @@ function tripSyncNow(btn, quiet){
     "Mở file Business Trip ↗":"Open Business Trip file ↗","Đóng":"Close" };
   Object.keys(D).forEach(function(k){ DICT_EN[k]=D[k]; });
   if(RULES_EN && RULES_EN.push) RULES_EN.push([/^(\d+) ngày$/, "$1 day(s)"],[/^✈️ Đã gửi đề xuất công tác(.*)$/, "✈️ Business trip proposal sent$1"],[/^📨 Đã gửi email(.*)$/, "📨 Email sent$1"]);
+})();
+</script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   ⭐ v12 — SIDEBAR: Phòng ban · Chức năng · Việc của tôi · Tình hình đội · Liên kết
+   ══════════════════════════════════════════════════════════════════════ */
+(function(){
+  var app=document.getElementById("app"), wrap=app&&app.querySelector(".wrap");
+  if(!app||!wrap) return;
+  var side=document.createElement("aside"); side.id="side";
+  side.innerHTML='<div class="sd-sec sd-dept"><div class="sd-h">Phòng ban</div><div id="sd-src-slot"></div></div>'
+    +'<div class="sd-sec"><div class="sd-h">Việc của tôi</div><div id="sd-me"></div></div>'
+    +'<div class="sd-sec sd-nav"><div class="sd-h">Chức năng</div><div id="sd-nav-slot"></div></div>'
+    +'<div class="sd-sec sd-team-w"><div id="sd-team"></div></div>'
+    +'<div class="sd-sec sd-links"><div class="sd-h">Liên kết nhanh</div><div id="sd-links"></div></div>';
+  app.insertBefore(side, wrap);
+  var st=document.getElementById("sourcetabs"), tn=document.getElementById("tabnav"), ql=wrap.querySelector(".qlinks");
+  if(st) document.getElementById("sd-src-slot").appendChild(st);
+  if(tn) document.getElementById("sd-nav-slot").appendChild(tn);
+  if(ql) document.getElementById("sd-links").innerHTML=ql.innerHTML;
+  document.body.classList.add("has-side");
+  try{ if(localStorage.getItem("mmh_side_min")==="1") document.body.classList.add("side-min"); }catch(_){}
+  /* nút ☰ ẩn/hiện sidebar trên thanh trên cùng */
+  var tb=document.querySelector("#topbar .tb-inner");
+  if(tb){
+    var b=document.createElement("button"); b.id="side-toggle"; b.title="Ẩn / hiện thanh bên";
+    b.innerHTML='<svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg>';
+    b.onclick=function(){ var on=document.body.classList.toggle("side-min"); try{ localStorage.setItem("mmh_side_min",on?"1":"0"); }catch(_){} };
+    tb.insertBefore(b, tb.firstChild);
+  }
+  function tbH(){ var t=document.getElementById("topbar"); if(t) document.documentElement.style.setProperty("--tb-h", t.offsetHeight+"px"); }
+  window.addEventListener("resize", tbH); setTimeout(tbH, 0); setTimeout(tbH, 800);
+})();
+/* khối "Việc của tôi" + "Tình hình đội" — thay cho banner chạy chữ */
+function renderSideMe(){
+  var box=document.getElementById("sd-me"); if(!box || !S.user) return;
+  var total=totalMyTasks(), od=totalMyOverdue();
+  var src=["marketing","backoffice","management"].map(function(k){
+    var n=(S.crossCount&&S.crossCount[k])||0; if(!n) return "";
+    var o=((S.crossTasks&&S.crossTasks[k])||[]).filter(function(t){ return t.overdue; }).length;
+    return '<button class="'+(S.source===k?"cur":"")+'" onclick="switchSource(\''+k+'\')">'+esc(SOURCE_META[k].label)
+      +'<span class="n">'+n+'</span>'+(o?'<span class="n od">'+o+'</span>':'')+'</button>';
+  }).join("");
+  box.innerHTML='<div class="sd-me"><div class="big"><b>'+total+'</b> việc chưa xong</div>'
+    +(od?'<div class="od">🔴 '+od+' việc quá hạn</div>':'<div class="ok">✓ Không có việc quá hạn</div>')
+    +(src?'<div class="sd-src">'+src+'</div>':'')+'</div>';
+  var tm=document.getElementById("sd-team"); if(!tm) return;
+  if(!canViewOthers()){ tm.innerHTML=""; return; }
+  var stats=picOpenStats().filter(function(x){ return x.pic!==NO_PIC; });
+  var odN=stats.reduce(function(a,x){ return a+(x.overdue?1:0); },0);
+  var wasOpen=!!(tm.querySelector("details")&&tm.querySelector("details").open);
+  tm.innerHTML='<details class="sd-team"'+(wasOpen?' open':'')+'><summary>👥 Tình hình đội <span style="color:var(--faint);font-weight:700">('+stats.length+(odN?' · '+odN+' người trễ':'')+')</span><span class="cv">▾</span></summary>'
+    +'<div class="lst">'+stats.map(function(x){
+      return '<div class="it" onclick="switchTab(\'calendar\');C10.pics=[\''+jsq(x.pic)+'\'];renderCalendarTab()" title="Xem lịch của '+esc(x.pic)+'">'
+        +'<span class="av" style="background:'+avColor(x.pic)+'">'+esc(initials(x.pic))+'</span><b>'+esc(x.pic)+'</b>'
+        +'<span class="o">'+x.open+'</span>'+(x.overdue?'<span class="x">'+x.overdue+' trễ</span>':'')+'</div>';
+    }).join("")+'</div></details>';
+}
+(function(){
+  var o=window.renderMyTaskBar;
+  window.renderMyTaskBar=function(){ try{ if(o) o.apply(this,arguments); }catch(_){} try{ renderSideMe(); }catch(e){} };
+})();
+
+/* ── báo lỗi rõ ràng khi backend chưa deploy bản mới ── */
+function rhxErrMsg(e){
+  var m=String((e&&e.message)||e||"");
+  if(/Unknown action/i.test(m)) return "Backend "+(SOURCE_META[rhxSrc()]||{}).label+" chưa có tính năng này — trong Apps Script hãy vào Deploy ▸ Manage deployments ▸ Edit ▸ New version ▸ Deploy (chạy trigger KHÔNG làm web cập nhật).";
+  if(/Chưa thêm file ReportHub_Trip_Mail/i.test(m)) return m;
+  return m;
+}
+(function(){
+  var o=window.tripProposeOpen;
+  window.tripProposeOpen=function(){
+    showModal('<div class="modal-box modal-lg"><div class="modal-head"><h3>✈️ Đề xuất công tác</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
+      +'<div class="modal-body"><div class="c10-empty" style="padding:30px 0">Đang tải danh mục điểm đến, người đi cùng, thiết bị…</div></div></div>');
+    var keep=GAS_URL; GAS_URL=GAS_URLS[rhxSrc()];
+    var pr=apiGet("tripMaster"); GAS_URL=keep;
+    pr.then(function(r){ r.forPic=S.user.pic; TP.master=r; tripProposeForm(r); })
+      .catch(function(e){
+        var body=document.querySelector("#modals .modal-body");
+        if(body) body.innerHTML='<div class="c10-keybox" style="background:#FFF1F0;color:#8A1C17">⚠️ <b>Chưa mở được form đề xuất.</b><br>'+esc(rhxErrMsg(e))+'</div>'
+          +'<div class="modal-footer"><a class="btn-secondary" href="'+TRIP_SHEET_URL+'" target="_blank" rel="noopener" style="text-decoration:none">Mở file Business Trip ↗</a><button class="btn-primary" onclick="tripProposeOpen()">↻ Thử lại</button></div>';
+      });
+  };
+  var s0=window.tripProposeSend;
+  window.tripProposeSend=function(){
+    var b=$("tp-send"); if(!b || b.disabled) return;
+    var f={ startDate:$("tp-start").value, finishDate:$("tp-finish").value, destination:$("tp-dest").value.trim(),
+      coTraveler:$("tp-co").value.trim(), purpose:$("tp-purpose").value.trim(), expectedResult:$("tp-expect").value.trim(),
+      estimatedCost:$("tp-cost").value.trim(), totalCost:String($("tp-total").value||"").replace(/[^\d]/g,""),
+      schedule:$("tp-sched").value.trim(), equipment:$("tp-equip").value.trim() };
+    var miss=[]; Object.keys(f).forEach(function(k){ if(!f[k]) miss.push(k); });
+    if(miss.length){ toast("⚠️ Vui lòng điền đủ các ô có dấu *"); return; }
+    b.disabled=true; b.textContent="Đang gửi… (khoảng 10 giây)";
+    var eb=$("tp-err"); if(eb) eb.remove();
+    /* cùng 1 mã rid cho mọi lần bấm lại → backend không ghi/gửi trùng nếu lần trước thực ra đã thành công */
+    var sig=JSON.stringify(f); if(TP.sig!==sig || !TP.rid){ TP.sig=sig; TP.rid=newRid(); }
+    rhxCall({ action:"tripPropose", trip:sig, rid:TP.rid })
+      .then(function(r){
+        TP.rid=null; TP.sig=null;
+        if(r && r.softTimeout){ closeModal(); toast("✈️ Đã gửi — đang chờ xác nhận, kiểm tra hộp thư sau ít phút"); tripSyncNow(null,true); return; }
+        closeModal(); toast("✈️ "+((r&&r.message)||"Đã gửi đề xuất công tác")); tripSyncNow(null, true);
+      })
+      .catch(function(e){
+        b.disabled=false; b.textContent="↻ Gửi lại";
+        var msg=rhxErrMsg(e), box=document.createElement("div"); box.id="tp-err"; box.className="tp-err";
+        box.innerHTML='⚠️ <b>Chưa gửi được đề xuất.</b> '+esc(msg)
+          +'<div style="margin-top:6px">Dữ liệu bạn nhập vẫn còn nguyên — sửa xong bấm <b>↻ Gửi lại</b>, hoặc <a href="'+TRIP_SHEET_URL+'" target="_blank" rel="noopener">mở file Business Trip ↗</a> để nhập tay.</div>';
+        var ft=b.closest(".modal-footer")||b.parentNode; ft.parentNode.insertBefore(box, ft);
+        box.scrollIntoView({block:"nearest"});
+      });
+  };
+})();
+(function(){
+  if(typeof DICT_EN!=="object") return;
+  var D={ "Phòng ban":"Departments","Việc của tôi":"My tasks","Chức năng":"Menu","Liên kết nhanh":"Quick links","👥 Tình hình đội":"👥 Team status",
+    "📌 Việc xuyên tuần & tồn đọng":"📌 Multi-day & carried-over tasks","Thu gọn ▴":"Collapse ▴","Hiện ▾":"Show ▾","✓ Không có việc quá hạn":"✓ No overdue tasks" };
+  Object.keys(D).forEach(function(k){ DICT_EN[k]=D[k]; });
+  if(RULES_EN&&RULES_EN.push) RULES_EN.push([/^ việc chưa xong$/," open tasks"],[/^🔴 (\d+) việc quá hạn$/,"🔴 $1 overdue"],[/^Tồn từ (\S+) · quá hạn (\d+) ngày$/,"Carried from $1 · $2 days overdue"],[/^(\d+) việc$/,"$1 tasks"],[/^(\d+) người$/,"$1 people"],[/^👥 (.+) ▾$/,"👥 $1 ▾"]);
 })();
 </script>
 
