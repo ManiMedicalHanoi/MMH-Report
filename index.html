@@ -2204,7 +2204,7 @@ body.first-load #stale-chip{pointer-events:auto}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12.7</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12.8</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -9741,6 +9741,131 @@ function tripReportSave(){
 .tr6-note{font-size:11.5px;color:var(--sub);line-height:1.5}
 @media(max-width:700px){ .tr6-grid{grid-template-columns:1fr} .tpc-row{flex-wrap:wrap} .tpc-d{flex:1 1 100%} }
 </style>
+
+<script>
+/* ══════ ⭐ v12.8 — SỬA / XOÁ CHUYẾN CÔNG TÁC NGAY TRÊN LỊCH (ghi thẳng file Business Trip) ══════ */
+(function(){
+  var W={ tripReport:1, tripUpdate:1, tripDelete:1 };
+  window.tripCallHere=function(body){
+    var keep=GAS_URL; GAS_URL=GAS_URLS[S.source]||GAS_URL;
+    try{ return W[body.action] ? apiPost(body) : apiGet(body.action, body); } finally { GAS_URL=keep; }
+  };
+  var paint0=window.tripViewPaint;
+  window.tripViewPaint=function(t){
+    paint0(t);
+    var ft=document.querySelector("#tr6 .modal-footer"); if(!ft||!t) return;
+    var extra="";
+    if(t.canDelete) extra+='<button class="q10-del" onclick="tripDeleteAsk()" title="Xoá chuyến đi khỏi file Business Trip">🗑️ Xoá chuyến đi</button>';
+    if(t.canEdit)   extra+='<button class="btn-secondary" onclick="tripEditOpen()" title="Sửa đề xuất — ghi thẳng vào file Business Trip">✏️ Sửa đề xuất</button>';
+    else if(t.approved && !t.canDelete) extra+='';
+    if(extra) ft.insertAdjacentHTML("afterbegin", extra);
+    if(t.approved && !t.canEdit){
+      var note=document.createElement("div"); note.className="tr6-note"; note.style.margin="8px 0 0";
+      note.innerHTML='🔒 Chuyến đã <b>Approved</b> nên không sửa kế hoạch trên web'+(t.canDelete?'; quản lý vẫn có thể xoá chuyến này':'')+'.';
+      ft.parentNode.insertBefore(note, ft);
+    }
+  };
+})();
+function tripParseCosts(txt){
+  var out=[];
+  String(txt||"").split(/\n+/).forEach(function(l){
+    l=l.trim(); if(!l) return;
+    var m=/^(.*?)[\s:–-]*([\d][\d.,\s]{2,})\s*(?:vnd|vnđ|đ|d)?\s*$/i.exec(l);
+    if(m && tpNum(m[2])>=1000) out.push({ d:m[1].replace(/[:\s–-]+$/,"").trim(), a:tpNum(m[2]) });
+    else out.push({ d:l, a:0 });
+  });
+  return out.length?out:[{d:"",a:0}];
+}
+function tripSplitList(v){ return String(v||"").split(/\s*[,;]\s*/).map(function(x){ return x.trim(); }).filter(Boolean); }
+function tripEditOpen(){
+  var t=TR6&&TR6.trip; if(!t) return;
+  showModal('<div class="modal-box modal-lg" id="tp-edit"><div class="modal-head"><h3>✏️ Sửa đề xuất công tác</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
+    +'<div class="modal-body"><div class="c10-empty" style="padding:30px 0">Đang tải danh mục điểm đến, người đi cùng, thiết bị…</div></div></div>');
+  var go=function(r){
+    TP.master=r; tripProposeForm(r);
+    var body=document.querySelector("#tp-edit .modal-body"); if(!body) return;
+    var kb=body.querySelector(".c10-keybox");
+    if(kb) kb.innerHTML='Thay đổi được ghi thẳng vào dòng của chuyến đi này trên file <b>Business Trip</b>. '
+      +'Trạng thái hiện tại: <b>'+esc(t.approval||"Not Yet")+'</b>'+(t.comment?' — ý kiến quản lý: <i>'+esc(t.comment)+'</i>':'')+'.';
+    $("tp-start").value=t.start||""; $("tp-finish").value=t.finish||""; tpDays();
+    MS.dest.sel=tripSplitList(t.dest); msPaint("dest");
+    var co=tripSplitList(t.co).filter(function(x){ return !/^no$/i.test(x); }); MS.co.sel=co; msPaint("co");
+    MS.eq.sel=tripSplitList(t.equip); msPaint("eq");
+    $("tp-purpose").value=t.purpose||""; $("tp-expect").value=t.expect||""; $("tp-sched").value=t.schedule||"";
+    TPC=tripParseCosts(t.estCost); tpCostPaint();
+    var ft=body.querySelector(".modal-footer");
+    ft.innerHTML='<label class="tr6-mail" style="margin:0 auto 0 0"><input type="checkbox" id="tp-resend" checked/> Gửi lại email xin duyệt (trạng thái → Already sent propose email)</label>'
+      +'<button class="btn-secondary" onclick="tripView(TR6.no)">Huỷ</button><button class="btn-primary" id="tp-send" onclick="tripEditSend()">💾 Lưu thay đổi</button>';
+    armModal();
+  };
+  if(TP.master && TP.master.forPic===S.user.pic){ go(TP.master); return; }
+  var keep=GAS_URL; GAS_URL=GAS_URLS[rhxSrc()];
+  var pr=apiGet("tripMaster"); GAS_URL=keep;
+  pr.then(function(r){ r.forPic=S.user.pic; go(r); })
+    .catch(function(e){ var b=document.querySelector("#tp-edit .modal-body"); if(b) b.innerHTML='<div class="tp-err">⚠️ '+esc(rhxErrMsg(e))+'</div>'; });
+}
+function tripEditSend(){
+  var b=$("tp-send"); if(!b||b.disabled||!TR6||!TR6.trip) return;
+  var eb=$("tp-err"); if(eb) eb.remove();
+  ["dest","co","eq"].forEach(function(id){ var i=$("ms-i-"+id); if(i && i.value.trim()){ var m=MS[id]; if(m.sel.map(msNorm).indexOf(msNorm(i.value))<0) m.sel.push(i.value.trim()); i.value=""; msPaint(id); } });
+  var lines=TPC.filter(function(r){ return String(r.d||"").trim() || r.a; }), total=tpCostTotal();
+  var f={ startDate:$("tp-start").value, finishDate:$("tp-finish").value,
+    destination:MS.dest.sel.join(", "), coTraveler:(MS.co.sel.length?MS.co.sel:["No"]).join(", "),
+    purpose:$("tp-purpose").value.trim(), expectedResult:$("tp-expect").value.trim(),
+    estimatedCost:lines.map(function(r){ return (String(r.d||"").trim()||"Chi phí")+": "+tpFmt(r.a||0); }).join("\n"),
+    totalCost:String(total||""), schedule:$("tp-sched").value.trim(), equipment:MS.eq.sel.join(", "),
+    costLines:lines.map(function(r){ return { d:String(r.d||"").trim(), a:r.a||0 }; }) };
+  var miss=[];
+  if(!f.destination) miss.push("Destination"); if(!f.purpose) miss.push("Purpose"); if(!f.expectedResult) miss.push("Expected result");
+  if(!lines.length || !total) miss.push("Estimated costs"); if(!f.schedule) miss.push("Schedule"); if(!f.equipment) miss.push("Equipment");
+  if(lines.some(function(r){ return !r.a; })) miss.push("số tiền cho mọi khoản chi phí");
+  if(miss.length){ toast("⚠️ Vui lòng điền: "+miss.join(", ")); return; }
+  var body={ action:"tripUpdate", id:TR6.trip.id, r:TR6.trip.row, trip:JSON.stringify(f), resend:$("tp-resend").checked?"true":"false" };
+  var sig=body.trip+body.resend; if(TR6.esig!==sig||!TR6.erid){ TR6.esig=sig; TR6.erid=newRid(); } body.rid=TR6.erid;
+  b.disabled=true; b.textContent="Đang lưu…";
+  tripCallHere(body).then(function(r){
+    TR6.erid=null; TR6.esig=null; closeModal();
+    toast("✈️ "+((r&&!r.softTimeout&&r.message)||"Đã cập nhật chuyến công tác")+((r&&r.warn&&r.warn.length)?" — ⚠️ "+r.warn.join(" · "):""));
+    tripSyncNow(null,true);
+  }).catch(function(e){
+    b.disabled=false; b.textContent="↻ Lưu lại";
+    var box=document.createElement("div"); box.id="tp-err"; box.className="tp-err";
+    box.innerHTML='⚠️ <b>Chưa lưu được.</b> '+esc(rhxErrMsg(e))+'<div style="margin-top:6px">Dữ liệu bạn nhập vẫn còn nguyên — bấm <b>↻ Lưu lại</b> (không bị ghi trùng).</div>';
+    var ft=b.closest(".modal-footer"); ft.parentNode.insertBefore(box, ft); box.scrollIntoView({block:"nearest"});
+  });
+}
+function tripDeleteAsk(){
+  var t=TR6&&TR6.trip; if(!t) return;
+  showModal('<div class="modal-box" id="tp-del"><div class="modal-head"><h3>🗑️ Xoá chuyến công tác?</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
+    +'<div class="modal-body"><p style="margin:0 0 10px;line-height:1.55">Xoá chuyến <b>'+esc(t.dest||"")+'</b> ('+fmtVNFull(t.start)+' → '+fmtVNFull(t.finish)+') của <b>'+esc(t.hubPic||t.pic||"")+'</b>.</p>'
+    +'<div class="tr6-lock" style="font-size:12.5px">Dòng này sẽ bị <b>xoá khỏi file Business Trip</b> (xoá dữ liệu của dòng, giữ nguyên công thức) và task trên lịch biến mất. '
+    +(t.approved?'<b>Chuyến đã Approved</b> — nên báo quản lý / người liên quan trước khi xoá. ':'')+'Không hoàn tác được trên web.</div>'
+    +'<div class="modal-footer"><button class="btn-secondary" onclick="tripView(TR6.no)">Huỷ</button><button class="q10-del" id="tp-del-go" style="margin:0" onclick="tripDeleteGo()">🗑️ Xoá chuyến đi</button></div></div></div>');
+}
+function tripDeleteGo(){
+  var b=$("tp-del-go"); if(!b||b.disabled||!TR6||!TR6.trip) return;
+  if(!TR6.drid) TR6.drid=newRid();
+  b.disabled=true; b.textContent="Đang xoá…";
+  var no=TR6.no;
+  tripCallHere({ action:"tripDelete", id:TR6.trip.id, r:TR6.trip.row, rid:TR6.drid }).then(function(r){
+    TR6.drid=null; closeModal();
+    try{ localRemoveSub(no); }catch(_){}
+    try{ renderCalendarTab(); }catch(_){}
+    toast("🗑️ "+((r&&!r.softTimeout&&r.message)||"Đã xoá chuyến công tác"));
+    tripSyncNow(null,true);
+  }).catch(function(e){
+    b.disabled=false; b.textContent="↻ Thử xoá lại";
+    var box=document.createElement("div"); box.className="tp-err"; box.innerHTML='⚠️ '+esc(rhxErrMsg(e));
+    var ft=b.closest(".modal-footer"); ft.parentNode.insertBefore(box, ft);
+  });
+}
+(function(){
+  if(typeof DICT_EN!=="object") return;
+  var D={ "✏️ Sửa đề xuất":"✏️ Edit proposal","🗑️ Xoá chuyến đi":"🗑️ Delete trip","✏️ Sửa đề xuất công tác":"✏️ Edit trip proposal",
+    "💾 Lưu thay đổi":"💾 Save changes","🗑️ Xoá chuyến công tác?":"🗑️ Delete this business trip?" };
+  Object.keys(D).forEach(function(k){ DICT_EN[k]=D[k]; });
+})();
+</script>
 
 </body>
 </html>
