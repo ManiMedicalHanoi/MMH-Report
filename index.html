@@ -2202,7 +2202,7 @@ body.first-load #stale-chip{pointer-events:auto}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12.5</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12.6</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -9432,5 +9432,314 @@ function rhxErrMsg(e){
   };
 })();
 </script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   ⭐ v12.6 — ĐỀ XUẤT CÔNG TÁC: chọn nhiều + tìm nhanh · chi phí theo dòng
+              BÁO CÁO CÔNG TÁC ngay trên lịch (chỉ chuyến đã Approved)
+   ══════════════════════════════════════════════════════════════════════ */
+var MS={};
+function msNorm(v){ return String(v==null?"":v).normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/gi,"d").toLowerCase().trim(); }
+/* ô chọn nhiều có tìm kiếm: gõ vài chữ (không cần dấu) → gợi ý từ danh sách trên file Business Trip */
+function msHtml(id, ph){
+  return '<div class="ms" id="ms-'+id+'" onclick="msFocus(\''+id+'\')"><span class="ms-chips" id="ms-c-'+id+'"></span>'
+    +'<input class="ms-in" id="ms-i-'+id+'" placeholder="'+esc(ph||"")+'" autocomplete="off" oninput="msFilter(\''+id+'\')" onfocus="msOpen(\''+id+'\')" onblur="msBlur(\''+id+'\')" onkeydown="msKey(event,\''+id+'\')"/>'
+    +'<div class="ms-dd" id="ms-d-'+id+'"></div></div>';
+}
+function msInit(id, opts, sel, o){
+  o=o||{};
+  MS[id]={ opts:(opts||[]).filter(function(x,i,a){ return x && a.indexOf(x)===i; }), sel:(sel||[]).slice(), hi:0, list:[], none:o.none||"", custom:o.custom!==false };
+  msPaint(id);
+}
+function msPaint(id){
+  var m=MS[id]; if(!m) return;
+  var c=$("ms-c-"+id); if(!c) return;
+  c.innerHTML=m.sel.map(function(v,i){ return '<span class="ms-chip">'+esc(v)+'<button type="button" onmousedown="event.preventDefault()" onclick="event.stopPropagation();msDel(\''+id+'\','+i+')">×</button></span>'; }).join("");
+  var inp=$("ms-i-"+id); if(inp) inp.placeholder=m.sel.length?"":(inp.getAttribute("data-ph")||inp.placeholder);
+}
+function msFocus(id){ var i=$("ms-i-"+id); if(i) i.focus(); }
+function msOpen(id){ var i=$("ms-i-"+id); if(i && !i.getAttribute("data-ph")) i.setAttribute("data-ph", i.placeholder); msFilter(id); }
+function msBlur(id){ setTimeout(function(){ var d=$("ms-d-"+id); if(d) d.classList.remove("on"); }, 160); }
+function msFilter(id){
+  var m=MS[id], inp=$("ms-i-"+id), d=$("ms-d-"+id); if(!m||!inp||!d) return;
+  var q=msNorm(inp.value), sel=m.sel.map(msNorm);
+  var list=m.opts.filter(function(x){ return sel.indexOf(msNorm(x))<0 && (!q || msNorm(x).indexOf(q)>=0); });
+  list.sort(function(a,b){ if(!q) return 0; var sa=msNorm(a).indexOf(q)===0?0:1, sb=msNorm(b).indexOf(q)===0?0:1; return sa-sb; });
+  list=list.slice(0,40);
+  var exact=m.opts.some(function(x){ return msNorm(x)===q; });
+  if(q && m.custom && !exact && sel.indexOf(q)<0) list.push({add:inp.value.trim()});
+  m.list=list; if(m.hi>=list.length) m.hi=0;
+  d.innerHTML=list.length ? list.map(function(x,i){
+      var txt=typeof x==="string"?x:x.add;
+      return '<div class="ms-op'+(i===m.hi?" hi":"")+(typeof x==="string"?"":" add")+'" onmousedown="event.preventDefault();msPick(\''+id+'\','+i+')">'+(typeof x==="string"?esc(txt):'＋ Thêm “'+esc(txt)+'”')+'</div>';
+    }).join("") : '<div class="ms-op none">Không có gợi ý</div>';
+  d.classList.add("on");
+}
+function msPick(id, i){
+  var m=MS[id], x=m.list[i]; if(x==null) return;
+  var v=typeof x==="string"?x:x.add; if(!v) return;
+  if(m.none){
+    if(msNorm(v)===msNorm(m.none)) m.sel=[];                                  /* chọn "No" → bỏ các lựa chọn khác */
+    else m.sel=m.sel.filter(function(s){ return msNorm(s)!==msNorm(m.none); });
+  }
+  if(m.sel.map(msNorm).indexOf(msNorm(v))<0) m.sel.push(v);
+  var inp=$("ms-i-"+id); inp.value=""; m.hi=0; msPaint(id); msFilter(id); inp.focus();
+}
+function msDel(id, i){ var m=MS[id]; m.sel.splice(i,1); msPaint(id); }
+function msKey(ev, id){
+  var m=MS[id]; if(!m) return;
+  if(ev.key==="ArrowDown"){ ev.preventDefault(); m.hi=Math.min(m.hi+1, m.list.length-1); msFilter(id); }
+  else if(ev.key==="ArrowUp"){ ev.preventDefault(); m.hi=Math.max(m.hi-1,0); msFilter(id); }
+  else if(ev.key==="Enter"||ev.key===","||ev.key===";"){ if(m.list.length||ev.target.value.trim()){ ev.preventDefault(); if(m.list.length) msPick(id,m.hi); } }
+  else if(ev.key==="Backspace" && !ev.target.value && m.sel.length){ m.sel.pop(); msPaint(id); msFilter(id); }
+  else if(ev.key==="Escape"){ var d=$("ms-d-"+id); if(d) d.classList.remove("on"); }
+}
+/* chi phí theo dòng: Mô tả + Số tiền → 1 ô "Estimated costs" trên file Business Trip, tổng tự cộng */
+var TPC=[];
+var TPC_SUGGEST=["Vé máy bay","Công tác phí","Khách sạn","Taxi / Grab","Vé tàu / xe","Tiếp khách","Phí hội thảo","Chi phí khác"];
+function tpNum(v){ var n=parseInt(String(v==null?"":v).replace(/[^\d]/g,""),10); return isNaN(n)?0:n; }
+function tpFmt(n){ return n?Number(n).toLocaleString("vi-VN"):""; }
+function tpCostPaint(){
+  var box=$("tp-costs"); if(!box) return;
+  box.innerHTML=TPC.map(function(r,i){
+    return '<div class="tpc-row"><input class="tpc-d" list="tp-dl-costd" placeholder="Mô tả — vd: Vé máy bay" value="'+esc(r.d)+'" oninput="TPC['+i+'].d=this.value"/>'
+      +'<div class="tpc-a"><input inputmode="numeric" placeholder="Số tiền" value="'+esc(tpFmt(r.a))+'" oninput="tpCostAmt('+i+',this)"/><span>đ</span></div>'
+      +'<button type="button" class="tpc-x" title="Xoá dòng" onclick="TPC.splice('+i+',1);if(!TPC.length)TPC.push({d:\'\',a:0});tpCostPaint()">✕</button></div>';
+  }).join("");
+  tpCostTotal();
+}
+function tpCostAmt(i, el){
+  var n=tpNum(el.value); TPC[i].a=n;
+  var pos=el.value.length-el.selectionStart; el.value=tpFmt(n);
+  try{ var p=Math.max(0, el.value.length-pos); el.setSelectionRange(p,p); }catch(_){}
+  tpCostTotal();
+}
+function tpCostAdd(){ TPC.push({d:"",a:0}); tpCostPaint(); var r=document.querySelectorAll("#tp-costs .tpc-d"); if(r.length) r[r.length-1].focus(); }
+function tpCostTotal(){ var s=TPC.reduce(function(a,r){ return a+(r.a||0); },0); var t=$("tp-total"); if(t) t.textContent=s?s.toLocaleString("vi-VN")+" đ":"0 đ"; return s; }
+
+window.tripProposeForm=function(r){
+  var m=(r&&r.master)||{destinations:[],coTravelers:[],equipment:[]}, today=toISO(new Date());
+  TPC=[{d:"Công tác phí",a:0},{d:"",a:0}];
+  $("modals").querySelector(".modal-body").innerHTML=
+     '<div class="c10-keybox">Đề xuất được ghi vào file <b>Business Trip</b> (Approval Status = <b>Not Yet</b>) và gửi email xin duyệt '
+    +'<b>To:</b> '+esc(r.to||"")+' · <b>CC:</b> '+esc(r.cc||"")+'. Quản lý duyệt bằng <b>HOD Menu</b> trên Google Sheet như bình thường; '
+    +'sau khi gửi, chuyến đi hiện ngay trong <b>Lịch công tác</b> của bạn.</div>'
+    +'<div class="field-row"><div class="field"><label>Start date *</label><input type="date" id="tp-start" value="'+today+'" onchange="tpDays()"/></div>'
+      +'<div class="field"><label>Finish date *</label><input type="date" id="tp-finish" value="'+today+'" min="'+today+'" onchange="tpDays()"/></div></div>'
+    +'<div class="tp-days" id="tp-days">1 ngày</div>'
+    +'<div class="field-row"><div class="field"><label>Destination * <span class="tp-hint">chọn được nhiều tỉnh</span></label>'+msHtml("dest","Gõ tên tỉnh / thành để tìm…")+'</div>'
+      +'<div class="field"><label>Co-traveler * <span class="tp-hint">chọn được nhiều người</span></label>'+msHtml("co","Gõ tên người đi cùng… (để trống = No)")+'</div></div>'
+    +'<div class="field"><label>Purpose (Mục đích) *</label><textarea id="tp-purpose" rows="2"></textarea></div>'
+    +'<div class="field"><label>Expected result (Kết quả mong đợi) *</label><textarea id="tp-expect" rows="2"></textarea></div>'
+    +'<div class="field"><label>Estimated costs VND * <span class="tp-hint">mỗi dòng 1 khoản — mô tả + số tiền</span></label>'
+      +'<div id="tp-costs" class="tpc"></div>'
+      +'<datalist id="tp-dl-costd">'+TPC_SUGGEST.map(function(x){ return '<option value="'+esc(x)+'">'; }).join("")+'</datalist>'
+      +'<div class="tpc-foot"><button type="button" class="tpc-add" onclick="tpCostAdd()">＋ Thêm khoản chi phí</button>'
+      +'<div class="tpc-sum">Total estimated costs: <b id="tp-total">0 đ</b></div></div></div>'
+    +'<div class="field"><label>Schedule (Lịch trình) *</label><textarea id="tp-sched" rows="2" placeholder="24/9: HN - HP - HN"></textarea></div>'
+    +'<div class="field"><label>Equipment-assets in/out *</label>'+msHtml("eq","Gõ để tìm thiết bị…")+'</div>'
+    +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Huỷ</button><button class="btn-primary" id="tp-send" onclick="tripProposeSend()">📨 Gửi đề xuất</button></div>';
+  msInit("dest", m.destinations, []);
+  msInit("co", ["No"].concat(m.coTravelers||[]), [], { none:"No" });
+  msInit("eq", m.equipment, (m.equipment||[]).indexOf("Laptop")>=0?["Laptop"]:[]);
+  tpCostPaint();
+  armModal();
+};
+window.tripProposeSend=function(){
+  var b=$("tp-send"); if(!b || b.disabled) return;
+  var eb=$("tp-err"); if(eb) eb.remove();
+  ["dest","co","eq"].forEach(function(id){ var i=$("ms-i-"+id); if(i && i.value.trim()){ var m=MS[id]; if(m.sel.map(msNorm).indexOf(msNorm(i.value))<0) m.sel.push(i.value.trim()); i.value=""; msPaint(id); } });
+  var lines=TPC.filter(function(r){ return String(r.d||"").trim() || r.a; });
+  var total=tpCostTotal();
+  var f={ startDate:$("tp-start").value, finishDate:$("tp-finish").value,
+    destination:MS.dest.sel.join(", "), coTraveler:(MS.co.sel.length?MS.co.sel:["No"]).join(", "),
+    purpose:$("tp-purpose").value.trim(), expectedResult:$("tp-expect").value.trim(),
+    estimatedCost:lines.map(function(r){ return (String(r.d||"").trim()||"Chi phí")+": "+tpFmt(r.a||0); }).join("\n"),
+    totalCost:String(total||""), schedule:$("tp-sched").value.trim(), equipment:MS.eq.sel.join(", "),
+    costLines:lines.map(function(r){ return { d:String(r.d||"").trim(), a:r.a||0 }; }) };
+  var miss=[];
+  if(!f.destination) miss.push("Destination"); if(!f.purpose) miss.push("Purpose"); if(!f.expectedResult) miss.push("Expected result");
+  if(!lines.length || !total) miss.push("Estimated costs (ít nhất 1 khoản có số tiền)"); if(!f.schedule) miss.push("Schedule"); if(!f.equipment) miss.push("Equipment");
+  if(lines.some(function(r){ return !r.a; })) miss.push("số tiền cho mọi khoản chi phí");
+  if(miss.length){ toast("⚠️ Vui lòng điền: "+miss.join(", ")); return; }
+  b.disabled=true; b.textContent="Đang gửi… (khoảng 10 giây)";
+  var sig=JSON.stringify(f); if(TP.sig!==sig || !TP.rid){ TP.sig=sig; TP.rid=newRid(); }
+  rhxCall({ action:"tripPropose", trip:sig, rid:TP.rid })
+    .then(function(r){
+      TP.rid=null; TP.sig=null;
+      closeModal(); toast("✈️ "+((r&&!r.softTimeout&&r.message)||"Đã gửi đề xuất công tác")); tripSyncNow(null, true);
+    })
+    .catch(function(e){
+      b.disabled=false; b.textContent="↻ Gửi lại";
+      var box=document.createElement("div"); box.id="tp-err"; box.className="tp-err";
+      box.innerHTML='⚠️ <b>Chưa gửi được đề xuất.</b> '+esc(rhxErrMsg(e))
+        +'<div style="margin-top:6px">Dữ liệu bạn nhập vẫn còn nguyên — sửa xong bấm <b>↻ Gửi lại</b>, hoặc <a href="'+TRIP_SHEET_URL+'" target="_blank" rel="noopener">mở file Business Trip ↗</a> để nhập tay.</div>';
+      var ft=b.closest(".modal-footer")||b.parentNode; ft.parentNode.insertBefore(box, ft);
+      box.scrollIntoView({block:"nearest"});
+    });
+};
+
+/* ───── BÁO CÁO CÔNG TÁC NGAY TRÊN LỊCH ───── */
+var TR6=null;
+function tripCallHere(body){                /* gọi đúng backend đang giữ dòng lịch công tác này */
+  var keep=GAS_URL; GAS_URL=GAS_URLS[S.source]||GAS_URL;
+  try{ return body.action==="tripReport" ? apiPost(body) : apiGet(body.action, body); } finally { GAS_URL=keep; }
+}
+function tripSplitReport(txt){
+  var o={ka:"",kf:"",fu:""}, t=String(txt||"");
+  var m=/\*\*\s*I\.\s*Key Activities\s*\*\*([\s\S]*?)(?=\*\*\s*II\.|$)/i.exec(t); if(m) o.ka=m[1].trim();
+  m=/\*\*\s*II\.\s*Key Findings\s*\*\*([\s\S]*?)(?=\*\*\s*III\.|$)/i.exec(t); if(m) o.kf=m[1].trim();
+  m=/\*\*\s*III\.\s*Follow Up Actions\s*\*\*([\s\S]*)$/i.exec(t); if(m) o.fu=m[1].trim();
+  if(!o.ka && !o.kf && !o.fu && t.trim()) o.ka=t.trim();
+  return o;
+}
+function tripView(no){
+  var s=findSub(no); if(!s) return;
+  var meta=s.vMeta||{};
+  TR6={ no:no, id:meta.id||"", r:meta.r||"" };
+  showModal('<div class="modal-box modal-lg" id="tr6"><div class="modal-head"><h3>✈️ Chuyến công tác</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
+    +'<div class="modal-body"><div class="c10-empty" style="padding:30px 0">Đang tải thông tin chuyến đi từ file Business Trip…</div></div></div>');
+  tripCallHere({ action:"tripInfo", id:TR6.id, r:TR6.r }).then(function(r){ tripViewPaint(r.trip); })
+    .catch(function(e){
+      var body=document.querySelector("#tr6 .modal-body"); if(!body) return;
+      body.innerHTML='<div class="tp-err">⚠️ <b>Chưa tải được thông tin chuyến đi.</b> '+esc(rhxErrMsg(e))+'</div>'
+        +'<div class="field" style="margin-top:10px"><label>Kế hoạch (bản đồng bộ trên web)</label><div class="v10-ro" style="background:var(--gray);border-radius:10px;padding:10px 12px">'+linkify(s.result||"—")+'</div></div>'
+        +'<div class="modal-footer"><a class="btn-secondary" href="'+TRIP_SHEET_URL+'" target="_blank" rel="noopener" style="text-decoration:none">Mở file Business Trip ↗</a><button class="btn-primary" onclick="tripView(\''+jsq(no)+'\')">↻ Thử lại</button></div>';
+    });
+}
+function tripViewPaint(t){
+  var body=document.querySelector("#tr6 .modal-body"); if(!body||!t) return;
+  TR6.trip=t;
+  var ap=String(t.approval||"Not Yet"), apCls=t.approved?"ok":(/reject|từ chối/i.test(ap)?"rej":"wait");
+  var costs=String(t.estCost||"").split(/\n+/).filter(Boolean);
+  var row=function(l,v){ return '<div class="tr6-i"><span>'+l+'</span><b>'+(v||"—")+'</b></div>'; };
+  var info='<div class="tr6-head"><div><div class="tr6-dest">📍 '+esc(t.dest||"—")+'</div>'
+      +'<div class="tr6-date">'+fmtVNFull(t.start)+' → '+fmtVNFull(t.finish)+' · '+(t.days||"")+' ngày · 👤 '+esc(t.hubPic||t.pic||"")+'</div></div>'
+      +'<span class="tr6-ap '+apCls+'">'+(t.approved?"✓ ":apCls==="rej"?"✕ ":"⏳ ")+esc(ap)+'</span></div>'
+    +(t.comment?'<div class="tr6-cmt">💬 Ý kiến quản lý: '+esc(t.comment)+'</div>':'')
+    +'<div class="tr6-grid">'
+      +row("Người đi cùng", esc(t.co||"No"))+row("Thiết bị", esc(t.equip||"—"))
+      +row("Mục đích", esc(t.purpose))+row("Kết quả mong đợi", esc(t.expect))
+      +row("Lịch trình", esc(t.schedule).replace(/\n/g,"<br>"))
+      +row("Chi phí dự trù", costs.map(esc).join("<br>")+(t.total?'<div class="tr6-tot">Tổng: '+Number(t.total).toLocaleString("vi-VN")+' đ</div>':''))
+      +(t.folder?row("Folder", '<a href="'+esc(t.folder)+'" target="_blank" rel="noopener">📁 Mở folder chuyến đi</a>'):'')
+    +'</div>';
+  var rep="";
+  if(!t.approved){
+    rep='<div class="tr6-lock">'+(apCls==="rej"?'✕ Chuyến đi <b>không được duyệt</b> — không cần nhập báo cáo.'
+        :'⏳ Chuyến đi <b>đang chờ phê duyệt</b>. Hiện chỉ xem kế hoạch — phần <b>Báo cáo công tác</b> sẽ mở sau khi quản lý chọn <b>Approved</b> trên file Business Trip.')+'</div>';
+  } else if(!t.canReport){
+    rep='<div class="field"><label>📋 Business trip Report</label><div class="v10-ro" style="background:var(--gray);border-radius:10px;padding:10px 12px;white-space:pre-wrap">'+(t.report?esc(t.report.replace(/\*\*/g,"")):'<i>Chưa có báo cáo</i>')+'</div></div>';
+  } else {
+    var o=tripSplitReport(t.report);
+    rep='<div class="tr6-rep"><div class="tr6-rh">📋 Báo cáo công tác'+(t.report?' <span class="tr6-done">Đã nộp'+(t.reportDate?' '+fmtVNFull(t.reportDate):'')+' — sửa & lưu để cập nhật</span>':'')+'</div>'
+      +'<div class="field"><label>Key Activities *</label><textarea id="tr6-ka" rows="3" maxlength="5000" placeholder="Các hoạt động chính trong chuyến đi…">'+esc(o.ka)+'</textarea></div>'
+      +'<div class="field"><label>Key Findings *</label><textarea id="tr6-kf" rows="3" maxlength="5000" placeholder="Những phát hiện / thông tin quan trọng…">'+esc(o.kf)+'</textarea></div>'
+      +'<div class="field"><label>Follow Up Actions *</label><textarea id="tr6-fu" rows="3" maxlength="5000" placeholder="Việc cần làm tiếp theo…">'+esc(o.fu)+'</textarea></div>'
+      +'<label class="tr6-mail"><input type="checkbox" id="tr6-mail"'+(t.report?'':' checked')+'/> Gửi email báo cáo cho Director (CC HOD) — như nút "Send Report Email" của hệ thống Business Trip</label>'
+      +'<div class="tr6-note">Khi lưu: tạo file <b>Google Doc báo cáo</b> trong folder chuyến đi, ghi vào cột <b>Business trip Report</b> trên file Business Trip; task công tác trên lịch tự chuyển <b>Completed</b>.</div></div>';
+  }
+  body.innerHTML=info+rep
+    +'<div class="modal-footer"><a class="btn-secondary" href="'+TRIP_SHEET_URL+'" target="_blank" rel="noopener" style="text-decoration:none">Mở file Business Trip ↗</a>'
+    +(t.approved&&t.canReport?'<button class="btn-primary" id="tr6-save" onclick="tripReportSave()">📄 Lưu báo cáo</button>':'<button class="btn-secondary" onclick="closeModal()">Đóng</button>')+'</div>';
+  armModal();
+}
+function tripReportSave(){
+  var b=$("tr6-save"); if(!b||b.disabled||!TR6||!TR6.trip) return;
+  var eb=$("tr6-err"); if(eb) eb.remove();
+  var ka=$("tr6-ka").value.trim(), kf=$("tr6-kf").value.trim(), fu=$("tr6-fu").value.trim();
+  if(!ka||!kf||!fu){ toast("⚠️ Vui lòng điền đủ Key Activities, Key Findings và Follow Up Actions"); return; }
+  var body={ action:"tripReport", id:TR6.trip.id, r:TR6.trip.row, keyActivities:ka, keyFindings:kf, followUp:fu, sendEmail:$("tr6-mail").checked?"true":"false" };
+  var sig=JSON.stringify(body); if(TR6.sig!==sig||!TR6.rid){ TR6.sig=sig; TR6.rid=newRid(); } body.rid=TR6.rid;
+  b.disabled=true; b.textContent="Đang lưu… (tạo file báo cáo ~10–20 giây)";
+  var fail=function(msg){
+    b.disabled=false; b.textContent="↻ Lưu lại";
+    var box=document.createElement("div"); box.id="tr6-err"; box.className="tp-err";
+    box.innerHTML='⚠️ <b>Chưa lưu được báo cáo.</b> '+esc(msg)+'<div style="margin-top:6px">Nội dung bạn nhập vẫn còn nguyên — bấm <b>↻ Lưu lại</b> (không bị lưu trùng).</div>';
+    var ft=b.closest(".modal-footer"); ft.parentNode.insertBefore(box, ft); box.scrollIntoView({block:"nearest"});
+  };
+  var ok=function(r){
+    TR6.rid=null; TR6.sig=null; closeModal();
+    toast("📋 "+((r&&r.message)||"Đã lưu báo cáo công tác")+((r&&r.warn&&r.warn.length)?" — ⚠️ "+r.warn.join(" · "):""));
+    tripSyncNow(null,true);
+  };
+  tripCallHere(body).then(function(r){
+    if(r && r.softTimeout){                   /* nội dung dài → gửi dạng POST, kiểm tra lại trên file */
+      var n=0, t0=TR6.trip;
+      (function poll(){
+        n++;
+        tripCallHere({ action:"tripInfo", id:t0.id, r:t0.row }).then(function(x){
+          var t=x&&x.trip; if(t && t.report && t.report.indexOf(ka.slice(0,30))>=0) return ok({ message:"Đã lưu báo cáo công tác" });
+          if(n<8) setTimeout(poll, 3000); else fail("Máy chủ chưa xác nhận — mở file Business Trip để kiểm tra cột Report.");
+        }).catch(function(){ if(n<8) setTimeout(poll,3000); else fail("Không kiểm tra được kết quả."); });
+      })();
+      return;
+    }
+    ok(r);
+  }).catch(function(e){ fail(rhxErrMsg(e)); });
+}
+(function(){
+  var o=window.c10Open;
+  window.c10Open=function(no){
+    try{ var s=findSub(realNo(no)); if(s && isTripRow(s) && s.vSrc==="trip") return tripView(realNo(no)); }catch(_){}
+    return o.apply(this, arguments);
+  };
+})();
+(function(){
+  if(typeof DICT_EN!=="object") return;
+  var D={ "✈️ Chuyến công tác":"✈️ Business trip","Người đi cùng":"Co-traveler","Thiết bị":"Equipment","Mục đích":"Purpose","Kết quả mong đợi":"Expected result",
+    "Lịch trình":"Schedule","Chi phí dự trù":"Estimated costs","📁 Mở folder chuyến đi":"📁 Open trip folder","📋 Báo cáo công tác":"📋 Business trip report",
+    "📄 Lưu báo cáo":"📄 Save report","＋ Thêm khoản chi phí":"＋ Add cost item","chọn được nhiều tỉnh":"multiple allowed","chọn được nhiều người":"multiple allowed",
+    "mỗi dòng 1 khoản — mô tả + số tiền":"one item per line — description + amount","Không có gợi ý":"No suggestions","📋 Business trip Report":"📋 Business trip Report" };
+  Object.keys(D).forEach(function(k){ DICT_EN[k]=D[k]; });
+})();
+</script>
+<style>
+/* ⭐ v12.6 */
+.tp-hint{font-weight:600;color:var(--faint);text-transform:none;letter-spacing:0;font-size:11px;margin-left:4px}
+.ms{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:5px;min-height:44px;border:1.5px solid var(--border);border-radius:10px;padding:5px 8px;background:#fff;cursor:text}
+.ms:focus-within{border-color:var(--mmh-blue);box-shadow:0 0 0 3px rgba(31,94,196,.12)}
+.ms-chips{display:contents}
+.ms-chip{display:inline-flex;align-items:center;gap:4px;background:#EAF1FC;color:var(--mmh-navy);border-radius:8px;padding:3px 4px 3px 9px;font-size:12.5px;font-weight:700}
+.ms-chip button{border:none;background:none;color:var(--sub);font-size:15px;line-height:1;cursor:pointer;padding:0 3px}
+.ms-chip button:hover{color:#B3261E}
+.ms-in{flex:1;min-width:120px;border:none!important;outline:none;box-shadow:none!important;padding:4px 2px!important;font:inherit;font-size:14px;background:transparent}
+.ms-dd{display:none;position:absolute;left:-1px;right:-1px;top:calc(100% + 4px);background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 10px 28px rgba(14,47,95,.16);max-height:240px;overflow:auto;z-index:50;padding:4px}
+.ms-dd.on{display:block}
+.ms-op{padding:8px 10px;border-radius:7px;font-size:13px;cursor:pointer;color:var(--text)}
+.ms-op.hi,.ms-op:hover{background:#EAF1FC}
+.ms-op.add{color:var(--mmh-blue);font-weight:700}
+.ms-op.none{color:var(--faint);cursor:default}
+.tpc{display:flex;flex-direction:column;gap:6px}
+.tpc-row{display:flex;gap:6px;align-items:center}
+.tpc-d{flex:1.6;min-width:0}
+.tpc-a{flex:1;display:flex;align-items:center;position:relative;min-width:0}
+.tpc-a input{width:100%;text-align:right;padding-right:26px!important;font-variant-numeric:tabular-nums}
+.tpc-a span{position:absolute;right:10px;color:var(--faint);font-size:12px;font-weight:700}
+.tpc-x{flex:0 0 auto;width:34px;height:38px;border:1px solid var(--border);border-radius:9px;background:#fff;color:var(--sub);cursor:pointer}
+.tpc-x:hover{color:#B3261E;border-color:#F2B8B5}
+.tpc-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;flex-wrap:wrap}
+.tpc-add{border:1.5px dashed var(--mmh-blue);background:#fff;color:var(--mmh-blue);border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:800;cursor:pointer}
+.tpc-sum{font-size:13px;color:var(--sub);font-weight:700}
+.tpc-sum b{font-size:16px;color:var(--mmh-navy)}
+.tr6-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.tr6-dest{font-size:17px;font-weight:800;color:var(--mmh-navy)}
+.tr6-date{font-size:12.5px;color:var(--sub);margin-top:3px}
+.tr6-ap{flex:0 0 auto;font-size:12px;font-weight:800;border-radius:8px;padding:4px 10px}
+.tr6-ap.ok{background:#E6F4EA;color:#1E7B45}.tr6-ap.wait{background:#FFF4D6;color:#8A5A00}.tr6-ap.rej{background:#FEECEC;color:#B3261E}
+.tr6-cmt{background:#F4F8FE;border-radius:9px;padding:7px 10px;font-size:12.5px;color:var(--sub);margin-bottom:8px}
+.tr6-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.tr6-i{background:var(--gray);border-radius:10px;padding:8px 10px;min-width:0}
+.tr6-i span{display:block;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--faint);margin-bottom:3px}
+.tr6-i b{font-size:13px;font-weight:600;color:var(--text);word-break:break-word}
+.tr6-tot{margin-top:4px;font-weight:800;color:var(--mmh-navy)}
+.tr6-lock{background:#FFF8E6;border:1px solid #F0D66A;border-radius:12px;padding:12px 14px;font-size:13px;color:#7A5B00;line-height:1.55}
+.tr6-rep{border:1.5px solid #DCE6F5;border-radius:14px;padding:12px 14px;background:#FBFDFF}
+.tr6-rh{font-size:14px;font-weight:800;color:var(--mmh-navy);margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tr6-done{font-size:11.5px;font-weight:800;background:#E6F4EA;color:#1E7B45;border-radius:7px;padding:2px 8px}
+.tr6-mail{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--mmh-navy);margin:4px 0 8px;cursor:pointer}
+.tr6-note{font-size:11.5px;color:var(--sub);line-height:1.5}
+@media(max-width:700px){ .tr6-grid{grid-template-columns:1fr} .tpc-row{flex-wrap:wrap} .tpc-d{flex:1 1 100%} }
+</style>
+
 </body>
 </html>
