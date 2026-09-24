@@ -2160,6 +2160,8 @@ body.first-load #stale-chip{pointer-events:auto}
 .od-ext input{width:118px;border:none;font:inherit;font-size:11.5px;color:var(--mmh-navy);background:transparent}
 .od-open{border:1.5px solid var(--border);background:#fff;color:var(--mmh-navy)}
 @media(max-width:700px){ .od-act{width:100%} .od-act .od-done{flex:1} }
+.c10-ipseg{border:none;background:#EAF1FC;color:var(--mmh-blue);font:inherit;font-weight:800;border-radius:7px;padding:2px 8px;cursor:pointer}
+.c10-ipseg:hover,.c10-ipseg.on{background:var(--mmh-blue);color:#fff}
 .c10-subbtn.mini{flex:0 0 auto;padding:2px 8px;font-size:11px;border-radius:7px;line-height:1.4}
 .tp-err{background:#FFF1F0;border:1.5px solid #F2B8B5;color:#8A1C17;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.5;margin:10px 0 0}
 .tp-err a{color:#8A1C17;font-weight:800}
@@ -2202,7 +2204,7 @@ body.first-load #stale-chip{pointer-events:auto}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12.6</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12.7</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -8537,7 +8539,7 @@ function c10Items(){
       var p=picOf(s);
       if(sel.length && sel.indexOf(p)<0) return;
       if(C10.hideDone && (isDone(s.status)||isCancelled(s.status))) return;
-      if(C10.onlyIP && !c10IsRolling(s)) return;                  /* ⭐ v12.4: chỉ xem việc đang thực hiện */
+      if(C10.onlyIP && !(isInProgress(s.status||"") && !c10IsOD(s))) return;                  /* ⭐ v12.4: chỉ xem việc đang thực hiện */
       if(c10IsOD(s)) return;                                      /* ⭐ v12.5: quá hạn → danh sách riêng */
       /* ⭐ v11: chuyến công tác nhiều ngày → hiện trên TỪNG ngày đi */
       var st0=toISO(s.start||""), en0=toISO(effDate(s)||"");
@@ -8701,7 +8703,7 @@ function c10ItemsInRange(allPeople){
     (k.subs||[]).forEach(function(s){
       if(sel.length && sel.indexOf(picOf(s))<0) return;
       if(C10.hideDone && (isDone(s.status)||isCancelled(s.status))) return;
-      if(C10.onlyIP && !c10IsRolling(s)) return;
+      if(C10.onlyIP && !(isInProgress(s.status||"") && !c10IsOD(s))) return;
       var d;
       if(isTripRow(s)){ var dt=c10TaskDates(s); if(!dt.st || dt.st>rg.to || dt.en<rg.from) return; d=dt.st; }
       else if(c10IsOD(s)){ d=toISO(new Date()); if(d<rg.from || d>rg.to) return; }   /* ⭐ v12.5: việc quá hạn tính vào khoảng có hôm nay */
@@ -8716,20 +8718,19 @@ function c10ProgressHtml(){
   var list=c10ItemsInRange(false).filter(function(o){ return !isCancelled(o.s.status); });
   var n=list.length, sum=0, cD=0, cP=0, cT=0;
   list.forEach(function(o){ var st=o.s.status||"To Do"; sum+=(isDone(st)?100:(/to\s*do/i.test(st)||!st)?0:subPct(o.s));
-    if(isDone(st)) cD++; else if(isInProgress(st)) cP++; else cT++; });
+    if(isDone(st)) cD++; else if(c10IsOD(o.s)) {} else if(isInProgress(st)) cP++; else cT++; });   /* ⭐ v12.7: quá hạn đếm riêng ở nút đỏ */
   var pct=n?Math.round(sum/n):0;
-  var ipN=0; list.forEach(function(o){ if(c10IsRolling(o.s) && !c10IsOD(o.s)) ipN++; });
   var odN=c10OverdueList().length;
   var hue=Math.round(pct*1.2);                                  /* 0 đỏ → 60 vàng → 120 xanh lá */
   var col="hsl("+hue+",72%,"+(pct>=100?"38%":"46%")+")";
   return '<div class="c10-prog" title="Tiến độ chung = trung bình % tiến độ của '+n+' việc trong khoảng đang xem (mỗi việc cùng tỉ trọng, To Do tính 0%)">'
     +'<div class="c10-pbar"><i style="width:'+pct+'%;background:'+col+'"></i></div>'
     +'<b style="color:'+col+'">'+pct+'%</b>'
-    +'<span class="c10-pst"><span class="d">✓ '+cD+' Completed</span><span class="p">◐ '+cP+' In Progress</span><span class="t">○ '+cT+' To Do</span></span>'
+    +'<span class="c10-pst"><span class="d">✓ '+cD+' Completed</span>'
+    /* ⭐ v12.7: 1 dòng thống kê duy nhất — Completed · Đang thực hiện (bấm để lọc) · To Do · Quá hạn (bấm để xem) */
+    +'<button type="button" class="p c10-ipseg'+(C10.onlyIP?' on':'')+'" onclick="C10.onlyIP=!C10.onlyIP;renderCalendarTab()" title="Bấm để chỉ xem / bỏ lọc việc đang thực hiện (chưa quá hạn)">◐ '+cP+' Đang thực hiện'+(C10.onlyIP?' ✕':'')+'</button>'
+    +'<span class="t">○ '+cT+' To Do</span></span>'
     +'</div>'
-    /* ⭐ v12.4: "Việc đang thực hiện" — bấm để chỉ xem các việc này */
-    +'<button class="c10-ipchip'+(C10.onlyIP?' on':'')+'" onclick="C10.onlyIP=!C10.onlyIP;renderCalendarTab()" title="Bấm để chỉ xem / bỏ lọc việc đang thực hiện">'
-    +'<span>📌 Việc đang thực hiện</span><b>'+ipN+'</b>'+(C10.onlyIP?'<span class="x">✕</span>':'')+'</button>'
     /* ⭐ v12.5: việc QUÁ HẠN không nằm trên lịch — bấm để mở danh sách cập nhật nhanh */
     +(odN?'<button class="c10-odbtn" onclick="c10OverdueOpen()" title="Việc quá hạn không hiện trên lịch — bấm để xem & cập nhật"><span>🔴 '+odN+' quá hạn</span><span class="go">Xem ›</span></button>'
          :'<span class="c10-odok">✓ Không có việc quá hạn</span>');
@@ -8845,7 +8846,7 @@ function renderCalendarTab(){
     for(var i=0;i<7;i++){ var d=new Date(mon); d.setDate(mon.getDate()+i); days.push(d); }
     title="Tuần "+fmtVN(toISO(days[0]))+" – "+fmtVNFull(toISO(days[6]));
     /* ⭐ v12.5: mỗi ngày tối đa 5 thẻ (bấm "+N việc khác" để mở hết) · cột HÔM NAY có khối nhắc "Sắp đến hạn" */
-    var LIM=5, ghosts=c10Ghosts();
+    var LIM=5, wkEnd=toISO(days[6]), ghosts=c10Ghosts().filter(function(o){ return toISO(effDate(o.s))>wkEnd; });   /* ⭐ v12.7: không nhắc trùng việc đã có thẻ trong tuần */
     body='<div class="c10-week">'+days.map(function(d){
       var iso=toISO(d), ev=by[iso]||[], open=!!(C10.exp&&C10.exp[iso]), shown=open?ev:ev.slice(0,LIM);
       var gh=(iso===today)?ghosts:[];
@@ -9395,7 +9396,7 @@ function rhxErrMsg(e){
     "📌 Việc đang thực hiện":"📌 Tasks in progress","⏰ Đến hạn hôm nay":"⏰ Due today","Quá hạn":"Overdue", "Phòng ban":"Departments","Việc của tôi":"My tasks","Chức năng":"Menu","Liên kết nhanh":"Quick links","👥 Tình hình đội":"👥 Team status",
     "📌 Việc xuyên tuần & tồn đọng":"📌 Multi-day & carried-over tasks","Thu gọn ▴":"Collapse ▴","Hiện ▾":"Show ▾","✓ Không có việc quá hạn":"✓ No overdue tasks" };
   Object.keys(D).forEach(function(k){ DICT_EN[k]=D[k]; });
-  if(RULES_EN&&RULES_EN.push) RULES_EN.push([/^ việc chưa xong$/," open tasks"],[/^🔴 (\d+) việc quá hạn$/,"🔴 $1 overdue"],[/^Tồn từ (\S+) · quá hạn (\d+) ngày$/,"Carried from $1 · $2 days overdue"],[/^(\d+) việc$/,"$1 tasks"],[/^🔴 Quá hạn (\d+) ngày$/,"🔴 $1 days overdue"],[/^⏳ Còn (\d+) ngày$/,"⏳ $1 days left"],[/^🔴 (\d+) quá hạn$/,"🔴 $1 overdue"],[/^＋ (\d+) việc khác$/,"＋ $1 more"],[/^còn (\d+) ngày$/,"$1 days left"],[/^🔴 Quá hạn (\d+) ngày$/,"🔴 $1 days overdue"],[/^🔴 (\d+) việc quá hạn ›$/,"🔴 $1 overdue ›"],[/^(\d+) người$/,"$1 people"],[/^👥 (.+) ▾$/,"👥 $1 ▾"]);
+  if(RULES_EN&&RULES_EN.push) RULES_EN.push([/^ việc chưa xong$/," open tasks"],[/^🔴 (\d+) việc quá hạn$/,"🔴 $1 overdue"],[/^Tồn từ (\S+) · quá hạn (\d+) ngày$/,"Carried from $1 · $2 days overdue"],[/^(\d+) việc$/,"$1 tasks"],[/^🔴 Quá hạn (\d+) ngày$/,"🔴 $1 days overdue"],[/^⏳ Còn (\d+) ngày$/,"⏳ $1 days left"],[/^🔴 (\d+) quá hạn$/,"🔴 $1 overdue"],[/^◐ (\d+) Đang thực hiện( ✕)?$/,"◐ $1 In progress$2"],[/^＋ (\d+) việc khác$/,"＋ $1 more"],[/^còn (\d+) ngày$/,"$1 days left"],[/^🔴 Quá hạn (\d+) ngày$/,"🔴 $1 days overdue"],[/^🔴 (\d+) việc quá hạn ›$/,"🔴 $1 overdue ›"],[/^(\d+) người$/,"$1 people"],[/^👥 (.+) ▾$/,"👥 $1 ▾"]);
 })();
 </script>
 
