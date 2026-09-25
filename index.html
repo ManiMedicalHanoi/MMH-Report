@@ -2204,7 +2204,7 @@ body.first-load #stale-chip{pointer-events:auto}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12.8</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12.9</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -9866,6 +9866,97 @@ function tripDeleteGo(){
   Object.keys(D).forEach(function(k){ DICT_EN[k]=D[k]; });
 })();
 </script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   ⭐ v12.9 — CHỐNG "TỰ COMPLETED" DO BẤM NHẦM
+   Nguyên nhân tìm được: các ô sửa nhanh ghi sheet NGAY khi chạm vào, không hỏi lại:
+     · thanh kéo % ở danh sách "Tiến độ công việc": bấm trúng đầu phải thanh = 100% ⇒ Completed
+     · ô chọn trạng thái (trên Windows, lăn chuột / phím mũi tên khi ô đang được chọn cũng đổi giá trị)
+     · nút 100% / ✓ Xong ở màn "Cập nhật nhanh" (điện thoại), ô % / trạng thái ở Dạng bảng
+     · nút "✓ Hoàn thành" to nhất, nằm đầu mỗi dòng trong danh sách Quá hạn (danh sách tự dồn lên sau mỗi thao tác)
+   Cách xử lý: MỌI thao tác nhanh đưa task sang Completed đều phải XÁC NHẬN; danh sách Quá hạn
+   bấm 2 lần mới hoàn thành, không tự dồn dòng, và có nút ↶ Hoàn tác (trả lại cả % lẫn ngày hạn cũ).
+   ══════════════════════════════════════════════════════════════════════ */
+function doneConfirm(no, go){
+  var s=findSub(realNo(no)); if(!s){ go(); return; }
+  try{ rerenderKeepScroll(); }catch(_){}                     /* trả thanh kéo / ô chọn về giá trị cũ trong lúc chờ xác nhận */
+  window._dcGo=function(){ closeModal(); go(); };
+  showModal('<div class="modal-box" style="max-width:440px"><div class="modal-head"><h3>✅ Xác nhận hoàn thành?</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'
+    +'<div class="modal-body"><p style="margin:0 0 8px;font-weight:800;color:var(--mmh-navy)">'+esc(s.name||s.subTask||"")+'</p>'
+    +'<p style="margin:0 0 12px;font-size:13px;color:var(--sub);line-height:1.55">Task sẽ chuyển <b>Completed (100%)</b> và ngày kết thúc được đặt là <b>hôm nay</b>. '
+    +'Nếu bạn chỉ lỡ tay bấm vào thanh % hoặc ô trạng thái, hãy chọn <b>Giữ nguyên</b>.</p>'
+    +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Giữ nguyên</button><button class="btn-primary" style="background:#1E7B45" onclick="_dcGo()">✓ Hoàn thành</button></div></div></div>');
+}
+(function(){
+  function wrap(name, test){
+    var o=window[name]; if(typeof o!=="function") return;
+    window[name]=function(){
+      var a=arguments, self=this;
+      try{ if(test.apply(null,a)) return doneConfirm(a[0], function(){ o.apply(self,a); }); }catch(_){}
+      return o.apply(self,a);
+    };
+  }
+  var notDone=function(no){ var s=findSub(realNo(no)); return s && !isDone(s.status); };
+  wrap("commitProg",  function(no,v){ return (parseInt(v,10)||0)>=100 && notDone(no); });
+  wrap("quickStatus", function(no,v){ return isDone(v) && notDone(no); });
+  wrap("v10Set",      function(no,f,v){ return notDone(no) && ((f==="status" && isDone(v)) || (f==="progress" && (parseInt(v,10)||0)>=100)); });
+  if(typeof QK==="object"){
+    ["status","prog"].forEach(function(k){
+      var o=QK[k]; if(typeof o!=="function") return;
+      QK[k]=function(no,v){
+        var a=arguments;
+        var hit = notDone(no) && (k==="status" ? isDone(v) : (parseInt(v,10)||0)>=100);
+        if(hit){ try{ QK.render(); }catch(_){} return doneConfirm(no, function(){ o.apply(QK,a); }); }
+        return o.apply(QK,a);
+      };
+    });
+  }
+})();
+
+/* ── danh sách Quá hạn: bấm 2 lần mới hoàn thành · không tự dồn dòng · có Hoàn tác ── */
+var OD_UNDO={};
+window.c10OdDone=function(no){
+  var s=findSub(no); if(!s) return;
+  var row=document.querySelector('#od-modal .od-row[data-tno="'+(window.CSS&&CSS.escape?CSS.escape(no):no)+'"]');
+  var btn=row&&row.querySelector(".od-done");
+  if(btn && !btn.classList.contains("arm")){                  /* lần 1: chỉ "lên đạn" */
+    btn.classList.add("arm"); btn.textContent="Bấm lần nữa để xác nhận ✓";
+    clearTimeout(btn._t); btn._t=setTimeout(function(){ btn.classList.remove("arm"); btn.textContent="✓ Hoàn thành"; }, 4000);
+    return;
+  }
+  OD_UNDO[no]={ status:s.status||"In Progress", progress:(subPct(s)||0)/100, revised:toISO(s.revised||""), start:toISO(s.start||"") };
+  v10SaveFields(no, v10StatusPatch(s,"Completed"));
+  toast("✓ Đã hoàn thành “"+(s.name||s.subTask||"")+"” — hiện ở ngày hôm nay");
+  if(row){
+    row.classList.add("done");
+    var act=row.querySelector(".od-act"), n=row.querySelector(".od-n");
+    if(n) n.outerHTML='<span class="od-n ok">✓ Đã hoàn thành</span>';
+    if(act) act.innerHTML='<button class="od-undo" onclick="c10OdUndo(\''+jsq(no)+'\')">↶ Hoàn tác</button>';
+  }
+  try{ renderCalendarTab(); }catch(_){}
+};
+function c10OdUndo(no){
+  var p=OD_UNDO[no], s=findSub(no); if(!p||!s) return;
+  delete OD_UNDO[no];
+  v10SaveFields(no, { status:p.status, progress:p.progress, revised:p.revised, start:p.start });
+  toast("↶ Đã hoàn tác — task trở lại “"+p.status+"”");
+  try{ renderCalendarTab(); }catch(_){}
+  if(document.getElementById("od-modal")) setTimeout(c10OverdueOpen, 250);
+}
+(function(){
+  if(typeof DICT_EN!=="object") return;
+  var D={ "✅ Xác nhận hoàn thành?":"✅ Confirm completion?","Giữ nguyên":"Keep as is","↶ Hoàn tác":"↶ Undo","✓ Đã hoàn thành":"✓ Completed",
+    "Bấm lần nữa để xác nhận ✓":"Click again to confirm ✓" };
+  Object.keys(D).forEach(function(k){ DICT_EN[k]=D[k]; });
+})();
+</script>
+<style>
+.od-done.arm{background:#0E5C33;box-shadow:0 0 0 3px rgba(30,123,69,.25)}
+.od-row.done{border-left-color:#1E7B45;background:#F4FBF6}
+.od-n.ok{background:#E6F4EA;color:#1E7B45}
+.od-undo{height:32px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;padding:0 12px;border:1.5px solid var(--border);background:#fff;color:var(--mmh-navy)}
+</style>
 
 </body>
 </html>
