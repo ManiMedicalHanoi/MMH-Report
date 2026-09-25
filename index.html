@@ -2146,8 +2146,8 @@ body.first-load #stale-chip{pointer-events:auto}
 .c10-ghr .av{width:17px;height:17px;border-radius:50%;color:#fff;font-size:7.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
 .c10-ghmore{border:none;background:none;color:var(--mmh-blue);font-size:11.5px;font-weight:800;cursor:pointer;text-align:left;padding:2px 4px}
 .od-hint{background:#F4F8FE;border:1px solid #DCE6F5;border-radius:10px;padding:9px 12px;font-size:12.5px;color:var(--sub);margin-bottom:10px;line-height:1.5}
-.od-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--border);border-left:4px solid #D9433F;border-radius:12px;margin-bottom:8px;background:#fff;transition:opacity .3s,transform .3s}
-.od-row.gone{opacity:0;transform:translateX(20px)}
+#od-modal .od-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--border);border-left:4px solid #D9433F;border-radius:12px;margin-bottom:8px;background:#fff;transition:opacity .3s,transform .3s}
+#od-modal .od-row.gone{opacity:0;transform:translateX(20px)}
 .od-main{flex:1 1 260px;min-width:0}
 .od-main>b{font-size:13.5px;color:var(--mmh-navy)}
 .od-sub{font-size:11.5px;color:var(--sub);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
@@ -2204,7 +2204,7 @@ body.first-load #stale-chip{pointer-events:auto}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo"><span>MMH</span></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12.9</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v12.10</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -9953,10 +9953,118 @@ function c10OdUndo(no){
 </script>
 <style>
 .od-done.arm{background:#0E5C33;box-shadow:0 0 0 3px rgba(30,123,69,.25)}
-.od-row.done{border-left-color:#1E7B45;background:#F4FBF6}
+#od-modal .od-row.done{border-left-color:#1E7B45;background:#F4FBF6}
 .od-n.ok{background:#E6F4EA;color:#1E7B45}
 .od-undo{height:32px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;padding:0 12px;border:1.5px solid var(--border);background:#fff;color:var(--mmh-navy)}
 </style>
 
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   ⭐ v12.10 — (1) Báo cáo tuần: dòng Quá hạn không còn bị "vỡ dòng"
+               (CSS .od-row của danh sách Quá hạn trên lịch đã giới hạn trong #od-modal)
+               (2) Bổ sung bản dịch EN cho các chuỗi v12.x còn sót
+   Lưu ý: bộ dịch tra theo chuỗi đã TRIM, nên các khoá dưới đây không có khoảng trắng đầu/cuối.
+   ══════════════════════════════════════════════════════════════════════ */
+(function(){
+  if(typeof DICT_EN!=="object") return;
+  var D={
+    /* lịch / ghi chú */
+    "việc chưa có ngày bắt đầu/hạn nên chưa hiện trên lịch —":"tasks have no start date / deadline yet, so they are not on the calendar —",
+    "Tiến độ —":"Progress —", "việc chưa xong":"open tasks", "Đang tải dữ liệu công việc…":"Loading task data…", "Đang thử kết nối lại…":"Reconnecting…",
+    "→ task hiện ở ngày hôm nay;":"→ the task shows on today;", "→ task quay lại lịch ở ngày hạn mới.":"→ the task returns to the calendar on the new deadline.",
+    "Chưa có báo cáo tháng cho kỳ này.":"No monthly report for this period.", "Không có hoạt động khớp bộ lọc.":"No activity matches the filter.",
+    "(việc · ngày xong)":"(task · date completed)", "Mỗi dòng = 1 ngày · bấm vào dòng để xem chi tiết theo PIC":"Each row = 1 day · click a row to see details by PIC",
+    "bấm xem chi tiết ↻":"click for details ↻", "bấm để lật lại":"click to flip back",
+    "+ Thêm kết quả":"+ Add result", "Tất cả tiến độ":"All progress", "Loại":"Type", "PIC phụ trách":"Assigned PIC", "Tên Key Task":"Key Task name",
+    "Hạn (revised)":"Deadline (revised)", "Có thể dán nhiều link — hệ thống tự nhận diện.":"You can paste several links — they are detected automatically.",
+    "Chưa xong":"Not done", "Chạm để nhập kết quả…":"Tap to enter the result…", "Cập nhật nhanh":"Quick update",
+    "Soạn":"Draft an", "ngay sau khi thêm (nếu PIC không phải là bạn)":"right after adding (if the PIC is not you)", "ngay sau khi thêm":"right after adding", "cho":"to",
+    /* xác nhận hoàn thành */
+    "Task sẽ chuyển":"The task will be set to", "và ngày kết thúc được đặt là":"and its finish date will be set to", "hôm nay":"today",
+    ". Nếu bạn chỉ lỡ tay bấm vào thanh % hoặc ô trạng thái, hãy chọn":". If you only touched the % bar or the status box by accident, choose",
+    /* báo cáo tuần — hộp gửi */
+    "Kết quả tuần":"This week's results",
+    "= mọi task có ngày bắt đầu / hạn / ngày hoàn thành chạm vào tuần, cộng task quá hạn chưa xong (đủ mọi mức tiến độ).":"= every task whose start / deadline / completion date falls in the week, plus unfinished overdue tasks (any progress).",
+    "= task chưa xong có ngày bắt đầu hoặc hạn chạm vào tuần sau, kể cả việc đang chạy dở và việc quá hạn gánh sang.":"= unfinished tasks whose start or deadline falls in next week, including tasks in progress and overdue tasks carried over.",
+    /* email */
+    "Email gửi dạng văn bản thường từ hộp thư hệ thống Report Hub, bạn được tự động CC; người nhận bấm Trả lời sẽ về email của bạn.":"The email is sent as plain text from the Report Hub system mailbox and you are CC'd automatically; when recipients click Reply it goes to your email.",
+    /* công tác */
+    "Đề xuất được ghi vào file":"The proposal is written to file", "Đề xuất sẽ được ghi vào file":"The proposal will be written to file",
+    ") và gửi email xin duyệt":") and an approval request is emailed", "trên Google Sheet như bình thường; sau khi gửi, chuyến đi hiện ngay trong":"on Google Sheets as usual; once sent, the trip appears right away in your",
+    "Lịch công tác":"Business trip calendar", "của bạn.":".", "đ":"VND",
+    "Thay đổi được ghi thẳng vào dòng của chuyến đi này trên file":"Changes are written directly to this trip's row in file", ". Trạng thái hiện tại:":". Current status:", "— ý kiến quản lý:":"— manager comment:",
+    "Gửi lại email xin duyệt (trạng thái → Already sent propose email)":"Resend the approval email (status → Already sent propose email)",
+    "Khi lưu: tạo file":"On save: creates a", "Google Doc báo cáo":"report Google Doc", "trong folder chuyến đi, ghi vào cột":"in the trip folder, writes to column",
+    "trên file Business Trip; task công tác trên lịch tự chuyển":"in the Business Trip file; the trip task on the calendar switches to",
+    "Gửi email báo cáo cho Director (CC HOD) — như nút \"Send Report Email\" của hệ thống Business Trip":"Email the report to the Director (CC HOD) — same as the \"Send Report Email\" button of the Business Trip system",
+    "Chuyến đã":"The trip is", "nên không sửa kế hoạch trên web; quản lý vẫn có thể xoá chuyến này.":"so the plan cannot be edited on the web; a manager can still delete this trip.",
+    "nên không sửa kế hoạch trên web.":"so the plan cannot be edited on the web.",
+    "Đang tải danh mục điểm đến, người đi cùng, thiết bị…":"Loading destinations, co-travelers and equipment…",
+    "Dữ liệu bạn nhập vẫn còn nguyên — bấm":"Your input is still here — click", "(không bị ghi trùng).":"(it will not be written twice).",
+    "Chưa lưu được.":"Not saved yet.", "Huỷ":"Cancel", "↻ Lưu lại":"↻ Save again", "Đang lưu…":"Saving…", "Đang xoá…":"Deleting…", "↻ Thử xoá lại":"↻ Try deleting again",
+    "Không hoàn tác được trên web.":"This cannot be undone on the web.",
+    "— nên báo quản lý / người liên quan trước khi xoá.":"— tell your manager / the people involved before deleting.",
+    /* placeholder */
+    "Các hoạt động chính trong chuyến đi…":"Main activities during the trip…", "Gõ tên người đi cùng… (để trống = No)":"Type a co-traveler's name… (empty = No)",
+    "Gõ tên tỉnh / thành để tìm…":"Type a province / city to search…", "Gõ tên thiết bị / tài sản…":"Type equipment / asset…", "Mô tả — vd: Vé máy bay":"Description — e.g. Flight ticket",
+    "Nhập kết quả, ghi chú, hoặc dán link Drive…":"Enter the result, notes or paste a Drive link…", "Nhập tên key task…":"Enter key task name…",
+    "Nhập tên sub-task…":"Enter sub-task name…", "Nhập tên công việc…":"Enter task name…", "Nhập kết quả / dán link…":"Enter result / paste link…", "Nhập tiêu đề…":"Enter a title…",
+    "Những phát hiện / thông tin quan trọng…":"Key findings / important information…", "Nội dung email…":"Email content…", "Số tiền":"Amount", "Tiêu đề email":"Email subject",
+    "Việc cần làm tiếp theo…":"Next actions…", "Chọn / nhập điểm đến":"Choose / type destination", "Người / đơn vị đi cùng, hoặc No":"Co-travelers, or No",
+    "Tự cộng từ dòng chi phí":"Summed from the cost lines", "VD: Đề nghị hoàn thành trước 20/07 và báo cáo lại.":"E.g. Please finish before 20/07 and report back.",
+    "Công tác phí: 200000\nVé xe: 300000":"Per diem: 200000\nBus ticket: 300000",
+    /* title */
+    "Bấm để chỉ xem / bỏ lọc việc đang thực hiện (chưa quá hạn)":"Click to show only / clear the filter of in-progress tasks (not overdue)",
+    "Bấm để chọn/bỏ chọn — chọn được nhiều người":"Click to select / deselect — several people allowed", "Bỏ":"Remove",
+    "Bấm để nhập kết quả":"Click to enter the result", "Bỏ toàn bộ bộ lọc — xem tất cả công việc":"Clear all filters — see all tasks",
+    "Chọn hạn mới — task quay lại lịch ở ngày hạn mới":"Pick a new deadline — the task returns to the calendar on that date",
+    "Chọn ngày":"Pick a date", "Chọn nhân sự để xem":"Choose people to view", "Click: xem ghi chú · Double-click: cập nhật":"Click: see note · Double-click: update",
+    "Double-click để cập nhật Key Task":"Double-click to update the Key Task", "Dạng bảng — rộng, đọc được nhiều chữ, sửa trực tiếp":"Table view — wide, shows more text, edit in place",
+    "Dạng danh sách theo Key Task":"List view by Key Task", "Key task chưa có sub-task":"Key task without sub-tasks", "Key task chưa có sub-task — thêm sub-task":"Key task without sub-tasks — add a sub-task",
+    "Key task này chưa có sub-task — kết quả ghi thẳng trên dòng Key Task":"This key task has no sub-tasks — the result is written on the Key Task row",
+    "Kho link/tài liệu đính kèm trong ô Task result":"Links / documents attached in the Task result cell", "Mở danh sách việc quá hạn để cập nhật":"Open the overdue list to update",
+    "Mở hộp cập nhật đầy đủ":"Open the full update box", "Mở để cập nhật chi tiết":"Open to update details", "Nhấp đúp để mở / cập nhật":"Double-click to open / update",
+    "Nhấp đúp vào chỗ trống để thêm việc":"Double-click an empty spot to add a task",
+    "Quét lại sheet Field Report của Sales → cập nhật Customer visiting & Working at office":"Rescan the Sales Field Report sheet → update Customer visiting & Working at office",
+    "Soạn email giao việc / trao đổi với nhân sự":"Write an assignment / discussion email to a colleague", "Sửa Key Task":"Edit Key Task", "Sửa chi tiết":"Edit details",
+    "Sửa đề xuất — ghi thẳng vào file Business Trip":"Edit the proposal — written directly to the Business Trip file", "Tháng sau":"Next month", "Tháng trước":"Previous month",
+    "Thêm sub-task vào key task này":"Add a sub-task to this key task", "Tạo đề xuất công tác & gửi email xin duyệt":"Create a business trip proposal & email it for approval",
+    "Tải lại dữ liệu mới nhất":"Reload the latest data", "Tổng số việc trong ngày":"Total tasks in the day",
+    "Tự động đồng bộ từ file Business Trip — sửa trên file đó":"Synced automatically from the Business Trip file — edit it there",
+    "Tự động đồng bộ từ sheet Field Report của Sales":"Synced automatically from the Sales Field Report sheet",
+    "Việc quá hạn chưa xong nằm ngoài khoảng đang xem":"Unfinished overdue tasks outside the range in view",
+    "Việc quá hạn không hiện trên lịch — bấm để xem & cập nhật":"Overdue tasks are not shown on the calendar — click to view & update",
+    "Xoá":"Delete", "Xoá chuyến đi khỏi file Business Trip":"Delete the trip from the Business Trip file", "Xoá dòng":"Delete row", "Xóa Key Task":"Delete Key Task",
+    "Xóa sạch lịch sử (cần mật khẩu)":"Clear all history (password required)", "Đánh dấu hoàn thành — task hiện ở ngày hôm nay":"Mark as completed — the task shows on today",
+    "Chạm vào chỗ trống để thêm việc":"Tap an empty spot to add a task", "BC tuần":"Report", "Đóng lịch":"Close calendar", "Đồng bộ lịch công tác ngay":"Sync business trips now", "Ẩn / hiện thanh bên":"Hide / show sidebar",
+    "Xem toàn màn hình":"Full screen", "Thoát toàn màn hình (Esc)":"Exit full screen (Esc)", "⛶ Toàn màn hình":"⛶ Full screen", "✕ Thu nhỏ":"✕ Exit full screen"
+  };
+  Object.keys(D).forEach(function(k){ DICT_EN[k]=D[k]; });
+  var WD={"CN":"Sun","T2":"Mon","T3":"Tue","T4":"Wed","T5":"Thu","T6":"Fri","T7":"Sat","Chủ nhật":"Sunday","Thứ 2":"Monday","Thứ 3":"Tuesday","Thứ 4":"Wednesday","Thứ 5":"Thursday","Thứ 6":"Friday","Thứ 7":"Saturday",
+          "Thứ hai":"Monday","Thứ ba":"Tuesday","Thứ tư":"Wednesday","Thứ năm":"Thursday","Thứ sáu":"Friday","Thứ bảy":"Saturday"};
+  var R=[
+    [/^(Chủ nhật|Thứ [2-7]|Thứ hai|Thứ ba|Thứ tư|Thứ năm|Thứ sáu|Thứ bảy|CN|T[2-7])(, [\d\/]+)?( · Hôm nay)?$/, function(_,d,dt,t){ return WD[d]+(dt||"")+(t?" · Today":""); }],
+    [/^(\d[\d.,]*) đ$/, "$1 VND"], [/^Tổng: (\d[\d.,]*) đ$/, "Total: $1 VND"],
+    [/^(.+ → .+) · (\d+) ngày · (.+)$/, "$1 · $2 days · $3"],
+    [/^(.*)\. Quản lý duyệt bằng$/, "$1. The manager approves with"],
+    [/^\((\d+) · (\d+) người trễ\)$/, "($1 · $2 people late)"], [/^(\d+) trễ$/, "$1 late"],
+    [/^(\d{2}\/\d{2}\/\d{4}) · quá hạn$/, "$1 · overdue"], [/^(\d{2}\/\d{2}\/\d{4}) · hôm nay$/, "$1 · today"],
+    [/^(\d{2}\/\d{2}\/\d{4}) · còn (\d+) ngày$/, "$1 · $2 days left"],
+    [/^(.+) phụ trách (\d+) sub-task trong key task này$/, "$1 is in charge of $2 sub-task(s) in this key task"],
+    [/^(.+) phụ trách (\d+) sub-task$/, "$1 is in charge of $2 sub-task(s)"],
+    [/^(.+) · (\d+) việc$/, "$1 · $2 tasks"],
+    [/^(.+) — nhấp đúp để mở$/, "$1 — double-click to open"],
+    [/^Nhấp đúp vào chỗ trống để thêm việc ngày (.+)$/, "Double-click an empty spot to add a task on $1"],
+    [/^Chạm vào chỗ trống để thêm việc ngày (.+)$/, "Tap an empty spot to add a task on $1"],
+    [/^Thêm sub-task vào key task “(.+)”$/, "Add a sub-task to key task “$1”"],
+    [/^Xem lịch của (.+)$/, "View $1's calendar"],
+    [/^Chưa có báo cáo tháng cho (.+)\.$/, "No monthly report for $1."]
+  ];
+  if(typeof RULES_EN==="object" && RULES_EN.unshift){
+    /* đặt TRƯỚC các luật cũ (vd. /^(\d+) việc$/ hay /^✓ (.+)$/) để khớp đúng mẫu dài hơn */
+    for(var i=R.length-1;i>=0;i--) RULES_EN.unshift(R[i]);
+  }
+})();
+</script>
 </body>
 </html>
