@@ -1918,7 +1918,17 @@ body.c10-fullmode #fab-wrap,body.c10-fullmode .act-toggle,body.c10-fullmode #act
 .c10-lock{font-size:10.5px;font-weight:700;color:var(--mmh-blue);text-transform:none;letter-spacing:0}
 input.c10-ro{background:#F3F6FB;color:var(--mmh-navy);font-weight:700}
 /* ⭐ v13 — Smart search Key task (thêm việc từ Lịch) + menu Gửi báo cáo */
+.ks-mode{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ks-mode button{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1.5px solid var(--border);border-radius:12px;background:#fff;text-align:left;cursor:pointer;font:inherit;color:var(--text);transition:.12s}
+.ks-mode button:hover{border-color:var(--lb1)}
+.ks-mode button.on{border-color:var(--mmh-blue);background:#F2F6FD;box-shadow:0 0 0 3px rgba(58,92,170,.10)}
+.ks-mode button.on b{color:var(--mmh-blue)}
+.ks-mode b{display:block;font-size:13.5px;font-weight:800}
+.ks-mode small{display:block;font-size:11.5px;color:var(--faint);font-weight:600;margin-top:2px;line-height:1.35}
+@media(max-width:520px){ .ks-mode{grid-template-columns:1fr} }
 .ks{border:1.5px solid var(--border);border-radius:12px;background:#fff;overflow:hidden}
+.ks-pan{background:#FAFCFF}
+.ks-cur+.ks-pan{border-top:1.5px solid var(--border)}
 .ks-cur{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;background:#fff;border:0;text-align:left;cursor:pointer;font:inherit;color:var(--text)}
 .ks-cur:hover{background:var(--pale)}
 .ks-ic{flex:0 0 28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;font-weight:800}
@@ -9122,13 +9132,15 @@ function c10Add(iso, kno, lockStart){
   var defPic=(canAsg && c10Pics().length===1)?c10Pics()[0]:me;
   var kSel=kno?(S.keyTasks||[]).filter(function(k){return k.no===kno;})[0]:null;
   showModal('<div class="modal-box"><div class="modal-head"><h3>'+(kSel?'➕ Thêm sub-task — '+fmtVNFull(iso):'➕ Thêm việc — '+fmtVNFull(iso))+'</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body">'
-    +(kSel?'<div class="c10-keybox">📂 Key task: <b>'+esc(kSel.keyTask)+'</b></div>':'')
-    +'<div class="field"><label>'+(kSel?'Tên sub-task':'Tên công việc')+'</label><input id="c10a-name" placeholder="'+(kSel?'Nhập tên sub-task…':'Nhập tên công việc…')+'"/></div>'
-    +'<div class="field"><label>Thuộc</label><input type="hidden" id="c10a-key" value="'+esc(kno||"")+'"/>'
-      +'<div class="ks" id="ks"><button type="button" class="ks-cur" id="ks-cur" onclick="ksToggle()"></button>'
+    +'<div class="field"><label>Thêm dạng</label><input type="hidden" id="c10a-key" value="'+esc(kno||"")+'"/>'
+      +'<div class="ks-mode"><button type="button" id="ksm-key" onclick="ksMode(\'key\')"><span class="ks-ic new">＋</span><span><b>Key task mới</b><small>Tạo một đầu việc chính mới</small></span></button>'
+      +'<button type="button" id="ksm-sub" onclick="ksMode(\'sub\')"><span class="ks-ic key">📂</span><span><b>Sub-task</b><small>Thêm việc phụ vào Key task có sẵn</small></span></button></div></div>'
+    +'<div class="field" id="ks-w" style="display:none"><label>Chọn Key task</label>'
+      +'<div class="ks" id="ks"><button type="button" class="ks-cur" id="ks-cur" onclick="ksOpen()"></button>'
       +'<div class="ks-pan" id="ks-pan" style="display:none"><div class="ks-in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>'
       +'<input id="ks-q" autocomplete="off" placeholder="Tìm key task theo tên, PIC, loại việc…" oninput="KS.idx=-1;ksRender()" onkeydown="ksKey(event)"/></div>'
       +'<div class="ks-list" id="ks-list"></div></div></div></div>'
+    +'<div class="field"><label id="c10a-nml">Tên công việc</label><input id="c10a-name" placeholder="Nhập tên công việc…"/></div>'
     +'<div class="field-row"><div class="field" id="c10a-typew"'+(kno?' style="display:none"':'')+'><label>Loại việc</label><input id="c10a-type" class="combo-input" list="c10a-tl" placeholder="Chọn/nhập loại"/>'
       +'<datalist id="c10a-tl">'+typeOpts.map(function(t){ return '<option value="'+esc(t)+'">'; }).join("")+'</datalist></div>'
       +'<div class="field"><label>PIC</label>'+(canAsg?'<select id="c10a-pic" onchange="c10PicChange()">'+picOptionsHtml(defPic)+'</select>':'<select id="c10a-pic" disabled><option selected>'+esc(me)+'</option></select>')+'</div></div>'
@@ -9137,9 +9149,10 @@ function c10Add(iso, kno, lockStart){
       +'<div class="field"><label>Hạn</label><input type="date" id="c10a-due" value="'+iso+'" min="'+iso+'"/></div></div>'
     +'<div class="modal-footer"><button class="btn-secondary" onclick="closeModal()">Huỷ</button><button class="btn-primary" id="c10a-save" onclick="c10AddSave()">➕ Thêm</button></div></div></div>');
   ksInit(keys, kno);
-  setTimeout(function(){ var i=$("c10a-name"); if(i) i.focus(); },120);
+  if(kno) setTimeout(function(){ var i=$("c10a-name"); if(i) i.focus(); },120);
 }
 function c10AddSave(){
+  if(KS.mode==="sub" && !$("c10a-key").value){ toast("Chọn Key task để thêm sub-task"); ksOpen(); return; }
   var name=$("c10a-name").value.trim(); if(!name){ toast("Nhập tên công việc"); return; }
   var btn=$("c10a-save"); if(btn.disabled) return; btn.disabled=true;
   var kno=$("c10a-key").value, pic=canAssign()?($("c10a-pic").value||S.user.pic):S.user.pic;
@@ -9151,12 +9164,12 @@ function c10AddSave(){
   if(kno) doAddSub({ kno:kno, name:name, pic:pic, status:"To Do", start:st, planned:du, mail:mail });
   else doAddKey({ name:name, type:ty, pic:pic, start:st, planned:du, mail:mail });
 }
-/* ══════ ⭐ v13 — SMART SEARCH KEY TASK (ô "Thuộc" khi thêm việc từ Lịch) ══════
-   Gõ tìm theo tên key task / PIC / loại việc / số No — gõ không dấu vẫn ra.
-   Thứ tự: ① Key task của PIC đang chọn ở ô PIC  ② Key task có sub-task của PIC đó  ③ Key task khác
-   → trong nhóm: khớp tên tốt hơn trước, In Progress trước To Do, tạo mới hơn (No lớn) trước.
-   Việc đã Completed/Cancelled chỉ hiện khi đang gõ tìm (nhóm cuối, mờ). Phím ↑ ↓ Enter Esc. */
-var KS={ keys:[], val:"", idx:-1, items:[""], open:false };
+/* ══════ ⭐ v13.1 — THÊM VIỆC TỪ LỊCH: 2 LỰA CHỌN + SMART SEARCH KEY TASK ══════
+   ① Key task mới  ·  ② Sub-task → ô tìm Key task (gõ không dấu vẫn ra: tên / PIC / loại việc / số No).
+   Thứ tự: Key task của PIC đang chọn → Key task có sub-task của PIC đó → Key task khác;
+   trong nhóm: khớp tên tốt hơn, In Progress trước To Do, No lớn (mới hơn) trước.
+   Completed/Cancelled chỉ hiện khi đang gõ tìm (nhóm cuối, mờ). Phím ↑ ↓ Enter Esc. */
+var KS={ keys:[], mode:"key", val:"", idx:-1, items:[], open:false };
 function ksFold(v){ return String(v==null?"":v).normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[đĐ]/g,"d").toLowerCase(); }
 function ksHi(txt, toks){
   txt=String(txt==null?"":txt).normalize("NFC");
@@ -9170,26 +9183,34 @@ function ksHi(txt, toks){
 }
 function ksPic(){ var e=$("c10a-pic"); return (e&&e.value)||S.user.pic; }
 function ksInit(keys, kno){
-  KS={ keys:keys||[], val:kno||"", idx:-1, items:[""], open:false };
-  if(!kno && KS.keys.length) ksOpen(true); else ksPaintCur();   /* chưa chọn key task → mở sẵn danh sách */
+  KS={ keys:keys||[], mode:kno?"sub":"key", val:kno||"", idx:-1, items:[], open:false };
+  ksApplyMode();
+}
+function ksMode(m){ if(KS.mode===m) return; KS.mode=m; _modalTouched=true; ksApplyMode(); }
+function ksApplyMode(){
+  var sub=KS.mode==="sub";
+  var bk=$("ksm-key"), bs=$("ksm-sub"); if(bk) bk.classList.toggle("on",!sub); if(bs) bs.classList.toggle("on",sub);
+  var w=$("ks-w"); if(w) w.style.display=sub?"":"none";
+  var tw=$("c10a-typew"); if(tw) tw.style.display=sub?"none":"";
+  var nl=$("c10a-nml"), ni=$("c10a-name");
+  if(nl) nl.textContent=sub?"Tên sub-task":"Tên công việc";
+  if(ni) ni.placeholder=sub?"Nhập tên sub-task…":"Nhập tên công việc…";
+  var h=$("c10a-key"); if(h) h.value=sub?KS.val:"";
+  if(sub && !KS.val) ksOpen(); else { ksClose(); if(ni) setTimeout(function(){ ni.focus(); },30); }
 }
 function ksPaintCur(){
   var el=$("ks-cur"); if(!el) return;
   var k=KS.val?KS.keys.filter(function(x){ return x.no===KS.val; })[0]:null;
-  el.innerHTML=(k
-    ? '<span class="ks-ic key">📂</span><span class="ks-ct"><span class="ks-cs">Sub-task của</span><b>'+esc(k.keyTask)+'</b></span>'
-      +'<span class="ks-av" style="background:'+avColor(picOf(k))+'">'+esc(initials(picOf(k)))+'</span>'
-    : '<span class="ks-ic new">＋</span><span class="ks-ct"><b>Tạo KEY TASK mới</b><span class="ks-cs">Tên công việc ở trên sẽ thành một Key task</span></span>')
-    +'<span class="ks-chg">'+(KS.open?'Thu gọn ▴':'Đổi ▾')+'</span>';
-  var h=$("c10a-key"); if(h) h.value=KS.val;
-  var tw=$("c10a-typew"); if(tw) tw.style.display=KS.val?"none":"";
+  el.style.display=(k && !KS.open)?"":"none";            /* đang mở ô tìm thì ẩn — không hiện trùng */
+  if(!k){ el.innerHTML=""; return; }
+  el.innerHTML='<span class="ks-ic key">📂</span><span class="ks-ct"><span class="ks-cs">Sub-task của</span><b>'+esc(k.keyTask)+'</b></span>'
+    +'<span class="ks-av" style="background:'+avColor(picOf(k))+'">'+esc(initials(picOf(k)))+'</span><span class="ks-chg">Đổi ▾</span>';
 }
-function ksToggle(){ if(KS.open) ksClose(); else ksOpen(); }
-function ksOpen(noFocus){
+function ksOpen(){
   var p=$("ks-pan"); if(!p) return;
   KS.open=true; KS.idx=-1; p.style.display="block";
   ksRender(); ksPaintCur();
-  if(!noFocus) setTimeout(function(){ var q=$("ks-q"); if(q) q.focus(); },30);
+  setTimeout(function(){ var q=$("ks-q"); if(q) q.focus(); },30);
 }
 function ksClose(){ KS.open=false; var p=$("ks-pan"); if(p) p.style.display="none"; ksPaintCur(); }
 function ksRender(){
@@ -9209,11 +9230,8 @@ function ksRender(){
   });
   rows.sort(function(a,b){ return a.g-b.g || b.sc-a.sc || a.ip-b.ip || b.n-a.n; });
   var GL=["Key task của "+pic, "Key task có việc của "+pic, "Key task khác", "Đã hoàn thành / huỷ"];
-  KS.items=[""];
-  var h='<div class="ks-it'+(KS.val===""?' sel':'')+'" data-i="0" onmousedown="event.preventDefault()" onclick="ksPick(0)">'
-    +'<span class="ks-ic new">＋</span><span class="ks-ct"><b>Tạo KEY TASK mới</b><span class="ks-cs">'
-    +(raw?'Chọn để dùng nội dung đang tìm làm tên công việc':'Tên công việc ở trên sẽ thành một Key task')+'</span></span></div>';
-  var last=-1, MAX=80;
+  KS.items=[];
+  var h="", last=-1, MAX=80;
   rows.slice(0,MAX).forEach(function(r){
     if(r.g!==last){ last=r.g; h+='<div class="ks-gh">'+esc(GL[r.g])+'</div>'; }
     var i=KS.items.length; KS.items.push(r.k.no);
@@ -9224,10 +9242,10 @@ function ksRender(){
       +'<span class="ks-mt"><span>'+ksHi(pc,toks)+'</span>'+(k.type?'<span>'+ksHi(k.type,toks)+'</span>':'')+'<span>'+n+' sub-task</span></span></span>'
       +'<span class="ks-pg"><i style="width:'+pg+'%"></i></span><b class="ks-pct">'+pg+'%</b></div>';
   });
-  if(!rows.length) h+='<div class="ks-emp">'+(toks.length?'Không tìm thấy key task phù hợp — chọn “Tạo KEY TASK mới” ở trên.':'Chưa có key task nào.')+'</div>';
+  if(!rows.length) h='<div class="ks-emp">'+(toks.length?'Không tìm thấy key task phù hợp — thử từ khoá khác, hoặc chọn “Key task mới” ở trên.':'Chưa có key task nào để thêm sub-task.')+'</div>';
   else if(rows.length>MAX) h+='<div class="ks-emp">Gõ thêm từ khoá để thu hẹp danh sách…</div>';
   box.innerHTML=h;
-  if(KS.idx<0 || KS.idx>=KS.items.length) KS.idx = toks.length ? (KS.items.length>1?1:0) : Math.max(0, KS.items.indexOf(KS.val));
+  if(KS.idx<0 || KS.idx>=KS.items.length) KS.idx = toks.length ? 0 : Math.max(0, KS.items.indexOf(KS.val));
   ksMove();
 }
 function ksMove(){
@@ -9238,19 +9256,18 @@ function ksMove(){
   });
 }
 function ksKey(e){
-  var n=KS.items.length||1;
+  var n=KS.items.length; if(!n && e.key!=="Escape") return;
   if(e.key==="ArrowDown"){ e.preventDefault(); KS.idx=(KS.idx+1)%n; ksMove(); }
   else if(e.key==="ArrowUp"){ e.preventDefault(); KS.idx=(KS.idx-1+n)%n; ksMove(); }
   else if(e.key==="Enter"){ e.preventDefault(); e.stopPropagation(); ksPick(KS.idx<0?0:KS.idx); }
-  else if(e.key==="Escape"){ ksClose(); }
+  else if(e.key==="Escape"){ if(KS.val) ksClose(); }
 }
 function ksPick(i){
   var v=KS.items[i]; if(v===undefined) return;
   KS.val=v; _modalTouched=true;
-  var nm=$("c10a-name"), raw=(($("ks-q")||{}).value||"").trim();
-  if(v==="" && raw && nm && !nm.value.trim()) nm.value=raw;
+  var h=$("c10a-key"); if(h) h.value=v;
   ksClose();
-  if(nm && !nm.value.trim()) nm.focus();
+  var nm=$("c10a-name"); if(nm) nm.focus();
 }
 /* ── ⭐ v13: nút "Gửi báo cáo" trên Lịch → Báo cáo tuần / Báo cáo tháng (dùng đúng hộp thoại của 2 tab) ── */
 function c10RepMenu(ev){
@@ -9270,10 +9287,12 @@ document.addEventListener("click", function(e){
 /* dịch EN */
 (function(){
   if(typeof DICT_EN!=="object") return;
-  var D={ "Tạo KEY TASK mới":"Create new KEY TASK", "Sub-task của":"Sub-task of", "Tên công việc ở trên sẽ thành một Key task":"The task name above becomes a Key task",
-    "Chọn để dùng nội dung đang tìm làm tên công việc":"Pick to use your search text as the task name", "Thu gọn ▴":"Collapse ▴", "Đổi ▾":"Change ▾",
+  var D={ "Thêm dạng":"Add as", "Key task mới":"New key task", "Tạo một đầu việc chính mới":"Create a new main task",
+    "Thêm việc phụ vào Key task có sẵn":"Add a sub-task to an existing key task", "Chọn Key task":"Choose key task",
+    "Sub-task của":"Sub-task of", "Đổi ▾":"Change ▾", "Chọn Key task để thêm sub-task":"Choose a key task to add the sub-task to",
+    "Không tìm thấy key task phù hợp — thử từ khoá khác, hoặc chọn “Key task mới” ở trên.":"No matching key task — try other keywords, or choose “New key task” above.",
+    "Chưa có key task nào để thêm sub-task.":"No key tasks to add a sub-task to yet.",
     "Tìm key task theo tên, PIC, loại việc…":"Search key tasks by name, assignee, type…", "Key task khác":"Other key tasks", "Đã hoàn thành / huỷ":"Completed / cancelled",
-    "Không tìm thấy key task phù hợp — chọn “Tạo KEY TASK mới” ở trên.":"No matching key task — pick “Create new KEY TASK” above.", "Chưa có key task nào.":"No key tasks yet.",
     "Gõ thêm từ khoá để thu hẹp danh sách…":"Type more to narrow the list…", "Gửi báo cáo tuần / tháng":"Send weekly / monthly report",
     "Báo cáo tháng":"Monthly report", "Kết quả tuần & plan tuần sau":"This week's results & next week's plan", "Gửi thử · gửi team · tải PDF":"Test send · send to team · download PDF" };
   Object.keys(D).forEach(function(k){ DICT_EN[k]=D[k]; });
