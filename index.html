@@ -10601,8 +10601,8 @@ html,body{background:var(--gray)}
 })();
 var MV=null;
 function mvNorm(v){ return String(v==null?"":v).normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/đ/gi,"d").toLowerCase().replace(/\s+/g," ").trim(); }
-/* nguồn (backend) đã có lệnh moveSub — thêm "management" / "backoffice" khi 2 backend đó cập nhật v13 */
-var MOVE_SUB_SOURCES=["marketing"];
+/* nguồn (backend) đã có lệnh moveSub — cả 3 backend đã cập nhật v13.2 */
+var MOVE_SUB_SOURCES=["marketing","backoffice","management"];
 function mvCanMove(s){ return MOVE_SUB_SOURCES.indexOf(S.source)>=0 && !!(s && !s.__isKeyRow && !s.__tmp && !vIsSync(s) && !isTripRow(s) && canEditPic(s.pic) && String(s.no||"").indexOf(".")>0); }
 function openMoveSub(sno){
   sno=realNo(sno);
