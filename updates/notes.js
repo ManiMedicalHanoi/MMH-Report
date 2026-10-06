@@ -8,6 +8,18 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id: "2026-10-06-v15.6",
+    version: "v15.6",
+    date: "2026-10-06",
+    title: "Nhãn việc được giao: “✉ Email từ …”",
+    summary: "Việc được giao nay ghi rõ nguồn: “✉ Email từ Thuong” thay cho “Thuong giao”.",
+    items: [
+      { type: "imp", icon: "✉", title: "“✉ Email từ <người giao>” trên thẻ việc và popup",
+        text: "Trên Lịch làm việc, Cập nhật công việc và popup việc mới, nhãn hiển thị <b>✉ Email từ Thuong</b> (nền đỏ nhạt = quan trọng); hoàn thành xong chuyển xám <b>✓ Email từ Thuong</b>.",
+        img: "updates/v15.6/email-tu.jpg" }
+    ]
+  },
+  {
     id: "2026-10-06-v15.5",
     version: "v15.5",
     date: "2026-10-06",
@@ -16,11 +28,11 @@ window.MMH_UPDATES = [
     guide: "docs/HDSD_Giao_viec_va_du_lieu_MKT_v15.5.pdf",
     folder: "https://drive.google.com/drive/folders/1qrY9IGdSRSOUZnIkJSvjLaEXYJceBfY6",
     items: [
-      { type: "new", icon: "⚑", title: "Việc mới được giao — popup khi đăng nhập",
+      { type: "new", icon: "✉", title: "Việc mới được giao — popup khi đăng nhập",
         text: "Khi Team Leader / Manager giao việc cho bạn, lần đăng nhập kế tiếp sẽ hiện popup ghi rõ <b>người giao</b>, Key task và <b>hạn</b> (mỗi việc chỉ hiện 1 lần). Bấm <b>Mở công việc</b> để cập nhật ngay.",
         img: "updates/v15.5/viec-duoc-giao.jpg" },
-      { type: "new", icon: "🚩", title: "Cờ “⚑ … giao” trên Lịch làm việc & Cập nhật công việc",
-        text: "Việc được giao luôn có nhãn đỏ nhạt <b>⚑ Tên người giao</b> (đánh dấu quan trọng); hoàn thành xong chuyển xám <b>✓</b>.",
+      { type: "new", icon: "✉", title: "Nhãn “✉ Email từ …” trên Lịch làm việc & Cập nhật công việc",
+        text: "Việc được giao luôn có nhãn đỏ nhạt <b>✉ Email từ &lt;người giao&gt;</b> (đánh dấu quan trọng); hoàn thành xong chuyển xám <b>✓</b>.",
         img: "updates/v15.5/co-giao-viec.jpg" },
       { type: "new", icon: "📨", title: "Hoàn thành ⇒ người giao tự nhận email",
         text: "Chỉ cần chuyển việc sang <b>Completed</b> — hệ thống tự gửi email cho người giao (CC người làm) kèm kết quả và link Report Hub. Email giao việc nay cũng có <b>link MMH Report Hub</b>.",
