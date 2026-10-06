@@ -87,4 +87,7 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   đến `AUTH.GRACE`; giai đoạn 2 (TODO mmh-backend) backend bắt buộc `tk`. Không đưa email nhân sự vào repo công khai này.
   Mock: mã đúng `123456`, `newPage(b,{nopic:true,gate:true})` dừng ở màn đăng nhập, `{tk:'mmh.product'}` có sẵn phiên,
   `{revoked:true}` phiên bị thu hồi; `M.TKS` ghi tham số `tk` của mọi lệnh gọi. HDSD: `build160.js`.
+- **Tìm nhanh `QS` (v16.1, Ctrl/⌘ + K, nút `#qs-btn`)**: tìm việc 3 phòng ban (`S._allKeys` + `SRC_CACHE` / `LS_BOOT`) và `MC.ev`
+  (sự kiện, bài đăng, công tác, đào tạo), bỏ dấu, PIC chỉ thấy việc của mình. Thêm lệnh nhanh mới: đẩy vào `window.QS_EXTRA_CMDS`
+  (`{ic,title,hay,run}` hoặc hàm trả về đối tượng đó / null).
 - `script.google.com` bị chặn trong môi trường Claude: không gọi thật được, luôn dùng mock để test.

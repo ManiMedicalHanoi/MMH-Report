@@ -8,6 +8,23 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id: "2026-10-06-v16.1",
+    version: "v16.1",
+    date: "2026-10-06",
+    title: "Tìm nhanh mọi thứ: Ctrl + K",
+    summary: "Một ô tìm cho việc ở cả 3 phòng ban, sự kiện, bài đăng, công tác và đào tạo — <b>không cần gõ dấu</b>. Bấm <b>Ctrl + K</b> (máy Mac: <b>⌘ K</b>) hoặc nút <b>Tìm nhanh</b> trên thanh trên cùng.",
+    items: [
+      { type: "new", icon: "🔎", title: "Gõ vài chữ, ra ngay kết quả",
+        text: "Bấm <b>Ctrl + K</b> → gõ vài chữ, ví dụ <b>jizai</b> → kết quả xếp theo nhóm: Việc · Sự kiện & bài đăng · Công tác · Đào tạo. Dùng <b>↑ ↓</b> để chọn, <b>Enter</b> để mở đúng chỗ, <b>Tab</b> để sang nhóm kế.",
+        img: "updates/v16.1/tim-nhanh.jpg" },
+      { type: "new", icon: "☑️", title: "Mở thẳng công việc, kể cả ở phòng ban khác",
+        text: "Chọn một việc → mở ngay khung cập nhật của việc đó; việc ở phòng ban khác thì app tự chuyển phòng rồi mở. PIC thấy việc của mình; quản lý thấy cả nhóm.",
+        img: "updates/v16.1/tim-viec.jpg" },
+      { type: "new", icon: "⚡", title: "Lệnh nhanh",
+        text: "Không có việc nào khớp? Bấm <b>Enter</b> ở dòng <b>Thêm việc mới “…”</b> để tạo việc với đúng tên vừa gõ. Gõ <b>bao cao</b>, <b>tien do</b>, <b>doi mau</b>… để mở nhanh Báo cáo tuần, Tiến độ, Màu giao diện." }
+    ]
+  },
+  {
     id: "2026-10-06-v16.0",
     version: "v16.0",
     date: "2026-10-06",

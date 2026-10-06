@@ -151,6 +151,12 @@ S.v160nudge=async b=>{ const p=await newPage(b,{pic:'Giang',noChecks:true}); awa
 S.v160menu=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',noChecks:true}); await p.waitForTimeout(5000); await ev(p,()=>{ NT.close&&NT.close(); if(window.UPD&&UPD.isOpen()) UPD.close(); }); await p.waitForTimeout(400);
   await ev(p,()=>UM.open()); await p.waitForTimeout(300);
   await shot(p,'v160menu',{marks:[['#um-auth',1,'tl'],['#um-out',2,'tl']]}); };
+/* ★ v16.1 — tìm nhanh Ctrl+K */
+S.v161qs=async b=>{ const p=await newPage(b,{noChecks:true,tk:'mmh.product',vp:{width:1440,height:900}}); await p.waitForTimeout(2500); await ev(p,()=>{ NT.close&&NT.close(); if(window.UPD&&UPD.isOpen()) UPD.close(); });
+  await p.keyboard.press('Control+k'); await p.keyboard.type('jizai'); await p.waitForTimeout(400);
+  await shot(p,'v161qs',{marks:[['#qs .qs-in',1,'tl'],['#qs .qs-it.on',2,'tr'],['#qs .qs-it:last-child',3,'tl'],['#qs-btn',4,'tl']]});
+  await ev(p,()=>{ var i=document.querySelector('#qs .qs-in'); i.value=''; i.dispatchEvent(new Event('input')); }); await p.keyboard.type('bang gia km'); await p.waitForTimeout(400);
+  await shot(p,'v161task',{marks:[['#qs .qs-it.on',1,'tr']]}); };
 module.exports={S,newPage,shot,ev};
 if(require.main===module)(async()=>{
   const b=await chromium.launch({args:['--lang=vi-VN']});
