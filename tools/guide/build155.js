@@ -11,7 +11,7 @@ slide({
     <div class="cv-tag">THÔNG BÁO CẬP NHẬT · REPORT HUB v15.5</div>
     <h1>Giao việc &amp; dữ liệu Marketing<br><span>Rõ người giao · Tự báo hoàn thành · Sửa ngay trên lịch</span></h1>
     <p class="cv-p">Việc được giao hiện popup cho người nhận và được cắm cờ trên lịch; hoàn thành là người giao tự nhận email. Sự kiện offline và bài đăng online sửa / thêm / xoá thẳng từ MMH Calendar.</p>
-    <div class="cv-chips"><span>⚑ Việc được giao</span><span>📨 Email tự động</span><span>🎪 Marketing Offline</span><span>📣 Digital Marketing</span></div>
+    <div class="cv-chips"><span>✉ Việc được giao</span><span>📨 Email tự động</span><span>🎪 Marketing Offline</span><span>📣 Digital Marketing</span></div>
     <div class="cv-link">Mở app: ${a(L.app)}</div>
     <div class="cv-by">Product Team · MANI Medical Hanoi · 10/2026</div>
   </div>
@@ -39,7 +39,7 @@ slide({
   <div class="two">
     <div class="col-t">${steps([
     [1, 'Ngay khi đăng nhập: <b>“Bạn có N việc mới được giao”</b>.'],
-    [2, 'Mỗi việc ghi rõ <b>người giao</b>, Key task, ngày bắt đầu và <b>hạn</b>.'],
+    [2, 'Mỗi việc ghi rõ <b>Email từ ai</b> (người giao), Key task, ngày bắt đầu và <b>hạn</b>.'],
     [3, '<b>Mở công việc</b> để cập nhật tiến độ ngay, hoặc <b>Xem Lịch làm việc</b>.'],
   ])}
     ${tip('Thứ tự popup khi đăng nhập: Thông báo cập nhật → Nhắc hạn chứng từ → <b>Việc mới được giao</b> → Thư nhắc việc. Mỗi hộp chờ hộp trước đóng mới hiện.')}</div>
@@ -49,12 +49,12 @@ slide({
 
 /* 4. Cờ */
 slide({
-  sec: 'GIAO VIỆC', kick: 'BƯỚC 3 / 4', acc: '#B04F4B', title: 'Cờ “⚑ … giao” trên lịch và danh sách', sub: 'Việc được giao luôn được đánh dấu quan trọng — ai cũng thấy ai là người giao', body: `
+  sec: 'GIAO VIỆC', kick: 'BƯỚC 3 / 4', acc: '#B04F4B', title: 'Nhãn “✉ Email từ …” trên lịch và danh sách', sub: 'Việc được giao luôn được đánh dấu quan trọng — ai cũng thấy ai là người giao', body: `
   <div class="pair">
     <div>${fig({ img: 'asgcal', w: 545, frame: 'browser', crop: [0.17, 0.12, 0.45, 0.62] })}
-      <div class="cap"><b>Lịch làm việc</b> — thẻ việc có nhãn đỏ nhạt <b>⚑ Thuong giao</b>; ô Deadline thu gọn hiện dấu <b>⚑</b>. Rê chuột để xem người giao, người nhận, hạn.</div></div>
+      <div class="cap"><b>Lịch làm việc</b> — thẻ việc có nhãn đỏ nhạt <b>✉ Email từ Thuong</b>; ô Deadline thu gọn hiện dấu <b>✉</b>. Rê chuột để xem người giao, người nhận, hạn.</div></div>
     <div>${fig({ img: 'asgdetail', w: 545, frame: 'browser', crop: [0.235, 0.36, 0.5, 0.32] })}
-      <div class="cap"><b>Cập nhật công việc / Tiến độ</b> — dòng sub-task có cùng nhãn. Hoàn thành xong nhãn chuyển xám <b>✓ Thuong giao</b>.</div></div>
+      <div class="cap"><b>Cập nhật công việc / Tiến độ</b> — dòng sub-task có cùng nhãn. Hoàn thành xong nhãn chuyển xám <b>✓ Email từ Thuong</b>.</div></div>
   </div>`
 });
 
