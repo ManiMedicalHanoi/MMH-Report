@@ -8,6 +8,21 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id: "2026-10-06-v15.4",
+    version: "v15.4",
+    date: "2026-10-06",
+    title: "Nhắc hạn nộp chứng từ chi phí & lịch rõ màu hơn",
+    summary: "Popup nhắc hạn nộp Phiếu công tác / Bảng kê mua hàng theo thông báo của Bộ phận Kế toán; màu MMH Calendar đậm hơn, dễ phân biệt.",
+    items: [
+      { type: "new", icon: "🧾", title: "Nhắc hạn nộp Phiếu công tác & Bảng kê mua hàng",
+        text: "Tự hiện khi đăng nhập vào ngày <b>14, 15, 28, 29</b> hàng tháng (và đúng ngày hạn): hạn Lần 1 (17:00 ngày 15), Lần 2 (17:00 ngày làm việc liền trước ngày làm việc cuối tháng), hồ sơ cần nộp và quy định trừ điểm Behaviour. Bấm <b>Tắt thông báo</b> để không hiện lại trong đợt đó.",
+        img: "updates/v15.4/nhac-han-chung-tu.jpg" },
+      { type: "imp", icon: "📅", title: "MMH Calendar rõ màu hơn",
+        text: "Thẻ lịch tô nền nhẹ theo từng loại, vạch màu đậm hơn; nút bật/tắt và thẻ số liệu dùng đúng màu của loại lịch để dễ phân biệt.",
+        img: "updates/v15.4/lich-ro-mau.jpg" }
+    ]
+  },
+  {
     id: "2026-10-06-v15.3",
     version: "v15.3",
     date: "2026-10-06",
