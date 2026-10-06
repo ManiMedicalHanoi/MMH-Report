@@ -8,6 +8,28 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id: "2026-10-06-v16.0",
+    version: "v16.0",
+    date: "2026-10-06",
+    title: "Đăng nhập bằng email công ty + mã 6 số",
+    summary: "Mỗi người một tài khoản: nhập email công ty, nhận <b>mã 6 số</b> qua email, nhập mã là vào. Máy được ghi nhớ <b>30 ngày</b>. Cách chọn tên chỉ còn dùng tạm đến hết <b>13/10</b>.",
+    guide: "docs/HDSD_Dang_nhap_email_v16.0.pdf",
+    items: [
+      { type: "new", icon: "✉️", title: "Nhập email công ty để đăng nhập",
+        text: "Màn đăng nhập: gõ email <b>@mani.inc</b> hoặc <b>@manimedicalhanoi.com</b> → <b>Gửi mã đăng nhập</b>. Mã được gửi tới đúng địa chỉ bạn vừa gõ.",
+        img: "updates/v16.0/dang-nhap-email.jpg" },
+      { type: "new", icon: "🔢", title: "Nhập mã 6 số — xong",
+        text: "Mở email <b>“Mã đăng nhập MMH Report”</b> → gõ 6 số, app tự đăng nhập. Chưa thấy email: xem thư mục <b>Junk / Thư rác</b>, hoặc bấm <b>Gửi lại mã</b>.",
+        img: "updates/v16.0/nhap-ma.jpg" },
+      { type: "imp", icon: "🛡️", title: "Đang dùng bằng cách chọn tên? Xác thực một lần",
+        text: "Bấm <b>Xác thực ngay</b> ở lời nhắc cuối màn hình (hoặc menu tên của bạn) → nhập email và mã. Không bị đăng xuất, không mất việc đang làm. Nên làm trước ngày <b>13/10</b>.",
+        img: "updates/v16.0/xac-thuc-trong-app.jpg" },
+      { type: "imp", icon: "👤", title: "“Đổi người dùng” giờ là “Đăng xuất”",
+        text: "Menu tên của bạn hiện email đang đăng nhập. Dùng máy chung thì bấm <b>Đăng xuất</b> khi xong việc.",
+        img: "updates/v16.0/menu-da-xac-thuc.jpg" }
+    ]
+  },
+  {
     id: "2026-10-06-v15.9",
     version: "v15.9",
     date: "2026-10-06",
