@@ -8,7 +8,9 @@ async function newPage(b, o){
   await p.addInitScript(()=>{ try{ localStorage.setItem('mmh_pic','Giang'); localStorage.setItem('mmh_src','marketing'); }catch(_){} });
   await M.install(p,o);
   await p.goto('file://'+path.resolve(__dirname,'../../index.html'));
+  if(!o.upd) await p.evaluate(()=>{ if(window.UPD) UPD.active=function(){ return []; }; });   /* ẩn thông báo cập nhật khi chụp cảnh khác */
   await p.waitForFunction(()=>window.S&&S.user&&S.user.pic==='Giang'&&document.getElementById('app').style.display==='block',null,{timeout:20000});
+  if(!o.upd) await p.evaluate(()=>{ if(window.UPD && UPD.isOpen()) UPD.close(); });
   await p.waitForFunction(()=>window.MC&&MC.st&&MC.st.trip&&MC.st.trip.s&&MC.st.trip.s!=='load',null,{timeout:20000});
   await p.waitForTimeout(600);
   return p;
@@ -95,6 +97,8 @@ S.online=async b=>{ const p=await newPage(b,{}); await openCal(p,[2026,8,1],'mon
   const id=await ev(p,()=>{ const e=MC.ev.find(x=>x.k==='pevent'&&x.n&&x.n.link)||MC.ev.find(x=>x.k==='pevent'); return e.id; });
   await ev(p,id=>MC.open(id),id); await p.waitForTimeout(700);
   await shot(p,'online',{marks:[['#mc-dr .mc-kv',1,'tl'],['#mc-dr .mc-lks',2,'tl']]}); };
+S.notice=async b=>{ const p=await newPage(b,{upd:true,noChecks:true}); await p.waitForFunction(()=>UPD.isOpen(),null,{timeout:10000}); await p.waitForTimeout(500);
+  await shot(p,'notice',{marks:[['#upd .upd-hd .k',1,'tl'],['#upd .upd-it a.im',2,'tl'],['#upd-hide',3,'tl'],['#upd .upd-ft .doc',4,'tl']]}); };
 S.listview=async b=>{ const p=await newPage(b,{}); await openCal(p,[2026,9,1],'list'); await shot(p,'listview',{marks:[]}); };
 S.phone=async b=>{ const p=await newPage(b,{vp:{width:390,height:844},mobile:true}); await ev(p,()=>{ NT.close(); MC.f.kinds.trip=1; MC.ref=new Date(2026,9,6); openMMHCalendar(); MC.setView('list'); }); await p.waitForTimeout(1200); await ev(p,()=>NT.close());
   await shot(p,'phone',{marks:[]});
