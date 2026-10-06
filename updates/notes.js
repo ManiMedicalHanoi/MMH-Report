@@ -8,6 +8,24 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id: "2026-10-06-v15.8",
+    version: "v15.8",
+    date: "2026-10-06",
+    title: "Lưu chắc chắn xuống Google Sheet & Đề xuất công tác không phải chờ",
+    summary: "Mọi thao tác hiện ngay trên app và được xếp hàng để ghi xuống Google Sheet. Mạng chậm thì tự thử lại, đóng app thì lần mở sau gửi tiếp, không mất dữ liệu.",
+    items: [
+      { type: "fix", icon: "✅", title: "Thêm Key task rồi Sub-task ngay, chuyển tab: không còn báo “không ghi được”",
+        text: "Thêm Key task, thêm Sub-task ngay sau đó rồi sang tab / phòng ban khác: app vẫn ghi đúng vào file của phòng ban lúc bạn bấm, Sub-task tự gắn vào Key task vừa tạo." },
+      { type: "imp", icon: "🔁", title: "Tự thử lại đến khi sheet xác nhận",
+        text: "Mạng chập chờn hoặc Google bận: góc phải dưới báo <b>Mạng chậm — đang tự thử lại</b>, bạn cứ làm tiếp. Không lo trùng dòng vì mỗi lần ghi có mã riêng. Đóng hoặc tải lại trang khi chưa lưu xong: lần mở sau app tự gửi tiếp." },
+      { type: "new", icon: "⚠️", title: "Báo rõ khi có thay đổi chưa lưu được",
+        text: "Nếu sheet từ chối (ví dụ task đã bị xoá trên sheet), góc phải dưới hiện nút đỏ <b>… chưa lưu được — bấm để xem</b>. Bấm vào để xem lý do, chọn <b>Thử lại</b> hoặc <b>Bỏ</b>.",
+        img: "updates/v15.8/chua-luu-duoc.jpg" },
+      { type: "imp", icon: "✈️", title: "Đề xuất công tác mở ngay, gửi là xong",
+        text: "Form đề xuất mở tức thì vì danh mục điểm đến, người đi cùng, thiết bị đã lưu sẵn và tự cập nhật ngầm. Bấm <b>Gửi đề xuất</b>: form đóng ngay, chuyến đi hiện “Chờ duyệt” trên lịch, email xin duyệt gửi ở phía sau. Bấm xem chuyến đi cũng hiện ngay." }
+    ]
+  },
+  {
     id: "2026-10-06-v15.7",
     version: "v15.7",
     date: "2026-10-06",

@@ -69,17 +69,31 @@ function mkWrite(body){
   return {ok:true,op,kind,row,src:kind==='offline'?'offline':'online',data:D[src]};
 }
 
+const RIDS={}, WLOG=[], TRIPS=[];
 async function install(page, o){
   o=o||{};
   const KK=JSON.parse(JSON.stringify(KEY)); let seq=50;   /* dữ liệu task có trạng thái: thêm / xoá / sửa được ghi nhớ như backend thật */
   const lag=o.lag||0; let staleCopy=null, staleUntil=0;
   const snap=()=>{ if(o.staleMs){ if(!staleCopy||Date.now()>staleUntil) staleCopy=JSON.parse(JSON.stringify(KK)); staleUntil=Date.now()+o.staleMs; } };   /* giả lập backend còn đệm dữ liệu cũ */
-  await page.route(/script\.google\.com/, async route=>{
+  let LOCKP=Promise.resolve();   /* như LockService: lệnh ghi xử lý lần lượt */
+  const handle=async route=>{
     const req=route.request(); const u=new URL(req.url()); let a=u.searchParams.get('action'); const src=u.searchParams.get('src'); const cb=u.searchParams.get('callback');
     let body=null;
     if(req.method()==='POST'){ const pd=new URLSearchParams(req.postData()||''); a=pd.get('action')||a; try{ body=JSON.parse(pd.get('payload')||'{}'); }catch(_){ body={}; } }
     else { body=Object.fromEntries(u.searchParams.entries()); }
     let d={ok:true,events:[]};
+    const dep=(u.pathname.split('/')[3]||''), srcName=/^AKfycbzK/.test(dep)?'management':/^AKfycbxW/.test(dep)?'backoffice':'marketing';   /* 3 backend phòng ban */
+    if(srcName!=='marketing' && u.hostname==='script.google.com' && /^(boot|weekly|version)$/.test(a||'')){ const out={ok:true,source:srcName,picList:ROSTER,keyTasks:[],monthly:[],activityLog:[]};
+      return route.fulfill({status:200,contentType:'application/javascript',body:(cb||'cb')+'('+JSON.stringify(out)+');'}); }
+    if(srcName!=='marketing' && /^(addKey|addSub|update|delete)/.test(a||'')){ WLOG.push(['wrongsrc',a,srcName]);
+      return route.fulfill({status:200,contentType:'application/javascript',body:(cb||'cb')+'('+JSON.stringify({ok:false,error:'Không tìm thấy Key Task (backend '+srcName+')'})+');'}); }
+    /* ⭐ v15.8: chống ghi trùng theo rid + giả lập sự cố: o.flaky={addKey:['drop','busy','lost',…]} (dùng lần lượt cho mỗi lần gọi) */
+    const WR=/^(addKey|addSub|updateSub|updateKey|updateResult|updateProgress|updateStatus|deleteKey|deleteSub|deleteRow|tripPropose|addMonth|updateMonth)$/;
+    if(WR.test(a||'') && body && body.rid && RIDS[body.rid]){ const r0=RIDS[body.rid]; const out={...r0,dedup:true}; if(o.dedupNoNo) delete out.no; WLOG.push(['dup',a,body.rid]);
+      return route.fulfill({status:200,contentType:'application/javascript',body:(cb||'cb')+'('+JSON.stringify(out)+');'}); }
+    const fl=(o.flaky&&o.flaky[a]&&o.flaky[a].length)?o.flaky[a].shift():null;
+    if(fl==='busy'){ WLOG.push(['busy',a]); return route.fulfill({status:200,contentType:'application/javascript',body:(cb||'cb')+'('+JSON.stringify({ok:false,error:'Lock timeout: another process was holding the lock for too long.'})+');'}); }
+    if(fl==='lost'){ WLOG.push(['lost',a]); return route.fulfill({status:500,contentType:'text/html',body:'<html>Error</html>'}); }
     if(src==='trip') d=D.trip; else if(src==='offline') d=D.off; else if(src==='online') d=D.on;
     else if(a==='calendar') d=D.trip;
     else if(a==='boot'||a==='weekly') d={ok:true,source:'marketing',picList:ROSTER,keyTasks:JSON.parse(JSON.stringify(o.staleMs&&Date.now()<staleUntil&&staleCopy?staleCopy:KK)),monthly:[],activityLog:[]};
@@ -95,7 +109,7 @@ async function install(page, o){
     else if(a==='rhSaveSession') d={ok:true,sid:'S20261014-01',message:'Đã tạo buổi đào tạo mới.'};
     else if(a==='rhPreviewInvite') d={ok:true,subject:'[MMH Training] Mani Dental product — Key SKUs FY68 · 14/10/2026',html:'<p>x</p>',recipients:['a']};
     else if(a==='rhSendInvite') d={ok:true,message:'Đã gửi thư mời tới 10 người',folderUrl:'https://drive.google.com/drive/folders/new'};
-    else if(a==='addSub'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); const k=KK.find(x=>x.no===String(body.keyNo||body.parentNo)); const no=(k?k.no:'1')+'.'+((k&&k.subs?k.subs.length:0)+1+(++seq%1?0:0)); if(k){ k.subs=k.subs||[]; k.subs.push({no,row:+String(no).replace('.','')||99,subTask:body.name,pic:body.pic,status:body.status||'To Do',start:body.start,planned:body.planned}); } d={ok:true,no,row:99,task:{}}; }
+    else if(a==='addSub'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); const k=KK.find(x=>x.no===String(body.keyNo||body.parentNo)); const no=(k?k.no:'1')+'.'+((k&&k.subs?k.subs.length:0)+1+(++seq%1?0:0)); if(k){ k.subs=k.subs||[]; k.subs.push({no,row:+String(no).replace('.','')||99,subTask:body.name,pic:body.pic,status:body.status||'To Do',start:body.start,planned:body.planned}); d={ok:true,no,row:99,task:{}}; } else d={ok:false,error:'Không tìm thấy Key Task số '+(body.keyNo||'')}; }
     else if(a==='mmhOptions'){ if(lag) await new Promise(r=>setTimeout(r,lag)); d={ok:true,kind:body.kind,options:MKOPT[body.kind]||{}}; }
     else if(a==='mmhWrite'){ if(lag) await new Promise(r=>setTimeout(r,lag)); if(o.failWrite){ d={ok:false,error:'Không mở được file (giả lập lỗi)'}; } else { LOG.push(['mk',{op:body.op,kind:body.kind,row:body.row,check:body.check,actor:body.actor,data:JSON.parse(body.data||'{}')}]); d=mkWrite(body); } }
     else if(a==='rhAssignList'){ const me=(body.actor||'').toLowerCase(); d={ok:true,items:ASSIGN,mine:ASSIGN.filter(x=>x.pic.toLowerCase()===me&&!x.done)}; }
@@ -105,8 +119,17 @@ async function install(page, o){
     else if(a==='tripMaster') d={ok:true,to:'Nguyen Ha (Director)',cc:'Tuyen (HOD)',master:{destinations:['Ho Chi Minh','Da Nang','Nghe An','Can Tho','Hai Phong','Lao Cai','Dak Lak'],coTravelers:['Khang','Thuong','Tuyen','Viet Ha','Bui Trang'],equipment:['Laptop','Máy chiếu','Standee','Hàng mẫu']}};
     else if(a==='tripInfo') d=tripInfo(body.r||body.id);
     else if(a==='version'||a==='ping') d={ok:true};
+    else if(a==='tripPropose'){ if(lag) await new Promise(r=>setTimeout(r,lag)); const t=JSON.parse(body.trip||'{}'); TRIPS.push(t); d={ok:true,message:'Đã ghi đề xuất & gửi email xin duyệt'}; }
+    if(WR.test(a||'') && d && d.ok!==false){ if(body.rid) RIDS[body.rid]=d; WLOG.push(['ok',a,body.rid,body.no||body.keyNo||'',body.keyTask||body.name||'',u.pathname.split('/')[3]||'']); }
+    if(fl==='drop'){ WLOG.push(['drop',a]); return route.fulfill({status:500,contentType:'text/html',body:'<html>Error</html>'}); }   /* đã ghi nhưng phản hồi hỏng */
     if(req.method()==='POST') return route.fulfill({status:200,contentType:'application/json',headers:{'access-control-allow-origin':'*'},body:JSON.stringify(d)});
     return route.fulfill({status:200,contentType:'application/javascript',body:(cb||'cb')+'('+JSON.stringify(d)+');'});
+  };
+  await page.route(/script\.google\.com/, async route=>{
+    const u=new URL(route.request().url()), a=u.searchParams.get('action')||'';
+    if(!/^(add|update|delete|trip(Propose|Update|Report)|mmhWrite)/.test(a)) return handle(route);
+    const prev=LOCKP; let rel; LOCKP=new Promise(r=>rel=r); await prev;
+    try{ await handle(route); }catch(e){} finally{ rel(); }
   });
 }
-module.exports={install,D,SESS,ASSIGN,LOG};
+module.exports={install,D,SESS,ASSIGN,LOG,WLOG,TRIPS,RIDS};
