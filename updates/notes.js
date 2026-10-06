@@ -5,8 +5,26 @@
    · type    : "new" (tính năng mới) · "imp" (cải tiến) · "fix" (sửa lỗi)
    · img     : ảnh trong updates/<version>/ (đường dẫn tương đối từ index.html)
    · guide   : file PDF hướng dẫn chi tiết (docs/…) — tuỳ chọn
-   · text    : được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
+   · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
+  {
+    id: "2026-10-06-v15.3",
+    version: "v15.3",
+    date: "2026-10-06",
+    title: "Giao diện MMH Calendar & thông báo gọn gàng, nhã nhặn hơn",
+    summary: "Màu sắc dịu theo nhận diện MMH, bớt biểu tượng và nền đậm — dễ nhìn, dễ đọc hơn khi làm việc cả ngày.",
+    items: [
+      { type: "imp", icon: "📅", title: "Lịch dịu mắt hơn",
+        text: "Mỗi loại lịch chỉ còn <b>một vạch màu nhạt</b> bên trái thẻ; nền trắng, bỏ biểu tượng màu trong ô lịch. Nút bật/tắt và thẻ số liệu dùng chung một tông xanh MMH.",
+        img: "updates/v15.3/lich-nha-nhan.jpg" },
+      { type: "imp", icon: "📮", title: "Thư nhắc việc & thông báo dạng thẻ trắng",
+        text: "Bỏ viền thư sọc, tem và nền đậm; toàn bộ chữ trong thông báo dùng font <b>Aptos</b>. Hạn &amp; quá hạn vẫn được đánh dấu bằng nhãn màu nhạt.",
+        img: "updates/v15.3/thu-nhac-viec.jpg" },
+      { type: "imp", icon: "🗂️", title: "Bảng chi tiết & nhãn trạng thái tinh gọn",
+        text: "Nhãn trạng thái nền nhạt, chữ trầm; biểu tượng chuyển xám nhẹ. Thông báo nhỏ (toast) đổi sang thẻ trắng thay cho nền xanh đậm.",
+        img: "updates/v15.3/bang-chi-tiet.jpg" }
+    ]
+  },
   {
     id: "2026-10-06-v15.2",
     version: "v15.2",
@@ -28,7 +46,7 @@ window.MMH_UPDATES = [
       { type: "new", icon: "📚", title: "Kéo thả tài liệu — ai cũng Xem / Tải về được",
         text: "Người tạo / trainer kéo thả file vào buổi học. Mọi người bấm <b>👁 Xem</b> hoặc <b>⬇️ Tải về</b> (Docs/Slides/Sheets tự thành .docx/.pptx/.xlsx).",
         img: "updates/v15.2/tai-lieu-xem-tai-ve.jpg" },
-      { type: "new", icon: "🧳", title: "Đề xuất &amp; báo cáo công tác trên lịch",
+      { type: "new", icon: "🧳", title: "Đề xuất & báo cáo công tác trên lịch",
         text: "Đề xuất chuyến đi (ghi file Business Trip + email xin duyệt). Bấm vào chuyến để xem <b>toàn bộ nội dung báo cáo</b>; PIC bấm <b>📋 Cập nhật báo cáo công tác</b> để nộp báo cáo.",
         img: "updates/v15.2/cong-tac-bao-cao.jpg" },
       { type: "new", icon: "📮", title: "Thư nhắc việc khi đăng nhập",

@@ -24,7 +24,8 @@ Làm trong cùng PR với thay đổi code:
    - Chạy: `NODE_PATH=$(npm root -g) node tools/guide/cap.js <tên cảnh>` → ảnh ở `tools/guide/shots/`.
    - Đánh số chú thích màu cam: khai báo `marks:[[selector, số, 'tl'|'tr', khung?]]` trong `shot()`.
    - Xuất ảnh cho thông báo: dựng slide/khung trong `tools/guide/build.js` rồi
-     `node tools/guide/noteimg.js updates/vX.Y` (sửa danh sách `PICK`), hoặc chụp thẳng vùng cần thiết với `clip`.
+     `node tools/guide/noteimg.js updates/vX.Y` (sửa danh sách `PICK`), hoặc cắt thẳng từ ảnh chụp:
+     `node tools/guide/shot2jpg.js <tên cảnh> updates/vX.Y/<tên>.jpg [x y w h] [rộng]`.
    - JPEG chất lượng ~82, rộng ≤ 1300px; mỗi ảnh nên < 200 KB.
 4. **Tính năng lớn** (nhiều bước thao tác): làm thêm file PDF hướng dẫn ngang 16:9 ở `docs/HDSD_<tên>_vX.Y.pdf`
    (theo mẫu `tools/guide/build.js` + `deck.css`: ảnh thật, số chú thích, hyperlink tới các file nguồn) và đặt
@@ -35,6 +36,13 @@ Làm trong cùng PR với thay đổi code:
    kiểm tra cú pháp các khối `<script>` bằng `node --check`.
 
 Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không cần thông báo.
+
+## Phong cách giao diện (người dùng yêu cầu: đơn giản, nhã nhặn)
+- Font **Aptos** cho mọi chữ, kể cả thông báo / hộp thoại.
+- Bảng màu brand MMH dịu: navy `#003047` (tiêu đề), blue `#3A5CAA` (nút chính), xanh nhạt `#CFE2F3` / `#F0F7FF`,
+  xám viền `#E6EAEF`. Màu theo loại lịch chỉ dùng làm **vạch / chấm nhỏ** (`KIND` trong MMH Calendar).
+- Tránh nền đậm, gradient, viền sọc, bóng đổ nặng, emoji màu dày đặc. Thông báo = thẻ trắng, viền mảnh.
+- Lớp CSS chung ở `<style id="calm-css">` cuối `index.html` — giao diện mới nên tuân theo các token ở đó.
 
 ## Ghi chú kỹ thuật
 - Các bản vá xếp lớp bằng `window.fn = …` trong các khối `<script>` thêm ở cuối file — giữ phong cách này.
