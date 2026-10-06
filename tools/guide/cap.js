@@ -36,7 +36,7 @@ async function shot(p, name, o){
 const ev=(p,f,a)=>p.evaluate(f,a);
 const S={};
 S.main=async b=>{ const p=await newPage(b,{noChecks:true}); await p.waitForTimeout(4500); await ev(p,()=>{ NT.close&&NT.close(); NT.trips=[]; });
-  await ev(p,()=>{ NT.paint(); }); await p.waitForTimeout(200);
+  await ev(p,()=>{ NT.paint(); NT.close&&NT.close(); if(window.UPD&&UPD.isOpen()) UPD.close(); }); await p.waitForTimeout(900); await ev(p,()=>{ NT.close&&NT.close(); });
   await shot(p,'main',{marks:[['.cal-launch[onclick="openMMHCalendar()"]',1,'tr',1],['#v10-trip-btn, button[onclick*="tripProposeOpen"]',2,'tr'],['#rt-btn',3,'tl']]}); };
 S.letter=async b=>{ const p=await newPage(b,{}); await p.waitForFunction(()=>document.getElementById('nt-letter').classList.contains('show'),null,{timeout:45000}).catch(()=>{});
   await ev(p,()=>{ if(!document.getElementById('nt-letter').classList.contains('show')){ NT.trnReady=true; NT.tripReady=true; NT.open(false); } });
@@ -53,6 +53,8 @@ S.newmenu=async b=>{ const p=await newPage(b,{}); await ev(p,()=>{ NT.close(); M
   await ev(p,()=>MC.addAt('2026-10-14')); await p.waitForTimeout(400);
   await shot(p,'newmenu',{marks:[['.mc-day[ondblclick*="2026-10-14"]',1,'tl',1],['#mc-menu button:nth-of-type(1)',2,'tr'],['#mc-menu button:nth-of-type(2)',3,'tr']]}); };
 
+S.v159menu=async b=>{ const p=await newPage(b,{}); await p.waitForTimeout(3000); await ev(p,()=>{ NT.close&&NT.close(); if(window.UPD&&UPD.isOpen()) UPD.close(); }); await p.waitForTimeout(900); await ev(p,()=>{ NT.close&&NT.close(); UM.open(); }); await p.waitForTimeout(300);
+  await shot(p,'v159menu',{clip:{x:760,y:0,width:680,height:360},marks:[['#topbar .tb-user',1,'tl',1],['#um-color',2,'tr'],['#um-pop .um-row',3,'tr'],['#um-news',4,'tr'],['#um-out',5,'tr']]}); };
 const openCal=async(p,ref,view)=>{ await ev(p,([y,m,d,v])=>{ NT.close(); MC.f.kinds.trip=1; MC.ref=new Date(y,m,d); openMMHCalendar(); MC.setView(v); },[ref[0],ref[1],ref[2],view]); await p.waitForTimeout(1200); await ev(p,()=>NT.close()); };
 S.trnform=async b=>{ const p=await newPage(b,{vp:{width:1440,height:1240}}); await openCal(p,[2026,9,1],'month');
   await ev(p,()=>trnOpen('2026-10-14')); await p.waitForSelector('#trn-topic');
