@@ -1369,6 +1369,17 @@ button{cursor:pointer}
 .cal-chip.k-training{background:#8a71b6}
 .cal-chip.k-event{background:#4e7caf}
 .cal-chip.k-product{background:#c98a1c}
+.cal-chip.k-offline{background:#A25488}
+.cal-chip.cancel{opacity:.5;text-decoration:line-through}
+.cal-nodate{background:#fff;border:1px dashed #C9D3DE;border-radius:14px;padding:10px 14px;margin:0 0 14px}
+.cal-nodate>summary{cursor:pointer;font-size:13px;font-weight:800;color:var(--mmh-navy);list-style:none}
+.cal-nodate>summary::-webkit-details-marker{display:none}
+.cal-nodate .bd{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.cal-fmt{display:inline-block;font-size:11px;font-weight:800;padding:2px 8px;border-radius:7px;background:#F1ECF8;color:#5B3F8C}
+.cal-fmt.design{background:#FFF1D6;color:#8A5A00}
+.cal-designtog{border:1.5px solid var(--border);background:#fff;color:var(--sub);font-weight:800;font-size:12.5px;padding:7px 12px;border-radius:10px;cursor:pointer}
+.cal-designtog.on{background:#FFF1D6;border-color:#E8C27A;color:#8A5A00}
+.cal-srcwarn{font-size:12px;color:#8A3835;background:#FBF4F4;border-radius:10px;padding:8px 12px;margin:0 0 12px}
 .cal-chip.planned{opacity:.92;background-image:linear-gradient(135deg,rgba(255,255,255,.22) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.22) 50%,rgba(255,255,255,.22) 75%,transparent 75%);background-size:12px 12px}
 .cal-more{font-size:11.5px;font-weight:800;color:var(--mmh-blue);padding:2px 8px;cursor:pointer}
 .cal-more:hover{text-decoration:underline}
@@ -1391,10 +1402,11 @@ button{cursor:pointer}
 .cal-ev.k-training{border-left-color:#8a71b6}
 .cal-ev.k-event{border-left-color:#4e7caf}
 .cal-ev.k-product{border-left-color:#c98a1c}
+.cal-ev.k-offline{border-left-color:#A25488}
 .cal-ev-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:5px}
 .cal-tag{font-size:11px;font-weight:800;padding:3px 9px;border-radius:7px;letter-spacing:.3px;color:#fff}
 .cal-tag.k-trip{background:#3E8E6B}.cal-tag.k-training{background:#8a71b6}
-.cal-tag.k-event{background:#4e7caf}.cal-tag.k-product{background:#c98a1c}
+.cal-tag.k-event{background:#4e7caf}.cal-tag.k-product{background:#c98a1c}.cal-tag.k-offline{background:#A25488}
 .cal-st{font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px}
 .cal-st.ok{background:var(--success-bg);color:var(--success-fg)}
 .cal-st.warn{background:var(--warn-bg);color:var(--warn-fg)}
@@ -2254,7 +2266,7 @@ body.first-load #stale-chip{pointer-events:auto}
 <div id="app" style="display:none">
   <div id="topbar"><div class="tb-inner">
     <div class="tb-logo" title="MANI Medical Hanoi"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN8AAABgCAMAAACqu1e+AAAAYFBMVEX/8gD/8AD/7QD/6QD/5gD+5AD/4QD94QD+4AD93wD83wD83gD73gD73QD53gDv1ADcwgC5pACPfwBkWABCOgAlIQAPDgAFBQAEAwADAwACAgACAQABAQAAAQABAAAAAABpINQ8AAALM0lEQVR42u1b17bjqBJVDkY5WMGM9f9/eQGJogi25eOeu6bPMk/dR1iwK+wKIC/53cP74vvi++L74vvi++L74vvi++L74vviezWynI3sV+LLSEmSOAyCIPp9+FJCosALorpp26ZJfxs+kgRB3Xb9OE1D37Xl78KX5UHcDtdt265dE/l++Lvsk1lmOzBw29TVXpgRkv8qfGVQ99u2TtvYenGZn/zVX4Ov8NpxW9Z5G+qgzE7/zDtr+nJkD2dkx3A/z/MXr3j+tPC62zZvyzZUYanvKP0cXxaFcsTZgxkw3K8I1YieTohcC5Ret63rtm5jHRGxXqx29Dm+uG7kqJ0AMzTDxdpp0qhRO93r2QIc3kw3uk5NQMz16jj7EF8WDfO0j7n3Cwe1ed1VjtGxHvG7SY3BnnAJWrmA4/ckaG8L3Zh1dt4uvdLvYUdtcPkMXxbVPOjwcduGwKYuEjbTJscQ5rZ2q3FT42ojEPZ3rNCZEszZ+pQ9ZdYZX1Ip8Y3Kt0Uf6o+Jb1upGCsdy8R8XZqy1eZ9wkR7r3Sa153KsTSWCJg+2E/5mKklQRKw128cX+sTkPh9PaaH2Yf+J7a3C4tuUxPlj58zE2otA2bOcqU3UB/b5u5Eugcc+rvfJwM+F+8Ob5RLM3M+1DdvDnm+rb+B7VsaqLU5EjTzchjLfZts5RCvB/xiS51fOjyAwmNtx2majtw68YPClxKdbXN+F1+WMO9ZH24uS9FjJuPCtN88aq4rxfgskXN93NQrUhzSCr8V0v0Hia7wpcTuN1ueb+LLOXvQh5srsXbYY8v2iK+pj8docw62cNN+82Cgi4EbzPm2jVX8of8JesGbc3qH27gO8WD1CRo0sxNfl5FPsPZ36fI/F6Y5L04+fw+fIVydQBl37N7xkDuU91J6cJRN6akyceO5NE8sOkwv3VN6OWWfiF4sAuWSh4f8aW3QK9Mvwr9z0Gr4DOhI2gjiDDB/SuFXSuIqZPwYnwjOanFOoBfkW9g6hekZ6e4lBOlMx3ssJWsewPDdkdHl4e5q2NPAo510/SY+5j9Y/hoh88xiXTVqNNhabZ09O6RuGZXmAWzXVO0aXA17Whof5uyi63fxqVhjE2iBTdfpDrncyn1dGvAkg4Pzx68BV0M/ysCcHVT8Nr5Sj85YjobcTeMVeVd37Jzvr1W7upgecNMZ9sgz1RIoMcI28YJezvhfOGDnQCbB0motcNvMmLLYv7OLKG0OsfNIZnjAQa3Sz5WHyshx32Y3vXyqP5w66QSaXiJgfrmtQSd+vhNQn58fajLFUICS7RAoXU3EpVTqT1KqKxt+E5+KNWYGalmnRS8isT7UxyBdIImmGuupELCNV90QNHoBTV0UvcSf9l8MelEEqtJqSkfJAXqyS5D6mKOA3A2zgmyLzRp2eSxHmguuhjxNRUs90/kZvtKHTYnWqiQylVYvWw/y1+iFJ9Y3sZEb5TUtKFynBeUBdGuATfYyGX6CRPIOvZzxv0O4bPNCTQeBglGt9Frtfmj6laqL9o2AKXC5l7YHsN9XAHWnE6ly7GnKLyy6fh8fCJenXgKpINA9rb5zYpvZIpIDtFpaJdas6ue5Bwhez4pLXyktCnqKVJwmBdBLapbzzkT2XXxQmbEVdnUIURJIq7m5qgzfK1x10dEXYoDn7b6/K09Sq3hgmIKwBeqoUGmGPC1LSqCX4RW8l/iQz/THP7mXIa8cK19xAKIXpq0jdePq46Ubp9PDFrDgIcByH8urUf2HOOklxPRSfIiPIOEebMjFLIs+uqxtGBwioP80yOwukHQtMsnPZLK23VWAQKhZ2ll5vfJRAtJFbREiC6aXvYlT/CIrszttjvxKWOR1vQGZhopeVC2tWG69j3GuQ8ZlDdCL8DGWEy0UnEvmt1jhil4Y3Yb5Z/gg1vDOeLgLmtGAB/scqwsKwWi5HJIbRe2l19sBAnsAU0cu6ykeArMj48GeBsk4dTVS38SnU96eNzBQR9imy9wEpfIRXFmAFXHYFycUm154EPEQm8rSDAUUkYyvmyXPn+HTQnIlJTfj7gCaolqfGSTWQn3VftJTuQIEFHN7doCi/dzI/Ad17VQ5+qr1eU5/ymOCSq+UuNXEaZZDfYHaDiqxZtmNxy878BF6bG93vQhBAXb3McRovYcSo9w2jPYlvbzAl8pYIxY3Emq6ML4jsD/cQEBdJ5YzD2gsZiEFAVaaG7gEz55t5kLl6NJ8ap8iIlPp4EabZPcXZ1KiEuuHQ4YSLcCWWjtZZoQiMcpRP2Y51fo8gY9vfgEH1xq9YlFWZbuSZt6WuamJixqrdUwB9AJ/gjcy1U+mp0G0tLoAP8GHugMslGp9BF6QhwQVmytqIBiOag8lDEkvqhXGxahVnLhhqGr9E8XDa/uEHERwB25VqNfL/UEDwepYu/AdAQLcV1BOqpsgGMuKTh7O9yZe4gNjYBkk72uiNrqManh/srFtHjg4BsQulGHCyYXZr8CeBonvid7ES3xmeotSo/W6i5Tp6ma0TC6ssF+l62HnE4PqbX6X+5otH8xcoFuRzaUf4juERekRmrTKmRj9Sbk/dODwUH9C+tnRK1pMczMMAEMHenGdVL2JD+TI+Ysczg0SLXQVQ29CCYHNaq0xylpdTIdgQHGn3ezXq2w8P3+y8hqfTEJWeoRXCZhb52H7cisU0Z/MfxnDeoExPMieBdsyiS2OU81UP0+aHPRyojfxAh8kITPIL43EumCdyj4hI8HlWe9VRB9VoFcQqiVzx8mkeSRXWbX+md7EC3xSfZNK9nfHUNapTFauB6flR8/sUbfxCBDgafq5vgiBd3A/1fqEbteZ3sRzfLL7PoksGsn1xnu1ueGj0ojUgcOilOzoFu8BAtyPtzAwG+ITFyez6i24H+DLjoM7Bk+leSJ5n7UzRSnRo7qJZV3EqvY0TR9SFg8QceZgXzsEIma9vEsvD/FlvBhaWABj8CKCT0IWvasj8/m9RMN1kTu9SBVfRrn0M8uWVRx40PpEFdNP8JGUv2ll7+rjiGjip/oFMVnfiPguDhyensxdVPOS4Zeng7Y2IE/RWp8avcQ/9b+cZEHUbxNbeWx97XyUW6Nx4p1H4v6GSKKEMvm1qRuvDS9u0tovYs209WVnkTNkmlmOusgbX7AgS8bpLK9lnbrC68IX+uF+0XnsqoBo6xbeMHiFQYl7QOAGGct7dvcjI3Ac17QyqnV+tTuraIGbs3ldcQxML3CPrz/lfi58RdMNt2Ucuvbix8QsKFqraM73Knvvrk9wS9Kd/DIPlhcp+9CHAGRvljGMnAiBnCn1qv5IfogvF5dGq9ALkiKzCdB1O3Od6V4ANvu10/rJpdNc3kytvXZd9gAUpZlr4jHQs0r+rb4kyU/tMwqCMIrzkjhv6tp/5N2IScSwOoRbyo+dX15j9htxq3DaGGHlTybi68zxi1vQp/Dxq9vZ+Svq/BoFYyPKW2VBdREXzZ99+8Qf51kZ1pw7KdNeHZJHE60L69nzW+w/ub904oZhGvYbI1FO85dTtJaVfjMygTD7fAjvj4w/8/1DlgYdy0sXfvQSlSfQxV573eZl3aYujP5FeH/q+47s4vGQIqzNS55+f5ERhq7u75RT/dB4eZb89/FxFo1k0Iy88PGlqTj0vaoTse06tGFQJslfgS8hmR+1Pb/gMXZNFT/SXd20/cTv2vVdEwRZnvwt+DjCwIubtuv5t3mujzjien/KHjdF4Ec5SZK/CB9LMEoWPD2P2eeDD7ziOGL26flBmJAiT5K/DJ9Izsvy8Zd5GQuupCgL8u+yyr+I7z82vvi++L74vvi++L74vvi++L74vvj+n+N/NoF4530pVZMAAAAASUVORK5CYII=" alt="MANI"/></div>
-    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v13.8</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
+    <div class="tb-title"><h1>MMH Report <span style="font-size:10.5px;font-weight:800;background:var(--mmh-yellow);color:var(--mmh-navy);padding:2px 7px;border-radius:7px;vertical-align:middle;letter-spacing:.3px">v13.9</span></h1><p data-i18n="app.sub">Weekly / Monthly Tracker · Toàn bộ phòng ban</p></div>
     <!-- ⭐ v5.4: link nhanh sang các webapp MMH khác -->
     <div class="tb-links"><a class="tb-link" href="https://manimedicalhanoi.github.io/Tender-Result/" target="_blank" rel="noopener" title="Thông tin thầu">📑 Thông tin thầu<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/Product-Data/" target="_blank" rel="noopener" title="Product Data">📦 Product Data<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a><a class="tb-link" href="https://manimedicalhanoi.github.io/MMH-FY67-Turnover/" target="_blank" rel="noopener" title="Dự trù & Doanh số">📈 Dự trù & Doanh số<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></a></div>
     <button class="cal-launch" onclick="openMMHCalendar()">📅 MMH Calendar</button>
@@ -2338,7 +2350,7 @@ body.first-load #stale-chip{pointer-events:auto}
     <div class="cal-badge">📅</div>
     <div>
       <h2>MMH Calendar</h2>
-      <div class="cal-sub">Lịch tổng hợp · Công tác · Đào tạo · Marketing (Sự kiện &amp; Sản phẩm)</div>
+      <div class="cal-sub">Lịch tổng hợp · Công tác · Đào tạo · Marketing (Sự kiện offline · Bài đăng sự kiện &amp; sản phẩm)</div>
     </div>
     <div class="sp"></div>
     <div class="cal-updated" id="cal-updated"></div>
@@ -7817,14 +7829,17 @@ var CAL = window.CAL = {
   /* 3 URL backend — FIX CỨNG theo yêu cầu */
   URLS: {
     trip:      "https://script.google.com/a/macros/manimedicalhanoi.com/s/AKfycbzAsSxx8NNQhjELq1dnASdXZo4o4sWvGaaHjIrBUkp8ljEb119hUnAdiiBXGfxRfgVniQ/exec",
-    training:  "https://script.google.com/macros/s/AKfycbxDLxMevRP5DHQ0eIurYRPS37jBjENo1vJ32z9Zo7X8GQA25HDBFvNBuSE1C29lFBKa/exec",
-    marketing: "https://script.google.com/a/macros/manimedicalhanoi.com/s/AKfycbw9knw7Da8q8dpDUE5Z776I3VdDjCpyGcK5ipLBB5l1uMWbzvMQBTWI3MBdfg4ghppIYA/exec"
+    /* ⭐ v13.9: Đào tạo = Training Hub (rhSessions) · Marketing = 2 backend Online (bài đăng/design) + Offline (sự kiện) */
+    mktOnline: "https://script.google.com/macros/s/AKfycbx-eZ0sORVEdQs_gh3mRwJJjmOROY2DuwiWdWNO_EjyNrIR8Nrq0rvkJhgO-x1V_ukQjA/exec",
+    mktOffline:"https://script.google.com/macros/s/AKfycbwvH5YqDfVkYLgJiF2x712-fVaQO1neggdE-7VGhOXgAofCv3wRproagHoFj7PBdnEftA/exec"
   },
-  raw:{ trip:[], training:[], event:[], product:[] },
+  raw:{ trip:[], training:[], event:[], product:[], offline:[] },
+  srcErr:{},
+  mkDesign:false,
   updated:{},                       // source → chuỗi thời điểm cập nhật
   loaded:false, loading:false,
   cat:"all",                        // all | trip | training | marketing
-  mkKind:"event",                   // khi cat=marketing: event | product
+  mkKind:"offline",                 // khi cat=marketing: offline | event | product
   mkPage:"",                        // "" | Dental | Ophthalmic | Thailand | Others
   view:"grid",                      // grid | list
   ym:null,                          // {y,m} tháng đang xem
@@ -7876,18 +7891,24 @@ CAL.reload=function(){
   CAL.loading=true;
   var btn=$("cal-refresh"); if(btn) btn.classList.add("spin");
   if(!CAL.loaded) renderLoading();
+  var me0=(window.S&&window.S.user&&window.S.user.pic)||"";
   Promise.all([
-    jsonp(CAL.URLS.trip,      {action:"calendar"}),
-    jsonp(CAL.URLS.training,  {action:"calendar"}),
-    jsonp(CAL.URLS.marketing, {action:"calendar"})
+    jsonp(CAL.URLS.trip,       {action:"calendar"}),
+    window.TRAINING_HUB_API ? jsonp(window.TRAINING_HUB_API, {action:"rhSessions", rhKey:window.TRAINING_RH_KEY||"", actor:me0}) : Promise.resolve(null),
+    jsonp(CAL.URLS.mktOnline,  {action:"mmhCalendar"}),
+    jsonp(CAL.URLS.mktOffline, {action:"mmhCalendar"})
   ]).then(function(res){
-    var trip=res[0], trn=res[1], mkt=res[2];
-    CAL.raw.trip     = (trip && trip.ok && trip.events) ? trip.events : [];
-    CAL.raw.training = (trn  && trn.ok  && trn.events)  ? trn.events  : [];
+    var trip=res[0], trn=res[1], on=res[2], off=res[3];
+    var okd=function(r,k){ return !!(r && r.ok && r[k||"events"]); };
+    CAL.raw.trip     = expandDays(okd(trip)?trip.events:[], "trip");
+    CAL.raw.training = (okd(trn,"sessions")?trn.sessions:[]).map(trnEv);
     var me=[], mp=[];
-    if(mkt && mkt.ok && mkt.events) mkt.events.forEach(function(ev){ (ev.kind==="product"?mp:me).push(ev); });
-    CAL.raw.event=me; CAL.raw.product=mp;
-    CAL.updated={ trip:(trip&&trip.updated)||"", training:(trn&&trn.updated)||"", marketing:(mkt&&mkt.updated)||"" };
+    if(okd(on)) on.events.forEach(function(ev){ (ev.kind==="product"?mp:me).push(ev); });
+    CAL.raw.event=idfy(me,"event"); CAL.raw.product=idfy(mp,"product");
+    CAL.raw.offline  = expandDays(okd(off)?off.events:[], "offline");
+    CAL.srcErr={ trip:!okd(trip), training:!okd(trn,"sessions"), online:!okd(on), offline:!okd(off) };
+    var nowTxt=isoOf(new Date())+" "+pad(new Date().getHours())+":"+pad(new Date().getMinutes());
+    CAL.updated={ trip:(trip&&trip.updated)||"", training:okd(trn,"sessions")?nowTxt:"", online:(on&&on.updated)||"", offline:(off&&off.updated)||"" };
     CAL.loaded=true; CAL.loading=false;
     if(btn) btn.classList.remove("spin");
     render();
@@ -7902,13 +7923,41 @@ CAL.setView=function(v){ CAL.view=v; $("cal-vgrid").classList.toggle("on",v==="g
 CAL.shift=function(d){ var y=CAL.ym.y, m=CAL.ym.m+d; CAL.ym={y:y+Math.floor(m/12), m:((m%12)+12)%12}; render(); };
 CAL.goToday=function(){ var n=new Date(); CAL.ym={y:n.getFullYear(),m:n.getMonth()}; render(); };
 
+/* ⭐ v13.9 — chuẩn hoá dữ liệu */
+var _uid=0;
+function cleanName(t){ return String(t||"").replace(/^\s*\d{8}(?:\s*-\s*\d{2,4})?\s*/,"").replace(/\s*_\s*/g," · ").replace(/\s+/g," ").trim(); }
+function idfy(list, k){ return (list||[]).map(function(ev){
+  ev._id=ev._id||(k+":"+(ev.row||ev.sid||++_uid)); ev.date=String(ev.date||"").slice(0,10);
+  if(k==="offline"||k==="event"||k==="product"){ ev.title=cleanName(ev.title); if(ev.event) ev.eventName=cleanName(ev.event); }
+  return ev; }); }
+/* sự kiện / chuyến đi nhiều ngày → 1 bản trên TỪNG ngày (bản từ ngày 2 có cờ _cont) */
+function expandDays(list, k){
+  var out=[];
+  idfy(list, k).forEach(function(ev){
+    var st=ev.date, en=String(ev.endDate||"").slice(0,10);
+    if(!st || !en || en<=st){ out.push(ev); return; }
+    var p=st.split("-"), d=new Date(+p[0],+p[1]-1,+p[2]), n=0;
+    while(isoOf(d)<=en && n<62){ var c=Object.assign({}, ev, { date:isoOf(d), _cont:n>0, _day:n+1 }); out.push(c); d.setDate(d.getDate()+1); n++; }
+  });
+  return out;
+}
+/* buổi đào tạo Training Hub → sự kiện lịch */
+function trnEv(t){
+  return { kind:"training", _id:"training:"+t.sid, sid:t.sid, date:t.date, title:t.topic, type:t.type, category:t.category,
+    trainer:t.trainer, audience:t.audience, purpose:t.purpose, time:t.timeFrom?(t.timeFrom+(t.timeTo?"–"+t.timeTo:"")):"",
+    status:t.status==="Completed"?"Completed":"Plan", planned:t.status!=="Completed", folder:t.folderUrl||"",
+    meeting:t.meetingLink||"", link:t.recordLink||"", invited:!!t.invited, quiz:(t.quizStatus&&t.quizStatus!=="None")?(t.quizStatus+(t.completion?" · "+t.completion:"")):"" };
+}
+function uniqN(list){ var s={}; list.forEach(function(e){ s[e._id||Math.random()]=1; }); return Object.keys(s).length; }
+function ymKey(){ return CAL.ym.y+"-"+pad(CAL.ym.m+1); }
+
 /* ── effective category ── */
 function effCat(){ return CAL.cat==="marketing" ? CAL.mkKind : CAL.cat; }
 
 /* ── lấy events theo category (bỏ qua tháng) ── */
 function poolFor(cat){
-  if(cat==="all") return [].concat(CAL.raw.trip,CAL.raw.training,CAL.raw.event,CAL.raw.product);
-  if(cat==="marketing") return [].concat(CAL.raw.event,CAL.raw.product);
+  if(cat==="all") return [].concat(CAL.raw.trip,CAL.raw.training,CAL.raw.offline,CAL.raw.event,CAL.raw.product);
+  if(cat==="marketing") return [].concat(CAL.raw.offline,CAL.raw.event,CAL.raw.product);
   return CAL.raw[cat]||[];
 }
 /* ── lọc theo tháng + page ── */
@@ -7918,12 +7967,19 @@ function pageMatch(ev){
   if(ev.kind!=="event" && ev.kind!=="product") return true;
   return String(ev.page||"").toLowerCase().indexOf(CAL.mkPage.toLowerCase())>=0;
 }
-function monthEvents(){
+function catPool(){
   var ec=effCat();
-  var pool = ec==="all" ? poolFor("all") : (ec==="event"||ec==="product" ? CAL.raw[ec] : poolFor(ec));
+  var pool = ec==="all" ? poolFor("all") : (ec==="event"||ec==="product"||ec==="offline" ? CAL.raw[ec] : poolFor(ec));
   var showPage = (CAL.cat==="marketing");
-  return pool.filter(function(ev){ return inMonth(ev.date) && (!showPage || pageMatch(ev)); });
+  return pool.filter(function(ev){
+    if(showPage && !pageMatch(ev)) return false;
+    if(showPage && CAL.mkDesign && (ev.kind==="event"||ev.kind==="product") && !ev.design) return false;
+    return true;
+  });
 }
+function monthEvents(){ return catPool().filter(function(ev){ return inMonth(ev.date); }); }
+/* ⭐ v13.9: việc chưa chốt ngày (chỉ có cột Month) */
+function undatedEvents(){ var ym=ymKey(); return catPool().filter(function(ev){ return !ev.date && ev.month===ym; }); }
 
 /* ══════ RENDER ══════ */
 function render(){
@@ -7931,12 +7987,13 @@ function render(){
   $("cal-month").textContent = mn[CAL.ym.m]+" · "+CAL.ym.y;
   var up=[]; if(CAL.updated.trip)up.push("Công tác "+CAL.updated.trip);
   if(CAL.updated.training)up.push("Đào tạo "+CAL.updated.training);
-  if(CAL.updated.marketing)up.push("Marketing "+CAL.updated.marketing);
+  if(CAL.updated.offline)up.push("MKT Offline "+CAL.updated.offline);
+  if(CAL.updated.online)up.push("MKT Online "+CAL.updated.online);
   $("cal-updated").innerHTML = CAL.loaded ? ("🔄 Cập nhật:<br>"+esc(up.join(" · "))) : "";
   buildCats(); buildSubrow(); renderSummary(); renderBody();
 }
 
-function catCount(cat){ return poolFor(cat).filter(function(ev){ return inMonth(ev.date); }).length; }
+function catCount(cat){ var ym=ymKey(); return uniqN(poolFor(cat).filter(function(ev){ return inMonth(ev.date) || (!ev.date && ev.month===ym); })); }
 function buildCats(){
   var defs=[
     {id:"all",      cls:"c-all",      ic:"🗓️", lbl:"Tất cả"},
@@ -7955,8 +8012,8 @@ function buildSubrow(){
   var row=$("cal-subrow");
   if(CAL.cat!=="marketing"){ row.style.display="none"; row.innerHTML=""; return; }
   row.style.display="flex";
-  var ev=CAL.raw.event.filter(function(e){return inMonth(e.date);}).length;
-  var pr=CAL.raw.product.filter(function(e){return inMonth(e.date);}).length;
+  var ym=ymKey(), cnt=function(k){ return uniqN(CAL.raw[k].filter(function(e){ return inMonth(e.date) || (!e.date && e.month===ym); })); };
+  var online=(CAL.mkKind==="event"||CAL.mkKind==="product");
   var pages=[["","Tất cả page"],["Dental","Mani Dental"],["Ophthalmic","Mani Ophthalmic"],["Thailand","Mani Thailand"]];
   var chips=pages.map(function(p){
     var on=(CAL.mkPage===p[0]); var cl=p[0]?("pg-"+p[0].toLowerCase()):"";
@@ -7964,10 +8021,11 @@ function buildSubrow(){
   }).join("");
   row.innerHTML=
     '<div class="cal-subtabs">'
-      +'<button class="cal-subtab'+(CAL.mkKind==="event"?" on":"")+'" onclick="CAL.setMkKind(\'event\')">📸 Sự kiện <b style="opacity:.7;margin-left:2px">'+ev+'</b></button>'
-      +'<button class="cal-subtab'+(CAL.mkKind==="product"?" on":"")+'" onclick="CAL.setMkKind(\'product\')">🦷 Sản phẩm <b style="opacity:.7;margin-left:2px">'+pr+'</b></button>'
+      +'<button class="cal-subtab'+(CAL.mkKind==="offline"?" on":"")+'" onclick="CAL.setMkKind(\'offline\')">🎪 Sự kiện offline <b style="opacity:.7;margin-left:2px">'+cnt("offline")+'</b></button>'
+      +'<button class="cal-subtab'+(CAL.mkKind==="event"?" on":"")+'" onclick="CAL.setMkKind(\'event\')">📸 Bài đăng sự kiện <b style="opacity:.7;margin-left:2px">'+cnt("event")+'</b></button>'
+      +'<button class="cal-subtab'+(CAL.mkKind==="product"?" on":"")+'" onclick="CAL.setMkKind(\'product\')">🦷 Bài đăng sản phẩm <b style="opacity:.7;margin-left:2px">'+cnt("product")+'</b></button>'
     +'</div>'
-    +'<div class="cal-pages">'+chips+'</div>';
+    +(online?'<div class="cal-pages">'+chips+'<button class="cal-designtog'+(CAL.mkDesign?' on':'')+'" onclick="CAL.mkDesign=!CAL.mkDesign;render()" title="Chỉ xem bài dạng Design post">🎨 Design</button></div>':'');
 }
 
 /* ── status → màu badge ── */
@@ -7980,7 +8038,12 @@ function stMeta(ev){
   if(/đúng hạn|on time/.test(s))               return {cls:"ok",   lbl:"✅ On air đúng hạn"};
   if(/muộn|late|trễ/.test(s))                  return {cls:"warn", lbl:"⏰ On air muộn"};
   if(/plan|kế hoạch/.test(s))                  return {cls:"info", lbl:"📋 Kế hoạch"};
+  if(/^fixed$/.test(s))                         return {cls:"ok",   lbl:"📌 Đã chốt"};
+  if(/not yet fixed/.test(s))                  return {cls:"warn", lbl:"⏳ Chưa chốt"};
+  if(/^not yet$/.test(s))                      return {cls:"info", lbl:"🕓 Chờ duyệt"};
   if(/pending|chờ|duyệt/.test(s))              return {cls:"info", lbl:"🕓 "+(ev.status||"Pending")};
+  if(!s && (ev.kind==="event"||ev.kind==="product") && ev.planned && !ev.actual) return {cls:"info", lbl:"📅 Chờ on-air"};
+  if(!s && (ev.kind==="event"||ev.kind==="product")) return {cls:"muted",lbl:"📝 Chưa lên lịch"};
   if(!s)                                       return {cls:"muted",lbl:"—"};
   return {cls:"info", lbl:ev.status};
 }
@@ -7996,7 +8059,9 @@ function pageCls(page){
 function renderSummary(){
   var box=$("cal-summary"); if(!box) return;
   var ec=effCat();
-  var list=monthEvents();
+  var list=monthEvents().filter(function(e){ return !e._cont || e._day===1 || (e.date||"").slice(8)==="01"; });
+  (function(){ var seen={}; list=list.filter(function(e){ if(seen[e._id]) return false; seen[e._id]=1; return true; }); })();
+  list=list.concat(undatedEvents());
   function stat(v,l,accent){ return '<div class="cal-stat'+(accent?" accent":"")+'"><div class="v">'+v+'</div><div class="l">'+esc(l)+'</div></div>'; }
   var html="";
   if(ec==="all"){
@@ -8004,7 +8069,13 @@ function renderSummary(){
     var tr=list.filter(function(e){return e.kind==="training";}).length;
     var ev=list.filter(function(e){return e.kind==="event";}).length;
     var pr=list.filter(function(e){return e.kind==="product";}).length;
-    html=stat(list.length,"Tổng lịch",1)+stat(t,"🧳 Công tác")+stat(tr,"🎓 Đào tạo")+stat(ev,"📸 Bài sự kiện")+stat(pr,"🦷 Bài sản phẩm");
+    var of=list.filter(function(e){return e.kind==="offline";}).length;
+    html=stat(list.length,"Tổng lịch",1)+stat(t,"🧳 Công tác")+stat(tr,"🎓 Đào tạo")+stat(of,"🎪 Sự kiện offline")+stat(ev,"📸 Bài sự kiện")+stat(pr,"🦷 Bài sản phẩm");
+  } else if(ec==="offline"){
+    var fx=list.filter(function(e){return /^fixed$/i.test(e.planStatus||"");}).length;
+    var tp=0, ap=0; list.forEach(function(e){ tp+=(+e.targetParticipant||0); ap+=(+e.actualParticipant||0); });
+    var ndt=list.filter(function(e){return !e.date;}).length;
+    html=stat(list.length,"Sự kiện offline",1)+stat(fx,"📌 Đã chốt")+stat(list.length-fx,"⏳ Chưa chốt")+stat(ndt,"Chưa có ngày")+stat(tp+(ap?" / "+ap:""),"Người tham dự (mục tiêu"+(ap?" / thực tế":"")+")");
   } else if(ec==="trip"){
     var days=0,cost=0; list.forEach(function(e){ days+=(+e.days||0); cost+=(+e.costTotal||0); });
     var pics={}; list.forEach(function(e){ if(e.pic)pics[e.pic]=1; });
@@ -8030,20 +8101,31 @@ function renderSummary(){
 }
 
 /* ── BODY: grid hoặc list ── */
-function renderLoading(){ $("cal-body").innerHTML='<div class="cal-loading"><div class="cal-spin"></div><div>Đang tải lịch từ 3 nguồn dữ liệu…</div></div>'; }
+function renderLoading(){ $("cal-body").innerHTML='<div class="cal-loading"><div class="cal-spin"></div><div>Đang tải lịch từ 4 nguồn dữ liệu…</div></div>'; }
 function renderBody(){
   if(!CAL.loaded){ renderLoading(); return; }
   if(CAL.view==="list") renderList(); else renderGrid();
+  /* ⭐ v13.9: mục chưa chốt ngày + cảnh báo nguồn chưa kết nối */
+  var nd=undatedEvents(), top="";
+  var need={ all:["trip","training","online","offline"], trip:["trip"], training:["training"], marketing:["online","offline"] }[CAL.cat]||[];
+  var lbl={ trip:"Công tác", training:"Đào tạo (Training Hub v3.5)", online:"Marketing Online", offline:"Marketing Offline" };
+  var bad=need.filter(function(k){ return CAL.srcErr[k]; });
+  if(bad.length) top+='<div class="cal-srcwarn">⚠️ Chưa tải được: <b>'+bad.map(function(k){ return lbl[k]; }).join(", ")+'</b> — backend chưa cài bản mới (action mmhCalendar / rhSessions) hoặc đang lỗi. Bấm <b>Làm mới</b> để thử lại.</div>';
+  if(nd.length) top+='<details class="cal-nodate"'+(CAL.view==="list"?" open":"")+'><summary>📌 Chưa chốt ngày trong tháng này · '+nd.length+' mục ▾</summary><div class="bd">'+nd.map(evCard).join("")+'</div></details>';
+  if(top) $("cal-body").insertAdjacentHTML("afterbegin", top);
 }
 
 function chipText(ev){
-  if(ev.kind==="trip")     return (ev.pic?esc(ev.pic)+" · ":"")+esc(ev.destination||ev.title);
-  if(ev.kind==="training") return esc(ev.title);
-  if(ev.kind==="event")    return esc(ev.event||ev.title);
+  var c=ev._cont?"↪ ":"";
+  if(ev.kind==="trip")     return c+(ev.pic?esc(ev.pic)+" · ":"")+esc(ev.destination||ev.title);
+  if(ev.kind==="training") return (ev.time?esc(ev.time.split("–")[0])+" ":"")+esc(ev.title);
+  if(ev.kind==="offline")  return c+esc(ev.title)+(ev.place?" · "+esc(ev.place):"");
+  if(ev.kind==="event")    return esc(ev.title||ev.event);
   return esc(ev.title);
 }
 function isPlannedChip(ev){
   if(ev.kind==="training") return !!ev.planned;
+  if(ev.kind==="offline") return !/^fixed$/i.test(ev.planStatus||"");
   if(ev.kind==="event"||ev.kind==="product") return !ev.actual && !!ev.planned;
   return false;
 }
@@ -8072,7 +8154,7 @@ function renderGrid(){
       var evs=byDay[iso]||[];
       var shown=evs.slice(0,3).map(function(ev){
         var m2=stMeta(ev);
-        return '<div class="cal-chip k-'+ev.kind+(isPlannedChip(ev)?" planned":"")+'" onclick="event.stopPropagation();CAL.openDay(\''+iso+'\')" title="'+esc((ev.title||"")+" — "+m2.lbl)+'">'
+        return '<div class="cal-chip k-'+ev.kind+(isPlannedChip(ev)?" planned":"")+(/cancel/i.test(ev.status||"")?" cancel":"")+'" onclick="event.stopPropagation();CAL.openDay(\''+iso+'\')" title="'+esc((ev.title||"")+" — "+m2.lbl)+'">'
           +'<span class="cdot"></span><span class="ctxt">'+chipText(ev)+'</span></div>';
       }).join("");
       var more=evs.length>3 ? '<div class="cal-more" onclick="event.stopPropagation();CAL.openDay(\''+iso+'\')">+ '+(evs.length-3)+' nữa</div>' : "";
@@ -8085,6 +8167,7 @@ function renderGrid(){
   var legend='<div class="cal-legend">'
     +'<span><b style="background:#3E8E6B"></b>Công tác</span>'
     +'<span><b style="background:#8a71b6"></b>Đào tạo</span>'
+    +'<span><b style="background:#A25488"></b>Sự kiện offline</span>'
     +'<span><b style="background:#4e7caf"></b>Bài sự kiện</span>'
     +'<span><b style="background:#c98a1c"></b>Bài sản phẩm</span>'
     +'<span><b style="background:repeating-linear-gradient(135deg,#90b0d2 0 4px,#c7d8ea 4px 8px)"></b>Sọc = dự kiến / kế hoạch</span>'
@@ -8115,7 +8198,9 @@ function renderList(){
 /* ── Event card (dùng chung list + drawer) ── */
 function evCard(ev){
   var m=stMeta(ev);
-  var tag={trip:"🧳 CÔNG TÁC",training:"🎓 ĐÀO TẠO",event:"📸 SỰ KIỆN",product:"🦷 SẢN PHẨM"}[ev.kind]||ev.kind;
+  var tag={trip:"🧳 CÔNG TÁC",training:"🎓 ĐÀO TẠO",event:"📸 BÀI ĐĂNG SỰ KIỆN",product:"🦷 BÀI ĐĂNG SẢN PHẨM",offline:"🎪 SỰ KIỆN OFFLINE"}[ev.kind]||ev.kind;
+  var fmtPill=ev.format?'<span class="cal-fmt'+(ev.design?' design':'')+'">'+(ev.design?'🎨 ':'')+esc(ev.format)+'</span>':'';
+  var lk=function(u,l){ return u?'<a class="cal-link" href="'+esc(u)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">'+l+'</a>':''; };
   var meta="", body="";
   if(ev.kind==="trip"){
     meta='<span>👤 <b>'+esc(ev.pic)+'</b></span>'
@@ -8127,29 +8212,43 @@ function evCard(ev){
         +'<div class="kv"><b>Thiết bị mang theo:</b> '+esc(ev.equipment||"N/A")+'</div>'
         +'<div class="kv"><b>Tư liệu (Folder):</b> '+(ev.folder?('<a class="cal-link" href="'+esc(ev.folder)+'" target="_blank" rel="noopener">📁 Mở folder</a>'):"N/A")+'</div>';
   } else if(ev.kind==="training"){
-    meta='<span>📅 '+ddmmyyyy(ev.date)+'</span>'
+    meta='<span>📅 '+ddmmyyyy(ev.date)+(ev.time?' · '+esc(ev.time):'')+'</span>'
         +'<span>🏷️ '+esc(ev.type)+(ev.category?' · '+esc(ev.category):"")+'</span>'
         +'<span>👨‍🏫 <b>'+esc(ev.trainer)+'</b></span>';
     body='<div class="kv"><b>Đối tượng:</b> '+esc(ev.audience||"—")+'</div>'
-        +(ev.purpose?'<div class="kv"><b>Mục đích:</b> '+esc(ev.purpose)+'</div>':"")
-        +(ev.folder?'<div class="kv"><b>Thư mục:</b> '+esc(ev.folder)+'</div>':"")
-        +(ev.link?'<a class="cal-link" href="'+esc(ev.link)+'" target="_blank" rel="noopener">🔗 Link buổi học / record</a>':"");
+        +(ev.purpose?'<div class="kv"><b>Mục tiêu:</b> '+esc(ev.purpose)+'</div>':"")
+        +'<div class="kv"><b>Thư mời:</b> '+(ev.invited?'✉️ đã gửi':'chưa gửi')+(ev.quiz?' &nbsp;•&nbsp; <b>Bài kiểm tra:</b> '+esc(ev.quiz):'')+'</div>'
+        +'<div class="kv" style="display:flex;gap:12px;flex-wrap:wrap">'+lk(ev.folder,"📁 Thư mục tài liệu")+lk(ev.meeting,"🎥 Link họp")+lk(ev.link,"🔗 Bản ghi")
+        +lk((window.TRAINING_HUB_APP||"")+"#/s/"+encodeURIComponent(ev.sid||""),"🎓 Mở trên Training Hub")+'</div>';
+  } else if(ev.kind==="offline"){
+    meta='<span>📅 '+(ev.date?ddmmyyyy(ev.date)+(ev.endDate&&ev.endDate!==ev.date?' → '+ddmmyyyy(ev.endDate):''):'Chưa chốt ngày')+'</span>'
+        +(ev.type?'<span>🏷️ '+esc(ev.type)+'</span>':'')
+        +(ev.place?'<span>📍 <b>'+esc(ev.place)+'</b>'+(ev.area&&ev.area!=="-"?' · '+esc(ev.area):'')+'</span>':'');
+    body=(ev.product?'<div class="kv"><b>Sản phẩm:</b> '+esc(ev.product)+(ev.segment?' · '+esc(ev.segment):'')+'</div>':'')
+        +(ev.topic?'<div class="kv"><b>Chủ đề:</b> '+esc(ev.topic)+'</div>':'')
+        +(ev.kol?'<div class="kv"><b>KOL / ACC:</b> '+esc(ev.kol)+'</div>':'')
+        +(ev.partner?'<div class="kv"><b>Đối tác:</b> '+esc(ev.partner)+'</div>':'')
+        +'<div class="kv"><b>Trạng thái:</b> '+esc(ev.planStatus||"—")+(ev.actionStatus?' · '+esc(ev.actionStatus):'')+'</div>'
+        +((ev.targetParticipant||ev.actualParticipant)?'<div class="kv"><b>Người tham dự:</b> mục tiêu '+esc(ev.targetParticipant||"—")+' · thực tế '+esc(ev.actualParticipant||"—")+'</div>':'')
+        +(ev.review?'<div class="kv" style="white-space:pre-wrap"><b>Đánh giá:</b> '+esc(ev.review)+'</div>':'')
+        +lk(ev.folder,"📁 Folder sự kiện");
   } else if(ev.kind==="event"){
-    meta='<span class="cal-pagepill '+pageCls(ev.page)+'">'+esc(ev.page||"—")+'</span>'
+    meta='<span class="cal-pagepill '+pageCls(ev.page)+'">'+esc(ev.page||"—")+'</span>'+fmtPill
         +'<span>🎯 '+esc(ev.pillar||"—")+'</span>'
         +(ev.kol?'<span>⭐ '+esc(ev.kol)+'</span>':"");
-    body='<div class="kv"><b>Sự kiện:</b> '+esc(ev.event||"—")+'</div>'
+    body='<div class="kv"><b>Sự kiện:</b> '+esc(ev.eventName||ev.event||"—")+'</div>'
         +(ev.format?'<div class="kv"><b>Format:</b> '+esc(ev.format)+'</div>':"")
         +'<div class="kv"><b>On-air dự kiến:</b> '+(ev.planned?ddmmyyyy(ev.planned):"—")+' &nbsp;•&nbsp; <b>On-air thực tế:</b> '+(ev.actual?ddmmyyyy(ev.actual):"— (chưa đăng)")+'</div>'
         +(ev.note?'<div class="kv"><b>Ghi chú:</b> '+esc(ev.note)+'</div>':"")
         +(ev.link?'<a class="cal-link" href="'+esc(ev.link)+'" target="_blank" rel="noopener">📄 Link bài đăng</a>':"");
   } else { // product
-    meta='<span class="cal-pagepill '+pageCls(ev.page)+'">'+esc(ev.page||"—")+'</span>'
+    meta='<span class="cal-pagepill '+pageCls(ev.page)+'">'+esc(ev.page||"—")+'</span>'+fmtPill
         +'<span>🦷 '+esc(ev.ptype||"—")+'</span>'
         +'<span>🎯 '+esc(ev.pillar||"—")+'</span>';
     body=(ev.format?'<div class="kv"><b>Format:</b> '+esc(ev.format)+'</div>':"")
         +'<div class="kv"><b>On-air dự kiến:</b> '+(ev.planned?ddmmyyyy(ev.planned):"—")+' &nbsp;•&nbsp; <b>On-air thực tế:</b> '+(ev.actual?ddmmyyyy(ev.actual):"— (chưa đăng)")+'</div>'
         +(ev.reason?'<div class="kv"><b>Lý do:</b> '+esc(ev.reason)+'</div>':"")
+        +(ev.main?'<div class="kv" style="white-space:pre-wrap"><b>Nội dung:</b> '+esc(ev.main)+'</div>':"")
         +(ev.link?'<a class="cal-link" href="'+esc(ev.link)+'" target="_blank" rel="noopener">📄 Link bài đăng</a>':"");
   }
   return '<div class="cal-ev k-'+ev.kind+'" onclick="CAL.toggleEv(this)">'
@@ -11996,7 +12095,7 @@ function mmStale(){
   /* ⭐ v13.6 — đề xuất / đồng bộ công tác xong ⇒ tự bật nhóm "Lịch công tác" để chuyến đi hiện ngay trên lịch */
   var _ts=window.tripSyncNow;
   window.tripSyncNow=function(){
-    if(!S.rtShow.trip){ S.rtShow.trip=true; try{ localStorage.setItem("mmh_rt_show", JSON.stringify(S.rtShow)); }catch(_){} try{ rtApply(); }catch(_){} }
+    if(arguments[1]===true && !S.rtShow.trip){ S.rtShow.trip=true; try{ localStorage.setItem("mmh_rt_show", JSON.stringify(S.rtShow)); }catch(_){} try{ rtApply(); }catch(_){} }
     return _ts.apply(this, arguments);
   };
 
@@ -12496,6 +12595,37 @@ window.rtMiniHtml=function(){
       "✉️ Soạn thư mời":"✉️ Compose invite","✉️ Gửi lại thư mời":"✉️ Resend invite","Thư mục tài liệu":"Training folder","Tham dự":"Attendees" };
     Object.keys(D).forEach(function(k){ if(!(k in DICT_EN)) DICT_EN[k]=D[k]; });
   }
+})();
+</script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   ⭐ v13.9 — MẶC ĐỊNH HIỂN THỊ & QUYỀN XEM "SALES FIELD"
+   · Đào tạo luôn hiện · Công tác & Địa bàn Sales mặc định ẩn (bấm nút để hiện).
+   · Nút / dữ liệu Địa bàn Sales chỉ dành cho Director & HOD Sales (SALES_FIELD_VIEWERS).
+   ══════════════════════════════════════════════════════════════════════ */
+var SALES_FIELD_VIEWERS=["nguyen ha","tuyen"];      /* thêm tên PIC (viết thường) nếu cần cho người khác xem */
+function rtCanSeeVisit(){ return !!(S.user && SALES_FIELD_VIEWERS.indexOf(String(S.user.pic||"").toLowerCase())>=0); }
+if(!S.rtShow._v139){ S.rtShow.training=true; S.rtShow.trip=false; S.rtShow.visit=false; S.rtShow._v139=1; try{ localStorage.setItem("mmh_rt_show", JSON.stringify(S.rtShow)); }catch(_){} }
+window.rtFilter=function(list){
+  var canV=rtCanSeeVisit();
+  return (list||[]).filter(function(k){
+    if(k && k.__tmp) return true;
+    var c=rtKeyCat(k);
+    if(c==="visit" && !canV) return false;
+    return !c || !!S.rtShow[c];
+  });
+};
+(function(){
+  var _mh=window.rtMiniHtml;
+  window.rtMiniHtml=function(){
+    var h=_mh.apply(this, arguments);
+    if(rtCanSeeVisit()) return h;
+    return h.replace(/<button type="button" class="rt-pill[^"]*" style="--c:#4E7CAF" onclick="rtSet\('visit'[\s\S]*?<\/button>/, "");
+  };
+  var _rs=window.rtSet;
+  window.rtSet=function(cat, on){ if(cat==="visit" && !rtCanSeeVisit()) return; return _rs.apply(this, arguments); };
+  var _ra=window.rtAll;
+  window.rtAll=function(on){ var r=_ra.apply(this, arguments); if(!rtCanSeeVisit() && S.rtShow.visit){ S.rtShow.visit=false; rtApply(); } return r; };
 })();
 </script>
 </body>
