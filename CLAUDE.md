@@ -44,11 +44,18 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   (người dùng đã phản hồi v15.3 quá nhạt, khó nhìn) và không tô đặc.
 - Tránh nền đậm, gradient, viền sọc, bóng đổ nặng, emoji màu dày đặc. Thông báo = thẻ trắng, viền mảnh.
 - Lớp CSS chung ở `<style id="calm-css">` + `<style id="calm2-css">` cuối `index.html` — giao diện mới nên tuân theo các token ở đó.
-- Thứ tự popup khi đăng nhập: Thông báo cập nhật (`UPD`) → Nhắc hạn chứng từ (`DL`) → Thư nhắc việc (`NT`); popup mới phải xếp hàng tương tự.
+- Thứ tự popup khi đăng nhập: Thông báo cập nhật (`UPD`) → Nhắc hạn chứng từ (`DL`) → Việc mới được giao (`ASG`) → Thư nhắc việc (`NT`);
+  popup mới phải xếp hàng tương tự (cờ `pending` + bọc `NT.open`).
 
 ## Ghi chú kỹ thuật
 - Các bản vá xếp lớp bằng `window.fn = …` trong các khối `<script>` thêm ở cuối file — giữ phong cách này.
 - Backend: Google Apps Script (JSONP cho đọc, POST `URLSearchParams{action,payload}` cho ghi).
   Training Hub (`TRAINING_HUB_API`), Business Trip (backend Report Hub `GAS_URLS`), MMH Calendar Feed trong 2 file MKT.
   Code `.gs` không nằm trong repo — khi sửa backend, gửi file `.gs` cho người dùng tự dán & Deploy → New version.
+  Code backend Report Hub (3 phòng ban) KHÔNG có trong tay ⇒ tính năng cần lưu trữ dùng chung đặt ở backend Training Hub
+  (đã có danh bạ email + MailApp): v3.12 có `rhAssign*` (sheet `RH_Assign` trong file Training Master).
+- MMH Calendar Feed (v3.2) có ghi dữ liệu: `mmhOptions` (đọc Data validation) và `mmhWrite` (update/add/delete) — không ghi cột
+  có công thức, xác nhận đúng dòng bằng `check`. Web app giới hạn trong domain ⇒ gọi bằng JSONP (GET), giữ URL < ~7500 ký tự.
+- Bộ dựng PDF: hàm chung ở `tools/guide/deckkit.js`; mỗi bản hướng dẫn 1 file nội dung (`build.js` = v15.2, `build155.js` = v15.5).
+  Mock đăng nhập người khác: `newPage(b,{pic:'Minh Trang'})`; giả lập ngày: `{time:'2026-10-15T09:00:00+07:00'}`.
 - `script.google.com` bị chặn trong môi trường Claude: không gọi thật được, luôn dùng mock để test.
