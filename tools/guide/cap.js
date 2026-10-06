@@ -164,6 +164,14 @@ S.v162adm=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',noChe
   await ev(p,()=>{ UM.close(); ADM.open(); }); await p.waitForSelector('#adm tr.r'); await p.click('#adm tr.r[data-l="mmh.admin"]'); await p.waitForTimeout(200);
   await p.click('#adm .tg[data-k="mkt"]'); await p.waitForTimeout(150);
   await shot(p,'v162adm',{marks:[['#ad-add',1,'tl'],['#adm tr.r.on',2,'tl'],['#adm .sec',3,'tl'],['#adm .ll.never',4,'tl'],['#af-save',5,'tl']]}); };
+/* ★ v16.3 — email giao việc từ hộp thư của bạn + theo dõi + trao đổi */
+S.v163=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',noChecks:true,vp:{width:1440,height:1000}}); await p.waitForTimeout(5000); await ev(p,()=>{ NT.close&&NT.close(); if(window.UPD&&UPD.isOpen()) UPD.close(); });
+  await ev(p,()=>mailComposeAssign({pic:'Minh Trang',name:'Viết bài giới thiệu Key SKUs',key:'FY68 Product plan — Dental',start:'2026-10-06',due:'2026-10-10'})); await p.waitForSelector('#m11-trk .at-row'); await p.waitForTimeout(300);
+  await shot(p,'v163compose',{clip:'#modals .modal-box',marks:[['#m11-from button.on',1,'tl'],['#m11-trk',2,'tl'],['#m11-send',3,'tl']]});
+  await ev(p,()=>closeModal()); await ev(p,()=>AT.open('byme')); await p.waitForSelector('#at.show .at-row'); await p.waitForTimeout(300);
+  await shot(p,'v163track',{clip:'#at .at-card',marks:[['#at .at-row[data-id="A2610050930"] .at-st',1,'tl'],['#at .at-row[data-id="A2610040800"] .at-st',2,'tl'],['#at .at-sec',3,'tl']]});
+  await p.click('#at .at-row[data-id="A2610050930"]'); await p.waitForSelector('#at-txt'); await p.fill('#at-txt','Ok em, chị duyệt ngay khi nhận bản nháp nhé.'); await p.waitForTimeout(200);
+  await shot(p,'v163thread',{clip:'#at .at-card',marks:[['#at .rp',1,'tl'],['#at-send',2,'tl']]}); };
 module.exports={S,newPage,shot,ev};
 if(require.main===module)(async()=>{
   const b=await chromium.launch({args:['--lang=vi-VN']});

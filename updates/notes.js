@@ -8,6 +8,27 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id: "2026-10-06-v16.3",
+    version: "v16.3",
+    date: "2026-10-06",
+    title: "Email giao việc từ hộp thư của bạn · theo dõi & trao đổi",
+    summary: "Email giao việc giờ gửi được từ <b>chính hộp thư của bạn</b> (Outlook / Gmail). Bạn thấy người nhận <b>đã xem</b> trên Report Hub chưa, <b>đã hoàn thành</b> chưa, và trao đổi được ngay trong việc.",
+    guide: "docs/HDSD_Tim_nhanh_Phan_quyen_Email_giao_viec_v16.3.pdf",
+    items: [
+      { type: "new", icon: "✉️", title: "Gửi từ hộp thư của bạn",
+        text: "Soạn email giao việc → hàng <b>Gửi từ</b> chọn <b>Hộp thư của bạn</b> → <b>Mở thư để gửi</b>: Outlook / Gmail mở sẵn thư đã điền đủ, bạn bấm Gửi. Thư nằm trong “Đã gửi” của bạn, người nhận trả lời thẳng cho bạn.",
+        img: "updates/v16.3/gui-tu-hop-thu.jpg" },
+      { type: "new", icon: "📬", title: "Theo dõi: đã xem chưa, xong chưa",
+        text: "Menu tên của bạn → <b>Việc đã giao &amp; trao đổi</b> (hoặc Ctrl + K → <i>viec da giao</i>): từng việc hiện <b>Chưa xem</b> / <b>Đã xem trên Report Hub</b> (kèm giờ) / <b>✓ Hoàn thành</b>.",
+        img: "updates/v16.3/theo-doi.jpg" },
+      { type: "new", icon: "💬", title: "Trao đổi gắn vào việc",
+        text: "Bấm vào việc trong danh sách, hoặc bấm nhãn <b>✉ Email từ …</b> trên lịch → đọc và viết trả lời. Bên kia nhận email ngay; mở app sẽ báo khi có trả lời mới.",
+        img: "updates/v16.3/trao-doi.jpg" },
+      { type: "fix", icon: "🔧", title: "“Việc mới được giao” chạy thật",
+        text: "Popup <b>Việc mới được giao</b>, nhãn <b>✉ Email từ …</b> và email tự báo khi hoàn thành nay được máy chủ ghi nhận đầy đủ (trước đây máy chủ chưa có phần này nên có lúc không hiện)." }
+    ]
+  },
+  {
     id: "2026-10-06-v16.2",
     version: "v16.2",
     date: "2026-10-06",

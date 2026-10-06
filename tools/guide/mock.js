@@ -41,6 +41,11 @@ const ROSTER=require('./roster.json');
 /* ★ v15.5 — giả lập Training Hub v3.12: việc được giao (rhAssign*) */
 const ASSIGN=[{id:'A2610060901',createdAt:'2026-10-06 09:01',src:'marketing',no:'4.1',name:'Truyền thông: Agenda sự kiện',keyTask:'20261019 Dental Products_Seminar_Dr. Nguyen Thanh Dung, Dr. Hau_Ho Chi Minh',pic:'Minh Trang',assigner:'Thuong',start:'2026-10-06',due:'2026-10-08',seen:false,done:false},
   {id:'A2610020800',createdAt:'2026-10-02 08:00',src:'marketing',no:'2.2',name:'Review spec chỉ khâu với NPP I Care',keyTask:'Ophthalmic — tender FY68',pic:'Giang',assigner:'Tuyen',start:'2026-10-07',due:'2026-10-08',seen:true,done:false}];
+/* ★ v16.3 — việc Giang đã giao (theo dõi + trao đổi) */
+ASSIGN.push({id:'A2610050930',createdAt:'2026-10-05T09:30:00',src:'marketing',no:'1.1',name:'Viết bài giới thiệu Key SKUs',keyTask:'FY68 Product plan — Dental',pic:'Minh Trang',assigner:'Giang',start:'2026-10-05',due:'2026-10-10',seen:true,seenAt:'2026-10-06T09:41:00',done:false,via:'own',
+    replies:[{by:'Minh Trang',at:'2026-10-06T10:05:00',text:'Em nhận việc ạ, thứ Sáu em gửi bản nháp để chị duyệt.'}]},
+  {id:'A2610040800',createdAt:'2026-10-04T08:00:00',src:'marketing',no:'2.1',name:'Báo cáo thị trường Bạc Liêu',keyTask:'Ophthalmic — tender FY68',pic:'Khang',assigner:'Giang',start:'2026-10-04',due:'2026-10-07',seen:false,done:false,via:'system',replies:[]},
+  {id:'A2610010800',createdAt:'2026-10-01T08:00:00',src:'marketing',no:'3.1',name:'Ảnh sự kiện Jizai',keyTask:'Weekly report & meeting',pic:'Thuong',assigner:'Giang',start:'2026-10-01',due:'2026-10-03',seen:true,seenAt:'2026-10-01T09:00:00',done:true,doneAt:'2026-10-03T16:20:00',via:'own',replies:[]});
 const LOG=[];
 /* ★ v15.5 — giả lập MMH Calendar Feed v3.2: danh mục chọn + ghi dữ liệu Marketing */
 const MKOPT={
@@ -140,7 +145,9 @@ async function install(page, o){
     else if(a==='addSub'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); const k=KK.find(x=>x.no===String(body.keyNo||body.parentNo)); const no=(k?k.no:'1')+'.'+((k&&k.subs?k.subs.length:0)+1+(++seq%1?0:0)); if(k){ k.subs=k.subs||[]; k.subs.push({no,row:+String(no).replace('.','')||99,subTask:body.name,pic:body.pic,status:body.status||'To Do',start:body.start,planned:body.planned}); d={ok:true,no,row:99,task:{}}; } else d={ok:false,error:'Không tìm thấy Key Task số '+(body.keyNo||'')}; }
     else if(a==='mmhOptions'){ if(lag) await new Promise(r=>setTimeout(r,lag)); d={ok:true,kind:body.kind,options:MKOPT[body.kind]||{}}; }
     else if(a==='mmhWrite'){ if(lag) await new Promise(r=>setTimeout(r,lag)); if(o.failWrite){ d={ok:false,error:'Không mở được file (giả lập lỗi)'}; } else { LOG.push(['mk',{op:body.op,kind:body.kind,row:body.row,check:body.check,actor:body.actor,data:JSON.parse(body.data||'{}')}]); d=mkWrite(body); } }
-    else if(a==='rhAssignList'){ const me=(body.actor||'').toLowerCase(); d={ok:true,items:ASSIGN,mine:ASSIGN.filter(x=>x.pic.toLowerCase()===me&&!x.done)}; }
+    else if(a==='rhAssignList'){ const me=(body.actor||'').toLowerCase(); d={ok:true,items:ASSIGN,mine:ASSIGN.filter(x=>x.pic.toLowerCase()===me&&!x.done),byMe:ASSIGN.filter(x=>x.assigner.toLowerCase()===me)}; }
+    else if(a==='rhAssignReply'){ const x=ASSIGN.find(y=>y.id===body.id); LOG.push(['reply',body]); if(!x) d={ok:false,error:'Không tìm thấy'}; else { x.replies=(x.replies||[]).concat([{by:body.actor,at:new Date().toISOString(),text:body.text}]); d={ok:true,item:x}; } }
+    else if(a==='rhDirectory'){ d=body.tk?{ok:true,people:Object.keys(ROSTER_NAMES).map(k=>({pic:k,email:ROSTER_NAMES[k]+'@mani.inc'}))}:{ok:false,code:'AUTH',error:'Chưa đăng nhập.'}; }
     else if(a==='rhAssignAdd'){ LOG.push(['add',body]); const id='A'+Date.now(); ASSIGN.push({id,createdAt:'2026-10-06 10:00',src:body.src,no:body.no,name:body.name,keyTask:body.keyTask,pic:body.pic,assigner:body.actor,start:body.start,due:body.due,seen:false,done:false}); d={ok:true,id}; }
     else if(a==='rhAssignSeen'){ LOG.push(['seen',body]); String(body.ids||'').split(',').forEach(id=>{ const x=ASSIGN.find(y=>y.id===id); if(x) x.seen=true; }); d={ok:true}; }
     else if(a==='rhAssignDone'){ LOG.push(['done',body]); const sent=[]; String(body.ids||'').split(',').forEach(id=>{ const x=ASSIGN.find(y=>y.id===id); if(x&&!x.done){ x.done=true; sent.push(id); } }); d={ok:true,sent}; }
