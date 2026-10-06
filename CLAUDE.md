@@ -40,9 +40,11 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
 ## Phong cách giao diện (người dùng yêu cầu: đơn giản, nhã nhặn)
 - Font **Aptos** cho mọi chữ, kể cả thông báo / hộp thoại.
 - Bảng màu brand MMH dịu: navy `#003047` (tiêu đề), blue `#3A5CAA` (nút chính), xanh nhạt `#CFE2F3` / `#F0F7FF`,
-  xám viền `#E6EAEF`. Màu theo loại lịch chỉ dùng làm **vạch / chấm nhỏ** (`KIND` trong MMH Calendar).
+  xám viền `#E6EAEF`. Màu theo loại lịch (`KIND` trong MMH Calendar): vạch đậm + nền tô nhẹ ~13% — không quá nhạt
+  (người dùng đã phản hồi v15.3 quá nhạt, khó nhìn) và không tô đặc.
 - Tránh nền đậm, gradient, viền sọc, bóng đổ nặng, emoji màu dày đặc. Thông báo = thẻ trắng, viền mảnh.
-- Lớp CSS chung ở `<style id="calm-css">` cuối `index.html` — giao diện mới nên tuân theo các token ở đó.
+- Lớp CSS chung ở `<style id="calm-css">` + `<style id="calm2-css">` cuối `index.html` — giao diện mới nên tuân theo các token ở đó.
+- Thứ tự popup khi đăng nhập: Thông báo cập nhật (`UPD`) → Nhắc hạn chứng từ (`DL`) → Thư nhắc việc (`NT`); popup mới phải xếp hàng tương tự.
 
 ## Ghi chú kỹ thuật
 - Các bản vá xếp lớp bằng `window.fn = …` trong các khối `<script>` thêm ở cuối file — giữ phong cách này.

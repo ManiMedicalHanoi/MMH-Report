@@ -6,9 +6,11 @@ async function newPage(b, o){
   const ctx=await b.newContext({viewport:o.vp||{width:W,height:H},deviceScaleFactor:2,locale:'vi-VN',timezoneId:'Asia/Ho_Chi_Minh',isMobile:!!o.mobile,hasTouch:!!o.mobile});
   const p=await ctx.newPage(); p.errs=[]; p.on('pageerror',e=>p.errs.push(e.message));
   await p.addInitScript(()=>{ try{ localStorage.setItem('mmh_pic','Giang'); localStorage.setItem('mmh_src','marketing'); }catch(_){} });
+  if(o.time) await p.clock.setFixedTime(new Date(o.time));   /* giả lập ngày (vd. popup hạn chứng từ) */
   await M.install(p,o);
   await p.goto('file://'+path.resolve(__dirname,'../../index.html'));
-  if(!o.upd) await p.evaluate(()=>{ if(window.UPD) UPD.active=function(){ return []; }; });   /* ẩn thông báo cập nhật khi chụp cảnh khác */
+  if(!o.upd) await p.evaluate(()=>{ if(window.UPD) UPD.active=function(){ return []; }; });
+  if(!o.dl) await p.evaluate(()=>{ if(window.DL){ DL.info0=DL.info; DL.info=function(n){ var i=DL.info0(n); if(!window.__dlOn) i.due=false; return i; }; } });   /* ẩn thông báo cập nhật khi chụp cảnh khác */
   await p.waitForFunction(()=>window.S&&S.user&&S.user.pic==='Giang'&&document.getElementById('app').style.display==='block',null,{timeout:20000});
   if(!o.upd) await p.evaluate(()=>{ if(window.UPD && UPD.isOpen()) UPD.close(); });
   await p.waitForFunction(()=>window.MC&&MC.st&&MC.st.trip&&MC.st.trip.s&&MC.st.trip.s!=='load',null,{timeout:20000});
@@ -99,6 +101,8 @@ S.online=async b=>{ const p=await newPage(b,{}); await openCal(p,[2026,8,1],'mon
   await shot(p,'online',{marks:[['#mc-dr .mc-kv',1,'tl'],['#mc-dr .mc-lks',2,'tl']]}); };
 S.notice=async b=>{ const p=await newPage(b,{upd:true,noChecks:true}); await p.waitForFunction(()=>UPD.isOpen(),null,{timeout:10000}); await p.waitForTimeout(500);
   await shot(p,'notice',{marks:[['#upd .upd-hd .k',1,'tl'],['#upd .upd-it a.im',2,'tl'],['#upd-hide',3,'tl'],['#upd .upd-ft .doc',4,'tl']]}); };
+S.deadline=async b=>{ const p=await newPage(b,{dl:true,noChecks:true,time:'2026-10-15T09:30:00+07:00',vp:{width:1440,height:900}}); await p.waitForFunction(()=>DL.isOpen(),null,{timeout:12000}); await p.waitForTimeout(400);
+  await shot(p,'deadline',{marks:[['#dl .dl-hd h2',1,'tl'],['#dl .dl-r.on',2,'tl'],['#dl .dl-pt',3,'tl'],['#dl .dl-ft .off',4,'tr']]}); };
 S.listview=async b=>{ const p=await newPage(b,{}); await openCal(p,[2026,9,1],'list'); await shot(p,'listview',{marks:[]}); };
 S.phone=async b=>{ const p=await newPage(b,{vp:{width:390,height:844},mobile:true}); await ev(p,()=>{ NT.close(); MC.f.kinds.trip=1; MC.ref=new Date(2026,9,6); openMMHCalendar(); MC.setView('list'); }); await p.waitForTimeout(1200); await ev(p,()=>NT.close());
   await shot(p,'phone',{marks:[]});
