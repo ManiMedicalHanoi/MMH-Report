@@ -1,0 +1,108 @@
+<!-- ══ THÔNG BÁO CẬP NHẬT TRONG APP (gh-webapp-upgrader) ════════════════════════════════════════
+  · Dữ liệu: updates/notes.js (window.APP_UPDATES) — mỗi bản phát hành thêm 1 mục LÊN ĐẦU mảng.
+  · Tự hiện khi đăng nhập trong DAYS ngày kể từ "date"; người dùng tick "Không hiển thị lại" ⇒ ẩn mục đó (theo từng người).
+  · Bấm badge phiên bản (id="ver-badge" onclick="UPD.open(true)") ⇒ xem lại toàn bộ lịch sử.
+  · Xếp hàng popup: popup khác gọi UPD.queue(fn) — fn chạy sau khi thông báo đóng (hoặc ngay nếu không mở).
+  CÀI: dán khối này trước </body>, rồi gọi  UPD.start({ user:()=>tênNgườiDùng, ready:()=>appĐãVẽXong, days:7 })
+  Badge:  <span id="ver-badge" class="ver-badge" onclick="UPD.open(true)" title="Có gì mới?">v1.0</span>
+  Nhớ tăng cả tham số cache:  <script src="updates/notes.js?v=1.0"></script>
+═══════════════════════════════════════════════════════════════════════════════════════════════ -->
+<script src="updates/notes.js?v=1.0"></script>
+<style id="upd-css">
+.ver-badge{font-size:10.5px;font-weight:700;background:var(--t-soft,#F0F7FF);color:var(--t-pri,#3A5CAA);border:1px solid var(--t-line,#CFE2F3);padding:2px 7px;border-radius:7px;vertical-align:middle;cursor:pointer}
+#upd{position:fixed;inset:0;z-index:770;background:rgba(20,35,50,.45);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;padding:16px;font-family:Aptos,'Aptos Display','Segoe UI',Calibri,Arial,sans-serif}
+#upd *{font-family:inherit}
+#upd.show{display:flex;animation:updIn .25s ease}
+@keyframes updIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.upd-box{width:min(860px,100%);max-height:92vh;background:#fff;border-radius:16px;box-shadow:0 24px 64px rgba(0,0,0,.22);display:flex;flex-direction:column;overflow:hidden}
+.upd-hd{padding:20px 24px 16px;background:#fff;color:#1F3347;border-bottom:1px solid #EEF1F4;position:relative}
+.upd-hd .k{display:inline-flex;gap:8px;align-items:center;font-size:11.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;background:var(--t-soft,#F0F7FF);color:var(--t-pri,#3A5CAA);border:1px solid var(--t-line,#CFE2F3);padding:4px 10px;border-radius:20px}
+.upd-hd h2{font-size:19px;font-weight:700;margin:10px 0 4px;line-height:1.3;color:var(--t-ink,#003047)}
+.upd-hd p{font-size:13.5px;color:#4A5D70;line-height:1.5}
+.upd-hd .x{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:10px;border:1px solid #E6EAEF;background:#fff;color:#6B7B8C;font-size:17px;cursor:pointer}
+.upd-tabs{display:flex;gap:6px;padding:10px 24px 0;flex-wrap:wrap;border-bottom:1px solid #EEF1F5}
+.upd-tabs button{border:none;background:none;padding:8px 12px;font-size:12.5px;font-weight:700;color:#6B7B8C;border-bottom:3px solid transparent;cursor:pointer}
+.upd-tabs button.on{color:var(--t-ink,#003047);border-color:var(--t-pri,#3A5CAA)}
+.upd-bd{overflow:auto;padding:16px 24px 6px;min-height:0}
+.upd-it{display:flex;gap:16px;padding:14px 0;border-bottom:1px dashed #E3E8EE;align-items:flex-start}
+.upd-it:last-child{border-bottom:none}
+.upd-it .ic{flex:none;width:42px;height:42px;border-radius:12px;background:var(--t-bg,#F7F9FB);border:1px solid #EEF1F4;display:flex;align-items:center;justify-content:center;font-size:19px;filter:grayscale(1)}
+.upd-it .tx{flex:1;min-width:0}
+.upd-it h4{font-size:15px;font-weight:700;color:var(--t-ink,#003047);margin:2px 0 4px}
+.upd-it p{font-size:13.3px;line-height:1.55;color:#40576D}
+.upd-it .tag{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;vertical-align:2px;background:var(--t-soft,#F0F7FF);color:var(--t-pri,#3A5CAA)}
+.upd-it .tag.fix{background:#FBF3F2;color:#8A4F4C}.upd-it .tag.imp{background:#F4F6F8;color:#4A5D70}
+.upd-it a.im{flex:none;display:block;width:250px;max-height:200px;border-radius:10px;overflow:hidden;box-shadow:0 0 0 1px #E6EAEF;cursor:zoom-in}
+.upd-it a.im img{display:block;width:100%}
+.upd-ft{display:flex;align-items:center;gap:10px;padding:12px 24px 16px;border-top:1px solid #EEF1F5;flex-wrap:wrap}
+.upd-ft label{display:flex;align-items:center;gap:7px;font-size:13px;color:#40576D;cursor:pointer;margin-right:auto}
+.upd-ft a,.upd-ft button{font-size:13.5px;font-weight:700;padding:9px 16px;border-radius:10px;cursor:pointer;text-decoration:none}
+.upd-ft .doc{border:1px solid #DDE3EA;background:#fff;color:var(--t-ink,#003047);font-weight:600}
+.upd-ft .ok{border:none;background:var(--t-pri,#3A5CAA);color:#fff}
+#upd-zoom{position:fixed;inset:0;z-index:780;background:rgba(10,20,30,.86);display:none;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
+#upd-zoom.show{display:flex}#upd-zoom img{max-width:100%;max-height:100%;border-radius:10px}
+@media(max-width:700px){ .upd-it{flex-wrap:wrap} .upd-it a.im{width:100%} .upd-hd h2{font-size:17px} }
+</style>
+<div id="upd" onclick="if(event.target===this)UPD.close()"></div>
+<div id="upd-zoom" onclick="this.classList.remove('show')"><img alt=""></div>
+<script>
+(function(){
+"use strict";
+var UPD=window.UPD={ cur:0, list:[], q:[], cfg:{ user:function(){ return "_"; }, ready:function(){ return true; }, days:7, key:"app_upd_hide_" } };
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function me(){ try{ return UPD.cfg.user()||"_"; }catch(_){ return "_"; } }
+function dmy(s){ var p=String(s||"").split("-"); return p.length===3?p[2]+"/"+p[1]+"/"+p[0]:s; }
+function age(iso){ var p=String(iso).split("-"), d=new Date(+p[0],+p[1]-1,+p[2]), t=new Date(); t.setHours(0,0,0,0); return Math.round((t-d)/86400000); }
+function hidden(){ try{ return JSON.parse(localStorage.getItem(UPD.cfg.key+me())||"{}")||{}; }catch(_){ return {}; } }
+function setHidden(id){ try{ var h=hidden(); h[id]=Date.now(); localStorage.setItem(UPD.cfg.key+me(), JSON.stringify(h)); }catch(_){} }
+function all(){ return (window.APP_UPDATES||[]).slice().sort(function(a,b){ return a.date<b.date?1:a.date>b.date?-1:0; }); }
+UPD.active=function(){ var h=hidden(), D=UPD.cfg.days; return all().filter(function(u){ var a=age(u.date); return a>=0 && a<D && !h[u.id]; }); };
+UPD.isOpen=function(){ var e=$("upd"); return !!(e && e.classList.contains("show")); };
+var TAG={ "new":["Mới",""], "imp":["Cải tiến","imp"], "fix":["Sửa lỗi","fix"] };
+function paint(){
+  var u=UPD.list[UPD.cur]; if(!u) return;
+  var a=age(u.date), left=UPD.cfg.days-a;
+  var tabs=UPD.list.length>1?'<div class="upd-tabs">'+UPD.list.map(function(x,i){ return '<button class="'+(i===UPD.cur?"on":"")+'" onclick="UPD.go('+i+')">'+esc(x.version||"")+' · '+dmy(x.date)+'</button>'; }).join("")+'</div>':'';
+  $("upd").innerHTML='<div class="upd-box" role="dialog" aria-label="Thông báo cập nhật">'
+    +'<div class="upd-hd"><span class="k">Cập nhật '+esc(u.version||"")+' · '+dmy(u.date)+'</span>'
+      +'<h2>'+esc(u.title||"")+'</h2>'+(u.summary?'<p>'+u.summary+'</p>':'')
+      +'<button class="x" onclick="UPD.close()" title="Đóng">✕</button></div>'+tabs
+    +'<div class="upd-bd">'+(u.items||[]).map(function(it){
+        var tg=TAG[it.type||"new"]||TAG["new"];
+        return '<div class="upd-it"><div class="ic">'+esc(it.icon||"✨")+'</div><div class="tx"><h4>'+esc(it.title||"")+'<span class="tag '+tg[1]+'">'+tg[0]+'</span></h4><p>'+(it.text||"")+'</p></div>'
+          +(it.img?'<a class="im" href="'+esc(it.img)+'" onclick="UPD.zoom(this.href);return false" title="Bấm để phóng to"><img src="'+esc(it.img)+'" alt="" loading="lazy"></a>':'')+'</div>';
+      }).join("")+'</div>'
+    +'<div class="upd-ft">'
+      +(UPD.manual?'<span style="margin-right:auto;font-size:12.5px;color:#7A8999">'+(hidden()[u.id]?'Bạn đã chọn không hiển thị lại thông báo này':(a<UPD.cfg.days&&a>=0)?'Tự hiện khi đăng nhập thêm '+left+' ngày':'Đã hết thời gian tự hiện')+'</span>'
+        :'<label><input type="checkbox" id="upd-hide"> Không hiển thị lại thông báo này</label>')
+      +(u.guide?'<a class="doc" href="'+esc(u.guide)+'" target="_blank" rel="noopener">📘 Hướng dẫn chi tiết (PDF)</a>':'')
+      +(u.folder?'<a class="doc" href="'+esc(u.folder)+'" target="_blank" rel="noopener">📁 Thư mục HDSD</a>':'')
+      +'<button class="ok" onclick="UPD.close()">Đã hiểu</button></div></div>';
+}
+UPD.go=function(i){ var c=$("upd-hide"); if(c && c.checked) setHidden(UPD.list[UPD.cur].id); UPD.cur=i; paint(); };
+UPD.zoom=function(src){ var z=$("upd-zoom"); z.querySelector("img").src=src; z.classList.add("show"); };
+UPD.open=function(manual){
+  UPD.manual=!!manual; UPD.list=manual?all():UPD.active();
+  if(!UPD.list.length){ if(manual) alert("Chưa có thông báo cập nhật nào"); return false; }
+  UPD.cur=0; paint(); $("upd").classList.add("show"); return true;
+};
+UPD.close=function(){
+  var c=$("upd-hide"); if(c && c.checked && UPD.list[UPD.cur]) setHidden(UPD.list[UPD.cur].id);
+  $("upd").classList.remove("show");
+  var q=UPD.q; UPD.q=[]; q.forEach(function(f){ setTimeout(f, 250); });
+};
+/* popup khác (nhắc hạn, việc mới…) gọi UPD.queue(fn) ⇒ không chồng 2 hộp thoại */
+UPD.queue=function(fn){ if(UPD.isOpen()) UPD.q.push(fn); else fn(); };
+document.addEventListener("keydown", function(e){ if(e.key!=="Escape") return; var z=$("upd-zoom"); if(z.classList.contains("show")) z.classList.remove("show"); else if(UPD.isOpen()) UPD.close(); });
+UPD.start=function(cfg){
+  Object.keys(cfg||{}).forEach(function(k){ UPD.cfg[k]=cfg[k]; });
+  (function boot(){
+    var who=me();
+    if((who==="_" && cfg && cfg.user) || !UPD.cfg.ready()){ setTimeout(boot, 800); return; }
+    setTimeout(function(){ if(me()===who && !UPD.isOpen()) UPD.open(false); }, 1200);
+    (function watch(){ if(me()!==who){ UPD.close(); boot(); return; } setTimeout(watch, 3000); })();   /* đổi người dùng ⇒ xét lại */
+  })();
+};
+})();
+</script>

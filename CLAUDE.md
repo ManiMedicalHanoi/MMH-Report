@@ -69,4 +69,6 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   gắn URL backend lúc bấm, chạy tuần tự từng backend, đổi số tạm `tmp-…` sang số thật (`__tmp` trong body), thử lại khi lỗi mạng/bận
   (cùng `rid`), phản hồi không chắc ⇒ đọc lại `weekly` để xác minh trước khi gửi lại, lỗi thật ⇒ chip đỏ + bảng Thử lại / Bỏ.
   Thao tác ghi mới: cập nhật giao diện trước, gọi `apiPost`, KHÔNG chờ `_noWait` / không hiện màn hình chờ. Mock: `flaky:{action:['drop'|'lost'|'busy']}`.
+- **Skill dùng chung** `skills/gh-webapp-upgrader/` (đóng gói: `skills/dist/gh-webapp-upgrader.skill`): quy trình + mẫu (outbox, theme, thông báo,
+  mock, PDF) rút ra từ repo này cho mọi webapp GitHub khác. Sửa skill ⇒ chạy `scripts/selftest_outbox.js` rồi đóng gói lại.
 - `script.google.com` bị chặn trong môi trường Claude: không gọi thật được, luôn dùng mock để test.

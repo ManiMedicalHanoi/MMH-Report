@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Demo · gh-webapp-upgrader</title>
+<!-- Trang mẫu tích hợp: hàng đợi ghi (outbox.js) + thông báo cập nhật + chủ đề màu. scripts/selftest_outbox.js ghép các
+     @include rồi chạy kịch bản lỗi mạng / máy chủ bận / tải lại trang với backend giả lập. -->
+<!--@include ../theme-kit.html#head-->
+<style>
+body{margin:0;background:var(--gray);font-family:Aptos,'Segoe UI',Arial,sans-serif;color:#1F3347}
+.top{display:flex;align-items:center;gap:12px;padding:12px 20px;background:#fff;border-bottom:1px solid #E6EAEF}
+.top h1{font-size:18px;margin:0;color:var(--t-ink)} .sp{flex:1}
+.wrap{max-width:900px;margin:20px auto;padding:0 16px}
+.card{background:#fff;border:1px solid #E6EAEF;border-radius:12px;padding:12px 14px;margin:10px 0}
+.card h3{margin:0 0 6px;font-size:15px;color:var(--t-ink)} .card li{font-size:13.5px;margin:3px 0}
+.pend{font-size:11px;color:#8A6514;margin-left:6px}
+button.pri{background:var(--t-pri);color:#fff;border:none;border-radius:9px;padding:8px 14px;font-weight:700;cursor:pointer}
+select{border:1px solid #DDE3EA;border-radius:9px;padding:7px 10px}
+</style>
+</head>
+<body>
+<div class="top"><h1>Demo App <span id="ver-badge" class="ver-badge" onclick="UPD.open(true)" title="Có gì mới?">v1.0</span></h1><div class="sp"></div>
+  <select id="src" onchange="APP.switchSrc(this.value)"><option value="a">Phòng A</option><option value="b">Phòng B</option></select>
+  <!--@include ../theme-kit.html#button-->
+</div>
+<div class="wrap"><button class="pri" onclick="APP.addKey('Việc mới '+(++APP.n))">＋ Thêm việc</button><div id="list"></div></div>
+
+<script src="../outbox.js"></script>
+<script>
+/* ── app tối giản: 2 backend (A, B), danh sách key + sub, mọi lệnh ghi qua APP_OUTBOX ── */
+var URLS={ a:"https://script.google.com/macros/s/DEMO_A/exec", b:"https://script.google.com/macros/s/DEMO_B/exec" };
+var APP=window.APP={ src:"a", items:[], n:0, user:localStorage.getItem("app_user")||"Demo" };
+function jsonp(url, params){ return new Promise(function(res){ var cb="__d"+Date.now()+Math.random().toString(36).slice(2,6), s=document.createElement("script");
+  window[cb]=function(d){ delete window[cb]; s.remove(); res(d); }; s.onerror=function(){ delete window[cb]; s.remove(); res(null); };
+  params.callback=cb; s.src=url+"?"+new URLSearchParams(params); document.body.appendChild(s); }); }
+function find(no){ var f=null; APP.items.forEach(function(k){ if(k.no===no) f={o:k}; (k.subs||[]).forEach(function(s){ if(s.no===no) f={o:s,k:k}; }); }); return f; }
+APP.render=function(){
+  document.getElementById("list").innerHTML=APP.items.map(function(k){
+    return '<div class="card" data-no="'+k.no+'"><h3>'+k.name+(k.__pending?'<span class="pend">⏳ đang lưu</span>':'')+'</h3><ul>'
+      +(k.subs||[]).map(function(s){ return '<li data-no="'+s.no+'">'+s.name+(s.__pending?'<span class="pend">⏳</span>':'')+'</li>'; }).join("")
+      +'</ul><button onclick="APP.addSub(\''+k.no+'\',\'Việc con '+(++APP.n)+'\')">＋ việc con</button></div>';
+  }).join("");
+};
+APP.setItems=function(list){ APP.items=list; APP_OUTBOX.overlay(); APP.render(); };
+APP.load=function(){ var s=APP.src; return jsonp(URLS[s],{action:"list"}).then(function(r){ if(r && APP.src===s) APP.setItems(r.items||[]); }); };
+APP.switchSrc=function(s){ APP.src=s; APP.items=[]; APP.render(); APP.load(); };
+APP.addKey=function(name){
+  var tmp="tmp-"+Date.now().toString(36)+"-"+(++APP.n), k={no:tmp,name:name,subs:[],__tmp:true,__pending:true,pic:APP.user};
+  APP.items.push(k); APP.render();                                            /* 1. hiện ngay */
+  return APP_OUTBOX.add({action:"addKey", name:name, pic:APP.user, __tmp:tmp})  /* 2. ghi nền */
+    .catch(function(){ APP.items=APP.items.filter(function(x){ return x!==k; }); APP.render(); });   /* Bỏ ⇒ gỡ */
+};
+APP.addSub=function(kno, name){
+  var f=find(kno); if(!f) return; var tmp="tmp-"+Date.now().toString(36)+"-"+(++APP.n), s={no:tmp,name:name,__tmp:true,__pending:true,pic:APP.user};
+  f.o.subs.push(s); APP.render();
+  return APP_OUTBOX.add({action:"addSub", keyNo:APP_OUTBOX.realNo(kno), name:name, pic:APP.user, __tmp:tmp})
+    .catch(function(){ f.o.subs=f.o.subs.filter(function(x){ return x!==s; }); APP.render(); });
+};
+APP_OUTBOX.init({
+  key:"demo_outbox_v1", mapKey:"demo_tmpmap_v1",
+  policy:{ addKey:{verify:true,label:"Thêm việc"}, addSub:{verify:true,label:"Thêm việc con"}, updateItem:{resend:true,label:"Cập nhật"} },
+  user:function(){ return APP.user; },
+  endpoint:function(){ return {url:URLS[APP.src], src:APP.src}; },
+  current:function(){ return APP.src; },
+  verify:function(op){ return jsonp(op.url,{action:"list"}).then(function(r){
+    if(!r) return null; var b=op.body, hit=null, used={}; Object.keys(APP_OUTBOX.map).forEach(function(t){ used[APP_OUTBOX.map[t]]=1; });
+    (r.items||[]).forEach(function(k){
+      if(op.a==="addKey" && k.name===b.name && !used[k.no]) hit=k;
+      if(op.a==="addSub" && k.no===String(APP_OUTBOX.realNo(b.keyNo))) (k.subs||[]).forEach(function(s){ if(s.name===b.name && !used[s.no]) hit=s; });
+    });
+    return hit?{ok:true,no:hit.no,verified:true}:null; }); },
+  onCreated:function(tmp, no){ var f=find(tmp); if(f){ f.o.no=no; f.o.__tmp=f.o.__pending=false; APP.render(); } },
+  overlay:function(ops){ ops.forEach(function(op){
+    if(op.a==="addKey" && !APP_OUTBOX.map[op.tmp] && !find(op.tmp)) APP.items.push({no:op.tmp,name:op.body.name,subs:[],__tmp:true,__pending:true});
+    if(op.a==="addSub" && !APP_OUTBOX.map[op.tmp] && !find(op.tmp)){ var p=find(APP_OUTBOX.realNo(op.body.keyNo)); if(p) p.o.subs.push({no:op.tmp,name:op.body.name,__tmp:true,__pending:true}); }
+  }); }
+});
+APP.load();
+</script>
+<!--@include ../theme-kit.html#body-->
+<!--@include ../update-notice.html-->
+<script>UPD.start({ user:function(){ return APP.user; }, ready:function(){ return true; }, days:3650 });</script>
+</body>
+</html>
