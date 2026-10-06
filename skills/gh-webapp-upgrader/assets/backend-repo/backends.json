@@ -1,0 +1,12 @@
+{
+  "vi-du-backend": {
+    "name": "Tên dễ hiểu của backend",
+    "apps": [
+      "Owner/Ten-App"
+    ],
+    "deploymentId": "AKfycb…(lấy từ URL /exec)",
+    "scriptId": "",
+    "sheetId": "",
+    "url": "https://script.google.com/macros/s/AKfycb…/exec"
+  }
+}

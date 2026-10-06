@@ -7,7 +7,8 @@ description: >
   ảnh chụp thật bằng Playwright + backend giả lập, PDF hướng dẫn ngang 16:9. Dùng BẤT CỨ KHI NÀO người dùng muốn sửa lỗi,
   cải tiến UI/UX, thêm tính năng, tăng tốc, đổi màu, thêm kết nối sheet, làm thông báo cập nhật / HDSD, hay đánh giá tổng thể
   một webapp GitHub (github.io, Apps Script /exec, JSONP, doGet/doPost) — kể cả khi chỉ nói "app chậm", "bấm phải chờ
-  loading", "thêm task không hiện ngay", "làm app đẹp hơn", "kết nối thêm file sheet", "đánh giá hệ thống".
+  loading", "làm app đẹp hơn", "kết nối thêm file sheet", "đánh giá hệ thống", "sửa backend", "deploy Apps Script",
+  "đưa backend vào mmh-backend" (sửa & tự deploy .gs qua kho trung tâm, không bắt người dùng dán code).
   Không dùng để tạo webapp mới từ đầu (dùng mmh-webapp-builder nếu có).
 ---
 
@@ -31,6 +32,9 @@ commit tóm tắt cho họ) bằng **ngôn ngữ của người dùng** (thườ
    và in ra đoạn HTML cần dán (module thông báo cập nhật, chủ đề màu). Sau đó viết các quy tắc vào `CLAUDE.md` của repo
    (mẫu ở `references/claude-md-template.md`) để mọi phiên sau tự tuân theo.
 4. Chưa rõ người dùng muốn gì ⇒ làm bản đánh giá tổng thể trước (`references/audit.md`), đề xuất theo thứ tự ưu tiên.
+5. **Backend:** code `.gs` nằm ở **kho trung tâm riêng tư** (MMH: `ManiMedicalHanoi/mmh-backend`), deploy tự động qua GitHub
+   Actions — đọc `references/backend-deploy.md`. Gắn kho đó vào phiên (`add_repo`), chạy `tools/scan-app.mjs` để biết backend
+   của app đã có trong kho chưa; chưa có ⇒ thêm theo mục 3 của file đó (người dùng chỉ gửi Script ID khi được hỏi).
 
 ## 2. Quy trình chuẩn cho MỖI thay đổi người dùng nhìn thấy
 
@@ -44,8 +48,8 @@ commit tóm tắt cho họ) bằng **ngôn ngữ của người dùng** (thườ
 4. **Phát hành** (`references/release-notes.md`): tăng số phiên bản trên badge + tham số cache `notes.js?v=`; thêm mục thông báo
    lên ĐẦU `window.APP_UPDATES`; ảnh chụp thật vào `updates/vX.Y/`; tính năng nhiều bước ⇒ thêm PDF HDSD 16:9 ở `docs/`.
 5. **Commit → PR → merge** theo quy ước của repo (nếu chủ repo đã cho phép thì tự squash-merge). Ghi rõ đã kiểm thử gì.
-6. **Báo lại người dùng** ngắn gọn: đã sửa gì, họ sẽ thấy gì, giới hạn còn lại (ví dụ: chỉ kiểm thử bằng mock, cần dán file
-   `.gs` mới rồi Deploy ▸ New version).
+6. **Báo lại người dùng** ngắn gọn: đã sửa gì, họ sẽ thấy gì, giới hạn còn lại (ví dụ: chỉ kiểm thử bằng mock). Backend sửa
+   qua kho trung tâm ⇒ báo phiên bản đã lên + cách quay lại; **không** bắt người dùng dán `.gs` / Deploy tay.
 
 ## 3. Nguyên tắc thiết kế — đọc file tham chiếu tương ứng khi đụng tới
 
@@ -57,6 +61,7 @@ commit tóm tắt cho họ) bằng **ngôn ngữ của người dùng** (thườ
 | Kết nối đa kênh: nhiều backend Apps Script / nhiều sheet | thêm nguồn dữ liệu, ghi sang sheet khác, lỗi CORS/JSONP | `references/multi-backend.md`, `assets/gas/Code_template.gs` |
 | Thông báo cập nhật trong app + ảnh thật + PDF HDSD | mọi bản phát hành | `references/release-notes.md`, `assets/update-notice.html` |
 | Kiểm thử với backend giả lập | trước mọi lần push | `references/testing.md`, `scripts/mock_gas.js` |
+| Sửa & tự deploy backend `.gs` qua kho trung tâm (không dán code) | mọi thay đổi backend, thêm app mới, lỗi deploy | `references/backend-deploy.md`, `assets/backend-repo/` |
 | Đánh giá tổng thể hệ thống | người dùng hỏi "đánh giá", "cải tiến gì" | `references/audit.md` |
 
 Năm nguyên tắc cốt lõi (lý do nằm trong các file trên):
@@ -89,14 +94,19 @@ Năm nguyên tắc cốt lõi (lý do nằm trong các file trên):
   dismiss ⇒ `page.on('dialog', d=>d.accept())`; `clock.setFixedTime` làm vòng chờ theo `Date.now()` không bao giờ kết thúc ⇒
   dùng bộ đếm vòng lặp; ảnh `file://` trong `setContent` có thể trắng ⇒ ghi file html tạm rồi `goto`.
 - **Apps Script:** web app giới hạn trong domain chỉ gọi được bằng JSONP (GET) từ trình duyệt đã đăng nhập; URL < ~7.500 ký tự;
-  sửa `.gs` xong phải **Deploy ▸ Manage deployments ▸ Edit ▸ New version** (chạy trigger không cập nhật web app).
-- **Code backend không nằm trong repo:** khi cần sửa, gửi file `.gs` đầy đủ cho người dùng dán, kèm hướng dẫn Deploy, và
-  thiết kế frontend để vẫn chạy được với backend cũ (bắt lỗi `Unknown action` ⇒ báo cần cập nhật backend).
+  web app chạy **phiên bản đã deploy**, còn trigger / menu Sheet chạy **code mới nhất đã lưu** — lưu code chưa deploy là đổi
+  hành vi trigger ngay.
+- **Backend:** sửa trong kho trung tâm + PR, để GitHub Actions deploy (`references/backend-deploy.md`); không tạo deployment
+  mới (URL mới, app không gọi tới). Chỉ khi chưa dựng được kho trung tâm mới gửi file `.gs` đầy đủ cho người dùng dán.
+  Frontend vẫn nên chạy được với backend cũ (bắt lỗi `Unknown action` ⇒ báo cần cập nhật backend).
+- **Script ID ≠ Mã triển khai ≠ ID file Sheet.** Script ID chỉ có trong địa chỉ trang Apps Script (`…/projects/<ID>/edit`) hoặc
+  ⚙ Cài đặt dự án; người dùng thường gửi nhầm `AKfycb…` hoặc link Sheet — hỏi lại kèm hướng dẫn tab nào, copy chỗ nào.
 
 ## 5. Đầu ra mong đợi khi kết thúc một lượt
 
 - Code đã sửa + test pass + commit/PR (theo quyền của repo).
 - `updates/notes.js` có mục mới, ảnh ở `updates/vX.Y/`, badge phiên bản đã tăng.
 - (Tính năng lớn) `docs/HDSD_<tên>_vX.Y.pdf` — gửi file cho người dùng.
-- (Nếu sửa backend) file `.gs` đầy đủ + các bước Deploy.
+- (Nếu sửa backend) PR đã gộp ở kho trung tâm + log Deploy xanh (phiên bản cũ → mới); việc chờ người dùng quyết định ghi
+  vào `TODO.md` của kho đó.
 - Tin nhắn tổng kết ngắn bằng ngôn ngữ người dùng: thay đổi, cách dùng, giới hạn, việc họ cần làm (nếu có).
