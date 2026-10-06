@@ -49,7 +49,7 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   `--t-pri` (nút chính), `--t-pri2` (hover), `--t-ink` (tiêu đề), `--t-soft` / `--t-line` (nền / viền xanh nhạt), `--t-bg`,
   `--mmh-blue`, `--mmh-navy`, `--lb1..3`, `--pale`, `--gray`. Màu `KIND` của lịch và màu trạng thái giữ cố định.
 - **Thanh trên cùng (v15.9)**: 1 dòng thấp (logo · MMH Calendar · chip người dùng). Nút phụ đặt trong **menu người dùng** `UM`
-  (`#um-pop`: Màu giao diện, VN/EN — phần tử `#lang-switch` được chuyển vào, Có gì mới?, Đổi người dùng) — đừng thêm nút mới
+  (`#um-pop`: Màu giao diện, VN/EN — phần tử `#lang-switch` được chuyển vào, Có gì mới?, trạng thái email đăng nhập, Đăng xuất) — đừng thêm nút mới
   lên thanh trên cùng. Nút "Đồng bộ Sales tasks" đã bỏ (backend tự đồng bộ 10 phút/lần; `#vs-btn` cất trong `#um-hidden`).
   Phần tử nằm ngoài màn hình khi đóng (ngăn kéo, bảng tin) chỉ đổ bóng khi mở (`.show` / không `.collapsed`).
 - Thứ tự popup khi đăng nhập: Thông báo cập nhật (`UPD`) → Nhắc hạn chứng từ (`DL`) → Việc mới được giao (`ASG`) → Thư nhắc việc (`NT`);
@@ -80,4 +80,11 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   mock, PDF, backend qua kho trung tâm `references/backend-deploy.md` + `assets/backend-repo/`) rút ra từ repo này cho mọi webapp
   GitHub khác. Sửa skill ⇒ chạy `scripts/selftest_outbox.js` + `assets/backend-repo/tools/selftest.mjs`, đóng gói lại, nhắc người
   dùng tải lại file `.skill` lên phần Skills của Claude. Bộ công cụ trong `assets/backend-repo/` phải giữ giống `mmh-backend`.
+- **Đăng nhập email + mã 6 số (v16.0, `AUTH`)**: Training Hub `rhAuthStart` / `rhAuthVerify` / `rhAuthMe` (file `RH_Auth.gs` ở
+  mmh-backend), danh sách người dùng sheet **`RH_Users`** (Training Master; Admin: Giang), khoá ký phiên sheet ẩn `RH_Secret`.
+  Phiên lưu `localStorage.mmh_tk`; app tự gắn `tk=` vào URL của MỌI lệnh gọi `script.google.com` (bắt ở `<script>.src` và `fetch`)
+  ⇒ tính năng mới không cần gắn tay. Có phiên ⇒ danh tính (`mmh_pic`) lấy từ phiên. Giai đoạn 1: vẫn có link "chọn tên như trước"
+  đến `AUTH.GRACE`; giai đoạn 2 (TODO mmh-backend) backend bắt buộc `tk`. Không đưa email nhân sự vào repo công khai này.
+  Mock: mã đúng `123456`, `newPage(b,{nopic:true,gate:true})` dừng ở màn đăng nhập, `{tk:'mmh.product'}` có sẵn phiên,
+  `{revoked:true}` phiên bị thu hồi; `M.TKS` ghi tham số `tk` của mọi lệnh gọi. HDSD: `build160.js`.
 - `script.google.com` bị chặn trong môi trường Claude: không gọi thật được, luôn dùng mock để test.

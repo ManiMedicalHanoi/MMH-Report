@@ -70,6 +70,8 @@ function mkWrite(body){
 }
 
 const RIDS={}, WLOG=[], TRIPS=[];
+/* ★ v16.0 — giả lập đăng nhập email + mã 6 số (Training Hub v3.12). Mã đúng luôn là 123456. TKS ghi tham số tk của mọi lệnh gọi. */
+const AUTH_USERS=Object.fromEntries(Object.entries(ROSTER_NAMES).map(([k,v])=>[v,k])), AUTHL=[], TKS=[];
 async function install(page, o){
   o=o||{};
   const KK=JSON.parse(JSON.stringify(KEY)); let seq=50;   /* dữ liệu task có trạng thái: thêm / xoá / sửa được ghi nhớ như backend thật */
@@ -82,6 +84,7 @@ async function install(page, o){
     if(req.method()==='POST'){ const pd=new URLSearchParams(req.postData()||''); a=pd.get('action')||a; try{ body=JSON.parse(pd.get('payload')||'{}'); }catch(_){ body={}; } }
     else { body=Object.fromEntries(u.searchParams.entries()); }
     let d={ok:true,events:[]};
+    TKS.push([a||'',u.searchParams.get('tk')||'',req.method()]);
     const dep=(u.pathname.split('/')[3]||''), srcName=/^AKfycbzK/.test(dep)?'management':/^AKfycbxW/.test(dep)?'backoffice':'marketing';   /* 3 backend phòng ban */
     if(srcName!=='marketing' && u.hostname==='script.google.com' && /^(boot|weekly|version)$/.test(a||'')){ const out={ok:true,source:srcName,picList:ROSTER,keyTasks:[],monthly:[],activityLog:[]};
       return route.fulfill({status:200,contentType:'application/javascript',body:(cb||'cb')+'('+JSON.stringify(out)+');'}); }
@@ -102,6 +105,15 @@ async function install(page, o){
     else if(a==='deleteSub'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); KK.forEach(k=>{ k.subs=(k.subs||[]).filter(x=>x.no!==String(body.no)); }); d={ok:true}; }
     else if(/^(updateSub|updateProgress)$/.test(a)){ KK.forEach(k=>(k.subs||[]).forEach(x=>{ if(x.no===String(body.no)){ if(body.status) x.status=body.status; if(body.progress!=null) x.progress=+body.progress; } })); d={ok:true}; }
     else if(a==='roster') d={ok:true,picList:ROSTER};
+    else if(a==='rhAuthStart'){ const e=String(body.email||'').toLowerCase(), l=e.split('@')[0];
+      if(!/^(mani\.inc|manimedicalhanoi\.com)$/.test(e.split('@')[1]||'')) d={ok:false,code:'EMAIL',error:'Chỉ dùng email công ty: @mani.inc hoặc @manimedicalhanoi.com.'};
+      else if(!AUTH_USERS[l]) d={ok:false,code:'NOUSER',error:'Email này chưa được cấp quyền dùng Report Hub. Vui lòng liên hệ Admin (Giang – mmh.product).'};
+      else { AUTHL.push(['start',e]); d={ok:true,sentTo:e,expiresIn:600,gap:45}; } }
+    else if(a==='rhAuthVerify'){ const e=String(body.email||'').toLowerCase(), l=e.split('@')[0]; AUTHL.push(['verify',e,body.code]);
+      d=body.code!=='123456'?{ok:false,code:'CODE',left:4,error:'Mã chưa đúng. Còn 4 lần thử.'}
+        :{ok:true,token:'mocktk.'+l,exp:Date.now()+30*864e5,user:{email:e,local:l,pic:AUTH_USERS[l],level:'pic',admin:l==='mmh.product'}}; }
+    else if(a==='rhAuthMe'){ const l=String(body.tk||'').replace(/^mocktk\./,''); AUTHL.push(['me',l]);
+      d=(o.revoked||!AUTH_USERS[l])?{ok:false,code:'AUTH',error:'Phiên đăng nhập đã bị đăng xuất từ xa.'}:{ok:true,user:{email:l+'@mani.inc',local:l,pic:AUTH_USERS[l],level:'pic',admin:l==='mmh.product'}}; }
     else if(a==='rhMeta') d=META;
     else if(a==='rhSessions') d={ok:true,sessions:SESS.concat(o.extraSess||[])};
     else if(a==='rhMaterials') d=mats(body.sid||u.searchParams.get('sid'));
@@ -132,4 +144,4 @@ async function install(page, o){
     try{ await handle(route); }catch(e){} finally{ rel(); }
   });
 }
-module.exports={install,D,SESS,ASSIGN,LOG,WLOG,TRIPS,RIDS};
+module.exports={install,D,SESS,ASSIGN,LOG,WLOG,TRIPS,RIDS,AUTHL,TKS,AUTH_USERS};

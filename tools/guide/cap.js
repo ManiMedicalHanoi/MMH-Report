@@ -5,13 +5,16 @@ async function newPage(b, o){
   o=o||{};
   const ctx=await b.newContext({viewport:o.vp||{width:W,height:H},deviceScaleFactor:2,locale:'vi-VN',timezoneId:'Asia/Ho_Chi_Minh',isMobile:!!o.mobile,hasTouch:!!o.mobile});
   const p=await ctx.newPage(); p.errs=[]; p.on('pageerror',e=>p.errs.push(e.message));
-  await p.addInitScript((who)=>{ try{ localStorage.setItem('mmh_pic',who); localStorage.setItem('mmh_src','marketing'); }catch(_){} }, o.pic||'Giang');
+  await p.addInitScript((o)=>{ try{ if(sessionStorage.getItem('__init')) return; sessionStorage.setItem('__init','1');
+    if(!o.nopic) localStorage.setItem('mmh_pic',o.who); localStorage.setItem('mmh_src','marketing');
+    if(o.tk) localStorage.setItem('mmh_tk',JSON.stringify({tk:'mocktk.'+o.tk,exp:Date.now()+864e5,user:{email:o.tk+'@mani.inc',local:o.tk,pic:o.who,level:'pic'}})); }catch(_){} }, {who:o.pic||'Giang',nopic:!!o.nopic,tk:o.tk||''});
   if(o.time) await p.clock.setFixedTime(new Date(o.time));   /* giả lập ngày (vd. popup hạn chứng từ) */
   await M.install(p,o);
   await p.goto('file://'+path.resolve(__dirname,'../../index.html'));
   if(!o.upd) await p.evaluate(()=>{ if(window.UPD) UPD.active=function(){ return []; }; });
   if(!o.asg) await p.evaluate(()=>{ if(window.ASG){ ASG.unseen=function(){ return []; }; } });
   if(!o.dl) await p.evaluate(()=>{ if(window.DL){ DL.info0=DL.info; DL.info=function(n){ var i=DL.info0(n); if(!window.__dlOn) i.due=false; return i; }; } });   /* ẩn thông báo cập nhật khi chụp cảnh khác */
+  if(o.gate) return p;   /* ★ v16.0: dừng ở màn đăng nhập */
   await p.waitForFunction((who)=>window.S&&S.user&&S.user.pic===who&&document.getElementById('app').style.display==='block',o.pic||'Giang',{timeout:20000});
   if(!o.upd) await p.evaluate(()=>{ if(window.UPD && UPD.isOpen()) UPD.close(); });
   await p.waitForFunction(()=>window.MC&&MC.st&&MC.st.trip&&MC.st.trip.s&&MC.st.trip.s!=='load',null,{timeout:20000});
@@ -135,6 +138,19 @@ S.theme=async b=>{ const p=await newPage(b,{noChecks:true}); await p.waitForTime
   for(const k of ['sage','lavender','sand','slate','ocean','rose','teal','terracotta','forest']){ await ev(p,k=>{ THEME.set(k); THEME.close(); },k); await p.waitForTimeout(150); await shot(p,'theme_'+k,{marks:[]}); }
   await ev(p,()=>{ THEME.set('sage'); MC.f.kinds.trip=1; MC.ref=new Date(2026,9,1); openMMHCalendar(); MC.setView('month'); }); await p.waitForTimeout(1300); await ev(p,()=>NT.close());
   await shot(p,'theme_cal',{marks:[]}); };
+/* ★ v16.0 — đăng nhập bằng email + mã 6 số */
+S.v160gate=async b=>{ const p=await newPage(b,{nopic:true,gate:true,noChecks:true,vp:{width:1440,height:900}}); await p.waitForSelector('#gate #au-email'); await p.waitForTimeout(400);
+  await p.fill('#au-email','mmh.product@mani.inc'); await p.waitForTimeout(150);
+  await shot(p,'v160gate',{marks:[['#au-email',1,'tl'],['#gate .au-btn',2,'tl'],['#gate .au-legacy',3,'tl']]});
+  await p.click('#gate .au-btn'); await p.waitForSelector('#au-code'); await p.fill('#au-code','4827'); await p.waitForTimeout(200);
+  await shot(p,'v160code',{marks:[['#au-code',1,'tl'],['[data-act="resend"]',2,'tr']]}); };
+S.v160nudge=async b=>{ const p=await newPage(b,{pic:'Giang',noChecks:true}); await ev(p,()=>{ NT.close&&NT.close(); }); await p.waitForSelector('#au-nudge.show',{timeout:15000}); await p.waitForTimeout(300); await ev(p,()=>{ NT.close&&NT.close(); });
+  await shot(p,'v160nudge',{marks:[['#au-nudge .go',1,'tl']]});
+  await p.click('#au-nudge .go'); await p.waitForSelector('#au-ov.show #au-email'); await p.fill('#au-ov #au-email','mmh.product@manimedicalhanoi.com'); await p.waitForTimeout(200);
+  await shot(p,'v160modal',{marks:[]}); };
+S.v160menu=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',noChecks:true}); await p.waitForTimeout(5000); await ev(p,()=>{ NT.close&&NT.close(); if(window.UPD&&UPD.isOpen()) UPD.close(); }); await p.waitForTimeout(400);
+  await ev(p,()=>UM.open()); await p.waitForTimeout(300);
+  await shot(p,'v160menu',{marks:[['#um-auth',1,'tl'],['#um-out',2,'tl']]}); };
 module.exports={S,newPage,shot,ev};
 if(require.main===module)(async()=>{
   const b=await chromium.launch({args:['--lang=vi-VN']});
