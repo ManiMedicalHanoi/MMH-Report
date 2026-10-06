@@ -1,0 +1,99 @@
+<!-- ══ THEME KIT (gh-webapp-upgrader) ═════════════════════════════════════════════════════════════
+  CÀI ĐẶT:
+  (1) Dán khối <style id="theme-css"> + <script> "đặt data-theme sớm" vào CUỐI <head> (trước khi trang vẽ ⇒ không nháy màu).
+  (2) Dán nút vào thanh trên cùng (cạnh công tắc ngôn ngữ / avatar):
+      <button class="th-btn" id="th-btn" type="button" onclick="THEME.toggle(event)" title="Màu giao diện">…svg…</button>
+  (3) Dán khối <style id="theme-ui-css"> + <script> THEME ở cuối <body>.
+  (4) CSS của app dùng biến: --t-pri --t-pri2 --t-ink --t-soft --t-line --t-bg (+ --brand-blue --brand-navy --blue-2
+      --brand-navy2 --sky --lb1 --lb2 --lb3 --pale --gray nếu app có token cũ — đổi tên cho khớp app).
+      Thay màu viết cứng: python3 scripts/recolor_css.py index.html --map '#3A5CAA=--t-pri' …
+  Thêm tông: thêm 1 dòng html[data-theme="x"]{…} + 1 phần tử trong APP_THEMES (c: [pri, ink, line, gray] cho ô xem trước).
+═══════════════════════════════════════════════════════════════════════════════════════════════ -->
+
+<!-- (1) trong <head> -->
+<style id="theme-css">
+:root{--brand-blue:#4E7CAF;--blue-2:#5B87B8;--brand-navy:#35506B;--brand-navy2:#2C4660;--sky:#8FB4D9;--lb1:#C9DAEC;--lb2:#D6E4F1;--lb3:#E3ECF5;--pale:#F2F6FA;--gray:#F6F8FA;--t-pri:#3A5CAA;--t-pri2:#304E92;--t-ink:#003047;--t-soft:#F0F7FF;--t-line:#CFE2F3;--t-bg:#F7F9FB}
+html[data-theme="ocean"]{--brand-blue:#3F86A3;--blue-2:#5799B3;--brand-navy:#24485A;--brand-navy2:#1C3B4B;--sky:#8EC3D6;--lb1:#C6E0EA;--lb2:#D5E8F0;--lb3:#E2F0F5;--pale:#F1F8FA;--gray:#F4F8FA;--t-pri:#2E7491;--t-pri2:#25627B;--t-ink:#0E3646;--t-soft:#EEF7FA;--t-line:#CBE4EE;--t-bg:#F6FAFB;--info:#5799B3;--info-fg:#2E7491;--info-bg:#E2F0F5}
+html[data-theme="teal"]{--brand-blue:#3E8C86;--blue-2:#529C96;--brand-navy:#24504D;--brand-navy2:#1C4240;--sky:#93CBC6;--lb1:#C6E3E0;--lb2:#D4EBE8;--lb3:#E1F2F0;--pale:#F0F8F7;--gray:#F4F8F8;--t-pri:#2D7A74;--t-pri2:#246661;--t-ink:#113D3A;--t-soft:#EDF8F6;--t-line:#C8E6E2;--t-bg:#F6FAFA;--info:#529C96;--info-fg:#2D7A74;--info-bg:#E1F2F0}
+html[data-theme="sage"]{--brand-blue:#5E8C77;--blue-2:#709B87;--brand-navy:#33504A;--brand-navy2:#29433D;--sky:#A6C6B6;--lb1:#CFE2D7;--lb2:#DBE9E1;--lb3:#E6F0EA;--pale:#F3F8F5;--gray:#F5F7F5;--t-pri:#4A7A64;--t-pri2:#3E6754;--t-ink:#1F3F35;--t-soft:#F0F7F3;--t-line:#D0E5D9;--t-bg:#F7F9F7;--info:#709B87;--info-fg:#4A7A64;--info-bg:#E6F0EA}
+html[data-theme="slate"]{--brand-blue:#5C6B7C;--blue-2:#6E7C8C;--brand-navy:#2F3B48;--brand-navy2:#252F3A;--sky:#A9B4C0;--lb1:#D3D9E0;--lb2:#DFE3E8;--lb3:#E8EBEF;--pale:#F4F5F7;--gray:#F5F6F7;--t-pri:#4A5768;--t-pri2:#3D4856;--t-ink:#1E2833;--t-soft:#F2F4F6;--t-line:#D9DFE6;--t-bg:#F7F8F9;--info:#6E7C8C;--info-fg:#4A5768;--info-bg:#E8EBEF}
+html[data-theme="lavender"]{--brand-blue:#7468B4;--blue-2:#8579BF;--brand-navy:#3E3866;--brand-navy2:#332E57;--sky:#B7AEDD;--lb1:#DAD5EF;--lb2:#E3DFF4;--lb3:#ECE9F7;--pale:#F6F4FB;--gray:#F7F6FA;--t-pri:#6257A6;--t-pri2:#52488E;--t-ink:#2C2652;--t-soft:#F4F2FC;--t-line:#DDD8F1;--t-bg:#F9F8FC;--info:#8579BF;--info-fg:#6257A6;--info-bg:#ECE9F7}
+html[data-theme="rose"]{--brand-blue:#A8657B;--blue-2:#B5788C;--brand-navy:#5A3443;--brand-navy2:#4B2A37;--sky:#D9AEBC;--lb1:#EFD5DD;--lb2:#F3E0E6;--lb3:#F7EAEE;--pale:#FBF5F7;--gray:#F9F6F7;--t-pri:#985670;--t-pri2:#80475E;--t-ink:#452231;--t-soft:#FCF3F6;--t-line:#F0D5DE;--t-bg:#FBF8F9;--info:#B5788C;--info-fg:#985670;--info-bg:#F7EAEE}
+html[data-theme="sand"]{--brand-blue:#9A7B52;--blue-2:#A88B65;--brand-navy:#4E4130;--brand-navy2:#413627;--sky:#D3BF9F;--lb1:#EADFCB;--lb2:#F0E7D8;--lb3:#F5EFE4;--pale:#FAF7F1;--gray:#F8F6F2;--t-pri:#876A43;--t-pri2:#725A38;--t-ink:#3D3022;--t-soft:#FAF5EC;--t-line:#EADCC5;--t-bg:#FAF8F4;--info:#A88B65;--info-fg:#876A43;--info-bg:#F5EFE4}
+html[data-theme="terracotta"]{--brand-blue:#B06A52;--blue-2:#BC7D67;--brand-navy:#5A3528;--brand-navy2:#4A2B20;--sky:#DDB2A3;--lb1:#F0D8CF;--lb2:#F4E2DB;--lb3:#F8ECE7;--pale:#FCF6F3;--gray:#F9F6F4;--t-pri:#9C5843;--t-pri2:#844A38;--t-ink:#46251A;--t-soft:#FCF3EF;--t-line:#F0D7CC;--t-bg:#FBF8F6;--info:#BC7D67;--info-fg:#9C5843;--info-bg:#F8ECE7}
+html[data-theme="forest"]{--brand-blue:#4C7A5C;--blue-2:#5E8A6D;--brand-navy:#2C4535;--brand-navy2:#23392B;--sky:#9CBDA6;--lb1:#CADDCF;--lb2:#D8E6DB;--lb3:#E4EEE6;--pale:#F2F7F3;--gray:#F4F6F4;--t-pri:#3E6A4D;--t-pri2:#335A41;--t-ink:#1A3324;--t-soft:#EFF6F1;--t-line:#CDE2D3;--t-bg:#F6F9F7;--info:#5E8A6D;--info-fg:#3E6A4D;--info-bg:#E4EEE6}
+</style>
+<script>try{var __t=localStorage.getItem("app_theme");if(__t&&__t!=="base")document.documentElement.setAttribute("data-theme",__t);}catch(e){}
+window.APP_THEMES=[{k:"base",n:"Mặc định",d:"Navy · xanh brand",c:["#3A5CAA","#003047","#CFE2F3","#F6F8FA"]},{k:"ocean",n:"Biển sâu",d:"Xanh biển dịu",c:["#2E7491","#0E3646","#CBE4EE","#F4F8FA"]},{k:"teal",n:"Ngọc bích",d:"Xanh ngọc mát",c:["#2D7A74","#113D3A","#C8E6E2","#F4F8F8"]},{k:"sage",n:"Lá xô thơm",d:"Xanh lá trầm",c:["#4A7A64","#1F3F35","#D0E5D9","#F5F7F5"]},{k:"slate",n:"Than chì",d:"Xám trung tính",c:["#4A5768","#1E2833","#D9DFE6","#F5F6F7"]},{k:"lavender",n:"Oải hương",d:"Tím nhạt thanh",c:["#6257A6","#2C2652","#DDD8F1","#F7F6FA"]},{k:"rose",n:"Hồng phấn",d:"Hồng đất nhẹ",c:["#985670","#452231","#F0D5DE","#F9F6F7"]},{k:"sand",n:"Be cát",d:"Ấm, trung tính",c:["#876A43","#3D3022","#EADCC5","#F8F6F2"]},{k:"terracotta",n:"Đất nung",d:"Cam gạch trầm",c:["#9C5843","#46251A","#F0D7CC","#F9F6F4"]},{k:"forest",n:"Rừng thông",d:"Xanh rêu đậm",c:["#3E6A4D","#1A3324","#CDE2D3","#F4F6F4"]}];</script>
+
+<!-- (2) nút trên thanh trên cùng -->
+<button class="th-btn" id="th-btn" type="button" onclick="THEME.toggle(event)" title="Màu giao diện"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.7-.8 1.7-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5C21 6.4 17 3 12 3z"/><circle cx="7.5" cy="11" r="1.2"/><circle cx="10.5" cy="7" r="1.2"/><circle cx="15" cy="7.5" r="1.2"/></svg></button>
+
+<!-- (3) cuối <body> -->
+<style id="theme-ui-css">
+.th-btn{width:38px;height:38px;flex:none;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:10px;background:#fff;color:var(--t-pri);cursor:pointer}
+.th-btn:hover{background:var(--t-soft);border-color:var(--t-line)}
+.th-btn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.th-btn svg circle{fill:currentColor;stroke:none}
+#th-pop{position:fixed;z-index:9000;width:min(452px,calc(100vw - 20px));background:#fff;border:1px solid #E6EAEF;border-radius:14px;box-shadow:0 12px 32px rgba(20,35,50,.12);padding:14px;font-family:Aptos,'Aptos Display','Segoe UI',Calibri,Arial,sans-serif;color:#1F3347;display:none}
+#th-pop.show{display:block}
+#th-pop .hd{display:flex;align-items:baseline;justify-content:space-between;margin:0 2px 10px}
+#th-pop .hd b{font-size:14.5px;color:var(--t-ink)}
+#th-pop .hd span{font-size:12px;color:#7A8999}
+#th-pop .gr{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#th-pop button.op{display:flex;align-items:center;gap:10px;text-align:left;padding:9px 10px;border:1px solid #E6EAEF;border-radius:11px;background:#fff;cursor:pointer;font-family:inherit;color:inherit}
+#th-pop button.op:hover{border-color:#CBD3DC;background:#FAFBFC}
+#th-pop button.op.on{border-color:var(--t-pri);box-shadow:0 0 0 1px var(--t-pri) inset}
+#th-pop .sw{display:grid;grid-template-columns:1fr 1fr;width:34px;height:34px;border-radius:9px;overflow:hidden;flex:none;border:1px solid rgba(0,0,0,.06)}
+#th-pop .sw i{display:block}
+#th-pop .tx{min-width:0;flex:1}
+#th-pop .tx b{display:block;font-size:13px;font-weight:700}
+#th-pop .tx small{display:block;font-size:11.5px;color:#7A8999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#th-pop .ck{width:18px;height:18px;border-radius:50%;flex:none;display:none;align-items:center;justify-content:center;background:var(--t-pri);color:#fff;font-size:11px;font-weight:800}
+#th-pop button.op.on .ck{display:inline-flex}
+#th-pop .ft{margin:10px 2px 0;font-size:11.5px;color:#7A8999}
+@media(max-width:900px){ .th-btn{width:34px;height:34px} #th-pop .gr{grid-template-columns:1fr} }
+</style>
+<script>
+(function(){
+"use strict";
+var KEY="app_theme", LIST=window.APP_THEMES||[];
+function cur(){ var t=document.documentElement.getAttribute("data-theme"); return t||"base"; }
+function esc(x){ return String(x).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+var THEME=window.THEME={
+  list:LIST, cur:cur,
+  set:function(k){
+    if(!LIST.some(function(t){ return t.k===k; })) k="base";
+    if(k==="base") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme",k);
+    try{ localStorage.setItem(KEY,k); }catch(e){}
+    var pop=document.getElementById("th-pop");
+    if(pop) [].forEach.call(pop.querySelectorAll("button.op"),function(b){ b.classList.toggle("on",b.getAttribute("data-k")===k); });
+  },
+  build:function(){
+    var pop=document.getElementById("th-pop"); if(pop) return pop;
+    pop=document.createElement("div"); pop.id="th-pop"; pop.setAttribute("role","dialog");
+    var c=cur();
+    pop.innerHTML='<div class="hd"><b>Màu giao diện</b><span>Lưu riêng trên máy này</span></div><div class="gr">'
+      +LIST.map(function(t){
+        return '<button type="button" class="op'+(t.k===c?' on':'')+'" data-k="'+esc(t.k)+'" onclick="THEME.set(this.getAttribute(\'data-k\'))">'
+          +'<span class="sw">'+t.c.map(function(x){ return '<i style="background:'+esc(x)+'"></i>'; }).join("")+'</span>'
+          +'<span class="tx"><b>'+esc(t.n)+'</b><small>'+esc(t.d)+'</small></span><span class="ck">✓</span></button>';
+      }).join("")+'</div><div class="ft">Đổi màu không ảnh hưởng dữ liệu; màu theo loại lịch / trạng thái giữ nguyên để dễ nhận biết.</div>';
+    document.body.appendChild(pop);
+    document.addEventListener("mousedown",function(e){ if(pop.classList.contains("show") && !pop.contains(e.target) && !e.target.closest("#th-btn")) THEME.close(); },true);
+    document.addEventListener("keydown",function(e){ if(e.key==="Escape") THEME.close(); });
+    window.addEventListener("resize",function(){ if(pop.classList.contains("show")) THEME.place(); });
+    return pop;
+  },
+  place:function(){
+    var pop=document.getElementById("th-pop"), b=document.getElementById("th-btn"); if(!pop||!b) return;
+    var r=b.getBoundingClientRect(), w=pop.offsetWidth, vw=document.documentElement.clientWidth;
+    pop.style.top=Math.round(r.bottom+8)+"px";
+    pop.style.left=Math.round(Math.max(10,Math.min(vw-w-10,r.right-w)))+"px";
+  },
+  open:function(){ var pop=THEME.build(); pop.classList.add("show"); THEME.place(); },
+  close:function(){ var pop=document.getElementById("th-pop"); if(pop) pop.classList.remove("show"); },
+  toggle:function(e){ if(e) e.stopPropagation(); var pop=document.getElementById("th-pop"); if(pop&&pop.classList.contains("show")) THEME.close(); else THEME.open(); }
+};
+})();
+</script>
