@@ -8,6 +8,25 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id: "2026-10-06-v15.9",
+    version: "v15.9",
+    date: "2026-10-06",
+    title: "Giao diện gọn hơn: thanh trên cùng một dòng & menu tên của bạn",
+    summary: "Thanh trên cùng thấp và gọn, nhường chỗ cho lịch làm việc. Các nút ít dùng được gom vào <b>menu tên của bạn</b> ở góc phải.",
+    items: [
+      { type: "imp", icon: "🧭", title: "Thanh trên cùng chỉ còn một dòng",
+        text: "Thanh trên cùng giờ chỉ có logo, <b>MMH Calendar</b> và tên của bạn — thấp hơn khoảng một nửa nên lịch và danh sách việc hiện được nhiều hơn mà không phải cuộn.",
+        img: "updates/v15.9/truoc-sau.jpg" },
+      { type: "new", icon: "👤", title: "Menu tên của bạn",
+        text: "Bấm vào <b>tên / ảnh đại diện</b> ở góc phải → chọn <b>Màu giao diện</b>, đổi <b>VN / EN</b>, xem <b>Có gì mới?</b> hoặc <b>Đổi người dùng</b>. Bấm ra ngoài hoặc phím Esc để đóng.",
+        img: "updates/v15.9/menu-nguoi-dung.jpg" },
+      { type: "imp", icon: "🔄", title: "Không cần bấm “Đồng bộ Sales tasks” nữa",
+        text: "Hệ thống tự cập nhật Customer visiting & Working at office từ Field Report của Sales <b>mỗi 10 phút</b>, nên nút đồng bộ bằng tay đã được bỏ." },
+      { type: "imp", icon: "✨", title: "Nút bấm nhẹ nhàng, đều nhau",
+        text: "Các nút trên Lịch làm việc cùng một cỡ, chữ bớt đậm cho dễ nhìn; bỏ vệt mờ thừa ở mép phải màn hình." }
+    ]
+  },
+  {
     id: "2026-10-06-v15.8",
     version: "v15.8",
     date: "2026-10-06",
