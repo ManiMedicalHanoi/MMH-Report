@@ -8,6 +8,34 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id: "2026-10-06-v15.5",
+    version: "v15.5",
+    date: "2026-10-06",
+    title: "Giao việc rõ người giao, tự báo hoàn thành & sửa dữ liệu Marketing trên lịch",
+    summary: "Việc được giao hiện popup cho người nhận và được cắm cờ trên lịch; hoàn thành là người giao tự nhận email. Sự kiện offline và bài đăng sửa / thêm / xoá thẳng từ MMH Calendar.",
+    guide: "docs/HDSD_Giao_viec_va_du_lieu_MKT_v15.5.pdf",
+    folder: "https://drive.google.com/drive/folders/1qrY9IGdSRSOUZnIkJSvjLaEXYJceBfY6",
+    items: [
+      { type: "new", icon: "⚑", title: "Việc mới được giao — popup khi đăng nhập",
+        text: "Khi Team Leader / Manager giao việc cho bạn, lần đăng nhập kế tiếp sẽ hiện popup ghi rõ <b>người giao</b>, Key task và <b>hạn</b> (mỗi việc chỉ hiện 1 lần). Bấm <b>Mở công việc</b> để cập nhật ngay.",
+        img: "updates/v15.5/viec-duoc-giao.jpg" },
+      { type: "new", icon: "🚩", title: "Cờ “⚑ … giao” trên Lịch làm việc & Cập nhật công việc",
+        text: "Việc được giao luôn có nhãn đỏ nhạt <b>⚑ Tên người giao</b> (đánh dấu quan trọng); hoàn thành xong chuyển xám <b>✓</b>.",
+        img: "updates/v15.5/co-giao-viec.jpg" },
+      { type: "new", icon: "📨", title: "Hoàn thành ⇒ người giao tự nhận email",
+        text: "Chỉ cần chuyển việc sang <b>Completed</b> — hệ thống tự gửi email cho người giao (CC người làm) kèm kết quả và link Report Hub. Email giao việc nay cũng có <b>link MMH Report Hub</b>.",
+        img: "updates/v15.5/email-hoan-thanh.jpg" },
+      { type: "new", icon: "✏️", title: "Sửa / xoá sự kiện offline & bài đăng ngay trên lịch",
+        text: "Nhóm Marketing: bấm vào sự kiện / bài đăng trên MMH Calendar → <b>✏️ Sửa</b>. Ghi thẳng vào file Marketing FY68; các ô chọn lấy đúng danh mục trên sheet, cột công thức giữ nguyên.",
+        img: "updates/v15.5/sua-du-lieu-mkt.jpg" },
+      { type: "new", icon: "＋", title: "Thêm sự kiện / bài đăng mới từ lịch",
+        text: "Nhấp đúp vào ngày → <b>Sự kiện offline</b>, <b>Bài đăng sự kiện</b> hoặc <b>Bài đăng sản phẩm</b> ⇒ thêm dòng mới vào đúng sheet.",
+        img: "updates/v15.5/them-moi-mkt.jpg" },
+      { type: "fix", icon: "👥", title: "Bộ lọc Nhân sự đủ người (có Minh Trang)",
+        text: "Bộ lọc Nhân sự ở Cập nhật công việc / Tiến độ / Báo cáo / Monthly / Hoạt động nay hiện đủ nhân sự của phòng ban, kể cả người chưa có task." }
+    ]
+  },
+  {
     id: "2026-10-06-v15.4",
     version: "v15.4",
     date: "2026-10-06",

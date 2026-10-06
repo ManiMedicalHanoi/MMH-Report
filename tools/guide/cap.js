@@ -5,13 +5,14 @@ async function newPage(b, o){
   o=o||{};
   const ctx=await b.newContext({viewport:o.vp||{width:W,height:H},deviceScaleFactor:2,locale:'vi-VN',timezoneId:'Asia/Ho_Chi_Minh',isMobile:!!o.mobile,hasTouch:!!o.mobile});
   const p=await ctx.newPage(); p.errs=[]; p.on('pageerror',e=>p.errs.push(e.message));
-  await p.addInitScript(()=>{ try{ localStorage.setItem('mmh_pic','Giang'); localStorage.setItem('mmh_src','marketing'); }catch(_){} });
+  await p.addInitScript((who)=>{ try{ localStorage.setItem('mmh_pic',who); localStorage.setItem('mmh_src','marketing'); }catch(_){} }, o.pic||'Giang');
   if(o.time) await p.clock.setFixedTime(new Date(o.time));   /* giả lập ngày (vd. popup hạn chứng từ) */
   await M.install(p,o);
   await p.goto('file://'+path.resolve(__dirname,'../../index.html'));
   if(!o.upd) await p.evaluate(()=>{ if(window.UPD) UPD.active=function(){ return []; }; });
+  if(!o.asg) await p.evaluate(()=>{ if(window.ASG){ ASG.unseen=function(){ return []; }; } });
   if(!o.dl) await p.evaluate(()=>{ if(window.DL){ DL.info0=DL.info; DL.info=function(n){ var i=DL.info0(n); if(!window.__dlOn) i.due=false; return i; }; } });   /* ẩn thông báo cập nhật khi chụp cảnh khác */
-  await p.waitForFunction(()=>window.S&&S.user&&S.user.pic==='Giang'&&document.getElementById('app').style.display==='block',null,{timeout:20000});
+  await p.waitForFunction((who)=>window.S&&S.user&&S.user.pic===who&&document.getElementById('app').style.display==='block',o.pic||'Giang',{timeout:20000});
   if(!o.upd) await p.evaluate(()=>{ if(window.UPD && UPD.isOpen()) UPD.close(); });
   await p.waitForFunction(()=>window.MC&&MC.st&&MC.st.trip&&MC.st.trip.s&&MC.st.trip.s!=='load',null,{timeout:20000});
   await p.waitForTimeout(600);
@@ -103,6 +104,25 @@ S.notice=async b=>{ const p=await newPage(b,{upd:true,noChecks:true}); await p.w
   await shot(p,'notice',{marks:[['#upd .upd-hd .k',1,'tl'],['#upd .upd-it a.im',2,'tl'],['#upd-hide',3,'tl'],['#upd .upd-ft .doc',4,'tl']]}); };
 S.deadline=async b=>{ const p=await newPage(b,{dl:true,noChecks:true,time:'2026-10-15T09:30:00+07:00',vp:{width:1440,height:900}}); await p.waitForFunction(()=>DL.isOpen(),null,{timeout:12000}); await p.waitForTimeout(400);
   await shot(p,'deadline',{marks:[['#dl .dl-hd h2',1,'tl'],['#dl .dl-r.on',2,'tl'],['#dl .dl-pt',3,'tl'],['#dl .dl-ft .off',4,'tr']]}); };
+S.asgadd=async b=>{ const p=await newPage(b,{pic:'Thuong',noChecks:true,vp:{width:1440,height:1000}}); await ev(p,()=>NT.close());
+  await ev(p,()=>c10Add('2026-10-07','4',true)); await p.waitForSelector('#c10a-name',{timeout:8000});
+  await p.fill('#c10a-name','Truyền thông: Agenda sự kiện'); await p.selectOption('#c10a-pic','Minh Trang').catch(()=>{});
+  await ev(p,()=>{ const e=document.getElementById('c10a-pic'); if(e) e.dispatchEvent(new Event('change',{bubbles:true})); const d=document.getElementById('c10a-due'); if(d){ d.value='2026-10-08'; } });
+  await p.waitForTimeout(300);
+  await shot(p,'asgadd',{clip:'#modals .modal-box',marks:[['#c10a-name',1,'tl'],['#c10a-pic',2,'tl'],['#c10a-mailw',3,'tl'],['#c10a-save',4,'tr']]}); };
+S.asgpopup=async b=>{ const p=await newPage(b,{pic:'Minh Trang',asg:true,noChecks:true}); await p.waitForFunction(()=>ASG.isOpen(),null,{timeout:20000}); await p.waitForTimeout(400);
+  await shot(p,'asgpopup',{marks:[['#asg .asg-hd h2',1,'tl'],['#asg .asg-it small',2,'tl'],['#asg .asg-it button',3,'tr']]});
+  await p.click('#asg .ok'); await p.waitForTimeout(900); await ev(p,()=>NT.close()); await p.waitForTimeout(300);
+  await shot(p,'asgcal',{marks:[['.c10-card .asg-flag',1,'tr']]});
+  await ev(p,()=>{ switchTab('detail'); S.detailOpen['4']=true; renderDetail(); }); await p.waitForTimeout(800);
+  await shot(p,'asgdetail',{marks:[['#app .asg-flag',1,'tr']]}); };
+S.mkdrawer=async b=>{ const p=await newPage(b,{pic:'Thuong',noChecks:true,vp:{width:1440,height:1300}}); await openCal(p,[2026,9,1],'month');
+  const id=await ev(p,()=>MC.ev.find(x=>x.k==='offline'&&/Contemporary/.test(x.title)).id); await ev(p,id=>MC.open(id),id); await p.waitForTimeout(500);
+  await shot(p,'mkdrawer',{marks:[['#mc-dr .mk-act button',1,'tl']]});
+  await p.click('#mc-dr .mk-act button'); await p.waitForSelector('#mk-type',{timeout:8000}); await p.waitForTimeout(300);
+  await shot(p,'mkedit',{clip:'#mk',marks:[['#mk .mk-keybox',1,'tl'],['#mk-_start',2,'tl'],['#mk-plan',3,'tl'],['#mk .mk-del',4,'tl'],['#mk-save',5,'tr']]});
+  await ev(p,()=>{ closeModal(); MC.closeDr(); MC.addAt('2026-10-20'); }); await p.waitForTimeout(400);
+  await shot(p,'mkmenu',{marks:[['#mc-menu button:nth-of-type(3)',1,'tr']]}); };
 S.listview=async b=>{ const p=await newPage(b,{}); await openCal(p,[2026,9,1],'list'); await shot(p,'listview',{marks:[]}); };
 S.phone=async b=>{ const p=await newPage(b,{vp:{width:390,height:844},mobile:true}); await ev(p,()=>{ NT.close(); MC.f.kinds.trip=1; MC.ref=new Date(2026,9,6); openMMHCalendar(); MC.setView('list'); }); await p.waitForTimeout(1200); await ev(p,()=>NT.close());
   await shot(p,'phone',{marks:[]});
