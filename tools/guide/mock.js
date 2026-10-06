@@ -71,6 +71,9 @@ function mkWrite(body){
 
 async function install(page, o){
   o=o||{};
+  const KK=JSON.parse(JSON.stringify(KEY)); let seq=50;   /* dữ liệu task có trạng thái: thêm / xoá / sửa được ghi nhớ như backend thật */
+  const lag=o.lag||0; let staleCopy=null, staleUntil=0;
+  const snap=()=>{ if(o.staleMs){ if(!staleCopy||Date.now()>staleUntil) staleCopy=JSON.parse(JSON.stringify(KK)); staleUntil=Date.now()+o.staleMs; } };   /* giả lập backend còn đệm dữ liệu cũ */
   await page.route(/script\.google\.com/, async route=>{
     const req=route.request(); const u=new URL(req.url()); let a=u.searchParams.get('action'); const src=u.searchParams.get('src'); const cb=u.searchParams.get('callback');
     let body=null;
@@ -79,7 +82,11 @@ async function install(page, o){
     let d={ok:true,events:[]};
     if(src==='trip') d=D.trip; else if(src==='offline') d=D.off; else if(src==='online') d=D.on;
     else if(a==='calendar') d=D.trip;
-    else if(a==='boot'||a==='weekly') d={ok:true,source:'marketing',picList:ROSTER,keyTasks:JSON.parse(JSON.stringify(KEY)),monthly:[],activityLog:[]};
+    else if(a==='boot'||a==='weekly') d={ok:true,source:'marketing',picList:ROSTER,keyTasks:JSON.parse(JSON.stringify(o.staleMs&&Date.now()<staleUntil&&staleCopy?staleCopy:KK)),monthly:[],activityLog:[]};
+    else if(a==='addKey'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); const no=String(++seq); KK.push({no,row:+no*10,keyTask:body.keyTask,pic:body.pic,status:body.status||'To Do',type:body.type||'',start:body.start,planned:body.planned,subs:[]}); d={ok:true,no,row:+no*10,task:{}}; }
+    else if(a==='deleteKey'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); const i=KK.findIndex(k=>k.no===String(body.no)); if(i>=0) KK.splice(i,1); d={ok:true}; }
+    else if(a==='deleteSub'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); KK.forEach(k=>{ k.subs=(k.subs||[]).filter(x=>x.no!==String(body.no)); }); d={ok:true}; }
+    else if(/^(updateSub|updateProgress)$/.test(a)){ KK.forEach(k=>(k.subs||[]).forEach(x=>{ if(x.no===String(body.no)){ if(body.status) x.status=body.status; if(body.progress!=null) x.progress=+body.progress; } })); d={ok:true}; }
     else if(a==='roster') d={ok:true,picList:ROSTER};
     else if(a==='rhMeta') d=META;
     else if(a==='rhSessions') d={ok:true,sessions:SESS.concat(o.extraSess||[])};
@@ -88,9 +95,9 @@ async function install(page, o){
     else if(a==='rhSaveSession') d={ok:true,sid:'S20261014-01',message:'Đã tạo buổi đào tạo mới.'};
     else if(a==='rhPreviewInvite') d={ok:true,subject:'[MMH Training] Mani Dental product — Key SKUs FY68 · 14/10/2026',html:'<p>x</p>',recipients:['a']};
     else if(a==='rhSendInvite') d={ok:true,message:'Đã gửi thư mời tới 10 người',folderUrl:'https://drive.google.com/drive/folders/new'};
-    else if(a==='addSub') d={ok:true,no:'1.3',row:13,task:{}};
-    else if(a==='mmhOptions') d={ok:true,kind:body.kind,options:MKOPT[body.kind]||{}};
-    else if(a==='mmhWrite'){ LOG.push(['mk',{op:body.op,kind:body.kind,row:body.row,check:body.check,actor:body.actor,data:JSON.parse(body.data||'{}')}]); d=mkWrite(body); }
+    else if(a==='addSub'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); const k=KK.find(x=>x.no===String(body.keyNo||body.parentNo)); const no=(k?k.no:'1')+'.'+((k&&k.subs?k.subs.length:0)+1+(++seq%1?0:0)); if(k){ k.subs=k.subs||[]; k.subs.push({no,row:+String(no).replace('.','')||99,subTask:body.name,pic:body.pic,status:body.status||'To Do',start:body.start,planned:body.planned}); } d={ok:true,no,row:99,task:{}}; }
+    else if(a==='mmhOptions'){ if(lag) await new Promise(r=>setTimeout(r,lag)); d={ok:true,kind:body.kind,options:MKOPT[body.kind]||{}}; }
+    else if(a==='mmhWrite'){ if(lag) await new Promise(r=>setTimeout(r,lag)); if(o.failWrite){ d={ok:false,error:'Không mở được file (giả lập lỗi)'}; } else { LOG.push(['mk',{op:body.op,kind:body.kind,row:body.row,check:body.check,actor:body.actor,data:JSON.parse(body.data||'{}')}]); d=mkWrite(body); } }
     else if(a==='rhAssignList'){ const me=(body.actor||'').toLowerCase(); d={ok:true,items:ASSIGN,mine:ASSIGN.filter(x=>x.pic.toLowerCase()===me&&!x.done)}; }
     else if(a==='rhAssignAdd'){ LOG.push(['add',body]); const id='A'+Date.now(); ASSIGN.push({id,createdAt:'2026-10-06 10:00',src:body.src,no:body.no,name:body.name,keyTask:body.keyTask,pic:body.pic,assigner:body.actor,start:body.start,due:body.due,seen:false,done:false}); d={ok:true,id}; }
     else if(a==='rhAssignSeen'){ LOG.push(['seen',body]); String(body.ids||'').split(',').forEach(id=>{ const x=ASSIGN.find(y=>y.id===id); if(x) x.seen=true; }); d={ok:true}; }

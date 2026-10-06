@@ -118,15 +118,21 @@ S.asgpopup=async b=>{ const p=await newPage(b,{pic:'Minh Trang',asg:true,noCheck
   await shot(p,'asgdetail',{marks:[['#app .asg-flag',1,'tr']]}); };
 S.mkdrawer=async b=>{ const p=await newPage(b,{pic:'Thuong',noChecks:true,vp:{width:1440,height:1300}}); await openCal(p,[2026,9,1],'month');
   const id=await ev(p,()=>MC.ev.find(x=>x.k==='offline'&&/Contemporary/.test(x.title)).id); await ev(p,id=>MC.open(id),id); await p.waitForTimeout(500);
-  await shot(p,'mkdrawer',{marks:[['#mc-dr .mk-act button',1,'tl']]});
-  await p.click('#mc-dr .mk-act button'); await p.waitForSelector('#mk-type',{timeout:8000}); await p.waitForTimeout(300);
-  await shot(p,'mkedit',{clip:'#mk',marks:[['#mk .mk-keybox',1,'tl'],['#mk-_start',2,'tl'],['#mk-plan',3,'tl'],['#mk .mk-del',4,'tl'],['#mk-save',5,'tr']]});
-  await ev(p,()=>{ closeModal(); MC.closeDr(); MC.addAt('2026-10-20'); }); await p.waitForTimeout(400);
+  await shot(p,'mkdrawer',{clip:'#mc-dr',marks:[['#mc-dr .mk-hbtn',1,'tr'],['#mc-dr .mkv-pills',2,'tl'],['#mc-dr .mkv-facts',3,'tl']]});
+  await p.click('#mc-dr .mk-hbtn'); await p.waitForSelector('#mk-type',{timeout:8000}); await p.waitForTimeout(300);
+  await shot(p,'mkedit',{clip:'#mc-dr',marks:[['#mc-dr .mkf .src',1,'tl'],['#mk-_start',2,'tl'],['#mk-plan',3,'tl'],['#mc-dr .mkf-ft .del',4,'tl'],['#mc-dr .mkf-ft .sv',5,'tr']]});
+  await ev(p,()=>{ MK.cancel&&MK.cancel(); MC.closeDr(); MC.addAt('2026-10-20'); }); await p.waitForTimeout(400);
   await shot(p,'mkmenu',{marks:[['#mc-menu button:nth-of-type(3)',1,'tr']]}); };
 S.listview=async b=>{ const p=await newPage(b,{}); await openCal(p,[2026,9,1],'list'); await shot(p,'listview',{marks:[]}); };
 S.phone=async b=>{ const p=await newPage(b,{vp:{width:390,height:844},mobile:true}); await ev(p,()=>{ NT.close(); MC.f.kinds.trip=1; MC.ref=new Date(2026,9,6); openMMHCalendar(); MC.setView('list'); }); await p.waitForTimeout(1200); await ev(p,()=>NT.close());
   await shot(p,'phone',{marks:[]});
   await ev(p,()=>MC.open('training:S20260925-01')); await p.waitForTimeout(1000); await shot(p,'phone2',{marks:[]}); };
+S.theme=async b=>{ const p=await newPage(b,{noChecks:true}); await p.waitForTimeout(3000); await ev(p,()=>{ NT.close&&NT.close(); });
+  await ev(p,()=>THEME.open()); await p.waitForTimeout(250);
+  await shot(p,'themepick',{marks:[['#th-btn',1,'tl'],['#th-pop button.op[data-k="sage"]',2,'tl']]});
+  for(const k of ['sage','lavender','sand','slate','ocean','rose','teal','terracotta','forest']){ await ev(p,k=>{ THEME.set(k); THEME.close(); },k); await p.waitForTimeout(150); await shot(p,'theme_'+k,{marks:[]}); }
+  await ev(p,()=>{ THEME.set('sage'); MC.f.kinds.trip=1; MC.ref=new Date(2026,9,1); openMMHCalendar(); MC.setView('month'); }); await p.waitForTimeout(1300); await ev(p,()=>NT.close());
+  await shot(p,'theme_cal',{marks:[]}); };
 module.exports={S,newPage,shot,ev};
 if(require.main===module)(async()=>{
   const b=await chromium.launch({args:['--lang=vi-VN']});

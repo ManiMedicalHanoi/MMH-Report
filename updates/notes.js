@@ -8,6 +8,29 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id: "2026-10-06-v15.7",
+    version: "v15.7",
+    date: "2026-10-06",
+    title: "Thao tác tức thì, chi tiết Marketing gọn đẹp & 10 tông màu giao diện",
+    summary: "Thêm / xoá Key task, Sub-task và sửa dữ liệu Marketing hiện kết quả ngay, không còn màn hình chờ “Đang tải”. Chọn màu giao diện theo ý bạn bằng nút 🎨 trên thanh trên cùng.",
+    items: [
+      { type: "imp", icon: "⚡", title: "Thêm / xoá task hiển thị ngay lập tức",
+        text: "Thêm Key task / Sub-task (trên Lịch làm việc hoặc Tiến độ công việc) là thẻ hiện <b>ngay</b>; xoá là biến mất ngay. Hệ thống lưu lên Google Sheet ở phía sau và không còn “nhảy lại” khi dữ liệu đang đồng bộ." },
+      { type: "imp", icon: "📋", title: "Chi tiết sự kiện offline / bài đăng rõ ràng hơn",
+        text: "Bấm vào sự kiện / bài đăng trên MMH Calendar → thông tin chia thành các ô: thời gian, địa điểm, đối tác, mục tiêu & doanh số (có thanh tiến độ), lịch on-air, link tài liệu.",
+        img: "updates/v15.7/chi-tiet-mkt.jpg" },
+      { type: "imp", icon: "✏️", title: "Sửa ngay trong khung chi tiết — không chờ tải",
+        text: "Bấm nút nhỏ <b>✏️ Sửa</b> ở góc trên → biểu mẫu mở ngay trong khung, danh mục chọn có sẵn. Bấm <b>Lưu</b>: lịch đổi ngay, góc trên báo “Đang lưu…” → “✓ Đã lưu”; nếu lỗi, dữ liệu cũ được trả lại và giữ nguyên chữ bạn đã gõ.",
+        img: "updates/v15.7/sua-mkt.jpg" },
+      { type: "new", icon: "🎨", title: "10 tông màu giao diện nhã nhặn",
+        text: "Bấm biểu tượng <b>bảng màu</b> cạnh nút VN / EN → chọn MMH Navy, Biển sâu, Ngọc bích, Lá xô thơm, Than chì, Oải hương, Hồng phấn, Be cát, Đất nung hoặc Rừng thông. Đổi tức thì, nhớ riêng trên máy của bạn.",
+        img: "updates/v15.7/chon-mau.jpg" },
+      { type: "new", icon: "🖼️", title: "Xem trước một số tông màu",
+        text: "Màu theo loại lịch (công tác, đào tạo, sự kiện…) và màu trạng thái giữ nguyên ở mọi tông để dễ nhận biết.",
+        img: "updates/v15.7/cac-tong-mau.jpg" }
+    ]
+  },
+  {
     id: "2026-10-06-v15.6",
     version: "v15.6",
     date: "2026-10-06",

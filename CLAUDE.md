@@ -44,6 +44,10 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   (người dùng đã phản hồi v15.3 quá nhạt, khó nhìn) và không tô đặc.
 - Tránh nền đậm, gradient, viền sọc, bóng đổ nặng, emoji màu dày đặc. Thông báo = thẻ trắng, viền mảnh.
 - Lớp CSS chung ở `<style id="calm-css">` + `<style id="calm2-css">` cuối `index.html` — giao diện mới nên tuân theo các token ở đó.
+- **Chủ đề màu (v15.7)**: `<style id="theme-css">` trong `<head>` định nghĩa 10 tông qua `html[data-theme=…]` (mặc định `mmh`, lưu
+  `localStorage.mmh_theme`, nút `#th-btn` → `THEME.open()`). CSS mới **không viết cứng màu brand** mà dùng biến:
+  `--t-pri` (nút chính), `--t-pri2` (hover), `--t-ink` (tiêu đề), `--t-soft` / `--t-line` (nền / viền xanh nhạt), `--t-bg`,
+  `--mmh-blue`, `--mmh-navy`, `--lb1..3`, `--pale`, `--gray`. Màu `KIND` của lịch và màu trạng thái giữ cố định.
 - Thứ tự popup khi đăng nhập: Thông báo cập nhật (`UPD`) → Nhắc hạn chứng từ (`DL`) → Việc mới được giao (`ASG`) → Thư nhắc việc (`NT`);
   popup mới phải xếp hàng tương tự (cờ `pending` + bọc `NT.open`).
 
@@ -58,4 +62,7 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   có công thức, xác nhận đúng dòng bằng `check`. Web app giới hạn trong domain ⇒ gọi bằng JSONP (GET), giữ URL < ~7500 ký tự.
 - Bộ dựng PDF: hàm chung ở `tools/guide/deckkit.js`; mỗi bản hướng dẫn 1 file nội dung (`build.js` = v15.2, `build155.js` = v15.5).
   Mock đăng nhập người khác: `newPage(b,{pic:'Minh Trang'})`; giả lập ngày: `{time:'2026-10-15T09:00:00+07:00'}`.
+- **Thao tác lạc quan (v15.7)**: thêm / xoá Key task, Sub-task hiện ngay; `RT_LEDGER` ghi nhớ thao tác 3 phút để dữ liệu cũ từ
+  backend (đang đồng bộ) không làm thẻ hiện lại / biến mất. Sửa dữ liệu MKT (`MK`) làm ngay trong khung chi tiết `#mc-dr`
+  (không modal, không loading): cập nhật cục bộ trước, lỗi thì trả lại dữ liệu cũ. Mock có `lag`, `staleMs`, `failWrite` để test.
 - `script.google.com` bị chặn trong môi trường Claude: không gọi thật được, luôn dùng mock để test.
