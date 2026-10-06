@@ -95,4 +95,9 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   `PERM.ov(k,m)` áp cho người đăng nhập email qua các hàm bọc `canAssign`, `trnCanCreate`, `MK.can`, `buildTabs`/`switchTab` (báo cáo),
   `tripProposeOpen`, `buildSourceTabs`/`switchSource` (Management). Chức năng mới cần phân quyền: thêm vào `PERM.FEAT` + `def` + hàm bọc,
   và thêm khoá vào `RH_PERM_KEYS` (Training Hub). Mock: `{tk:'mmh.product'}` = Admin; `M.ADMU()` danh sách giả lập.
+- **Việc được giao (Training Hub v3.14 `RH_Assign.gs`, sheet `RH_Assign`)**: `rhAssignList` (items/mine/byMe) / `Add` (`via` own|system, chống trùng
+  `rid`) / `Seen` / `Done` (email người giao 1 lần) / `Reply`; `rhDirectory` (email theo PIC, cần phiên email). App v16.3 (`AT`): khung Soạn email có
+  hàng **Gửi từ** (Outlook deeplink cho @mani.inc, Gmail `view=cm` cho @manimedicalhanoi.com, mailto, hoặc hệ thống `rhxCall mailSend`);
+  tiêu đề kèm mã `[#A…]`; danh sách theo dõi + trao đổi (bấm nhãn `.asg-flag`). Đọc email trả lời thật CHƯA làm (cần quyền Gmail đọc ⇒ chủ
+  script cấp quyền lại, web app gián đoạn) — hỏi người dùng trước. HDSD v16.1–16.3: `build163.js`.
 - `script.google.com` bị chặn trong môi trường Claude: không gọi thật được, luôn dùng mock để test.
