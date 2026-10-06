@@ -1,0 +1,107 @@
+const { chromium } = require("playwright"); const path=require("path"); process.chdir(__dirname); const fs0=require('fs'); if(!fs0.existsSync('shots')) fs0.mkdirSync('shots'); const M=require('./mock'); const fs=require('fs');
+const ONLY=process.argv.slice(2);
+const W=1440,H=860;
+async function newPage(b, o){
+  o=o||{};
+  const ctx=await b.newContext({viewport:o.vp||{width:W,height:H},deviceScaleFactor:2,locale:'vi-VN',timezoneId:'Asia/Ho_Chi_Minh',isMobile:!!o.mobile,hasTouch:!!o.mobile});
+  const p=await ctx.newPage(); p.errs=[]; p.on('pageerror',e=>p.errs.push(e.message));
+  await p.addInitScript(()=>{ try{ localStorage.setItem('mmh_pic','Giang'); localStorage.setItem('mmh_src','marketing'); }catch(_){} });
+  await M.install(p,o);
+  await p.goto('file://'+path.resolve(__dirname,'../../index.html'));
+  await p.waitForFunction(()=>window.S&&S.user&&S.user.pic==='Giang'&&document.getElementById('app').style.display==='block',null,{timeout:20000});
+  await p.waitForFunction(()=>window.MC&&MC.st&&MC.st.trip&&MC.st.trip.s&&MC.st.trip.s!=='load',null,{timeout:20000});
+  await p.waitForTimeout(600);
+  return p;
+}
+async function shot(p, name, o){
+  o=o||{};
+  let clip=null;
+  if(o.clip){ clip=typeof o.clip==='string'? await p.evaluate(s=>{ const r=document.querySelector(s).getBoundingClientRect(); return {x:r.left,y:r.top,width:r.width,height:r.height}; }, o.clip) : o.clip; }
+  const vp=p.viewportSize(); if(!clip) clip={x:0,y:0,width:vp.width,height:vp.height};
+  const marks=[];
+  for(const m of (o.marks||[])){
+    const r=await p.evaluate(s=>{ const e=typeof s==='string'?document.querySelector(s):null; if(!e) return null; const r=e.getBoundingClientRect(); return {x:r.left,y:r.top,w:r.width,h:r.height}; }, m[0]);
+    if(!r){ console.log('  !! missing mark', name, m[0]); continue; }
+    marks.push({n:m[1], pos:m[2]||'tl', box:!!m[3], x:(r.x-clip.x)/clip.width, y:(r.y-clip.y)/clip.height, w:r.w/clip.width, h:r.h/clip.height});
+  }
+  await p.screenshot({path:'shots/'+name+'.png', clip});
+  fs.writeFileSync('shots/'+name+'.json', JSON.stringify({w:clip.width,h:clip.height,marks}));
+  console.log('shot', name, Math.round(clip.width)+'x'+Math.round(clip.height), marks.length+' marks', p.errs.length?p.errs:'');
+}
+const ev=(p,f,a)=>p.evaluate(f,a);
+const S={};
+S.main=async b=>{ const p=await newPage(b,{noChecks:true}); await p.waitForTimeout(4500); await ev(p,()=>{ NT.close&&NT.close(); NT.trips=[]; });
+  await ev(p,()=>{ NT.paint(); }); await p.waitForTimeout(200);
+  await shot(p,'main',{marks:[['.cal-launch[onclick="openMMHCalendar()"]',1,'tr',1],['#v10-trip-btn, button[onclick*="tripProposeOpen"]',2,'tr'],['#rt-btn',3,'tl']]}); };
+S.letter=async b=>{ const p=await newPage(b,{}); await p.waitForFunction(()=>document.getElementById('nt-letter').classList.contains('show'),null,{timeout:45000}).catch(()=>{});
+  await ev(p,()=>{ if(!document.getElementById('nt-letter').classList.contains('show')){ NT.trnReady=true; NT.tripReady=true; NT.open(false); } });
+  await p.waitForTimeout(700);
+  await shot(p,'letter',{marks:[['.nt-hd h2',1,'tl'],['.nt-sec:nth-of-type(1) .nt-it button',2,'tr'],['.nt-sec:nth-of-type(2) .nt-it button',3,'tr'],['.nt-ft .go',4,'tr']]}); };
+S.calmonth=async b=>{ const p=await newPage(b,{}); await ev(p,()=>{ NT.close(); MC.f.kinds.trip=1; MC.ref=new Date(2026,9,1); MC.view='month'; openMMHCalendar(); MC.setView('month'); });
+  await p.waitForTimeout(1500); await ev(p,()=>{ NT.close(); });
+  await shot(p,'calmonth',{marks:[['#mc-seg',1,'tl'],['#mc-side .mc-sg',2,'tr'],['#mc-bell',3,'tl'],['.mc-new',4,'tr'],['.mc-kpis, .mc-kpi',5,'tl']]}); };
+S.calweek=async b=>{ const p=await newPage(b,{}); await ev(p,()=>{ NT.close(); MC.f.kinds.trip=1; MC.ref=new Date(2026,9,6); openMMHCalendar(); MC.setView('week'); });
+  await p.waitForTimeout(1500); await ev(p,()=>NT.close());
+  await shot(p,'calweek',{marks:[]}); };
+S.newmenu=async b=>{ const p=await newPage(b,{}); await ev(p,()=>{ NT.close(); MC.ref=new Date(2026,9,1); openMMHCalendar(); MC.setView('month'); });
+  await p.waitForTimeout(1200); await ev(p,()=>NT.close());
+  await ev(p,()=>MC.addAt('2026-10-14')); await p.waitForTimeout(400);
+  await shot(p,'newmenu',{marks:[['.mc-day[ondblclick*="2026-10-14"]',1,'tl',1],['#mc-menu button:nth-of-type(1)',2,'tr'],['#mc-menu button:nth-of-type(2)',3,'tr']]}); };
+
+const openCal=async(p,ref,view)=>{ await ev(p,([y,m,d,v])=>{ NT.close(); MC.f.kinds.trip=1; MC.ref=new Date(y,m,d); openMMHCalendar(); MC.setView(v); },[ref[0],ref[1],ref[2],view]); await p.waitForTimeout(1200); await ev(p,()=>NT.close()); };
+S.trnform=async b=>{ const p=await newPage(b,{vp:{width:1440,height:1240}}); await openCal(p,[2026,9,1],'month');
+  await ev(p,()=>trnOpen('2026-10-14')); await p.waitForSelector('#trn-topic');
+  await p.fill('#trn-topic','Mani Dental product — Key SKUs FY68');
+  try{ await p.fill('#trn-purpose','Nắm chắc 20 SKU chủ lực FY68: tính năng, USP, giá & chính sách; luyện tình huống tư vấn cho bác sĩ.'); }catch(e){}
+  await ev(p,()=>{ const a=document.getElementById('trn-from'), z=document.getElementById('trn-to'); if(a){a.value='09:00';a.dispatchEvent(new Event('change',{bubbles:true}));} if(z){z.value='10:30';z.dispatchEvent(new Event('change',{bubbles:true}));} });
+  await p.selectOption('#trn-aud-add','g:MMH - Sales team').catch(()=>{});
+  await p.selectOption('#trn-aud-add','u:mmh.admin@manimedicalhanoi.com').catch(()=>{});
+  await p.waitForTimeout(300);
+  await shot(p,'trnform',{clip:'#modals .modal-box',marks:[['#trn-topic',1,'tl'],['#trn-date',2,'tl'],['#trn-trainer',3,'tl'],['#trn-aud',4,'tl'],['#trn-save2',5,'tr']]});
+  await p.click('#trn-save2'); await p.waitForSelector('#trn-send',{timeout:8000});
+  await p.waitForTimeout(400);
+  await shot(p,'trncompose',{clip:'#modals .modal-box',marks:[['#trn-to',1,'tl'],['.trn-ccme',2,'tl'],['#trn-send',3,'tr']]});
+};
+S.trnowner=async b=>{ const p=await newPage(b,{}); await openCal(p,[2026,8,1],'month');
+  await ev(p,()=>MC.open('training:S20260925-01')); await p.waitForTimeout(1200);
+  await shot(p,'trnowner',{marks:[['#mc-dr .mc-act',1,'tl'],['#mc-drop',2,'tl'],['#mc-mats .mc-fbt',3,'tr']]}); };
+S.trnviewer=async b=>{ const p=await newPage(b,{}); await openCal(p,[2026,9,1],'month');
+  await ev(p,()=>MC.open('training:S20261008-01')); await p.waitForTimeout(1200);
+  await shot(p,'trnviewer',{marks:[['#mc-dr .mc-note, #mc-dr .mc-warn',1,'tl'],['#mc-mats .mc-file:nth-of-type(1) .mc-fbt a:nth-of-type(1)',2,'tl'],['#mc-mats .mc-file:nth-of-type(1) .mc-fbt a:nth-of-type(2)',3,'tr']]}); };
+S.tripprop=async b=>{ const p=await newPage(b,{vp:{width:1440,height:1240}}); await openCal(p,[2026,9,1],'month');
+  await ev(p,()=>MC.create('trip','2026-10-27')); await p.waitForSelector('#tp-purpose',{timeout:8000});
+  await ev(p,()=>{ const v=(id,x)=>{ const e=document.getElementById(id); e.value=x; e.dispatchEvent(new Event('input',{bubbles:true})); e.dispatchEvent(new Event('change',{bubbles:true})); };
+    v('tp-start','2026-10-27'); v('tp-finish','2026-10-29'); try{ tpDays(); }catch(_){}
+    MS.dest.sel=['Can Tho']; msPaint('dest'); MS.co.sel=['Khang']; msPaint('co'); MS.eq.sel=['Laptop','Standee']; msPaint('eq');
+    v('tp-purpose','Hỗ trợ workshop Jizai Dr. Lam Dai Phong & đi thị trường Cần Thơ');
+    v('tp-expect','1. Workshop đạt ≥ 30 BS tham dự\n2. Chốt kế hoạch FY68 với 3 đại lý miền Tây');
+    v('tp-sched','27/10: HN → Cần Thơ, set up sự kiện · 28/10: Workshop · 29/10: Gặp đại lý, về HN');
+    TPC=[{d:'Vé máy bay khứ hồi',a:4600000},{d:'Khách sạn 2 đêm',a:1800000},{d:'Công tác phí',a:900000}]; tpCostPaint(); });
+  await p.waitForTimeout(300);
+  await shot(p,'tripprop',{clip:'#modals .modal-box',marks:[['#tp-start',1,'tl'],['.field:has(#ms-i-dest)',2,'tl'],['#tp-purpose',3,'tl'],['#tp-costs',4,'tl'],['#tp-send',5,'tr']]}); };
+const tripRow=(p,pic,date)=>ev(p,([a,d])=>{ const e=MC.raw.trip.events.find(x=>x.pic===a&&x.date===d); return e&&e.row; },[pic,date]);
+S.tripdrawer=async b=>{ const p=await newPage(b,{}); await openCal(p,[2026,8,1],'month');
+  const r=await tripRow(p,'Giang','2026-09-19'); await ev(p,r=>MC.open('trip:'+r),r); await p.waitForTimeout(900);
+  await shot(p,'tripdrawer',{marks:[['#mc-dr .mc-act button',1,'tl'],['#mc-dr .mc-kv',2,'tl'],['#mc-rep',3,'tl']]}); };
+S.tripreport=async b=>{ const p=await newPage(b,{vp:{width:1440,height:1240}}); await openCal(p,[2026,9,1],'month');
+  await ev(p,()=>MC.tripOpen('trip:999')); await p.waitForTimeout(1200);
+  await ev(p,()=>{ const t=document.querySelectorAll('#tr6 textarea'); const v=['1. Tham dự hội nghị VOS Đà Nẵng, gian hàng Mani Ophthalmic\n2. Gặp NPP miền Trung','1. 40+ BS ghé gian hàng, quan tâm chỉ khâu 8-0 / 10-0\n2. NPP đề xuất tăng tồn kho dao phaco Q3','1. Gửi báo giá chỉ khâu cho 5 BV\n2. Chốt kế hoạch FY68 với NPP trước 20/10']; t.forEach((x,i)=>{ if(v[i]) x.value=v[i]; }); });
+  await shot(p,'tripreport',{clip:'#tr6',marks:[['#tr6 .tr6-head',1,'tl'],['#tr6 .tr6-rep',2,'tl'],['#tr6-mail',3,'tl'],['#tr6 .modal-footer .btn-primary',4,'tr']]}); };
+S.offline=async b=>{ const p=await newPage(b,{}); await openCal(p,[2026,9,1],'month');
+  const id=await ev(p,()=>{ const e=MC.ev.find(x=>x.k==='offline'&&/Contemporary Endodontics/.test(x.title))||MC.ev.find(x=>x.k==='offline'); return e.id; });
+  await ev(p,id=>MC.open(id),id); await p.waitForTimeout(700);
+  await shot(p,'offline',{marks:[['#mc-dr .mc-kv',1,'tl'],['#mc-dr .mc-lks',2,'tl']]}); };
+S.online=async b=>{ const p=await newPage(b,{}); await openCal(p,[2026,8,1],'month');
+  const id=await ev(p,()=>{ const e=MC.ev.find(x=>x.k==='pevent'&&x.n&&x.n.link)||MC.ev.find(x=>x.k==='pevent'); return e.id; });
+  await ev(p,id=>MC.open(id),id); await p.waitForTimeout(700);
+  await shot(p,'online',{marks:[['#mc-dr .mc-kv',1,'tl'],['#mc-dr .mc-lks',2,'tl']]}); };
+S.listview=async b=>{ const p=await newPage(b,{}); await openCal(p,[2026,9,1],'list'); await shot(p,'listview',{marks:[]}); };
+S.phone=async b=>{ const p=await newPage(b,{vp:{width:390,height:844},mobile:true}); await ev(p,()=>{ NT.close(); MC.f.kinds.trip=1; MC.ref=new Date(2026,9,6); openMMHCalendar(); MC.setView('list'); }); await p.waitForTimeout(1200); await ev(p,()=>NT.close());
+  await shot(p,'phone',{marks:[]});
+  await ev(p,()=>MC.open('training:S20260925-01')); await p.waitForTimeout(1000); await shot(p,'phone2',{marks:[]}); };
+module.exports={S,newPage,shot,ev};
+if(require.main===module)(async()=>{
+  const b=await chromium.launch({args:['--lang=vi-VN']});
+  for(const k of Object.keys(S)){ if(ONLY.length && !ONLY.includes(k)) continue; try{ await S[k](b); }catch(e){ console.log('ERR',k,e.message.split('\n')[0]); } }
+  await b.close();
+})();
