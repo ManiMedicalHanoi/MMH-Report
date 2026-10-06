@@ -65,4 +65,8 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
 - **Thao tác lạc quan (v15.7)**: thêm / xoá Key task, Sub-task hiện ngay; `RT_LEDGER` ghi nhớ thao tác 3 phút để dữ liệu cũ từ
   backend (đang đồng bộ) không làm thẻ hiện lại / biến mất. Sửa dữ liệu MKT (`MK`) làm ngay trong khung chi tiết `#mc-dr`
   (không modal, không loading): cập nhật cục bộ trước, lỗi thì trả lại dữ liệu cũ. Mock có `lag`, `staleMs`, `failWrite` để test.
+- **Hàng đợi ghi `OUTBOX` (v15.8)**: `apiPost` của mọi lệnh ghi (danh sách `POL`) đi qua hàng đợi lưu ở `localStorage.mmh_outbox_v1`:
+  gắn URL backend lúc bấm, chạy tuần tự từng backend, đổi số tạm `tmp-…` sang số thật (`__tmp` trong body), thử lại khi lỗi mạng/bận
+  (cùng `rid`), phản hồi không chắc ⇒ đọc lại `weekly` để xác minh trước khi gửi lại, lỗi thật ⇒ chip đỏ + bảng Thử lại / Bỏ.
+  Thao tác ghi mới: cập nhật giao diện trước, gọi `apiPost`, KHÔNG chờ `_noWait` / không hiện màn hình chờ. Mock: `flaky:{action:['drop'|'lost'|'busy']}`.
 - `script.google.com` bị chặn trong môi trường Claude: không gọi thật được, luôn dùng mock để test.
