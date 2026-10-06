@@ -55,9 +55,12 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
 - Các bản vá xếp lớp bằng `window.fn = …` trong các khối `<script>` thêm ở cuối file — giữ phong cách này.
 - Backend: Google Apps Script (JSONP cho đọc, POST `URLSearchParams{action,payload}` cho ghi).
   Training Hub (`TRAINING_HUB_API`), Business Trip (backend Report Hub `GAS_URLS`), MMH Calendar Feed trong 2 file MKT.
-  Code `.gs` không nằm trong repo — khi sửa backend, gửi file `.gs` cho người dùng tự dán & Deploy → New version.
-  Code backend Report Hub (3 phòng ban) KHÔNG có trong tay ⇒ tính năng cần lưu trữ dùng chung đặt ở backend Training Hub
-  (đã có danh bạ email + MailApp): v3.12 có `rhAssign*` (sheet `RH_Assign` trong file Training Master).
+- **Code `.gs` của cả 7 backend** nằm ở kho riêng tư **`ManiMedicalHanoi/mmh-backend`** (từ 06/10/2026): gắn vào phiên bằng
+  `add_repo` (push), sửa `backends/<key>/*.gs` → PR → gộp ⇒ GitHub Actions tự deploy đúng deployment cũ (URL không đổi, gọi thử,
+  lỗi tự quay lại). **Không** gửi file `.gs` cho người dùng dán / Deploy tay. Gộp backend trước, đợi Deploy xanh, rồi mới gộp
+  app. Đọc `CLAUDE.md` + `TODO.md` của kho đó trước khi sửa (còn điểm chờ người dùng quyết định trước lần deploy đầu);
+  quy trình đầy đủ: `skills/gh-webapp-upgrader/references/backend-deploy.md`.
+  Training Hub dùng chung với repo `Training-Hub` (`rhAssign*`, sheet `RH_Assign` trong file Training Master) ⇒ giữ tương thích.
 - MMH Calendar Feed (v3.2) có ghi dữ liệu: `mmhOptions` (đọc Data validation) và `mmhWrite` (update/add/delete) — không ghi cột
   có công thức, xác nhận đúng dòng bằng `check`. Web app giới hạn trong domain ⇒ gọi bằng JSONP (GET), giữ URL < ~7500 ký tự.
 - Bộ dựng PDF: hàm chung ở `tools/guide/deckkit.js`; mỗi bản hướng dẫn 1 file nội dung (`build.js` = v15.2, `build155.js` = v15.5).
@@ -70,5 +73,7 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   (cùng `rid`), phản hồi không chắc ⇒ đọc lại `weekly` để xác minh trước khi gửi lại, lỗi thật ⇒ chip đỏ + bảng Thử lại / Bỏ.
   Thao tác ghi mới: cập nhật giao diện trước, gọi `apiPost`, KHÔNG chờ `_noWait` / không hiện màn hình chờ. Mock: `flaky:{action:['drop'|'lost'|'busy']}`.
 - **Skill dùng chung** `skills/gh-webapp-upgrader/` (đóng gói: `skills/dist/gh-webapp-upgrader.skill`): quy trình + mẫu (outbox, theme, thông báo,
-  mock, PDF) rút ra từ repo này cho mọi webapp GitHub khác. Sửa skill ⇒ chạy `scripts/selftest_outbox.js` rồi đóng gói lại.
+  mock, PDF, backend qua kho trung tâm `references/backend-deploy.md` + `assets/backend-repo/`) rút ra từ repo này cho mọi webapp
+  GitHub khác. Sửa skill ⇒ chạy `scripts/selftest_outbox.js` + `assets/backend-repo/tools/selftest.mjs`, đóng gói lại, nhắc người
+  dùng tải lại file `.skill` lên phần Skills của Claude. Bộ công cụ trong `assets/backend-repo/` phải giữ giống `mmh-backend`.
 - `script.google.com` bị chặn trong môi trường Claude: không gọi thật được, luôn dùng mock để test.

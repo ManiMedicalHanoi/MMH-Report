@@ -26,6 +26,8 @@ Người dùng là <nhân sự công ty X> — **trả lời và viết nội du
 
 ## Ghi chú kỹ thuật
 - Vá theo lớp `window.fn = …` trong khối `<script>` cuối file, ghi chú phiên bản.
-- Backend: <danh sách web app /exec + file sheet + ai giữ code .gs>. Sửa backend ⇒ gửi file .gs đầy đủ + hướng dẫn Deploy ▸ New version.
+- Backend: <danh sách web app /exec + file sheet>. Code `.gs` ở kho trung tâm riêng tư `<owner>/mmh-backend` (`backends.json` ▸
+  `apps` có repo này). Sửa backend ⇒ sửa ở kho đó + PR ⇒ GitHub tự deploy; gộp backend trước frontend. Không bắt người dùng
+  dán `.gs` / Deploy tay. Quy trình: skill gh-webapp-upgrader ▸ `references/backend-deploy.md`.
 - Mọi lệnh ghi đi qua `APP_OUTBOX` (hàng đợi bền vững): giao diện đổi trước, không chờ, không màn hình loading.
 ```

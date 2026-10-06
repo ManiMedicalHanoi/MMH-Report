@@ -47,9 +47,10 @@ Nhiều file sheet (sự kiện, bài đăng, lịch công tác) được đọc
 ## 5. Khi KHÔNG có code backend
 - Không đoán tên action: tìm trong frontend các action đang dùng; thử action mới phải chịu được `Unknown action` (báo người
   dùng cần cập nhật backend thay vì lỗi khó hiểu).
-- Khi sửa backend: viết **file `.gs` đầy đủ** (không phải đoạn vá), ghi số phiên bản trong tên file, gửi cho người dùng kèm các
-  bước: mở Apps Script ▸ dán ▸ Lưu ▸ Deploy ▸ Manage deployments ▸ Edit ▸ New version ▸ Deploy. Frontend vẫn chạy với bản cũ.
-- Đề xuất đưa code `.gs` vào repo (thư mục `backend/`, hoặc repo riêng private nếu repo app public) và dùng `clasp` để triển khai.
+- Khi sửa backend: sửa trong **kho trung tâm riêng tư** (MMH: `ManiMedicalHanoi/mmh-backend`) ⇒ PR ⇒ GitHub Actions tự deploy
+  đúng deployment cũ (URL không đổi) — `references/backend-deploy.md`. Frontend vẫn chạy với bản cũ.
+- Chưa có kho trung tâm ⇒ dựng theo `references/backend-deploy.md` mục 6 (`assets/backend-repo/`). Chỉ trong lúc chưa dựng được
+  mới gửi **file `.gs` đầy đủ** cho người dùng dán + Deploy ▸ Manage deployments ▸ Edit ▸ New version.
 
 ## 6. Bảo mật & quota
 - Repo public ⇒ mọi URL `/exec`, khoá cầu nối trong JS đều công khai. Không đặt bí mật thật ở client.
