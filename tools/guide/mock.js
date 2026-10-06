@@ -72,6 +72,12 @@ function mkWrite(body){
 const RIDS={}, WLOG=[], TRIPS=[];
 /* ★ v16.0 — giả lập đăng nhập email + mã 6 số (Training Hub v3.12). Mã đúng luôn là 123456. TKS ghi tham số tk của mọi lệnh gọi. */
 const AUTH_USERS=Object.fromEntries(Object.entries(ROSTER_NAMES).map(([k,v])=>[v,k])), AUTHL=[], TKS=[];
+/* ★ v16.2 — danh sách RH_Users giả lập cho trang phân quyền (email giả, không phải email thật) */
+let _ADMU=null;
+const ADMU=()=>_ADMU||(_ADMU=ROSTER.map((r,i)=>{ const local=ROSTER_NAMES[r.pic]||('mmh.'+r.pic.toLowerCase().replace(/\s+/g,''));
+  return {local,email:local+'@mani.inc',pic:r.pic,level:r.level||'pic',admin:r.pic==='Giang',active:true,session:1,dept:'',title:'',perms:{},
+    logins:i%5===4?0:3+i,lastLogin:i%5===4?'':new Date(Date.now()-(i%4)*86400000-3600000*(i%7)).toISOString(),lastEmail:''}; }));
+Object.keys(ROSTER_NAMES).forEach(k=>{ AUTH_USERS[ROSTER_NAMES[k]]=k; });
 async function install(page, o){
   o=o||{};
   const KK=JSON.parse(JSON.stringify(KEY)); let seq=50;   /* dữ liệu task có trạng thái: thêm / xoá / sửa được ghi nhớ như backend thật */
@@ -112,8 +118,18 @@ async function install(page, o){
     else if(a==='rhAuthVerify'){ const e=String(body.email||'').toLowerCase(), l=e.split('@')[0]; AUTHL.push(['verify',e,body.code]);
       d=body.code!=='123456'?{ok:false,code:'CODE',left:4,error:'Mã chưa đúng. Còn 4 lần thử.'}
         :{ok:true,token:'mocktk.'+l,exp:Date.now()+30*864e5,user:{email:e,local:l,pic:AUTH_USERS[l],level:'pic',admin:l==='mmh.product'}}; }
+    else if(/^rhAdmin/.test(a)){ const l=String(body.tk||'').replace(/^mocktk\./,''), me=ADMU().find(x=>x.local===l);
+      if(!me) d={ok:false,code:'AUTH',error:'Phiên đăng nhập không hợp lệ.'};
+      else if(!(me.admin||/^(director|hod)$/.test(me.level))) d={ok:false,code:'FORBIDDEN',error:'Chỉ Admin, Director hoặc HOD được phân quyền.'};
+      else if(a==='rhAdminList') d={ok:true,me,canTop:me.admin||me.level==='director',users:ADMU()};
+      else if(a==='rhAdminSave'){ const u=JSON.parse(body.u||'{}'); AUTHL.push(['save',u]); const L=ADMU(); let x=L.find(y=>y.local===u.local);
+        if(!x){ x={local:u.email.split('@')[0],session:1,logins:0,lastLogin:''}; L.push(x); }
+        Object.assign(x,{email:u.email,local:u.email.split('@')[0],pic:u.pic,level:u.level,dept:u.dept,title:u.title,admin:u.admin,active:u.active,perms:u.perms});
+        d={ok:true,message:'Đã lưu quyền của '+u.pic+'.',users:L}; }
+      else if(a==='rhAdminKick'){ AUTHL.push(['kick',body.local]); const x=ADMU().find(y=>y.local===body.local); if(x) x.session++; d={ok:true,message:'Đã đăng xuất '+(x&&x.pic)+' khỏi mọi máy.',users:ADMU()}; } }
     else if(a==='rhAuthMe'){ const l=String(body.tk||'').replace(/^mocktk\./,''); AUTHL.push(['me',l]);
-      d=(o.revoked||!AUTH_USERS[l])?{ok:false,code:'AUTH',error:'Phiên đăng nhập đã bị đăng xuất từ xa.'}:{ok:true,user:{email:l+'@mani.inc',local:l,pic:AUTH_USERS[l],level:'pic',admin:l==='mmh.product'}}; }
+      const au=ADMU().find(x=>x.local===l);
+      d=(o.revoked||!AUTH_USERS[l])?{ok:false,code:'AUTH',error:'Phiên đăng nhập đã bị đăng xuất từ xa.'}:{ok:true,user:{email:l+'@mani.inc',local:l,pic:AUTH_USERS[l],level:(au&&au.level)||'pic',admin:l==='mmh.product',perms:(o.perms)||(au&&au.perms)||{}}}; }
     else if(a==='rhMeta') d=META;
     else if(a==='rhSessions') d={ok:true,sessions:SESS.concat(o.extraSess||[])};
     else if(a==='rhMaterials') d=mats(body.sid||u.searchParams.get('sid'));
@@ -144,4 +160,4 @@ async function install(page, o){
     try{ await handle(route); }catch(e){} finally{ rel(); }
   });
 }
-module.exports={install,D,SESS,ASSIGN,LOG,WLOG,TRIPS,RIDS,AUTHL,TKS,AUTH_USERS};
+module.exports={install,D,SESS,ASSIGN,LOG,WLOG,TRIPS,RIDS,AUTHL,TKS,AUTH_USERS,ADMU};

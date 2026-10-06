@@ -8,6 +8,23 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id: "2026-10-06-v16.2",
+    version: "v16.2",
+    date: "2026-10-06",
+    title: "Trang Phân quyền người dùng",
+    summary: "Admin, Director và HOD tự thêm người, đặt phòng ban, vai trò và bật / tắt từng chức năng ngay trên Report Hub — không cần sửa code. Thấy luôn ai <b>chưa từng đăng nhập</b> để nhắc.",
+    items: [
+      { type: "new", icon: "👥", title: "Mở trang Phân quyền",
+        text: "Bấm <b>tên của bạn</b> ở góc phải → <b>Phân quyền người dùng</b> (hoặc <b>Ctrl + K</b> → gõ <i>phan quyen</i>). Chỉ hiện với Admin / Director / HOD đã đăng nhập bằng email.",
+        img: "updates/v16.2/menu-phan-quyen.jpg" },
+      { type: "new", icon: "🔐", title: "Chọn người → đặt phòng ban, vai trò, bật / tắt chức năng",
+        text: "<b>＋ Thêm người</b> hoặc bấm một dòng → sửa email, tên PIC, phòng ban, vai trò → bật / tắt Giao việc, Báo cáo tuần / tháng, Đề xuất công tác, Tạo buổi đào tạo, Sửa dữ liệu MKT, Xem Management → <b>Lưu quyền</b>. Công tắc viền vàng = khác mặc định của vai trò.",
+        img: "updates/v16.2/phan-quyen.jpg" },
+      { type: "new", icon: "🕒", title: "Biết ai chưa từng đăng nhập · đăng xuất từ xa",
+        text: "Cột <b>Đăng nhập gần nhất</b> báo đỏ <b>Chưa đăng nhập</b> để nhắc. Mất máy hoặc nghỉ việc: chọn người → <b>Đăng xuất khỏi mọi máy</b>, hoặc bỏ tick <b>Được dùng Report Hub</b>." }
+    ]
+  },
+  {
     id: "2026-10-06-v16.1",
     version: "v16.1",
     date: "2026-10-06",

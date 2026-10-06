@@ -90,4 +90,9 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
 - **Tìm nhanh `QS` (v16.1, Ctrl/⌘ + K, nút `#qs-btn`)**: tìm việc 3 phòng ban (`S._allKeys` + `SRC_CACHE` / `LS_BOOT`) và `MC.ev`
   (sự kiện, bài đăng, công tác, đào tạo), bỏ dấu, PIC chỉ thấy việc của mình. Thêm lệnh nhanh mới: đẩy vào `window.QS_EXTRA_CMDS`
   (`{ic,title,hay,run}` hoặc hàm trả về đối tượng đó / null).
+- **Phân quyền `ADM` / `PERM` (v16.2)**: trang quản trị (menu tên ▸ Phân quyền người dùng) đọc / ghi `RH_Users` qua Training Hub
+  `rhAdminList` / `rhAdminSave` / `rhAdminKick`. `PERM.def(u)` = quyền mặc định theo vai trò (giữ logic cũ); `Perms` chỉ lưu phần khác mặc định;
+  `PERM.ov(k,m)` áp cho người đăng nhập email qua các hàm bọc `canAssign`, `trnCanCreate`, `MK.can`, `buildTabs`/`switchTab` (báo cáo),
+  `tripProposeOpen`, `buildSourceTabs`/`switchSource` (Management). Chức năng mới cần phân quyền: thêm vào `PERM.FEAT` + `def` + hàm bọc,
+  và thêm khoá vào `RH_PERM_KEYS` (Training Hub). Mock: `{tk:'mmh.product'}` = Admin; `M.ADMU()` danh sách giả lập.
 - `script.google.com` bị chặn trong môi trường Claude: không gọi thật được, luôn dùng mock để test.

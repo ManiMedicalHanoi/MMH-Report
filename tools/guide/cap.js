@@ -157,6 +157,13 @@ S.v161qs=async b=>{ const p=await newPage(b,{noChecks:true,tk:'mmh.product',vp:{
   await shot(p,'v161qs',{marks:[['#qs .qs-in',1,'tl'],['#qs .qs-it.on',2,'tr'],['#qs .qs-it:last-child',3,'tl'],['#qs-btn',4,'tl']]});
   await ev(p,()=>{ var i=document.querySelector('#qs .qs-in'); i.value=''; i.dispatchEvent(new Event('input')); }); await p.keyboard.type('bang gia km'); await p.waitForTimeout(400);
   await shot(p,'v161task',{marks:[['#qs .qs-it.on',1,'tr']]}); };
+/* ★ v16.2 — phân quyền người dùng */
+S.v162adm=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',noChecks:true,vp:{width:1440,height:860}}); await p.waitForTimeout(4500); await ev(p,()=>{ NT.close&&NT.close(); if(window.UPD&&UPD.isOpen()) UPD.close(); });
+  await ev(p,()=>UM.open()); await p.waitForTimeout(250);
+  await shot(p,'v162menu',{marks:[['#um-adm',1,'tl']]});
+  await ev(p,()=>{ UM.close(); ADM.open(); }); await p.waitForSelector('#adm tr.r'); await p.click('#adm tr.r[data-l="mmh.admin"]'); await p.waitForTimeout(200);
+  await p.click('#adm .tg[data-k="mkt"]'); await p.waitForTimeout(150);
+  await shot(p,'v162adm',{marks:[['#ad-add',1,'tl'],['#adm tr.r.on',2,'tl'],['#adm .sec',3,'tl'],['#adm .ll.never',4,'tl'],['#af-save',5,'tl']]}); };
 module.exports={S,newPage,shot,ev};
 if(require.main===module)(async()=>{
   const b=await chromium.launch({args:['--lang=vi-VN']});
