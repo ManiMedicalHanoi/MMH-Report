@@ -172,6 +172,10 @@ S.v163=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',noChecks
   await shot(p,'v163track',{clip:'#at .at-card',marks:[['#at .at-row[data-id="A2610050930"] .at-st',1,'tl'],['#at .at-row[data-id="A2610040800"] .at-st',2,'tl'],['#at .at-sec',3,'tl']]});
   await p.click('#at .at-row[data-id="A2610050930"]'); await p.waitForSelector('#at-txt'); await p.fill('#at-txt','Ok em, chị duyệt ngay khi nhận bản nháp nhé.'); await p.waitForTimeout(200);
   await shot(p,'v163thread',{clip:'#at .at-card',marks:[['#at .rp',1,'tl'],['#at-send',2,'tl']]}); };
+/* ★ v16.8 — nhắc tự đánh giá quý: chỉ ngày 09 tháng đầu quý, trước 17:00 */
+S.v168kpn=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',noChecks:true,time:'2026-12-09T09:00:00+07:00',vp:{width:1100,height:700}});
+  await ev(p,()=>{ NT.close&&NT.close(); }); await p.waitForSelector('#kpn.show',{timeout:30000}); await p.waitForTimeout(300);
+  await shot(p,'v168kpn',{clip:'#kpn .c'}); };
 module.exports={S,newPage,shot,ev};
 if(require.main===module)(async()=>{
   const b=await chromium.launch({args:['--lang=vi-VN']});

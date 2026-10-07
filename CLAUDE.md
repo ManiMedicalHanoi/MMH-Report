@@ -104,3 +104,5 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
 - **Đọc Apps Script không kèm cookie (v16.7)**: trong module `AUTH`, bọc `<script>.src` ⇒ URL `script.google.com/macros/s/…` có `callback=`
   được đọc bằng `fetch(credentials:"omit")` rồi chạy đúng callback; hỏng 2 lần liền (web app chỉ cho domain, link `/a/macros/`) ⇒ dùng thẻ `<script>`
   như cũ. Sửa lỗi Chrome đăng nhập Gmail khác / nhiều tài khoản ⇒ không gửi được mã đăng nhập. Test: mock trả 404 cho `resourceType()==='script'`.
+- **Nhắc hạn KPI (`#kpn`, khối KPI)**: ngày 02 hằng tháng — báo cáo KPI tháng trước (16:00); **ngày 09 tháng đầu quý (09/12/03/06), trước 17:00** —
+  tự đánh giá quý trước (v16.8, trước đây ngày 01–08). CRM dùng cùng luật (+ popup hạn chứng từ `DL` chép từ đây). Cảnh chụp: `cap.js v168kpn`.
