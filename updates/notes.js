@@ -8,6 +8,15 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-07-v16.7", version:"v16.7", date:"2026-10-07",
+    title:"Đăng nhập trên điện thoại không còn bị chặn",
+    summary:"Điện thoại / Chrome đang đăng nhập Gmail khác vẫn nhận mã và vào app bình thường, tải nhanh hơn.",
+    items:[
+      {type:"fix", icon:"📱", title:"Đăng nhập khi Chrome dùng Gmail khác", text:"Trước đây nếu Chrome trên điện thoại đang đăng nhập một Gmail cá nhân (hoặc nhiều tài khoản), app chờ rất lâu rồi báo <i>Không kết nối được máy chủ đăng nhập</i>. Nay chỉ cần nhập email công ty → <b>Gửi mã đăng nhập</b> → nhập mã 6 số là vào, không phải đăng xuất Gmail.", img:"updates/v16.7/login.jpg"},
+      {type:"imp", icon:"⚡", title:"Mở app nhanh hơn", text:"Dữ liệu được đọc thẳng, không còn vòng chuyển hướng qua trang chọn tài khoản Google ⇒ mở app, chuyển phòng ban, xem lịch đều nhanh hơn trên điện thoại."}
+    ]
+  },
+  {
     id:"2026-10-07-v16.6", version:"v16.6", date:"2026-10-07",
     title:"Thanh công cụ gọn, Setting Expectation rộng hơn",
     summary:"Các nút hay dùng ra thẳng thanh trên cùng; form Setting Expectation dễ điền hơn.",

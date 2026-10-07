@@ -101,3 +101,6 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   tiêu đề kèm mã `[#A…]`; danh sách theo dõi + trao đổi (bấm nhãn `.asg-flag`). Đọc email trả lời thật CHƯA làm (cần quyền Gmail đọc ⇒ chủ
   script cấp quyền lại, web app gián đoạn) — hỏi người dùng trước. HDSD v16.1–16.3: `build163.js`.
 - `script.google.com` bị chặn trong môi trường Claude: không gọi thật được, luôn dùng mock để test.
+- **Đọc Apps Script không kèm cookie (v16.7)**: trong module `AUTH`, bọc `<script>.src` ⇒ URL `script.google.com/macros/s/…` có `callback=`
+  được đọc bằng `fetch(credentials:"omit")` rồi chạy đúng callback; hỏng 2 lần liền (web app chỉ cho domain, link `/a/macros/`) ⇒ dùng thẻ `<script>`
+  như cũ. Sửa lỗi Chrome đăng nhập Gmail khác / nhiều tài khoản ⇒ không gửi được mã đăng nhập. Test: mock trả 404 cho `resourceType()==='script'`.
