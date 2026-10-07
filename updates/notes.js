@@ -8,6 +8,14 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-07-v16.8", version:"v16.8", date:"2026-10-07",
+    title:"Nhắc tự đánh giá quý đúng ngày 09, trước 17:00",
+    summary:"Popup nhắc hoàn thành form tự đánh giá quý trước chỉ hiện đúng ngày 09 của tháng đầu quý, trước 17:00.",
+    items:[
+      {type:"fix", icon:"📝", title:"Nhắc tự đánh giá quý", text:"Trước đây popup hiện liên tục từ ngày 01 đến 08. Nay chỉ hiện <b>ngày 09</b> của tháng đầu quý (09, 12, 03, 06) khi đăng nhập <b>trước 17:00</b> — hạn nộp là 17:00 hôm đó. Bấm <b>Mở form tự đánh giá</b> để điền ngay, hoặc <b>Đã nộp, không nhắc nữa</b>.", img:"updates/v16.8/kpn.jpg"}
+    ]
+  },
+  {
     id:"2026-10-07-v16.7", version:"v16.7", date:"2026-10-07",
     title:"Đăng nhập trên điện thoại không còn bị chặn",
     summary:"Điện thoại / Chrome đang đăng nhập Gmail khác vẫn nhận mã và vào app bình thường, tải nhanh hơn.",
