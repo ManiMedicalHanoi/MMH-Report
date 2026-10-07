@@ -8,9 +8,27 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-07-v17.0", version:"v17.0", date:"2026-10-07",
+    title:"Gửi email thông báo cập nhật cho toàn bộ nhân sự",
+    summary:"Admin / Director gửi email (tiếng Anh) báo các cập nhật mới của Report Hub cho mọi người dùng, kèm hình và file HDSD đầy đủ.",
+    guide:"docs/HDSD_Report_Hub_v17.0.pdf",
+    en:{ title:"Update emails and full user guide", items:[
+      {title:"Update emails (Admin, Director)", text:"Update announcements like this one are now sent directly from Report Hub to all users, with screenshots and the user guide attached."},
+      {title:"Full user guide", text:"The attached PDF covers the whole system, including the latest changes: mobile sign-in, KPI, company Total KPI, private calendar and reminders. It is also available from the update notice in the app."}]},
+    items:[
+      {type:"new", icon:"✉️", title:"Gửi email thông báo cập nhật (Admin, Director)", text:"Bấm badge phiên bản (Thông báo cập nhật) → <b>Gửi email cập nhật</b> → tick các phiên bản cần báo, xem trước email tiếng Anh có hình → <b>Gửi thử cho tôi</b> → <b>Gửi email</b>. Email tự động, kèm file HDSD PDF, người nhận không cần trả lời.", img:"updates/v17.0/email.jpg"},
+      {type:"imp", icon:"📘", title:"HDSD đầy đủ toàn hệ thống", text:"File <b>HDSD Report Hub v17.0</b> gộp mọi hướng dẫn, thêm các trang mới nhất: đăng nhập điện thoại, KPI, Total KPI, lịch riêng tư, nhắc việc. Bấm <b>Hướng dẫn chi tiết (PDF)</b> trong thông báo này để mở."}
+    ]
+  },
+  {
     id:"2026-10-07-v16.9", version:"v16.9", date:"2026-10-07",
     title:"Total KPI công ty, KPI dễ đọc hơn, lịch riêng tư hơn",
     summary:"Quản lý có màn <b>Total KPI</b> theo mục tiêu chiến lược FY68. Tab KPI ghi rõ đang xem của ai, màu theo đúng mã màu file KPI. Lịch chỉ hiện buổi đào tạo bạn tham gia và chuyến công tác của bạn.",
+    en:{ title:"Company Total KPI, clearer KPI view, private calendar", items:[
+      {title:"Company Total KPI (Admin, Director, managers)", text:"<b>KPI</b> tab ▸ <b>Total KPI</b>: company sales, scores of the four perspectives (Financial · Customer · Internal Process · Learning &amp; Growth), each strategic objective, company KPIs and every member's result — by month, year-to-date or full year."},
+      {title:"Always clear whose KPI you are viewing", text:"The <b>Viewing KPI of</b> bar highlights the selected person and the comparison chart marks them (◀ viewing). Colours follow the KPI file: &lt; 90% · 90–100% · 100–120% · &gt; 120%."},
+      {title:"Sales not yet closed", text:"Empty sales actuals now show <b>Not closed</b> (accounting has not closed the month in the Turnover Report), with the latest closed month and the status of each data source."},
+      {title:"Calendar shows only what concerns you", text:"Training sessions are visible only to the trainer and invited attendees. Other people's business trips are hidden; Managers, Directors and Admins can show them with the <b>Other people's trips</b> button."}]},
     items:[
       {type:"new", icon:"📊", title:"Total KPI công ty (Admin, Director, quản lý)", text:"Tab <b>KPI</b> ▸ <b>Total KPI công ty</b> → xem doanh số toàn công ty, điểm 4 góc nhìn (Tài chính · Khách hàng · Quy trình · Phát triển), từng mục tiêu chiến lược, KPI công ty (bấm ▸ xem chi tiết) và % của từng thành viên. Chọn Tháng / Lũy kế / Cả năm.", img:"updates/v16.9/total_kpi.jpg"},
       {type:"imp", icon:"👤", title:"Biết rõ đang xem KPI của ai", text:"Hàng nút <b>Đang xem KPI của</b> tô đậm người đang chọn; biểu đồ so sánh làm nổi người đó (◀ đang xem), người khác mờ đi. Màu % theo mã màu file KPI: &lt; 90% · 90–100% · 100–120% · &gt; 120%.", img:"updates/v16.9/kpi_nguoi.jpg"},
@@ -22,6 +40,8 @@ window.MMH_UPDATES = [
     id:"2026-10-07-v16.8", version:"v16.8", date:"2026-10-07",
     title:"Nhắc tự đánh giá quý đúng ngày 09, trước 17:00",
     summary:"Popup nhắc hoàn thành form tự đánh giá quý trước chỉ hiện đúng ngày 09 của tháng đầu quý, trước 17:00.",
+    en:{ title:"Quarterly self-assessment reminder", items:[
+      {title:"Self-assessment reminder on the 9th, before 17:00", text:"The reminder to complete the previous quarter's self-assessment now appears only on the <b>9th of the first month of each quarter</b> (Sep, Dec, Mar, Jun) before 17:00 — the submission deadline. Click <b>Open self-assessment form</b> to fill it in."}]},
     items:[
       {type:"fix", icon:"📝", title:"Nhắc tự đánh giá quý", text:"Trước đây popup hiện liên tục từ ngày 01 đến 08. Nay chỉ hiện <b>ngày 09</b> của tháng đầu quý (09, 12, 03, 06) khi đăng nhập <b>trước 17:00</b> — hạn nộp là 17:00 hôm đó. Bấm <b>Mở form tự đánh giá</b> để điền ngay, hoặc <b>Đã nộp, không nhắc nữa</b>.", img:"updates/v16.8/kpn.jpg"}
     ]
@@ -30,6 +50,9 @@ window.MMH_UPDATES = [
     id:"2026-10-07-v16.7", version:"v16.7", date:"2026-10-07",
     title:"Đăng nhập trên điện thoại không còn bị chặn",
     summary:"Điện thoại / Chrome đang đăng nhập Gmail khác vẫn nhận mã và vào app bình thường, tải nhanh hơn.",
+    en:{ title:"Mobile sign-in fixed", items:[
+      {title:"Sign in on phones with another Gmail account", text:"If Chrome on your phone is signed in to a personal Gmail (or several accounts), the app no longer hangs at <i>Cannot connect to the sign-in server</i>. Enter your company email → <b>Send code</b> → enter the 6-digit code."},
+      {title:"Faster loading", text:"Data is read directly without the Google account-chooser redirect, so the app, departments and calendar open faster on mobile."}]},
     items:[
       {type:"fix", icon:"📱", title:"Đăng nhập khi Chrome dùng Gmail khác", text:"Trước đây nếu Chrome trên điện thoại đang đăng nhập một Gmail cá nhân (hoặc nhiều tài khoản), app chờ rất lâu rồi báo <i>Không kết nối được máy chủ đăng nhập</i>. Nay chỉ cần nhập email công ty → <b>Gửi mã đăng nhập</b> → nhập mã 6 số là vào, không phải đăng xuất Gmail.", img:"updates/v16.7/login.jpg"},
       {type:"imp", icon:"⚡", title:"Mở app nhanh hơn", text:"Dữ liệu được đọc thẳng, không còn vòng chuyển hướng qua trang chọn tài khoản Google ⇒ mở app, chuyển phòng ban, xem lịch đều nhanh hơn trên điện thoại."}

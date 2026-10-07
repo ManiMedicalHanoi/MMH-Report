@@ -115,3 +115,10 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
 - **Quyền xem lịch (`VIS`, v16.9, dùng chung CRM)**: dữ liệu `rhSessions` lọc ngay khi về (bọc callback trong setter `<script>.src`) ⇒ buổi đào tạo chỉ trainer +
   người được mời (`people`) thấy; MMH Calendar lọc ở `MC.ev` (getter), Lịch làm việc ở `c10Items`. Chuyến công tác người khác luôn ẩn, quản lý bật bằng
   `VIS.chip()` (localStorage `mmh_trip_all`).
+- **Email thông báo cập nhật `UPM` (v17.0, dùng chung CRM v30.3)**: Thông báo cập nhật ▸ "Gửi email cập nhật" (chỉ Admin / Director).
+  Email tiếng Anh dạng thư thường kiểu Outlook (KHÔNG làm bản tin HTML cầu kỳ — người dùng yêu cầu): Dear All · lời mở đầu · Link · Version ·
+  WHAT'S NEW đánh số, ảnh nhúng `cid:` · USER GUIDE · chữ ký · dòng "automated email, do not reply". Nội dung lấy từ trường **`en`** của
+  mỗi mục `MMH_UPDATES` (`en:{title, items:[{title,text}]}` — **số mục phải bằng `items` tiếng Việt**, ảnh lấy theo thứ tự) ⇒ mục mới
+  luôn kèm `en`. Gửi qua Training Hub `rhUpdMail` (`RH_UpdMail.gs`; người nhận: mọi `RH_Users` đang hoạt động). Cấu hình `window.UPM_CFG`
+  (pdf = HDSD đầy đủ `docs/HDSD_Report_Hub_vX.Y.pdf`). HDSD đầy đủ = deck mới nhất (`build170.js`) ghép với các HDSD cũ bằng pypdf.
+  Khung xem trước là iframe sandbox ⇒ test ảnh qua HTTP (`python3 -m http.server`), `file://` không hiện ảnh.
