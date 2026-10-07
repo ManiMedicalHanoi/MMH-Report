@@ -8,6 +8,25 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id: "2026-10-07-v16.5",
+    version: "v16.5",
+    date: "2026-10-07",
+    title: "KPI: biểu đồ, email báo cáo KPI tháng, form tự đánh giá quý",
+    summary: "Tab <b>KPI</b> mở nhanh hơn và có biểu đồ. Gửi <b>báo cáo KPI tháng</b> ngay trên app, tạo <b>file Setting Expectation</b> quý (Word) với KPI điền sẵn. App tự nhắc hạn ngày 2 hằng tháng và đầu mỗi quý.",
+    items: [
+      { type: "imp", icon: "📊", title: "Tab KPI có biểu đồ, mở là thấy ngay",
+        text: "Thẻ tổng quan, biểu đồ so sánh cả đội, xu hướng theo tháng, đóng góp theo nhóm KPI và bảng chi tiết. Số liệu lần trước hiện ngay, số mới tự cập nhật ở nền." },
+      { type: "new", icon: "📧", title: "Báo cáo KPI tháng",
+        text: "Tab KPI hoặc <b>Gửi báo cáo ▸ Báo cáo KPI tháng</b> → chọn tháng, người nhận tự điền theo sơ đồ tổ chức → viết phân tích → xem trước đúng bản gửi → <b>Gửi thử</b> / <b>Gửi báo cáo KPI</b>." },
+      { type: "new", icon: "📝", title: "Setting Expectation & tự đánh giá quý",
+        text: "<b>Gửi báo cáo ▸ Setting Expectation quý</b> → KPI của quý tự điền vào mẫu → viết phần Năng lực, Tổng kết, chọn điểm → <b>Tải file Word</b>. Bản nháp tự lưu." },
+      { type: "new", icon: "⏰", title: "Nhắc hạn",
+        text: "Ngày 2 hằng tháng: nhắc gửi báo cáo KPI tháng trước trước 16:00. Ngày 1–8 tháng đầu quý: nhắc hoàn thành form tự đánh giá quý trước (hạn trước ngày 09). Có nút mở thẳng form." },
+      { type: "fix", icon: "✏️", title: "Tên KPI dễ hiểu hơn",
+        text: "Ví dụ: <b>Đào tạo khách hàng</b>, <b>Đào tạo nội bộ - sản phẩm</b>, <b>Đào tạo nội bộ - kỹ năng</b>." }
+    ]
+  },
+  {
     id: "2026-10-07-v16.4",
     version: "v16.4",
     date: "2026-10-07",
