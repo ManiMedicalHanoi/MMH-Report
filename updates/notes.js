@@ -8,6 +8,21 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id: "2026-10-07-v16.4",
+    version: "v16.4",
+    date: "2026-10-07",
+    title: "Tab KPI real time · tải tài liệu đào tạo chạy nền",
+    summary: "Tab <b>KPI</b> mới: xem KPI tháng / quý / năm của bạn và đội nhóm, cập nhật liên tục từ file MMH KPI FY68. Tải tài liệu đào tạo giờ <b>chạy nền</b> — đóng khung vẫn tải tiếp.",
+    items: [
+      { type: "new", icon: "📊", title: "Tab KPI",
+        text: "Bấm tab <b>KPI</b> → chọn Tháng / Quý / Năm FY68: thẻ tổng % của từng người, bảng chi tiết từng KPI (tên dễ hiểu, trọng số, target, actual, % đạt, tiến độ). Director thấy tất cả, HOD cả phòng, Team Leader nhóm mình, PIC chỉ mình. Cần đăng nhập bằng email." },
+      { type: "imp", icon: "⬆️", title: "Tải tài liệu đào tạo chạy nền",
+        text: "Thả file vào nhiều buổi đào tạo liên tiếp, đóng khung chi tiết vẫn tải tiếp — tiến độ hiện ở góc trái dưới, lỗi thì bấm <b>Thử lại</b>. Tải song song, nhanh hơn." },
+      { type: "fix", icon: "📁", title: "Nút Tạo thư mục tài liệu",
+        text: "Buổi đào tạo cũ chưa có thư mục: mở buổi trên MMH Calendar → <b>📁 Tạo thư mục tài liệu</b>." }
+    ]
+  },
+  {
     id: "2026-10-06-v16.3",
     version: "v16.3",
     date: "2026-10-06",
