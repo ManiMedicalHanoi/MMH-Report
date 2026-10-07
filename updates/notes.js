@@ -8,6 +8,16 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-07-v16.6", version:"v16.6", date:"2026-10-07",
+    title:"Thanh công cụ gọn, Setting Expectation rộng hơn",
+    summary:"Các nút hay dùng ra thẳng thanh trên cùng; form Setting Expectation dễ điền hơn.",
+    items:[
+      {type:"imp", icon:"🧭", title:"Nút ra thanh trên cùng", text:"Thông báo cập nhật, Việc đã giao, Màu giao diện và VN/EN nay nằm ngay trên thanh trên cùng. Bấm tên của bạn chỉ còn thông tin tài khoản, Phân quyền người dùng và Đăng xuất."},
+      {type:"imp", icon:"📝", title:"Setting Expectation rộng hơn", text:"Phần cần điền chuyển sang bên phải, ô nhập to hơn; bản xem trước tự điền nằm bên trái. Giám đốc tự điền: Nguyen Thi Thu Ha."},
+      {type:"fix", icon:"📊", title:"KPI theo nhóm quản lý", text:"Quản lý kiêm nhiều nhóm xem được KPI của tất cả các nhóm mình phụ trách (ví dụ Surgical Sales: Khang, Viet Ha)."}
+    ]
+  },
+  {
     id: "2026-10-07-v16.5",
     version: "v16.5",
     date: "2026-10-07",

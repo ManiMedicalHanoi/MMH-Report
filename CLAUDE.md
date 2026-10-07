@@ -48,9 +48,9 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   `localStorage.mmh_theme`, nút `#th-btn` → `THEME.open()`). CSS mới **không viết cứng màu brand** mà dùng biến:
   `--t-pri` (nút chính), `--t-pri2` (hover), `--t-ink` (tiêu đề), `--t-soft` / `--t-line` (nền / viền xanh nhạt), `--t-bg`,
   `--mmh-blue`, `--mmh-navy`, `--lb1..3`, `--pale`, `--gray`. Màu `KIND` của lịch và màu trạng thái giữ cố định.
-- **Thanh trên cùng (v15.9)**: 1 dòng thấp (logo · MMH Calendar · chip người dùng). Nút phụ đặt trong **menu người dùng** `UM`
-  (`#um-pop`: Màu giao diện, VN/EN — phần tử `#lang-switch` được chuyển vào, Có gì mới?, trạng thái email đăng nhập, Đăng xuất) — đừng thêm nút mới
-  lên thanh trên cùng. Nút "Đồng bộ Sales tasks" đã bỏ (backend tự đồng bộ 10 phút/lần; `#vs-btn` cất trong `#um-hidden`).
+- **Thanh trên cùng (v16.6)**: 1 dòng thấp (logo · MMH Calendar · Tìm nhanh · nhóm `#tb-tools`: Thông báo cập nhật, Việc đã giao,
+  Màu giao diện `#th-btn`, VN/EN `#lang-switch` · chip người dùng). Menu người dùng `UM` (`#um-pop`) chỉ còn tài khoản, Phân quyền người dùng,
+  Đăng xuất (người dùng yêu cầu đưa các nút ra ngoài, trừ Phân quyền). Nút mới cho thanh trên cùng: thêm vào `#tb-tools`, giữ gọn. Nút "Đồng bộ Sales tasks" đã bỏ (backend tự đồng bộ 10 phút/lần; `#vs-btn` cất trong `#um-hidden`).
   Phần tử nằm ngoài màn hình khi đóng (ngăn kéo, bảng tin) chỉ đổ bóng khi mở (`.show` / không `.collapsed`).
 - Thứ tự popup khi đăng nhập: Thông báo cập nhật (`UPD`) → Nhắc hạn chứng từ (`DL`) → Việc mới được giao (`ASG`) → Thư nhắc việc (`NT`);
   popup mới phải xếp hàng tương tự (cờ `pending` + bọc `NT.open`).
