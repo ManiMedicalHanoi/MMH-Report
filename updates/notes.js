@@ -8,6 +8,17 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-07-v16.9", version:"v16.9", date:"2026-10-07",
+    title:"Total KPI công ty, KPI dễ đọc hơn, lịch riêng tư hơn",
+    summary:"Quản lý có màn <b>Total KPI</b> theo mục tiêu chiến lược FY68. Tab KPI ghi rõ đang xem của ai, màu theo đúng mã màu file KPI. Lịch chỉ hiện buổi đào tạo bạn tham gia và chuyến công tác của bạn.",
+    items:[
+      {type:"new", icon:"📊", title:"Total KPI công ty (Admin, Director, quản lý)", text:"Tab <b>KPI</b> ▸ <b>Total KPI công ty</b> → xem doanh số toàn công ty, điểm 4 góc nhìn (Tài chính · Khách hàng · Quy trình · Phát triển), từng mục tiêu chiến lược, KPI công ty (bấm ▸ xem chi tiết) và % của từng thành viên. Chọn Tháng / Lũy kế / Cả năm.", img:"updates/v16.9/total_kpi.jpg"},
+      {type:"imp", icon:"👤", title:"Biết rõ đang xem KPI của ai", text:"Hàng nút <b>Đang xem KPI của</b> tô đậm người đang chọn; biểu đồ so sánh làm nổi người đó (◀ đang xem), người khác mờ đi. Màu % theo mã màu file KPI: &lt; 90% · 90–100% · 100–120% · &gt; 120%.", img:"updates/v16.9/kpi_nguoi.jpg"},
+      {type:"fix", icon:"💵", title:"Doanh số tháng chưa chốt", text:"Ô Actual doanh số trống nay ghi <b>Chưa chốt</b> (kế toán chưa chốt tháng trên MMH Turnover Report), kèm tháng đã chốt gần nhất và trạng thái các nguồn dữ liệu ở cuối bảng."},
+      {type:"imp", icon:"🔒", title:"Lịch: chỉ thấy việc liên quan đến bạn", text:"Buổi đào tạo chỉ hiện với trainer và người được mời. Chuyến công tác của người khác luôn ẩn; Manager / Director / Admin bấm nút <b>Công tác người khác</b> trên lịch để bật xem."}
+    ]
+  },
+  {
     id:"2026-10-07-v16.8", version:"v16.8", date:"2026-10-07",
     title:"Nhắc tự đánh giá quý đúng ngày 09, trước 17:00",
     summary:"Popup nhắc hoàn thành form tự đánh giá quý trước chỉ hiện đúng ngày 09 của tháng đầu quý, trước 17:00.",

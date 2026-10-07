@@ -106,3 +106,12 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   như cũ. Sửa lỗi Chrome đăng nhập Gmail khác / nhiều tài khoản ⇒ không gửi được mã đăng nhập. Test: mock trả 404 cho `resourceType()==='script'`.
 - **Nhắc hạn KPI (`#kpn`, khối KPI)**: ngày 02 hằng tháng — báo cáo KPI tháng trước (16:00); **ngày 09 tháng đầu quý (09/12/03/06), trước 17:00** —
   tự đánh giá quý trước (v16.8, trước đây ngày 01–08). CRM dùng cùng luật (+ popup hạn chứng từ `DL` chép từ đây). Cảnh chụp: `cap.js v168kpn`.
+- **KPI (v16.9, dùng chung CRM)**: màu % theo mã màu file KPI (sheet 6): `tone()` < 90% `low` (xám) · 90–<100% `mid` (xanh) · 100–120% `ok` (vàng) · > 120% `top` (xanh lá).
+  Hàng `.kp-who` chọn người + người đang xem nổi bật trên biểu đồ so sánh. Actual trống ⇒ `pendTag` ("Chưa chốt", tháng đã chốt lấy từ `sync[]` của rhKpi).
+  `window.kpiShort` / `window.KPI_GROUPS` = tên KPI tiếng Việt — giao diện KPI mới phải dùng, không hiện tên tiếng Anh dài.
+- **Total KPI (`KT`, v16.9)**: backend kpi `rhKpiTotal` (RH_KpiView v1.3: sheet 1 Objective & Strategy, 3 Detail KPI, 4 Rule, 6 Member Summarize), chỉ
+  Admin / Director / HOD (`rhKpi` trả `total:true`). Màn gọn 3 tab (Tổng quan · KPI công ty · Thành viên) + Cách tính KPI; tên mục tiêu VN ở `OBJ`, tên KPI thiếu ở `NM`.
+  Người dùng yêu cầu: gọn, không diễn giải dài. Ảnh phát hành phải dùng số giả (không đưa số KPI / ngân sách thật vào repo công khai).
+- **Quyền xem lịch (`VIS`, v16.9, dùng chung CRM)**: dữ liệu `rhSessions` lọc ngay khi về (bọc callback trong setter `<script>.src`) ⇒ buổi đào tạo chỉ trainer +
+  người được mời (`people`) thấy; MMH Calendar lọc ở `MC.ev` (getter), Lịch làm việc ở `c10Items`. Chuyến công tác người khác luôn ẩn, quản lý bật bằng
+  `VIS.chip()` (localStorage `mmh_trip_all`).
