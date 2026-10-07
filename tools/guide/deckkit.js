@@ -41,7 +41,7 @@ function fig(o) {
   }).join('');
   const inner = `<div class="shot" style="width:${W}px;height:${H}px"><img src="shots/${o.img}.jpg" style="width:${iw}px;height:${ih}px;left:${-crop[0] * iw}px;top:${-crop[1] * ih}px">${badges}</div>`;
   const fr = o.frame || 'browser';
-  if (fr === 'browser') return `<div class="fr-br" style="width:${W}px"><div class="fr-bar"><i></i><i></i><i></i><span>🔒 manimedicalhanoi.github.io/MMH-Report</span></div>${inner}</div>`;
+  if (fr === 'browser') return `<div class="fr-br" style="width:${W}px"><div class="fr-bar"><i></i><i></i><i></i><span>🔒 ${KIT.host || 'manimedicalhanoi.github.io/MMH-Report'}</span></div>${inner}</div>`;
   if (fr === 'phone') return `<div class="fr-ph">${inner}</div>`;
   if (fr === 'card') return `<div class="fr-card">${inner}</div>`;
   return inner;
@@ -59,7 +59,7 @@ function slide(o) {
   slides.push(`<section class="sl ${o.cls || ''}" style="--acc:${o.acc || '#4E7CAF'}">
   ${o.bare ? '' : `<header><div class="kick"><span class="sec">${o.sec || ''}</span>${o.kick ? `<span class="kk">${o.kick}</span>` : ''}</div><h2>${o.title}</h2>${o.sub ? `<p class="sub">${o.sub}</p>` : ''}<span class="pg">${page}</span></header>`}
   <div class="bd">${o.body}</div>
-  ${o.bare ? '' : `<footer><span><b>MANI</b> MMH Report Hub · ${KIT.ver}</span><span>Hướng dẫn cập nhật · ${KIT.when}</span></footer>`}
+  ${o.bare ? '' : `<footer><span><b>MANI</b> ${KIT.app || 'MMH Report Hub'} · ${KIT.ver}</span><span>${KIT.foot || 'Hướng dẫn cập nhật'} · ${KIT.when}</span></footer>`}
 </section>`);
 }
 const tip = (t, cls) => `<div class="tip ${cls || ''}">${t}</div>`;
