@@ -8,6 +8,16 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-08-v17.3", version:"v17.3", date:"2026-10-08",
+    title:"Khung ô nhập rõ ràng ở mọi hộp thoại",
+    summary:"Mọi ô cần điền (thêm Key task, Sub-task, báo cáo, công tác, đào tạo…) nay có viền rõ, nhìn là biết ô nào còn trống — tránh điền sót, điền nhầm.",
+    en:{ title:"Clear frames on every form field", items:[
+      {title:"Every field has a clear frame", text:"All input fields, drop-downs and text boxes now have a visible frame; the field you are typing in is highlighted, and quick-edit cells in the report tables always show a dashed frame."}]},
+    items:[
+      {type:"fix", icon:"🔲", title:"Ô nhập luôn có viền rõ", text:"Trước đây viền ô nhập rất nhạt, có ô chỉ hiện khung khi bấm vào ⇒ dễ bỏ sót. Nay mọi ô nhập / ô chọn / ô ghi chú đều có viền rõ, ô đang gõ được tô sáng; ô sửa nhanh trong bảng báo cáo luôn có viền nét đứt.", img:"updates/v17.3/fields.jpg"}
+    ]
+  },
+  {
     id:"2026-10-08-v17.2", version:"v17.2", date:"2026-10-08",
     title:"Phân quyền: thêm quyền sửa MMH Product Data",
     summary:"Kho dữ liệu sản phẩm <b>MMH Product Data</b> nay đăng nhập bằng cùng tài khoản email với Report Hub. Admin cấp quyền sửa / upload ngay trong trang Phân quyền.",
