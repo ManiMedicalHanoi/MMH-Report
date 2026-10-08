@@ -125,3 +125,5 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
 - **Email cập nhật v2 (v17.1)**: mỗi email chỉ 1 bản cập nhật (chọn radio); Report Hub `UPM_CFG.lang:"vi"` ⇒ email, HDSD và HD cập nhật bằng **tiếng Việt**
   (dùng title / summary / items tiếng Việt); đính kèm `guide` của mục + HDSD toàn hệ thống `UPM_CFG.pdf` (bỏ trùng). CRM dùng cùng module với `lang:"en"`.
   Bộ dựng HDSD CRM: `buildcrm_en.js` (toàn hệ thống, tiếng Anh) + `na_slides.js` / `build_na.js` (HD Mở mới VN / EN).
+- **MMH Product Data (v17.2)**: repo `ManiMedicalHanoi/Product-Data` (v2.0) đăng nhập bằng cùng phiên `mmh_tk`; quyền sửa / upload = khoá `pd` trong `PERM.FEAT`
+  (mặc định chỉ Admin, Training Hub v3.19 `RH_PERM_KEYS.pd`), xoá tài liệu chỉ Admin. Cảnh chụp: `cap.js v172pd`.
