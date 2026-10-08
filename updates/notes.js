@@ -8,6 +8,16 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-08-v17.2", version:"v17.2", date:"2026-10-08",
+    title:"Phân quyền: thêm quyền sửa MMH Product Data",
+    summary:"Kho dữ liệu sản phẩm <b>MMH Product Data</b> nay đăng nhập bằng cùng tài khoản email với Report Hub. Admin cấp quyền sửa / upload ngay trong trang Phân quyền.",
+    en:{ title:"Permissions: Product Data editing", items:[
+      {title:"Product Data permission (Admin)", text:"In User permissions, Admins can now allow a person to edit and upload in MMH Product Data. Everyone signed in can view; only Admins can delete documents."}]},
+    items:[
+      {type:"new", icon:"🔐", title:"Quyền Product Data (Admin)", text:"Menu tên → <b>Phân quyền người dùng</b> → chọn người → bật <b>Product Data: sửa / thêm / upload</b> → Lưu quyền. Người đó thấy nút Thêm, Sửa, Thêm tài liệu trong MMH Product Data; ai đăng nhập cũng xem được, xoá tài liệu chỉ Admin.", img:"updates/v17.2/quyen_product_data.jpg"}
+    ]
+  },
+  {
     id:"2026-10-08-v17.1", version:"v17.1", date:"2026-10-08",
     title:"Email cập nhật: mỗi email một bản cập nhật, viết tiếng Việt",
     summary:"Admin chọn đúng <b>một</b> bản cập nhật để gửi email; email Report Hub viết bằng tiếng Việt, đính kèm hướng dẫn của bản cập nhật đó và HDSD toàn hệ thống.",
