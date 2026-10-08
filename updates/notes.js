@@ -10,23 +10,23 @@ window.MMH_UPDATES = [
   {
     id:"2026-10-08-v17.1", version:"v17.1", date:"2026-10-08",
     title:"Email cập nhật: mỗi email một bản cập nhật, viết tiếng Việt",
-    summary:"Admin / Director chọn đúng <b>một</b> bản cập nhật để gửi email; email Report Hub viết bằng tiếng Việt, đính kèm hướng dẫn của bản cập nhật đó và HDSD toàn hệ thống.",
+    summary:"Admin chọn đúng <b>một</b> bản cập nhật để gửi email; email Report Hub viết bằng tiếng Việt, đính kèm hướng dẫn của bản cập nhật đó và HDSD toàn hệ thống.",
     en:{ title:"Update e-mails: one update per e-mail", items:[
-      {title:"One update per e-mail", text:"Admins and Directors choose one update to announce; the e-mail includes that update's guide and the complete user guide."}]},
+      {title:"One update per e-mail", text:"Admins choose one update to announce; the e-mail includes that update's guide and the complete user guide."}]},
     items:[
-      {type:"imp", icon:"✉️", title:"Gửi email theo từng bản cập nhật (Admin, Director)", text:"Thông báo cập nhật → <b>Gửi email cập nhật</b> → chọn <b>1 bản cập nhật</b> → xem trước email tiếng Việt có hình → <b>Gửi thử cho tôi</b> → <b>Gửi email</b>. Đính kèm: hướng dẫn riêng của bản đó (nếu có) + HDSD toàn hệ thống mới nhất.", img:"updates/v17.1/email_tung_ban.jpg"}
+      {type:"imp", icon:"✉️", title:"Gửi email theo từng bản cập nhật (Admin)", text:"Thông báo cập nhật → <b>Gửi email cập nhật</b> → chọn <b>1 bản cập nhật</b> → xem trước email tiếng Việt có hình → <b>Gửi thử cho tôi</b> → <b>Gửi email</b>. Đính kèm: hướng dẫn riêng của bản đó (nếu có) + HDSD toàn hệ thống mới nhất.", img:"updates/v17.1/email_tung_ban.jpg"}
     ]
   },
   {
     id:"2026-10-07-v17.0", version:"v17.0", date:"2026-10-07",
     title:"Gửi email thông báo cập nhật cho toàn bộ nhân sự",
-    summary:"Admin / Director gửi email (tiếng Anh) báo các cập nhật mới của Report Hub cho mọi người dùng, kèm hình và file HDSD đầy đủ.",
+    summary:"Admin gửi email báo các cập nhật mới của Report Hub cho mọi người dùng, kèm hình và file HDSD đầy đủ.",
     guide:"docs/HDSD_Report_Hub_v17.0.pdf",
     en:{ title:"Update emails and full user guide", items:[
-      {title:"Update emails (Admin, Director)", text:"Update announcements like this one are now sent directly from Report Hub to all users, with screenshots and the user guide attached."},
+      {title:"Update emails (Admin)", text:"Update announcements like this one are now sent directly from Report Hub to all users, with screenshots and the user guide attached."},
       {title:"Full user guide", text:"The attached PDF covers the whole system, including the latest changes: mobile sign-in, KPI, company Total KPI, private calendar and reminders. It is also available from the update notice in the app."}]},
     items:[
-      {type:"new", icon:"✉️", title:"Gửi email thông báo cập nhật (Admin, Director)", text:"Bấm badge phiên bản (Thông báo cập nhật) → <b>Gửi email cập nhật</b> → tick các phiên bản cần báo, xem trước email tiếng Anh có hình → <b>Gửi thử cho tôi</b> → <b>Gửi email</b>. Email tự động, kèm file HDSD PDF, người nhận không cần trả lời.", img:"updates/v17.0/email.jpg"},
+      {type:"new", icon:"✉️", title:"Gửi email thông báo cập nhật (Admin)", text:"Bấm badge phiên bản (Thông báo cập nhật) → <b>Gửi email cập nhật</b> → tick các phiên bản cần báo, xem trước email tiếng Anh có hình → <b>Gửi thử cho tôi</b> → <b>Gửi email</b>. Email tự động, kèm file HDSD PDF, người nhận không cần trả lời.", img:"updates/v17.0/email.jpg"},
       {type:"imp", icon:"📘", title:"HDSD đầy đủ toàn hệ thống", text:"File <b>HDSD Report Hub v17.0</b> gộp mọi hướng dẫn, thêm các trang mới nhất: đăng nhập điện thoại, KPI, Total KPI, lịch riêng tư, nhắc việc. Bấm <b>Hướng dẫn chi tiết (PDF)</b> trong thông báo này để mở."}
     ]
   },

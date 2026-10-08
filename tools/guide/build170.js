@@ -75,12 +75,12 @@ slide({ sec: 'NHẮC VIỆC', kick: 'v16.8', acc: '#B04F4B', title: 'Nhắc vi�
   ])}</div>
   <div class="col-f">${fig({ img: 'v168kpn', w: 460, frame: 'card' })}</div></div>` });
 
-slide({ sec: 'EMAIL CẬP NHẬT', kick: 'ADMIN · DIRECTOR', acc: '#3A5CAA', title: 'Gửi email thông báo cập nhật', sub: 'Badge phiên bản (Thông báo cập nhật) ▸ Gửi email cập nhật', body: `
+slide({ sec: 'EMAIL CẬP NHẬT', kick: 'CHỈ ADMIN', acc: '#3A5CAA', title: 'Gửi email thông báo cập nhật', sub: 'Badge phiên bản (Thông báo cập nhật) ▸ Gửi email cập nhật', body: `
   <div class="two w3"><div class="col-t">${steps([
     [1, 'Mở <b>Thông báo cập nhật</b> → <b>Gửi email cập nhật</b>.'],
-    [2, 'Tick các phiên bản muốn báo, sửa lời mở đầu nếu cần — xem trước ngay bên phải (tiếng Anh, có hình, kèm file HDSD PDF).'],
-    [3, '<b>Gửi thử cho tôi</b> để kiểm tra → <b>Gửi email</b> tới toàn bộ nhân sự dùng Report Hub.'],
-  ])}${tip('Tiêu đề “Report Hub Update – ngày”. Email tự động, người nhận không cần trả lời.')}</div>
-  <div class="col-f">${br('r_upm', 700)}</div></div>` });
+    [2, 'Chọn <b>1 bản cập nhật</b> (mỗi email 1 bản), sửa lời mở đầu nếu cần — xem trước ngay bên phải: email tiếng Việt, <b>ảnh minh hoạ nằm ngay trong thư</b>.'],
+    [3, '<b>Gửi thử cho tôi</b> để kiểm tra → <b>Gửi email</b> tới toàn bộ nhân sự dùng Report Hub. Đính kèm sẵn: HD của bản cập nhật + HDSD toàn hệ thống (lấy từ app, không cần tải lên Drive).'],
+  ])}${tip('Tiêu đề “MMH Report Hub Update – tên bản cập nhật – ngày”. Email tự động, người nhận không cần trả lời.')}</div>
+  <div class="col-f">${br('r_upm2', 700)}</div></div>` });
 
 writeDeck('HDSD Report Hub v17.0');
