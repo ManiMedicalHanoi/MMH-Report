@@ -122,3 +122,6 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   luôn kèm `en`. Gửi qua Training Hub `rhUpdMail` (`RH_UpdMail.gs`; người nhận: mọi `RH_Users` đang hoạt động). Cấu hình `window.UPM_CFG`
   (pdf = HDSD đầy đủ `docs/HDSD_Report_Hub_vX.Y.pdf`). HDSD đầy đủ = deck mới nhất (`build170.js`) ghép với các HDSD cũ bằng pypdf.
   Khung xem trước là iframe sandbox ⇒ test ảnh qua HTTP (`python3 -m http.server`), `file://` không hiện ảnh.
+- **Email cập nhật v2 (v17.1)**: mỗi email chỉ 1 bản cập nhật (chọn radio); Report Hub `UPM_CFG.lang:"vi"` ⇒ email, HDSD và HD cập nhật bằng **tiếng Việt**
+  (dùng title / summary / items tiếng Việt); đính kèm `guide` của mục + HDSD toàn hệ thống `UPM_CFG.pdf` (bỏ trùng). CRM dùng cùng module với `lang:"en"`.
+  Bộ dựng HDSD CRM: `buildcrm_en.js` (toàn hệ thống, tiếng Anh) + `na_slides.js` / `build_na.js` (HD Mở mới VN / EN).

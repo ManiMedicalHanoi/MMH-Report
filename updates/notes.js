@@ -8,6 +8,16 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-08-v17.1", version:"v17.1", date:"2026-10-08",
+    title:"Email cập nhật: mỗi email một bản cập nhật, viết tiếng Việt",
+    summary:"Admin / Director chọn đúng <b>một</b> bản cập nhật để gửi email; email Report Hub viết bằng tiếng Việt, đính kèm hướng dẫn của bản cập nhật đó và HDSD toàn hệ thống.",
+    en:{ title:"Update e-mails: one update per e-mail", items:[
+      {title:"One update per e-mail", text:"Admins and Directors choose one update to announce; the e-mail includes that update's guide and the complete user guide."}]},
+    items:[
+      {type:"imp", icon:"✉️", title:"Gửi email theo từng bản cập nhật (Admin, Director)", text:"Thông báo cập nhật → <b>Gửi email cập nhật</b> → chọn <b>1 bản cập nhật</b> → xem trước email tiếng Việt có hình → <b>Gửi thử cho tôi</b> → <b>Gửi email</b>. Đính kèm: hướng dẫn riêng của bản đó (nếu có) + HDSD toàn hệ thống mới nhất.", img:"updates/v17.1/email_tung_ban.jpg"}
+    ]
+  },
+  {
     id:"2026-10-07-v17.0", version:"v17.0", date:"2026-10-07",
     title:"Gửi email thông báo cập nhật cho toàn bộ nhân sự",
     summary:"Admin / Director gửi email (tiếng Anh) báo các cập nhật mới của Report Hub cho mọi người dùng, kèm hình và file HDSD đầy đủ.",
