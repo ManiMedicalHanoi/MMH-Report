@@ -18394,7 +18394,7 @@ window.UPM_CFG={ lang:"vi", app:"report", name:"MMH Report Hub", url:"https://ma
    · Gửi qua Training Hub (rhUpdMail v3.16, pdfs[]: tối đa 22 MB, file thừa để link). Cấu hình theo app: window.UPM_CFG. */
 (function(){
 "use strict";
-var U={ id:"", intro:"", subject:"", busy:false, rid:"" };
+var U={ id:"", intro:"", subject:"", busy:false, rid:"", sign:"" };
 function $(id){ return document.getElementById(id); }
 function E(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function cfg(){ return window.UPM_CFG||{}; }
@@ -18447,16 +18447,26 @@ function emailHtml(forPreview){
       +fs.map(function(f){ return '<p style="margin:0 0 4px 24px">• '+E(f.what)+': <a href="'+E(f.url)+'">'+E(f.name)+'</a></p>'; }).join("")
       +'<p style="margin:6px 0 10px 24px;color:#444;font-size:10pt">'+L("The files are attached to this email; you can also open them with the links above.","Các file được đính kèm trong email này; anh/chị cũng có thể mở bằng đường dẫn ở trên.")+'</p>';
   }
-  h+=P+L("If you have any questions, please contact the Product Team.","Nếu có thắc mắc, anh/chị vui lòng liên hệ Product Team.")+'</p>'
-    +'<p style="margin:16px 0 16px">'+L("Best regards,","Trân trọng,")+'<br>MMH Product Team<br>MANI Medical Hanoi</p>'
+  /* chữ ký: máy chủ thay <!--SIGN--> bằng chữ ký của Admin gửi (lưu ở kho riêng tư — không đưa SĐT / email nhân sự vào repo công khai) */
+  h+=P+L("If you have any questions, please feel free to contact me.","Nếu có thắc mắc, anh/chị vui lòng liên hệ trực tiếp với tôi.")+'</p>'
+    +'<p style="margin:16px 0 10px">'+L("Best regards,","Trân trọng,")+'</p>'+(forPreview?(U.sign||'<p style="color:#8A97A6">[Chữ ký của bạn — đang tải…]</p>'):'<!--SIGN-->')
+    +'<div style="height:14px"></div>'
     +'<p style="margin:0;color:#666;font-size:9pt"><i>'+L("Note: This is an automated email sent from "+E(c.name)+". Please do not reply to this email.","Lưu ý: Đây là email tự động gửi từ "+E(c.name)+". Vui lòng không trả lời email này.")+'</i></p></div>';
   return { html:h, images:imgs, files:fs };
 }
 function recipients(){ var c=cfg(); return typeof c.recipients==="function"?c.recipients():{audience:"all", label:"Toàn bộ người dùng"}; }
 function defSubject(v){ var c=cfg(), t=txt(v); return c.name+" Update – "+(t.title?t.title+" – ":"")+(v?dmy(v.date):today()); }
 function defIntro(){ var c=cfg();
-  return L("We are pleased to inform you that "+c.name+" has been updated as described below. Please take a moment to review the changes; the user guides are attached for your reference.",
-           c.name+" vừa được cập nhật với nội dung dưới đây. Anh/chị vui lòng dành ít phút xem các thay đổi; hướng dẫn chi tiết được đính kèm trong email."); }
+  return L("I am pleased to inform you that "+c.name+" has been updated as described below. Please take a moment to review the changes; the user guides are attached for your reference.",
+           "Tôi xin thông báo "+c.name+" vừa được cập nhật với nội dung dưới đây. Anh/chị vui lòng dành ít phút xem các thay đổi; hướng dẫn chi tiết được đính kèm trong email."); }
+function loadSign(){
+  if(U.sign) return;
+  var fd=new URLSearchParams(); fd.set("action","rhUpdSign"); fd.set("payload", JSON.stringify({ tk:AUTH.tk() }));
+  fetch(window.TRAINING_HUB_API, { method:"POST", body:fd }).then(function(x){ return x.text(); }).then(function(t){
+    var j=JSON.parse(t); if(j && j.ok && j.html){ U.sign=j.html; preview(); }
+    else { U.sign='<p style="color:#8A97A6">[Chữ ký tự thêm khi gửi]</p>'; preview(); }
+  }).catch(function(){ U.sign='<p style="color:#8A97A6">[Chữ ký tự thêm khi gửi]</p>'; preview(); });
+}
 
 /* ── giao diện (Admin — tiếng Việt) ── */
 function shell(){
@@ -18519,7 +18529,7 @@ var UPM=window.UPM={
     U.id=id||(showing&&showing.id)||(ns[0]&&ns[0].id)||"";
     U.subject=defSubject(cur()); U.intro=defIntro();
     U.rid="u"+Date.now().toString(36);
-    shell().classList.add("show"); left(); preview(); msg("");
+    shell().classList.add("show"); left(); preview(); msg(""); loadSign();
   },
   close:function(){ var o=$("upm"); if(o) o.classList.remove("show"); },
   html:function(){ return emailHtml(true).html; },
