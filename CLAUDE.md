@@ -127,3 +127,5 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   Bộ dựng HDSD CRM: `buildcrm_en.js` (toàn hệ thống, tiếng Anh) + `na_slides.js` / `build_na.js` (HD Mở mới VN / EN).
 - **MMH Product Data (v17.2)**: repo `ManiMedicalHanoi/Product-Data` (v2.0) đăng nhập bằng cùng phiên `mmh_tk`; quyền sửa / upload = khoá `pd` trong `PERM.FEAT`
   (mặc định chỉ Admin, Training Hub v3.19 `RH_PERM_KEYS.pd`), xoá tài liệu chỉ Admin. Cảnh chụp: `cap.js v172pd`.
+- **Ô nhập luôn có viền rõ (v17.3, `<style id="v173-fld">`, cũng ở CRM v30.7)**: mọi input / select / textarea dùng `--fld-line` (#C3CDD8), đang nhập = viền `--t-pri`
+  + vòng sáng; ô sửa nhanh `.rc-editable` luôn viền nét đứt. Người dùng phản hồi: viền quá nhạt / chỉ hiện khi bấm ⇒ điền sót. Giao diện mới không làm ô nhập không viền.
