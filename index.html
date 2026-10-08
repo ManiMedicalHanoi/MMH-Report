@@ -12456,7 +12456,7 @@ function trnGmail(){
   b.disabled=true; b.textContent="Đang tạo thư mục…";
   trnCall("rhEnsureFolder", trnMailParams(), 90000).then(function(r){
     b.disabled=false; b.textContent="Soạn bằng Gmail ↗";
-    var cc=trnEmailsOf(TRN.m.cc).map(function(x){ return x+"@mani.inc"; });
+    var cc=trnEmailsOf(TRN.m.cc).map(function(x){ return x+"@manimedicalhanoi.com"; });
     var url="https://mail.google.com/mail/?view=cm&fs=1&to="+encodeURIComponent((r.recipients||[]).join(","))
       +(cc.length?"&cc="+encodeURIComponent(cc.join(",")):"")+"&su="+encodeURIComponent(r.subject||"")+"&body="+encodeURIComponent(r.text||"");
     if(w) w.location.href=url; else window.open(url,"_blank","noopener");
@@ -15889,10 +15889,10 @@ function form(host, opt){
       +'<div class="au-s">'+(opt.gate?"Nhập email của bạn, hệ thống gửi mã 6 số để xác nhận đúng là bạn."
         :"Từ sau ngày "+AUTH.GRACE+", Report Hub chỉ đăng nhập bằng email công ty. Xác thực một lần, máy này được ghi nhớ 30 ngày.")+'</div>'
       +'<label class="au-l" for="au-email">Email công ty</label>'
-      +'<input class="au-in" id="au-email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="ten@mani.inc" value="'+escH(st.email)+'">'
+      +'<input class="au-in" id="au-email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="ten@manimedicalhanoi.com" value="'+escH(st.email)+'">'
       +'<button type="button" class="au-btn" data-l="Gửi mã đăng nhập">Gửi mã đăng nhập</button>'
       +'<div class="au-err"></div>'
-      +'<div class="au-note">Dùng email @mani.inc hoặc @manimedicalhanoi.com.</div>'
+      +'<div class="au-note">Dùng email @manimedicalhanoi.com hoặc @mani.inc.</div>'
       +legacy()+'</div>';
     var i=$q("#au-email");
     i.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); send(); } });
@@ -15933,8 +15933,8 @@ function form(host, opt){
     if(st.busy) return;
     var i=$q("#au-email");
     if(i){ st.email=String(i.value||"").trim().toLowerCase().replace(/\s+/g,""); }
-    if(st.email && st.email.indexOf("@")<0) st.email+="@mani.inc";
-    if(!/^[a-z0-9._%+\-]+@(mani\.inc|manimedicalhanoi\.com)$/.test(st.email)){ err("Vui lòng nhập email công ty: …@mani.inc hoặc …@manimedicalhanoi.com"); return; }
+    if(st.email && st.email.indexOf("@")<0) st.email+="@manimedicalhanoi.com";
+    if(!/^[a-z0-9._%+\-]+@(mani\.inc|manimedicalhanoi\.com)$/.test(st.email)){ err("Vui lòng nhập email công ty: …@manimedicalhanoi.com hoặc …@mani.inc"); return; }
     lsS(LS_MAIL, st.email);
     if(st.step==="email") busy(true,"Đang gửi mã…");
     else { var r=$q('[data-act="resend"]'); if(r){ r.disabled=true; r.textContent="Đang gửi…"; } }
@@ -16626,7 +16626,7 @@ function panel(){
   var ro=A.sel && !editable(A.sel);
   P.innerHTML='<div class="ph"><span class="av" style="background:'+avColor(d.pic||"?")+'">'+esc(initials(d.pic||"?"))+'</span><span><b>'+esc(d.pic||"Người dùng mới")+'</b><small>'+esc(d.email||"Nhập email công ty")+'</small></span></div>'
     +'<div class="pb"><div class="fg">'
-      +'<div class="w2"><label>Email công ty</label><input id="af-email" type="email" value="'+esc(d.email)+'" placeholder="ten@mani.inc"'+(ro?" disabled":"")+'></div>'
+      +'<div class="w2"><label>Email công ty</label><input id="af-email" type="email" value="'+esc(d.email)+'" placeholder="ten@manimedicalhanoi.com"'+(ro?" disabled":"")+'></div>'
       +'<div><label>Tên PIC</label><input id="af-pic" value="'+esc(d.pic)+'" placeholder="Đúng tên trong Report Hub"'+(ro?" disabled":"")+'></div>'
       +'<div><label>Chức danh</label><input id="af-title" value="'+esc(d.title)+'"'+(ro?" disabled":"")+'></div>'
       +'<div><label>Phòng ban</label><select id="af-dept"'+(ro?" disabled":"")+'>'+DEPTS.concat(DEPTS.indexOf(d.dept)<0&&d.dept?[d.dept]:[]).map(function(x){ return '<option'+(x===d.dept?" selected":"")+'>'+esc(x)+'</option>'; }).join("")+'</select></div>'
@@ -17689,8 +17689,8 @@ function krOpen(pic, month){
     var wa=monthsWithAct(); KS.month=month||(KS.month&&KS.pic===pic?KS.month:"")||ymPrev(ymNow()); if(months().indexOf(KS.month)<0) KS.month=wa[wa.length-1]||months()[0];
     $("kr-st").textContent="Đang lấy người nhận theo sơ đồ tổ chức…";
     post("rhKpiMail",{ pic:KS.pic, month:KS.month }).then(function(r){
-      KS.data=r.data||{}; var sp=function(x){ return String(x||"").split(/[,;\s]+/).map(function(e){ return e.trim().toLowerCase(); }).filter(Boolean); };
-      KS.to=sp(KS.data.to); KS.cc=sp(KS.data.cc); var mm=myEmail().toLowerCase();
+      KS.data=r.data||{}; var sp=function(x){ return String(x||"").split(/[,;\s]+/).map(function(e){ return e.trim().toLowerCase().replace(/@mani\.inc$/,"@manimedicalhanoi.com"); }).filter(Boolean); };   /* 08/10/2026: email gửi đi luôn dùng @manimedicalhanoi.com */
+      KS.to=sp(KS.data.to); KS.cc=sp(KS.data.cc); var mm=myEmail().toLowerCase().replace(/@mani\.inc$/,"@manimedicalhanoi.com");
       if(mm && KS.to.indexOf(mm)<0 && KS.cc.indexOf(mm)<0) KS.cc.push(mm);
       krForm();
       if(KS.data.miss && KS.data.miss.length) $("kr-msg").textContent="⚠️ Chưa có email của: "+KS.data.miss.join(", ")+" (sheet KPI EMAIL DIRECTORY).";
