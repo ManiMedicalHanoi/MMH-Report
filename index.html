@@ -18624,6 +18624,7 @@ window.TFA_CFG={
 "use strict";
 var C=window.TFA_CFG||{}, T={ items:[], sel:{}, busy:false, count:0, at:0 };
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function L(vi,en){ try{ return (C.lang && C.lang()==="en") ? en : vi; }catch(_){ return vi; } }
 function me(){ try{ return window.AUTH && AUTH.user && AUTH.user(); }catch(_){ return null; } }
 function tk(){ try{ return (window.AUTH && AUTH.tk && AUTH.tk()) || ""; }catch(_){ return ""; } }
 function isDir(u){ return !!u && (u.level==="director" || u.local==="nt.ha"); }
@@ -18635,53 +18636,53 @@ function lsS(k,v){ try{ localStorage.setItem(k,v); }catch(_){} }
 function call(params, ms){
   return new Promise(function(res, rej){
     var cb="__tfa"+Date.now().toString(36)+Math.random().toString(36).slice(2,7), s=document.createElement("script"), done=false;
-    var to=setTimeout(function(){ fin(); rej(new Error("Hết thời gian chờ máy chủ")); }, ms||60000);
+    var to=setTimeout(function(){ fin(); rej(new Error(L("Hết thời gian chờ máy chủ","Server timed out"))); }, ms||60000);
     function fin(){ done=true; clearTimeout(to); try{ delete window[cb]; }catch(_){ window[cb]=undefined; } if(s.parentNode) s.parentNode.removeChild(s); }
     window[cb]=function(j){ if(done) return; fin(); res(j); };
     var q=Object.assign({ tk:tk(), _ts:Date.now(), callback:cb }, params), u=C.url()+"?"+Object.keys(q).map(function(k){ return encodeURIComponent(k)+"="+encodeURIComponent(q[k]); }).join("&");
-    s.onerror=function(){ if(done) return; fin(); rej(new Error("Không kết nối được máy chủ")); };
+    s.onerror=function(){ if(done) return; fin(); rej(new Error(L("Không kết nối được máy chủ","Cannot reach the server"))); };
     s.src=u; document.body.appendChild(s);
   });
 }
 function badge(){
   var b=document.getElementById("tfa-btn"); if(!b) return;
   var n=b.querySelector(".tfa-n"); n.textContent=T.count>99?"99+":String(T.count); n.hidden=!T.count;
-  b.title="Duyệt đề xuất công tác"+(T.count?" — "+T.count+" đề xuất đang chờ":"");
+  b.title=L("Duyệt đề xuất công tác","Approve business trips")+(T.count?" — "+T.count+L(" đề xuất đang chờ"," waiting"):"");
 }
 function load(){
   return call({ action:"tfPending" }, 70000).then(function(j){
-    if(!j || j.ok===false) throw new Error((j&&j.error)||"Không đọc được danh sách chờ duyệt");
+    if(!j || j.ok===false) throw new Error((j&&j.error)||L("Không đọc được danh sách chờ duyệt","Could not load pending proposals"));
     T.items=j.items||[]; T.dir=!!j.director; T.file=j.file||""; T.count=T.items.length; T.at=Date.now();
     Object.keys(T.sel).forEach(function(k){ if(!T.items.some(function(x){ return String(x.row)===k; })) delete T.sel[k]; });
     badge(); return T;
   });
 }
 function card(x){
-  var on=!!T.sel[x.row], ap=/sent/i.test(x.status)?"Đã gửi email xin duyệt":"Chưa duyệt";
+  var on=!!T.sel[x.row], ap=/sent/i.test(x.status)?L("Đã gửi email xin duyệt","Request emailed"):L("Chưa duyệt","Not yet");
   return '<div class="tfa-it'+(on?" on":"")+'" data-r="'+x.row+'">'
     +'<input type="checkbox" data-ck="'+x.row+'"'+(on?" checked":"")+(T.dir?"":" disabled")+'>'
-    +'<div class="tfa-t">'+esc(x.pic)+' · '+esc(x.dest||"—")+'<small>'+dmy(x.start)+' → '+dmy(x.finish)+' · '+x.days+' ngày · dòng '+x.row+'</small> <span class="tfa-st">'+ap+'</span></div>'
+    +'<div class="tfa-t">'+esc(x.pic)+' · '+esc(x.dest||"—")+'<small>'+dmy(x.start)+' → '+dmy(x.finish)+' · '+x.days+L(' ngày · dòng ',' days · row ')+x.row+'</small> <span class="tfa-st">'+ap+'</span></div>'
     +'<div class="tfa-g">'
-      +'<div><span>Mục đích</span><b>'+esc(x.purpose||"—")+'</b></div>'
-      +(x.expect?'<div><span>Kết quả mong đợi</span><b>'+esc(x.expect)+'</b></div>':"")
-      +'<div><span>Lịch trình</span><b>'+esc(x.schedule||"—")+'</b></div>'
-      +'<div><span>Chi phí dự kiến</span><b>'+esc(x.estCost||"—")+(x.total?"\nTổng: "+money(x.total):"")+'</b></div>'
-      +'<div><span>Đi cùng · Thiết bị</span><b>'+esc(x.co||"No")+' · '+esc(x.equip||"N/A")+'</b></div>'
+      +'<div><span>'+L('Mục đích','Purpose')+'</span><b>'+esc(x.purpose||"—")+'</b></div>'
+      +(x.expect?'<div><span>'+L('Kết quả mong đợi','Expected result')+'</span><b>'+esc(x.expect)+'</b></div>':"")
+      +'<div><span>'+L('Lịch trình','Schedule')+'</span><b>'+esc(x.schedule||"—")+'</b></div>'
+      +'<div><span>'+L('Chi phí dự kiến','Estimated cost')+'</span><b>'+esc(x.estCost||"—")+(x.total?"\n"+L("Tổng: ","Total: ")+money(x.total):"")+'</b></div>'
+      +'<div><span>'+L('Đi cùng · Thiết bị','Co-traveler · Equipment')+'</span><b>'+esc(x.co||"No")+' · '+esc(x.equip||"N/A")+'</b></div>'
     +'</div>'
-    +(T.dir?'<div class="tfa-c"><input data-cm="'+x.row+'" placeholder="Ghi chú / lý do (bắt buộc nếu từ chối)" value="'+esc((T.cm||{})[x.row]||"")+'"></div>':"")
+    +(T.dir?'<div class="tfa-c"><input data-cm="'+x.row+'" placeholder="'+esc(L("Ghi chú / lý do (bắt buộc nếu từ chối)","Note / reason (required to reject)"))+'" value="'+esc((T.cm||{})[x.row]||"")+'"></div>':"")
     +'</div>';
 }
 function paint(msg){
   var ov=document.getElementById("tfa-ov"); if(!ov) return;
   var list=ov.querySelector(".tfa-list"), n=Object.keys(T.sel).length;
   if(msg!=null) list.innerHTML='<div class="tfa-msg">'+msg+'</div>';
-  else if(!T.items.length) list.innerHTML='<div class="tfa-msg">Không còn đề xuất công tác nào chờ duyệt.</div>';
+  else if(!T.items.length) list.innerHTML='<div class="tfa-msg">'+L('Không còn đề xuất công tác nào chờ duyệt.','No business trip proposals are waiting.')+'</div>';
   else list.innerHTML=T.items.map(card).join("");
-  ov.querySelector(".tfa-cnt").textContent=T.items.length?(T.items.length+" đề xuất chờ duyệt"+(n?" · đã chọn "+n:"")):"";
+  ov.querySelector(".tfa-cnt").textContent=T.items.length?(T.items.length+L(" đề xuất chờ duyệt"," waiting")+(n?L(" · đã chọn "," · selected ")+n:"")):"";
   var all=ov.querySelector("#tfa-all"); all.checked=T.items.length>0 && n===T.items.length; all.disabled=!T.dir||!T.items.length;
   ov.querySelectorAll(".tfa-act").forEach(function(b){ b.disabled=!T.dir||!n||T.busy; });
-  ov.querySelector(".tfa-ok").textContent="Duyệt"+(n?" ("+n+")":"");
-  ov.querySelector(".tfa-no").textContent="Từ chối"+(n?" ("+n+")":"");
+  ov.querySelector(".tfa-ok").textContent=L("Duyệt","Approve")+(n?" ("+n+")":"");
+  ov.querySelector(".tfa-no").textContent=L("Từ chối","Reject")+(n?" ("+n+")":"");
   list.querySelectorAll("[data-ck]").forEach(function(c){ c.onchange=function(){ var r=c.getAttribute("data-ck"); if(c.checked) T.sel[r]=1; else delete T.sel[r]; paint(); }; });
   list.querySelectorAll("[data-cm]").forEach(function(i){ i.oninput=function(){ (T.cm=T.cm||{})[i.getAttribute("data-cm")]=i.value; }; i.onclick=function(e){ e.stopPropagation(); }; });
   list.querySelectorAll(".tfa-it").forEach(function(d){ d.onclick=function(e){ if(!T.dir||e.target.closest("input")) return; var c=d.querySelector("[data-ck]"); c.checked=!c.checked; c.onchange(); }; });
@@ -18691,12 +18692,12 @@ function open(){
   if(!can()) return;
   close();
   var ov=document.createElement("div"); ov.id="tfa-ov";
-  ov.innerHTML='<div class="tfa-box" role="dialog" aria-label="Duyệt đề xuất công tác">'
-    +'<div class="tfa-hd"><h3>Duyệt đề xuất công tác</h3><button class="x" title="Đóng">×</button></div>'
-    +(isDir(me())?"":'<div class="tfa-note">Chỉ Giám đốc được duyệt — bạn đang xem ở chế độ chỉ đọc.</div>')
-    +'<div class="tfa-bar"><label><input type="checkbox" id="tfa-all"> Chọn tất cả</label><span class="tfa-cnt"></span><span style="flex:1"></span><a class="tfa-file" target="_blank" rel="noopener" style="color:var(--t-pri,#3A5CAA);font-weight:600;text-decoration:none">Mở file Business Trip ↗</a></div>'
+  ov.innerHTML='<div class="tfa-box" role="dialog" aria-label="'+L("Duyệt đề xuất công tác","Approve business trips")+'">'
+    +'<div class="tfa-hd"><h3>'+L("Duyệt đề xuất công tác","Approve business trips")+'</h3><button class="x" title="Đóng">×</button></div>'
+    +(isDir(me())?"":'<div class="tfa-note">'+L('Chỉ Giám đốc được duyệt — bạn đang xem ở chế độ chỉ đọc.','Only the Director can approve — you are viewing read-only.')+'</div>')
+    +'<div class="tfa-bar"><label><input type="checkbox" id="tfa-all"> '+L('Chọn tất cả','Select all')+'</label><span class="tfa-cnt"></span><span style="flex:1"></span><a class="tfa-file" target="_blank" rel="noopener" style="color:var(--t-pri,#3A5CAA);font-weight:600;text-decoration:none">'+L('Mở file Business Trip ↗','Open Business Trip file ↗')+'</a></div>'
     +'<div class="tfa-list"></div>'
-    +'<div class="tfa-ft"><span class="sp" style="font-size:12.5px;color:#6B7B8C">Mỗi đề xuất được gửi 1 email riêng tới đúng người đề xuất.</span>'
+    +'<div class="tfa-ft"><span class="sp" style="font-size:12.5px;color:#6B7B8C">'+L('Mỗi đề xuất được gửi 1 email riêng tới đúng người đề xuất.','Each proposer receives their own email.')+'</span>'
     +'<button class="tfa-btn rej tfa-act tfa-no">Từ chối</button><button class="tfa-btn pri tfa-act tfa-ok">Duyệt</button></div></div>';
   document.body.appendChild(ov);
   ov.addEventListener("click",function(e){ if(e.target===ov) close(); });
@@ -18706,7 +18707,7 @@ function open(){
   ov.querySelector(".tfa-ok").onclick=function(){ decide("approve"); };
   ov.querySelector(".tfa-no").onclick=function(){ decide("reject"); };
   T.dir=isDir(me());
-  if(T.items.length && Date.now()-T.at<120000) paint(); else paint("Đang tải danh sách chờ duyệt…");
+  if(T.items.length && Date.now()-T.at<120000) paint(); else paint(L("Đang tải danh sách chờ duyệt…","Loading pending proposals…"));
   load().then(function(){ paint(); }, function(e){ paint("⚠️ "+esc(e.message)); });
 }
 function toast(t, bad){
@@ -18719,27 +18720,27 @@ function decide(kind){
   var cm=T.cm||{}, items=T.items.filter(function(x){ return T.sel[x.row]; });
   if(kind==="reject"){
     var miss=items.filter(function(x){ return !String(cm[x.row]||"").trim(); });
-    if(miss.length){ toast("Từ chối cần ghi lý do cho: "+miss.map(function(x){ return x.pic; }).join(", "), true); var i=document.querySelector('[data-cm="'+miss[0].row+'"]'); if(i) i.focus(); return; }
+    if(miss.length){ toast(L("Từ chối cần ghi lý do cho: ","A reason is required to reject: ")+miss.map(function(x){ return x.pic; }).join(", "), true); var i=document.querySelector('[data-cm="'+miss[0].row+'"]'); if(i) i.focus(); return; }
   }
-  if(!confirm((kind==="approve"?"Duyệt ":"Từ chối ")+items.length+" đề xuất công tác?\nMỗi người đề xuất sẽ nhận 1 email riêng.")) return;
+  if(!confirm((kind==="approve"?L("Duyệt ","Approve "):L("Từ chối ","Reject "))+items.length+L(" đề xuất công tác?\nMỗi người đề xuất sẽ nhận 1 email riêng."," business trip proposal(s)?\nEach proposer will receive their own email."))) return;
   var body=items.map(function(x){ return { row:x.row, pic:x.pic, start:x.start, decision:kind, comment:String(cm[x.row]||"").trim() }; });
   T.busy=true;
   /* cập nhật giao diện trước: bỏ các mục vừa xử lý khỏi danh sách */
   var keep=T.items; T.items=T.items.filter(function(x){ return !T.sel[x.row]; }); T.sel={}; T.count=T.items.length; badge(); paint();
   call({ action:"tfDecide", items:JSON.stringify(body), rid:"tf"+Date.now().toString(36)+Math.random().toString(36).slice(2,8) }, 120000).then(function(j){
     T.busy=false;
-    if(!j || !j.results){ throw new Error((j&&j.error)||"Không duyệt được"); }
+    if(!j || !j.results){ throw new Error((j&&j.error)||L("Không duyệt được","Could not save the decision")); }
     var bad=j.results.filter(function(r){ return !r.ok; });
     if(bad.length){
       bad.forEach(function(r){ keep.forEach(function(x){ if(x.row===r.row && !T.items.some(function(y){ return y.row===x.row; })) T.items.push(x); }); });
       T.count=T.items.length; badge(); paint();
-      toast("Chưa xử lý được "+bad.length+" đề xuất:\n"+bad.map(function(r){ return r.pic+": "+(r.error||""); }).join("\n"), true);
-    } else toast((kind==="approve"?"✓ Đã duyệt ":"✓ Đã từ chối ")+j.results.length+" đề xuất — đã gửi email tới từng người.");
+      toast(L("Chưa xử lý được ","Not processed: ")+bad.length+" đề xuất:\n"+bad.map(function(r){ return r.pic+": "+(r.error||""); }).join("\n"), true);
+    } else toast((kind==="approve"?L("✓ Đã duyệt ","✓ Approved "):L("✓ Đã từ chối ","✓ Rejected "))+j.results.length+L(" đề xuất — đã gửi email tới từng người."," proposal(s) — each proposer has been emailed."));
     var nm=j.results.filter(function(r){ return r.ok && r.mailErr; }); if(nm.length) toast(nm.map(function(r){ return r.mailErr; }).join("\n"), true);
     load().then(function(){ paint(); }, function(){});
   }).catch(function(e){
     T.busy=false; T.items=keep; T.count=keep.length; badge(); paint();
-    toast("⚠️ "+e.message+" — chưa duyệt, vui lòng thử lại.", true);
+    toast("⚠️ "+e.message+L(" — chưa duyệt, vui lòng thử lại."," — nothing was saved, please try again."), true);
   });
 }
 /* hiện nút + tự nhắc (1 lần/ngày) khi còn đề xuất chờ duyệt */
