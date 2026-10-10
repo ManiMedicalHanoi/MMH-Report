@@ -158,6 +158,15 @@ S.v161qs=async b=>{ const p=await newPage(b,{noChecks:true,tk:'mmh.product',vp:{
   await ev(p,()=>{ var i=document.querySelector('#qs .qs-in'); i.value=''; i.dispatchEvent(new Event('input')); }); await p.keyboard.type('bang gia km'); await p.waitForTimeout(400);
   await shot(p,'v161task',{marks:[['#qs .qs-it.on',1,'tr']]}); };
 /* ★ v16.2 — phân quyền người dùng */
+S.v174tf=async b=>{ const p=await newPage(b,{pic:'Nguyen Ha',tk:'nt.ha',noChecks:true,vp:{width:1440,height:860}}); await p.waitForTimeout(1500);
+  await ev(p,()=>{ var o=JSON.parse(localStorage.getItem('mmh_tk')); o.user.level='director'; localStorage.setItem('mmh_tk',JSON.stringify(o)); NT.close&&NT.close(); });
+  await p.waitForSelector('#tfa-btn',{timeout:15000}); await p.waitForTimeout(2500); await ev(p,()=>{ var o=document.getElementById('tfa-ov'); if(o) o.remove(); });
+  await shot(p,'v174tf_btn',{clip:{x:700,y:0,width:740,height:64},marks:[['#tfa-btn',1,'tl']]});
+  await ev(p,()=>TFA.open()); await p.waitForSelector('.tfa-it'); await p.click('.tfa-it[data-r="605"] .tfa-t'); await p.click('.tfa-it[data-r="606"] .tfa-t');
+  await p.fill('[data-cm="606"]','Đồng ý, nhớ gửi báo cáo trong 3 ngày'); await p.waitForTimeout(300);
+  await shot(p,'v174tf_list',{clip:'#tfa-ov .tfa-box',marks:[['#tfa-ov .tfa-it[data-r="605"] input',1,'tl'],['[data-cm="606"]',2,'tl'],['#tfa-ov .tfa-ok',3,'tl']]});
+  p.on('dialog',d=>d.accept()); await p.click('#tfa-ov .tfa-ok'); await p.waitForTimeout(1200);
+  await shot(p,'v174tf_done',{clip:'#tfa-ov .tfa-box'}); console.log('LOG', JSON.stringify(M.LOG?M.LOG.slice(-1):'')); };
 S.v172pd=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',noChecks:true,vp:{width:1440,height:860}}); await p.waitForTimeout(4500); await ev(p,()=>{ NT.close&&NT.close(); if(window.UPD&&UPD.isOpen()) UPD.close(); });
   await ev(p,()=>{ ADM.open(); }); await p.waitForSelector('#adm tr.r'); await p.click('#adm tr.r[data-l="marketing.mmh1"]').catch(()=>p.click('#adm tr.r:nth-child(3)')); await p.waitForTimeout(200);
   await p.click('#adm .tg[data-k="pd"]'); await p.waitForTimeout(150);

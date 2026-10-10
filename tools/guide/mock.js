@@ -77,8 +77,10 @@ function mkWrite(body){
 const RIDS={}, WLOG=[], TRIPS=[];
 /* ★ v16.0 — giả lập đăng nhập email + mã 6 số (Training Hub v3.12). Mã đúng luôn là 123456. TKS ghi tham số tk của mọi lệnh gọi. */
 const AUTH_USERS=Object.fromEntries(Object.entries(ROSTER_NAMES).map(([k,v])=>[v,k])), AUTHL=[], TKS=[];
+AUTH_USERS['nt.ha']='Nguyen Ha';   /* Giám đốc (v17.4 duyệt công tác) */
 /* ★ v16.2 — danh sách RH_Users giả lập cho trang phân quyền (email giả, không phải email thật) */
 let _ADMU=null;
+let TFP=null;
 const ADMU=()=>_ADMU||(_ADMU=ROSTER.map((r,i)=>{ const local=ROSTER_NAMES[r.pic]||('mmh.'+r.pic.toLowerCase().replace(/\s+/g,''));
   return {local,email:local+'@mani.inc',pic:r.pic,level:r.level||'pic',admin:r.pic==='Giang',active:true,session:1,dept:'',title:'',perms:{},
     logins:i%5===4?0:3+i,lastLogin:i%5===4?'':new Date(Date.now()-(i%4)*86400000-3600000*(i%7)).toISOString(),lastEmail:''}; }));
@@ -134,7 +136,7 @@ async function install(page, o){
       else if(a==='rhAdminKick'){ AUTHL.push(['kick',body.local]); const x=ADMU().find(y=>y.local===body.local); if(x) x.session++; d={ok:true,message:'Đã đăng xuất '+(x&&x.pic)+' khỏi mọi máy.',users:ADMU()}; } }
     else if(a==='rhAuthMe'){ const l=String(body.tk||'').replace(/^mocktk\./,''); AUTHL.push(['me',l]);
       const au=ADMU().find(x=>x.local===l);
-      d=(o.revoked||!AUTH_USERS[l])?{ok:false,code:'AUTH',error:'Phiên đăng nhập đã bị đăng xuất từ xa.'}:{ok:true,user:{email:l+'@mani.inc',local:l,pic:AUTH_USERS[l],level:(au&&au.level)||'pic',admin:l==='mmh.product',perms:(o.perms)||(au&&au.perms)||{}}}; }
+      d=(o.revoked||!AUTH_USERS[l])?{ok:false,code:'AUTH',error:'Phiên đăng nhập đã bị đăng xuất từ xa.'}:{ok:true,user:{email:l+'@mani.inc',local:l,pic:AUTH_USERS[l],level:l==='nt.ha'?'director':((au&&au.level)||'pic'),admin:l==='mmh.product',perms:(o.perms)||(au&&au.perms)||{}}}; }
     else if(a==='rhMeta') d=META;
     else if(a==='rhSessions') d={ok:true,sessions:SESS.concat(o.extraSess||[])};
     else if(a==='rhMaterials') d=mats(body.sid||u.searchParams.get('sid'));
@@ -154,6 +156,12 @@ async function install(page, o){
     else if(a==='tripMaster') d={ok:true,to:'Nguyen Ha (Director)',cc:'Tuyen (HOD)',master:{destinations:['Ho Chi Minh','Da Nang','Nghe An','Can Tho','Hai Phong','Lao Cai','Dak Lak'],coTravelers:['Khang','Thuong','Tuyen','Viet Ha','Bui Trang'],equipment:['Laptop','Máy chiếu','Standee','Hàng mẫu']}};
     else if(a==='tripInfo') d=tripInfo(body.r||body.id);
     else if(a==='version'||a==='ping') d={ok:true};
+    else if(a==='tfPending'){ const l=String(body.tk||'').replace(/^mocktk\./,''); const dir=l==='nt.ha'; TFP=TFP||[
+        {row:605,no:'601',pic:'Thuong',start:'2026-10-18',finish:'2026-10-20',days:3,dest:'Ho Chi Minh',co:'Duc Anh',purpose:'Tổ chức sự kiện Dr. Hậu, Dr Dũng — HT nha Chu phục hình',expect:'40 bác sĩ tham dự',estCost:'Công tác phí: 1.140.000\nVé máy bay: 7.000.000\nKhách sạn: 3.000.000',total:11140000,schedule:'18/10: Di chuyển HN - HCM, set up sự kiện\n19/10: Tham gia sự kiện\n20/10: Di chuyển HCM - HN',equip:'Laptop',status:'Already sent propose email'},
+        {row:606,no:'602',pic:'Vinh',start:'2026-10-22',finish:'2026-10-23',days:2,dest:'Hue',co:'No',purpose:'Thăm khách hàng phòng khám nha khoa',expect:'2 đơn hàng mới',estCost:'Công tác phí: 760.000\nXe khách: 600.000',total:1360000,schedule:'22/10: Huế\n23/10: Huế - Đà Nẵng',equip:'Hàng mẫu',status:'Already sent propose email'},
+        {row:607,no:'603',pic:'Hau',start:'2026-10-27',finish:'2026-10-27',days:1,dest:'Hai Phong',co:'No',purpose:'Kiểm kê kho đại lý',expect:'Biên bản kiểm kê',estCost:'Công tác phí: 380.000',total:380000,schedule:'27/10: đi về trong ngày',equip:'Laptop',status:'Already sent propose email'}];
+      d=(l==='nt.ha'||l==='mmh.product')?{ok:true,director:dir,items:TFP,count:TFP.length}:{ok:true,director:false,items:[],count:0}; }
+    else if(a==='tfDecide'){ const its=JSON.parse(body.items||'[]'); LOG.push(['tf',its]); TFP=(TFP||[]).filter(x=>!its.some(y=>y.row===x.row)); d={ok:true,results:its.map(y=>({row:y.row,pic:y.pic,ok:true,status:y.decision==='reject'?'Rejected':'Approved',mailed:y.pic.toLowerCase()+'@mani.inc'}))}; }
     else if(a==='tripPropose'){ if(lag) await new Promise(r=>setTimeout(r,lag)); const t=JSON.parse(body.trip||'{}'); TRIPS.push(t); d={ok:true,message:'Đã ghi đề xuất & gửi email xin duyệt'}; }
     if(WR.test(a||'') && d && d.ok!==false){ if(body.rid) RIDS[body.rid]=d; WLOG.push(['ok',a,body.rid,body.no||body.keyNo||'',body.keyTask||body.name||'',u.pathname.split('/')[3]||'']); }
     if(fl==='drop'){ WLOG.push(['drop',a]); return route.fulfill({status:500,contentType:'text/html',body:'<html>Error</html>'}); }   /* đã ghi nhưng phản hồi hỏng */
