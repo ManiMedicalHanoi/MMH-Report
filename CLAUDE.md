@@ -129,3 +129,7 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   (mặc định chỉ Admin, Training Hub v3.19 `RH_PERM_KEYS.pd`), xoá tài liệu chỉ Admin. Cảnh chụp: `cap.js v172pd`.
 - **Ô nhập luôn có viền rõ (v17.3, `<style id="v173-fld">`, cũng ở CRM v30.7)**: mọi input / select / textarea dùng `--fld-line` (#C3CDD8), đang nhập = viền `--t-pri`
   + vòng sáng; ô sửa nhanh `.rc-editable` luôn viền nét đứt. Người dùng phản hồi: viền quá nhạt / chỉ hiện khi bấm ⇒ điền sót. Giao diện mới không làm ô nhập không viền.
+- **Duyệt công tác `TFA` (v17.4, dùng chung CRM)**: khối `tfa-css` + script cuối file, cấu hình `window.TFA_CFG` (`url` = backend Management, `mount` nút vào
+  `#tb-tools`, `busy` = popup khác đang mở). Backend `MMH_TripFlow.gs` (mmh-backend): `tfPending` / `tfDecide` (chỉ phiên email Director; Admin xem chỉ đọc) /
+  `tfLog` (nhật ký tab "Business Trip Log" riêng từng backend). Mỗi chuyến 1 email phê duyệt riêng tới người đề xuất, đúng mẫu Business Trip.
+  Email đề xuất mọi nơi: mẫu "Business Trip Approval Request", To Giám đốc. Mock: `{pic:'Nguyen Ha',tk:'nt.ha'}` = Director; cảnh `cap.js v174tf`.

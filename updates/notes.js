@@ -8,6 +8,28 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-10-v17.4", version:"v17.4", date:"2026-10-10",
+    title:"Giám đốc duyệt đề xuất công tác ngay trên Report Hub",
+    summary:"Email đề xuất công tác của mọi phòng ban (Sales, MKT, Back Office, CRM) nay cùng 1 mẫu chuẩn và gửi thẳng tới Giám đốc. Giám đốc duyệt được nhiều đề xuất 1 lần, mỗi người đề xuất nhận email phê duyệt riêng.",
+    items:[
+      { type:"new", icon:"✈️", title:"Nút Duyệt công tác + số đề xuất đang chờ",
+        text:"Giám đốc thấy nút <b>Duyệt công tác</b> trên thanh trên cùng, có số đỏ là số đề xuất đang chờ. Khi còn đề xuất chờ duyệt, danh sách tự mở 1 lần mỗi ngày, sau các thông báo khác.",
+        img:"updates/v17.4/btn.jpg" },
+      { type:"new", icon:"✅", title:"Duyệt nhiều đề xuất cùng lúc",
+        text:"Tick chọn các đề xuất (hoặc <b>Chọn tất cả</b>), ghi chú nếu cần rồi bấm <b>Duyệt</b> hoặc <b>Từ chối</b> (từ chối phải ghi lý do). Mỗi người đề xuất nhận 1 email riêng theo đúng mẫu Business Trip; chuyến được duyệt tự có folder để nộp tài liệu.",
+        img:"updates/v17.4/list.jpg" },
+      { type:"imp", icon:"📨", title:"Email đề xuất cùng 1 mẫu, gửi Giám đốc",
+        text:"Đề xuất từ Report Hub hay MMH CRM đều dùng mẫu <b>Business Trip Approval Request</b>: To Giám đốc, CC trưởng phòng và người đề xuất. Mỗi hệ thống tự lưu nhật ký đề xuất ở tab <b>Business Trip Log</b> của riêng mình; duyệt và làm báo cáo công tác vẫn theo file Business Trip như cũ.",
+        img:"" }
+    ],
+    en:{ title:"The Director approves business trip proposals in Report Hub",
+      items:[
+        { title:"Approve trips button with a pending count", text:"The Director sees an Approve trips button in the top bar, with a red badge showing how many proposals are waiting. While any proposal is waiting, the list opens once a day, after the other notices." },
+        { title:"Approve several proposals at once", text:"Tick the proposals (or Select all), add a note if needed, then click Approve or Reject. A rejection needs a reason. Each proposer gets their own email in the Business Trip format, and every approved trip gets a document folder automatically." },
+        { title:"One email format, sent to the Director", text:"Proposals from Report Hub and MMH CRM all use the Business Trip Approval Request format: To the Director, CC the Head of Department and the proposer. Each system keeps its own log in a Business Trip Log tab. Approval and trip reports still run on the Business Trip file." }
+      ] }
+  },
+  {
     id:"2026-10-08-v17.3", version:"v17.3", date:"2026-10-08",
     title:"Khung ô nhập rõ ràng ở mọi hộp thoại",
     summary:"Mọi ô cần điền (thêm Key task, Sub-task, báo cáo, công tác, đào tạo…) nay có viền rõ, nhìn là biết ô nào còn trống — tránh điền sót, điền nhầm.",
