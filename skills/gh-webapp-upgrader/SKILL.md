@@ -9,7 +9,9 @@ description: >
   một webapp GitHub (github.io, Apps Script /exec, JSONP, doGet/doPost) — kể cả khi chỉ nói "app chậm", "bấm phải chờ
   loading", "làm app đẹp hơn", "kết nối thêm file sheet", "đánh giá hệ thống", "sửa backend", "deploy Apps Script",
   "đưa backend vào mmh-backend" (sửa & tự deploy .gs qua kho trung tâm, không bắt người dùng dán code).
-  Không dùng để tạo webapp mới từ đầu (dùng mmh-webapp-builder nếu có).
+  Làm app MỚI theo kiểu các app MMH: đọc references/feature-catalog.md (sổ tay toàn bộ tính năng Report Hub, CRM,
+  Product Data, Sổ theo dõi học sinh + bảng tra "muốn X chép từ đâu" + checklist app mới) — kể cả khi người dùng chỉ nói
+  "làm app giống CRM / Report Hub", "app có những tính năng gì", "tham khảo tính năng cũ".
 ---
 
 # Nâng cấp WebApp GitHub Pages + Google Sheets
@@ -32,6 +34,7 @@ commit tóm tắt cho họ) bằng **ngôn ngữ của người dùng** (thườ
    và in ra đoạn HTML cần dán (module thông báo cập nhật, chủ đề màu). Sau đó viết các quy tắc vào `CLAUDE.md` của repo
    (mẫu ở `references/claude-md-template.md`) để mọi phiên sau tự tuân theo.
 4. Chưa rõ người dùng muốn gì ⇒ làm bản đánh giá tổng thể trước (`references/audit.md`), đề xuất theo thứ tự ưu tiên.
+   Làm app mới / thêm tính năng ⇒ mở `references/feature-catalog.md` (mục 17 checklist, mục 18 bảng tra) để dùng lại cái đã có.
 5. **Backend:** code `.gs` nằm ở **kho trung tâm riêng tư** (MMH: `ManiMedicalHanoi/mmh-backend`), deploy tự động qua GitHub
    Actions — đọc `references/backend-deploy.md`. Gắn kho đó vào phiên (`add_repo`), chạy `tools/scan-app.mjs` để biết backend
    của app đã có trong kho chưa; chưa có ⇒ thêm theo mục 3 của file đó (người dùng chỉ gửi Script ID khi được hỏi).
@@ -63,6 +66,7 @@ commit tóm tắt cho họ) bằng **ngôn ngữ của người dùng** (thườ
 | Kiểm thử với backend giả lập | trước mọi lần push | `references/testing.md`, `scripts/mock_gas.js` |
 | Sửa & tự deploy backend `.gs` qua kho trung tâm (không dán code) | mọi thay đổi backend, thêm app mới, lỗi deploy | `references/backend-deploy.md`, `assets/backend-repo/` |
 | Đánh giá tổng thể hệ thống | người dùng hỏi "đánh giá", "cải tiến gì" | `references/audit.md` |
+| **Sổ tay tính năng** của 4 app (đăng nhập, phân quyền, lịch, giao việc, KPI, báo cáo + biểu đồ, email, HDSD, chế độ trải nghiệm, nhân vật, nút Back, đa ngôn ngữ…) | làm app mới, thêm tính năng, "app có gì" | `references/feature-catalog.md` |
 
 Năm nguyên tắc cốt lõi (lý do nằm trong các file trên):
 
@@ -99,6 +103,9 @@ Năm nguyên tắc cốt lõi (lý do nằm trong các file trên):
 - **Backend:** sửa trong kho trung tâm + PR, để GitHub Actions deploy (`references/backend-deploy.md`); không tạo deployment
   mới (URL mới, app không gọi tới). Chỉ khi chưa dựng được kho trung tâm mới gửi file `.gs` đầy đủ cho người dùng dán.
   Frontend vẫn nên chạy được với backend cũ (bắt lỗi `Unknown action` ⇒ báo cần cập nhật backend).
+- **Điện thoại / trình duyệt trong Zalo, Gmail:** lệnh In (`window.print`) "không thấy gì" ⇒ tự dựng PDF (html2canvas + jsPDF, `taive.js`
+  của Sổ theo dõi); nút Back thoát khỏi app ⇒ ghi lịch sử cho mục / hộp (`back.js`); hẹn giờ ẩn bong bóng chạy khi trang ở nền ⇒
+  đếm giờ từ lúc thật sự hiện. Chi tiết + bảng cạm bẫy đầy đủ: `references/feature-catalog.md` mục 16.
 - **Script ID ≠ Mã triển khai ≠ ID file Sheet.** Script ID chỉ có trong địa chỉ trang Apps Script (`…/projects/<ID>/edit`) hoặc
   ⚙ Cài đặt dự án; người dùng thường gửi nhầm `AKfycb…` hoặc link Sheet — hỏi lại kèm hướng dẫn tab nào, copy chỗ nào.
 
