@@ -8,6 +8,22 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-11-v17.5", version:"v17.5", date:"2026-10-11",
+    title:"Hướng dẫn từng bước cho mọi chức năng",
+    summary:"Bấm <b>Hướng dẫn</b> trên thanh trên cùng, chọn chức năng muốn học: app làm tối màn hình, phóng to vào đúng chỗ cần bấm và chỉ từng bước.",
+    items:[
+      { type:"new", icon:"❓", title:"Nút Hướng dẫn", text:"Bấm <b>Hướng dẫn</b> (hoặc Ctrl + K ▸ Hướng dẫn sử dụng) để mở danh sách 15 bài theo chức năng: thêm việc, cập nhật tiến độ, lịch, công tác, KPI, báo cáo… Chấm vàng trên nút = có bài mới hoặc vừa cập nhật.", img:"updates/v17.5/catalog.jpg" },
+      { type:"new", icon:"🔍", title:"Phóng to vào từng bước", text:"Chọn một bài: app tự mở đúng màn hình, phóng to vào ô cần điền và giải thích ngắn. Bấm <b>Tiếp</b> / <b>Quay lại</b> hoặc phím ← →, bấm <b>Thoát</b> bất cứ lúc nào.", img:"updates/v17.5/zoom.jpg" },
+      { type:"imp", icon:"🔄", title:"Luôn khớp với app", text:"Mỗi khi app thêm hoặc đổi chức năng, bài hướng dẫn được sửa kèm và hiện nhãn <b>Cập nhật</b> trong 14 ngày.", img:"" }
+    ],
+    en:{ title:"Step-by-step guides for every feature",
+      items:[
+        { title:"Guides button", text:"Click Guides in the top bar (or Ctrl + K) to open 15 guides by feature: adding tasks, updating progress, calendar, trips, KPI, reports… A yellow dot means a guide is new or just updated." },
+        { title:"Zooms in on each step", text:"Pick a guide: the app opens the right screen, zooms in on the field to fill and explains it briefly. Use Next / Back or the arrow keys; Exit at any time." },
+        { title:"Always in sync with the app", text:"Whenever a feature is added or changed, its guide is updated with it and shows an Updated label for 14 days." }
+      ] }
+  },
+  {
     id:"2026-10-10-v17.4", version:"v17.4", date:"2026-10-10",
     title:"Giám đốc duyệt đề xuất công tác ngay trên Report Hub",
     summary:"Email đề xuất công tác của mọi phòng ban (Sales, MKT, Back Office, CRM) nay cùng 1 mẫu chuẩn và gửi thẳng tới Giám đốc. Giám đốc duyệt được nhiều đề xuất 1 lần, mỗi người đề xuất nhận email phê duyệt riêng.",
