@@ -18783,6 +18783,7 @@ window.TOUR_CFG={ app:"rh",
   m.open=function(manual){ if(window.__tourOn && manual!==true){ var me=this, ar=arguments; (window.__tourQ=window.__tourQ||[]).push(function(){ o.apply(me, ar); }); return; }
     return o.apply(this, arguments); }; });
 window.__tourClean=function(){
+  try{ if(window.UM&&UM.close) UM.close(); }catch(_){}
   try{ if(typeof closeModal==="function") closeModal(); }catch(_){}
   try{ if(window.UPD&&UPD.isOpen&&UPD.isOpen()) UPD.close(); }catch(_){}
   try{ var nt=document.getElementById("nt-letter"); if(nt&&nt.classList.contains("show")&&window.NT) NT.close(); }catch(_){}

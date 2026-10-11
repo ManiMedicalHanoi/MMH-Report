@@ -5,14 +5,17 @@
    Kiểm tra trước khi push: NODE_PATH=$(npm root -g) node tools/tour_check.js  (mọi bước phải tìm thấy phần tử).
    ════════════════════════════════════════════════════════════════════════════════════════ */
 (function(){
+/* điện thoại: số phiên bản ẩn ⇒ chỉ vào nút Thông báo cập nhật (mở được cả lịch sử); chọn ngôn ngữ chỉ có trên máy tính */
+function ver(){ return TOUR.find("#ver-badge") || TOUR.find("#tt-news"); }
+function wide(){ return window.innerWidth>720; }
 function q(s){ return document.querySelector(s); }
 function cal(){ try{ if(window.switchTab) switchTab("calendar"); }catch(_){} }
 function today(){ var d=new Date(); return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2); }
 function me(){ try{ return window.AUTH && AUTH.user && AUTH.user(); }catch(_){ return null; } }
 TOUR.add([
- { id:"start", v:1, d:"2026-10-11", g:"Bắt đầu", ic:"start", t:"Làm quen Report Hub", x:"Các khu vực chính trên màn hình và chỗ tìm mọi chức năng.",
+ { id:"start", v:2, d:"2026-10-11", g:"Bắt đầu", ic:"start", t:"Làm quen Report Hub", x:"Các khu vực chính trên màn hình và chỗ tìm mọi chức năng.",
    steps:[
-    { el:"#ver-badge", t:"Số phiên bản", x:"Bấm số phiên bản để xem lại mọi <b>thông báo cập nhật</b> từ trước tới nay." },
+    { el:ver, t:"Số phiên bản", x:"Bấm số phiên bản để xem lại mọi <b>thông báo cập nhật</b> từ trước tới nay." },
     { el:".src-tab", do:cal, t:"Chọn phòng ban", x:"Đổi giữa <b>Marketing &amp; Sales</b>, <b>Back Office</b> và <b>Management</b>. Mỗi phòng ban có danh sách việc riêng." },
     { el:function(){ var b=q(".tabbtn"); return b&&b.parentElement; }, t:"Các chức năng", x:"Tổng quan, Tiến độ, Cập nhật công việc, Báo cáo tuần / tháng, <b>Lịch làm việc</b>, Biên bản họp và <b>KPI</b>." },
     { el:"#qs-btn", t:"Tìm nhanh", x:"Bấm hoặc nhấn <b>Ctrl + K</b> để tìm việc, sự kiện, bài đăng, chuyến công tác, buổi đào tạo." },
@@ -107,15 +110,15 @@ TOUR.add([
     { el:"[onclick=\"switchTab('meet')\"]", t:"Mục Biên bản họp", x:"Mở ở cột trái." },
     { el:"#tab-meet", do:function(){ try{ switchTab("meet"); }catch(_){} }, wait:700, t:"Soạn biên bản", x:"Ghi nội dung, người tham dự, việc cần làm. Lưu xong có thể gửi email cho người tham dự." }
    ] },
- { id:"news", v:1, d:"2026-10-11", g:"Cá nhân hoá", ic:"help", t:"Thông báo cập nhật", x:"Xem app vừa có gì mới.",
+ { id:"news", v:2, d:"2026-10-11", g:"Cá nhân hoá", ic:"help", t:"Thông báo cập nhật", x:"Xem app vừa có gì mới.",
    steps:[
     { el:"#tt-news", t:"Thông báo cập nhật", x:"Mỗi lần app cập nhật, thông báo tự hiện trong 7 ngày. Bấm đây để xem lại bất cứ lúc nào." },
-    { el:"#ver-badge", t:"Lịch sử phiên bản", x:"Bấm số phiên bản để xem mọi bản cập nhật trước đây." }
+    { el:ver, when:wide, t:"Lịch sử phiên bản", x:"Bấm số phiên bản để xem mọi bản cập nhật trước đây." }
    ] },
- { id:"theme", v:1, d:"2026-10-11", g:"Cá nhân hoá", ic:"gear", t:"Màu giao diện & ngôn ngữ", x:"Chọn 1 trong 10 tông màu, đổi VN / EN.",
+ { id:"theme", v:2, d:"2026-10-11", g:"Cá nhân hoá", ic:"gear", t:"Màu giao diện & ngôn ngữ", x:"Chọn 1 trong 10 tông màu, đổi VN / EN.",
    steps:[
     { el:"#th-btn", t:"Màu giao diện", x:"Chọn tông màu bạn thích. Lựa chọn lưu trên máy này." },
-    { el:"#lang-switch", t:"Ngôn ngữ", x:"Đổi giữa tiếng Việt và tiếng Anh." }
+    { el:"#lang-switch", when:wide, t:"Ngôn ngữ", x:"Đổi giữa tiếng Việt và tiếng Anh." }
    ] },
  { id:"admin", v:1, d:"2026-10-11", g:"Quản trị", ic:"user", t:"Phân quyền người dùng", x:"Dành cho Admin: bật / tắt chức năng cho từng người.",
    when:function(){ var u=me(); return !!u && (u.admin || u.level==="director" || u.level==="hod"); },
