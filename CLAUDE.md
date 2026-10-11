@@ -32,7 +32,9 @@ Làm trong cùng PR với thay đổi code:
    `guide:"docs/…pdf"` trong thông báo. Quy trình: `cap.js` (mọi cảnh) → `tojpg.js` → `build.js` → `PDF=1 node render.js`
    → copy `tools/guide/out.pdf` vào `docs/`. Gửi file PDF cho người dùng để họ lưu thêm vào thư mục HDSD trên Drive:
    https://drive.google.com/drive/folders/1qrY9IGdSRSOUZnIkJSvjLaEXYJceBfY6
-5. Kiểm thử bằng Playwright (Chromium có sẵn, `page.route(/script\.google\.com/)` để giả lập backend) trước khi push;
+5. **Bài hướng dẫn (tour)**: chức năng mới / đổi giao diện ⇒ sửa hoặc thêm bài trong `tour/tours.js` (tăng `v`, đặt `d` = ngày sửa) và chạy
+   `NODE_PATH=$(npm root -g) node tools/tour_check.js` — phải ra "Tất cả bài hướng dẫn đều khớp" (CRM: chạy thêm `--thai`).
+6. Kiểm thử bằng Playwright (Chromium có sẵn, `page.route(/script\.google\.com/)` để giả lập backend) trước khi push;
    kiểm tra cú pháp các khối `<script>` bằng `node --check`.
 
 Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không cần thông báo.
@@ -133,3 +135,8 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   `#tb-tools`, `busy` = popup khác đang mở). Backend `MMH_TripFlow.gs` (mmh-backend): `tfPending` / `tfDecide` (chỉ phiên email Director; Admin xem chỉ đọc) /
   `tfLog` (nhật ký tab "Business Trip Log" riêng từng backend). Mỗi chuyến 1 email phê duyệt riêng tới người đề xuất, đúng mẫu Business Trip.
   Email đề xuất mọi nơi: mẫu "Business Trip Approval Request", To Giám đốc. Mock: `{pic:'Nguyen Ha',tk:'nt.ha'}` = Director; cảnh `cap.js v174tf`.
+- **Hướng dẫn từng bước `TOUR` (v17.5, dùng chung CRM v31.0)**: bộ máy `tour/tour.js` (GIỐNG HỆT ở MMH-CRM — sửa 1 nơi chép sang nơi kia) + bài `tour/tours.js`
+  (`TOUR.add([{id,v,d,g,t,x,ic,when,steps:[{el,t,x,do,wait,zoom,when}]}])`, chữ là chuỗi hoặc `{vi,en}`). Thẻ `<dialog>` lớp trên cùng + phóng to bằng
+  `transform` trên `<body>` (phần tử trong khung cố định thì chỉ chiếu sáng, không phóng). Nút `#tb-tools` ▸ Hướng dẫn (`TOUR_CFG.mount`), Ctrl+K ▸ Hướng dẫn sử dụng.
+  Đang chạy tour (`window.__tourOn`) ⇒ popup tự động `NT` / `UPD` / `ASG` / `DL` xếp hàng, hiện sau khi tour xong (`__tourQ`). `__tourClean()` đóng mọi hộp thoại.
+  Kiểm tra: `tools/tour_check.js` (chạy mọi bài với mock, báo bước không tìm thấy). Nhãn "Mới" / "Cập nhật" theo `d` ≤ 14 ngày, "Đã xem" lưu `localStorage.mmh_tour_seen`.
