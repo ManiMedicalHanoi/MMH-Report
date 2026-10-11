@@ -140,3 +140,5 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   `transform` trên `<body>` (phần tử trong khung cố định thì chỉ chiếu sáng, không phóng). Nút `#tb-tools` ▸ Hướng dẫn (`TOUR_CFG.mount`), Ctrl+K ▸ Hướng dẫn sử dụng.
   Đang chạy tour (`window.__tourOn`) ⇒ popup tự động `NT` / `UPD` / `ASG` / `DL` xếp hàng, hiện sau khi tour xong (`__tourQ`). `__tourClean()` đóng mọi hộp thoại.
   Kiểm tra: `tools/tour_check.js` (chạy mọi bài với mock, báo bước không tìm thấy). Nhãn "Mới" / "Cập nhật" theo `d` ≤ 14 ngày, "Đã xem" lưu `localStorage.mmh_tour_seen`.
+- **Tour v1.1 (v17.6)**: không biến đổi `<body>` nữa (giật, điện thoại bị co trang / lộ bảng tin) — cuộn mượt tới phần tử, vùng sáng trượt theo, phóng to riêng
+  phần tử (scale ≤ 1,3, không vượt mép), `html.tr-on` khoá tràn ngang. Kiểm tra cả khung điện thoại: `tools/tour_check.js --mobile`.
