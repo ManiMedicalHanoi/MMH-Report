@@ -1,11 +1,11 @@
 /* Kiểm tra bài hướng dẫn (tour/tours.js): chạy MỌI bài với backend giả lập, báo bước nào không tìm thấy phần tử.
-   Chạy: NODE_PATH=$(npm root -g) node tools/tour_check.js [id …]   ·  thoát mã 1 nếu có bước hỏng (để chặn push).
+   Chạy: NODE_PATH=$(npm root -g) node tools/tour_check.js [--mobile] [id …]   ·  thoát mã 1 nếu có bước hỏng (để chặn push).
    Mỗi lần sửa / thêm chức năng ⇒ sửa tours.js cho khớp rồi chạy lại tới khi "Tất cả bài hướng dẫn đều khớp". */
 const { chromium } = require("playwright"); const path=require("path");
 process.chdir(path.join(__dirname,"guide")); const M=require("./guide/mock");
-const ONLY=process.argv.slice(2);
+const ARGS=process.argv.slice(2), MOB=ARGS.includes("--mobile"), ONLY=ARGS.filter(a=>!a.startsWith("--"));   /* --mobile: khung điện thoại 390×844 */
 (async()=>{
-  const b=await chromium.launch(); const p=await (await b.newContext({viewport:{width:1440,height:900}})).newPage();
+  const b=await chromium.launch(); const p=await (await b.newContext(MOB?{viewport:{width:390,height:844},isMobile:true,hasTouch:true}:{viewport:{width:1440,height:900}})).newPage();
   const errs=[]; p.on("pageerror",e=>errs.push(e.message));
   await p.addInitScript(()=>{ if(sessionStorage.getItem("__i")) return; sessionStorage.setItem("__i",1);
     localStorage.setItem("mmh_pic","Giang"); localStorage.setItem("mmh_src","marketing");

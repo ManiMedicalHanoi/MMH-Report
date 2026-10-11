@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════════════════════════════════════════════
-   MMH TOUR v1.0 (11/10/2026) — HƯỚNG DẪN TỪNG BƯỚC TRONG APP · GIỐNG HỆT NHAU ở MMH-Report và MMH-CRM
+   MMH TOUR v1.1 (11/10/2026) — HƯỚNG DẪN TỪNG BƯỚC TRONG APP · GIỐNG HỆT NHAU ở MMH-Report và MMH-CRM
    · TOUR.open()      : danh mục bài hướng dẫn theo chức năng (tìm kiếm, nhãn Mới / Cập nhật, Đã xem)
    · TOUR.run(id)     : chạy tour — làm tối màn hình, PHÓNG TO vào đúng chỗ cần xem, thẻ chỉ dẫn, Tiếp / Quay lại
    · Bài hướng dẫn    : file tour/tours.js của từng app — TOUR.add([{ id, v, d, g, t, x, when, steps:[…] }])
@@ -12,7 +12,9 @@
    · Cấu hình app     : window.TOUR_CFG = { app, lang(), mount(fn) ⇒ nút mở danh mục, before() dọn popup,
                          after() dọn sau tour, extra: { label, run } (vd. sổ tay cũ) }
    · Kiểm tra tự động : tools/tour_check.js chạy mọi bài với backend giả lập ⇒ báo bước nào không còn tìm thấy.
-   Thẻ <dialog> (lớp trên cùng) ⇒ không bị ảnh hưởng khi phóng to trang; phóng to = transform trên <body>.
+   Thẻ <dialog> (lớp trên cùng). v1.1 — MƯỢT: KHÔNG biến đổi cả trang (<body>) nữa (vẽ lại cả app mỗi khung hình ⇒ giật; điện thoại
+   bị thu nhỏ trang, lộ bảng tin ngoài màn hình). Nay: cuộn mượt tới phần tử, vùng sáng trượt theo, phóng to RIÊNG phần tử
+   (transform scale ≤ 1.3, không vượt mép màn hình), <html> khoá tràn ngang trong lúc chạy.
    ════════════════════════════════════════════════════════════════════════════════════════ */
 (function(){
 "use strict";
@@ -33,7 +35,8 @@ function state(t){ var s=seen()[t.id]; if(s==null) return fresh(t)?"new":""; ret
 var CSS='\
 .tr-dlg{border:0;padding:0;background:transparent;max-width:none;max-height:none;width:100vw;height:100vh;overflow:hidden;color:#0E2433;font-family:inherit}\
 .tr-dlg::backdrop{background:transparent}\
-.tr-cat::backdrop{background:rgba(0,24,38,.45);backdrop-filter:blur(3px)}\
+.tr-cat::backdrop{background:rgba(0,24,38,.45)}\
+html.tr-on{overflow-x:clip}\
 .tr-cat{width:min(760px,calc(100vw - 32px));height:auto;max-height:calc(100vh - 48px);margin:auto;border-radius:18px;background:var(--tr-card);border:1px solid var(--tr-line);overflow:auto;color:var(--tr-ink);box-shadow:0 18px 50px rgba(0,30,50,.25)}\
 .tr-dlg,.tr-cat{--tr-pri:var(--t-pri,var(--blue,#3A5CAA));--tr-ink:#0E2433;--tr-head:var(--t-ink,#003047);--tr-mut:#5B6B7D;--tr-line:#E2E8EF;--tr-card:#fff;--tr-soft:var(--t-soft,#F0F7FF);--tr-fld:#C3CDD8}\
 .tr-ch{display:flex;align-items:center;gap:12px;padding:18px 20px 12px;position:sticky;top:0;background:var(--tr-card);z-index:2}\
@@ -56,9 +59,9 @@ var CSS='\
 .tr-it .tr-bd.new{background:#FFF4B8;color:#6B5600}.tr-it .tr-bd.upd{background:#E3ECFB;color:#2E4C91}.tr-it .tr-bd.done{background:#E7F4EC;color:#1E6B4F}\
 .tr-foot{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px 20px 18px;border-top:1px solid var(--tr-line);font-size:12.5px;color:var(--tr-mut)}\
 .tr-foot button{border:1px solid var(--tr-line);background:var(--tr-card);border-radius:10px;height:34px;padding:0 12px;font:inherit;font-weight:600;cursor:pointer;color:var(--tr-head)}\
-.tr-hole{position:fixed;border-radius:12px;box-shadow:0 0 0 4px rgba(255,225,0,.95),0 0 0 9999px rgba(0,22,36,.62);pointer-events:none;transition:all .55s cubic-bezier(.3,.7,.2,1)}\
+.tr-hole{position:fixed;border-radius:12px;box-shadow:0 0 0 4px rgba(255,225,0,.95),0 0 0 9999px rgba(0,22,36,.62);pointer-events:none;transition:left .38s cubic-bezier(.3,.7,.2,1),top .38s cubic-bezier(.3,.7,.2,1),width .38s cubic-bezier(.3,.7,.2,1),height .38s cubic-bezier(.3,.7,.2,1)}\
 .tr-hole.none{left:50%!important;top:50%!important;width:0!important;height:0!important;box-shadow:0 0 0 9999px rgba(0,22,36,.62)}\
-.tr-card{position:fixed;width:min(360px,calc(100vw - 24px));background:var(--tr-card);border:1px solid var(--tr-line);border-radius:16px;padding:16px 16px 12px;box-shadow:0 14px 40px rgba(0,22,36,.32);transition:opacity .25s,transform .25s;color:var(--tr-ink)}\
+.tr-card{position:fixed;width:min(360px,calc(100vw - 24px));background:var(--tr-card);border:1px solid var(--tr-line);border-radius:16px;padding:16px 16px 12px;box-shadow:0 14px 40px rgba(0,22,36,.32);transition:opacity .2s,transform .2s;color:var(--tr-ink)}\
 .tr-card.hid{opacity:0;transform:translateY(6px)}\
 .tr-k{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--tr-pri);display:flex;justify-content:space-between;gap:8px}\
 .tr-card h4{margin:6px 0 4px;font-size:16.5px;color:var(--tr-head);line-height:1.3}\
@@ -76,7 +79,7 @@ var CSS='\
 .tr-nav button:disabled{opacity:.4;cursor:default}\
 .tr-b{position:relative}\
 .tr-dot{position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:#FFE100;border:2px solid #fff}\
-@media (max-width:640px){ .tr-grid{grid-template-columns:1fr} .tr-card{left:12px!important;right:12px;width:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));top:auto!important} }\
+@media (max-width:640px){ .tr-grid{grid-template-columns:1fr} .tr-card{left:12px!important;right:12px;width:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));top:auto!important} .tr-card.top{top:calc(12px + env(safe-area-inset-top,0px))!important;bottom:auto} }\
 @media (prefers-reduced-motion: reduce){ .tr-hole,.tr-card,.tr-it{transition:none} }';
 function css(){ if(document.getElementById("tour-css")) return; var s=document.createElement("style"); s.id="tour-css"; s.textContent=CSS; document.head.appendChild(s); }
 var ICON={ start:'<path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/>', task:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2V5a2 2 0 012-2h9"/>',
@@ -125,21 +128,20 @@ function body(){ return document.body; }
 function run(id, at){
   var t0=LIST.filter(function(x){ return x.id===id; })[0]; if(!t0) return false;
   var t={}; for(var k in t0) t[k]=t0[k]; t.steps=(t0.steps||[]).filter(ok);   /* bước có when() ⇒ chỉ hiện khi đúng (vd. nhóm có chụp ảnh) */
-  css(); stop(true); window.__tourOn=true;   /* app xếp hàng popup tự động (Thư nhắc việc…) khi đang chạy tour */
+  css(); close(); stop(true); window.__tourOn=true;   /* app xếp hàng popup tự động (Thư nhắc việc…) khi đang chạy tour */
   try{ if(CFG.before) CFG.before(t); }catch(_){}
   var d=document.createElement("dialog"); d.className="tr-dlg"; d.id="tour-run";
   d.innerHTML='<div class="tr-hole none" id="tr-hole"></div><div class="tr-card hid" id="tr-card" role="dialog" aria-live="polite"></div>';
   document.documentElement.appendChild(d);
   d.addEventListener("cancel",function(e){ e.preventDefault(); stop(); });
   d.addEventListener("keydown",function(e){ if(e.key==="ArrowRight"){ e.preventDefault(); next(1); } else if(e.key==="ArrowLeft"){ e.preventDefault(); next(-1); } });
-  R={ t:t, i:at||0, d:d, s:1, tx:0, ty:0, sy:window.scrollY, tf:body().style.transform, to:body().style.transformOrigin, tt:body().style.transition, miss:[] };
-  window.scrollTo(0,0);
-  var b=body(); b.style.transformOrigin="0 0"; b.style.transition=RM?"none":"transform .6s cubic-bezier(.3,.7,.2,1)";
+  R={ t:t, i:at||0, d:d, sy:window.scrollY, miss:[] };
+  document.documentElement.classList.add("tr-on");
   try{ d.showModal(); }catch(_){ d.setAttribute("open",""); }
   window.addEventListener("resize",onResize);
   step(); return true;
 }
-function onResize(){ if(R) place(true); }
+var RZ=0; function onResize(){ if(!R) return; clearTimeout(RZ); RZ=setTimeout(function(){ if(R){ place(); paint(); } },120); }
 function find(sel){
   if(!sel) return null;
   if(typeof sel==="function"){ try{ return sel(); }catch(_){ return null; } }
@@ -156,40 +158,46 @@ function step(){
   setTimeout(function(){
     waitFor(st.el, st.el?2200:0).then(function(el){
       if(!R || my!==TOK) return;
-      R.el=el; if(!el && st.el) R.miss.push(R.i);
-      if(el){ try{ el.scrollIntoView({block:"nearest",inline:"nearest"}); }catch(_){} if(window.scrollY) window.scrollTo(0,0); }
-      place(false); paint();
-      setTimeout(function(){ if(R && my===TOK){ card.classList.remove("hid"); var b=card.querySelector(".pri"); if(b) try{ b.focus({preventScroll:true}); }catch(_){} } }, RM?0:420);
+      unzoom(); R.el=el; if(!el && st.el) R.miss.push(R.i);
+      if(el && !inFixed(el)){ try{ el.scrollIntoView({block:"center",inline:"nearest",behavior:RM?"auto":"smooth"}); }catch(_){ try{ el.scrollIntoView(); }catch(__){} } }
+      settle(el, function(){
+        if(!R || my!==TOK) return;
+        place(); paint();
+        setTimeout(function(){ if(R && my===TOK){ card.classList.remove("hid"); var b=card.querySelector(".pri"); if(b) try{ b.focus({preventScroll:true}); }catch(_){} } }, RM?0:300);
+      });
     });
   }, st.wait!=null?st.wait:(st.do?260:0));
 }
-/* phóng to: tính hình chữ nhật gốc (chưa biến đổi) từ hình đang thấy */
-function place(quick){
-  var st=R.t.steps[R.i], el=R.el, hole=R.d.querySelector("#tr-hole"), vw=window.innerWidth, vh=window.innerHeight, pad=st.pad!=null?st.pad:8;
-  if(!el){ hole.className="tr-hole none"; setT(1,0,0); R.box=null; return; }
-  /* đo khi trang chưa phóng to (tắt biến đổi trong chốc lát, cùng 1 khung hình ⇒ không nháy) */
-  var bd=body(), pv=bd.style.transform; bd.style.transition="none"; bd.style.transform="";
-  var r=el.getBoundingClientRect(), x=r.left, y=r.top, w=r.width, h=r.height;
-  bd.style.transform=pv; void bd.offsetWidth; bd.style.transition=RM?"none":"transform .6s cubic-bezier(.3,.7,.2,1)";
-  var fixed=false; for(var p=el;p&&p!==document.body;p=p.parentElement){ if(getComputedStyle(p).position==="fixed"){ fixed=true; break; } }
-  var mob=vw<640, cx=mob?vw/2:vw/2, cy=mob?vh*.36:vh*.44;
-  var s=1; if(st.zoom!==false && !RM){ s=Math.min(vw*(mob?.8:.5)/Math.max(w,1), vh*(mob?.34:.42)/Math.max(h,1), mob?1.45:1.75); s=Math.max(1,s); if(s<1.12) s=1; }
-  var vis=x>=8 && y>=8 && x+w<=vw-8 && y+h<=vh-8, tx=0, ty=0;
-  if(s>1 || !vis){ tx=cx-s*(x+w/2); ty=cy-s*(y+h/2); }
-  if(fixed && s===1 && vis){ tx=0; ty=0; }
-  /* không kéo mép trái / trên của trang vào giữa màn hình */
-  tx=Math.min(tx,0); ty=Math.min(ty,0);
-  var docW=Math.max(document.documentElement.scrollWidth,vw), docH=Math.max(document.documentElement.scrollHeight,vh);
-  tx=Math.max(tx, vw-docW*s); ty=Math.max(ty, vh-docH*s);
-  setT(s,tx,ty,quick);
-  var bx={ l:tx+s*x-pad, t:ty+s*y-pad, w:s*w+pad*2, h:s*h+pad*2 }; R.box=bx;
-  hole.className="tr-hole"; hole.style.left=bx.l+"px"; hole.style.top=bx.t+"px"; hole.style.width=bx.w+"px"; hole.style.height=bx.h+"px";
+function inFixed(el){ for(var p=el;p&&p!==document.body;p=p.parentElement){ if(getComputedStyle(p).position==="fixed") return true; } return false; }
+/* chờ cuộn mượt dừng hẳn (vị trí không đổi 3 khung hình liền, tối đa ~1 giây) rồi mới đặt vùng sáng */
+function settle(el, cb){
+  if(!el) return cb(); var t0=Date.now(), last=null, same=0;
+  (function f(){ var r=el.getBoundingClientRect(), k=Math.round(r.top)+","+Math.round(r.left);
+    if(k===last) same++; else { same=0; last=k; }
+    if(same>=3 || Date.now()-t0>1000) return cb(); requestAnimationFrame(f); })();
 }
-function setT(s,tx,ty,quick){
-  R.s=s; R.tx=tx; R.ty=ty; var b=body();
-  if(quick) b.style.transition="none";
-  b.style.transform=(s===1&&!tx&&!ty)?"":"translate("+tx+"px,"+ty+"px) scale("+s+")";
-  if(quick){ void b.offsetWidth; b.style.transition=RM?"none":"transform .6s cubic-bezier(.3,.7,.2,1)"; }
+/* phóng to riêng phần tử (nhẹ — chỉ 1 lớp nhỏ), trả lại nguyên trạng khi sang bước khác */
+function unzoom(){ var z=R&&R.z; if(!z) return; R.z=null; var e=z.el; e.style.transform=z.tf;
+  setTimeout(function(){ if(!R || !R.z || R.z.el!==e){ e.style.transition=z.tt; e.style.transformOrigin=z.to; } }, 400); }
+function place(){
+  var st=R.t.steps[R.i], el=R.el, hole=R.d.querySelector("#tr-hole"), vw=window.innerWidth, vh=window.innerHeight, pad=st.pad!=null?st.pad:8;
+  if(!el){ hole.className="tr-hole none"; R.box=null; return; }
+  var z=R.z, prev=null; if(z && z.el===el){ prev=el.style.transform; el.style.transition="none"; el.style.transform=z.tf; }
+  var r=el.getBoundingClientRect(), x=r.left, y=r.top, w=r.width, h=r.height, cx=x+w/2, cy=y+h/2;
+  if(prev!=null){ el.style.transform=prev; void el.offsetWidth; el.style.transition="transform .38s cubic-bezier(.3,.7,.2,1)"; }
+  var s=1, cs=getComputedStyle(el);
+  if(st.zoom!==false && !RM && (cs.transform==="none" || (z && z.el===el)) && cs.display!=="inline" && w>0 && h>0){
+    s=Math.min(1.3, Math.max(1, 52/Math.min(w,h)));
+    s=Math.min(s, 2*(cx-10)/w, 2*(vw-10-cx)/w, 2*(cy-10)/h, 2*(vh-10-cy)/h);
+    if(s<1.05) s=1;
+  }
+  if(s>1){
+    if(!R.z) R.z={ el:el, tf:el.style.transform, tt:el.style.transition, to:el.style.transformOrigin };
+    el.style.transformOrigin="50% 50%"; el.style.transition="transform .38s cubic-bezier(.3,.7,.2,1)";
+    el.style.transform=(R.z.tf?R.z.tf+" ":"")+"scale("+s.toFixed(3)+")";
+  } else if(R.z) unzoom();
+  var bx={ l:cx-s*w/2-pad, t:cy-s*h/2-pad, w:s*w+pad*2, h:s*h+pad*2 }; R.box=bx;
+  hole.className="tr-hole"; hole.style.left=bx.l+"px"; hole.style.top=bx.t+"px"; hole.style.width=bx.w+"px"; hole.style.height=bx.h+"px";
 }
 function paint(){
   var t=R.t, st=t.steps[R.i], n=t.steps.length, card=R.d.querySelector("#tr-card"), last=R.i===n-1;
@@ -200,7 +208,7 @@ function paint(){
   [].forEach.call(card.querySelectorAll("[data-k]"),function(b){ b.onclick=function(){ var k=b.getAttribute("data-k"); if(k==="x") stop(); else next(k==="n"?1:-1); }; });
   /* đặt thẻ chỉ dẫn cạnh vùng sáng */
   var vw=window.innerWidth, vh=window.innerHeight, cw=Math.min(360,vw-24), ch=card.offsetHeight||190, bx=R.box, L0, T0;
-  if(vw<640){ card.style.left=""; card.style.top=""; return; }
+  if(vw<640){ card.style.left=""; card.style.top=""; card.classList.toggle("top", !!(bx && bx.t+bx.h > vh-ch-28 && bx.t > ch+28)); return; }
   if(!bx){ L0=(vw-cw)/2; T0=(vh-ch)/2; }
   else if(bx.t+bx.h+14+ch<vh){ L0=bx.l+bx.w/2-cw/2; T0=bx.t+bx.h+14; }
   else if(bx.t-14-ch>0){ L0=bx.l+bx.w/2-cw/2; T0=bx.t-14-ch; }
@@ -217,7 +225,8 @@ function next(dir){
 function stop(silent){
   if(!R) return; var r=R; R=null; TOK++; window.__tourOn=false;
   window.removeEventListener("resize",onResize);
-  var b=body(); b.style.transition=r.tt||""; b.style.transform=r.tf||""; b.style.transformOrigin=r.to||"";
+  if(r.z){ var e=r.z.el; e.style.transform=r.z.tf; e.style.transition=r.z.tt; e.style.transformOrigin=r.z.to; }
+  document.documentElement.classList.remove("tr-on");
   try{ r.d.close(); }catch(_){} r.d.remove();
   if(!silent) try{ if(CFG.after) CFG.after(r.t); }catch(_){}
   try{ window.scrollTo(0,r.sy||0); }catch(_){}
@@ -234,7 +243,7 @@ function mount(){
 }
 function add(arr){ (arr||[]).forEach(function(t){ LIST=LIST.filter(function(x){ return x.id!==t.id; }); LIST.push(t); }); badge(); }
 var tries=0; (function go(){ css(); if(mount()) return; if(++tries<80) setTimeout(go,1500); })();
-window.TOUR={ __v:"1.0", add:add, open:open, run:run, stop:stop, list:function(){ return LIST.slice(); }, find:find, cfg:CFG,
+window.TOUR={ __v:"1.1", add:add, open:open, run:run, stop:stop, list:function(){ return LIST.slice(); }, find:find, cfg:CFG,
   /* cho bộ kiểm tra tự động: chạy hết bài, trả về các bước không tìm thấy */
   check:function(id){ return new Promise(function(res){ if(!run(id)) return res({id:id,error:"not found"}); var t=R.t;
     (function adv(){ if(!R){ return res({id:id,steps:t.steps.length,miss:last}); } var cur=R.i; setTimeout(function(){ if(!R) return res({id:id,steps:t.steps.length,miss:last}); last=R.miss.slice(); if(R.i===t.steps.length-1){ var m=R.miss.slice(); stop(true); return res({id:id,steps:t.steps.length,miss:m}); } next(1); adv(); }, 2600); })(); var last=[]; }); } };

@@ -8,6 +8,18 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-11-v17.6", version:"v17.6", date:"2026-10-11",
+    title:"Hướng dẫn từng bước chạy mượt hơn, cả trên điện thoại",
+    summary:"Bài hướng dẫn không còn giật, không làm thu nhỏ trang trên điện thoại: app cuộn êm tới đúng chỗ, vùng sáng trượt theo và chỉ phóng to riêng nút / ô cần xem.",
+    items:[
+      { type:"fix", icon:"⚡", title:"Mượt, không giật", text:"Bấm <b>Hướng dẫn</b> ▸ chọn một bài: màn hình cuộn êm tới đúng chỗ, khung vàng trượt theo, nút nhỏ được phóng to riêng. Trang không còn bị co lại hay lộ bảng tin ở mép phải trên điện thoại.", img:"updates/v17.6/mobile.jpg" }
+    ],
+    en:{ title:"Smoother step-by-step guides, also on phones",
+      items:[
+        { title:"Smooth, no lag", text:"Click Guides and pick a guide: the screen scrolls smoothly to the right place, the yellow frame glides along and small buttons are enlarged on their own. Pages no longer shrink or show the side feed on phones." }
+      ] }
+  },
+  {
     id:"2026-10-11-v17.5", version:"v17.5", date:"2026-10-11",
     title:"Hướng dẫn từng bước cho mọi chức năng",
     summary:"Bấm <b>Hướng dẫn</b> trên thanh trên cùng, chọn chức năng muốn học: app làm tối màn hình, phóng to vào đúng chỗ cần bấm và chỉ từng bước.",
