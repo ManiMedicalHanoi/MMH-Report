@@ -18630,7 +18630,7 @@ function tk(){ try{ return (window.AUTH && AUTH.tk && AUTH.tk()) || ""; }catch(_
 function isDir(u){ return !!u && (u.level==="director" || u.local==="nt.ha"); }
 function can(){ var u=me(); return !!u && (isDir(u) || u.admin); }
 function dmy(iso){ var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||""); return m?m[3]+"/"+m[2]+"/"+m[1]:""; }
-function money(n){ return n?String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,"."):""; }
+function money(n){ if(n && isNaN(Number(n))) return String(n); return n?String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,"."):""; }
 function lsG(k){ try{ return localStorage.getItem(k); }catch(_){ return null; } }
 function lsS(k,v){ try{ localStorage.setItem(k,v); }catch(_){} }
 function call(params, ms){
