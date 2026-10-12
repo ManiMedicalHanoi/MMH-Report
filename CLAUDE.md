@@ -78,6 +78,8 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   gắn URL backend lúc bấm, chạy tuần tự từng backend, đổi số tạm `tmp-…` sang số thật (`__tmp` trong body), thử lại khi lỗi mạng/bận
   (cùng `rid`), phản hồi không chắc ⇒ đọc lại `weekly` để xác minh trước khi gửi lại, lỗi thật ⇒ chip đỏ + bảng Thử lại / Bỏ.
   Thao tác ghi mới: cập nhật giao diện trước, gọi `apiPost`, KHÔNG chờ `_noWait` / không hiện màn hình chờ. Mock: `flaky:{action:['drop'|'lost'|'busy']}`.
+- **Sổ tay tính năng** `skills/gh-webapp-upgrader/references/feature-catalog.md`: toàn bộ tính năng / cơ chế của Report Hub, CRM, Product Data,
+  Sổ theo dõi học sinh + bảng tra "muốn X chép từ đâu" + checklist app mới. Phát hành tính năng mới đáng dùng lại ⇒ bổ sung vào đây.
 - **Skill dùng chung** `skills/gh-webapp-upgrader/` (đóng gói: `skills/dist/gh-webapp-upgrader.skill`): quy trình + mẫu (outbox, theme, thông báo,
   mock, PDF, backend qua kho trung tâm `references/backend-deploy.md` + `assets/backend-repo/`) rút ra từ repo này cho mọi webapp
   GitHub khác. Sửa skill ⇒ chạy `scripts/selftest_outbox.js` + `assets/backend-repo/tools/selftest.mjs`, đóng gói lại, nhắc người
