@@ -31,11 +31,16 @@ const KEY=[
  {no:'2',row:20,keyTask:'Ophthalmic — tender FY68',pic:'Giang',status:'On going',type:'Tender',start:'2026-10-01',planned:'2026-10-20',subs:[
    {no:'2.1',row:21,subTask:'Hồ sơ thầu BV Mắt TW',pic:'Giang',status:'On going',start:'2026-10-06',planned:'2026-10-06'},
    {no:'2.2',row:22,subTask:'Review spec chỉ khâu với NPP I Care',pic:'Giang',status:'Not started',start:'2026-10-07',planned:'2026-10-08'}]},
- {no:'4',row:40,keyTask:'20261019 Dental Products_Seminar_Dr. Nguyen Thanh Dung, Dr. Hau_Ho Chi Minh',pic:'Thuong',status:'On going',type:'Event',start:'2026-10-01',planned:'2026-10-19',subs:[
+ {no:'4',row:40,keyTask:'20261019 Dental Products_Seminar_Dr. Nguyen Thanh Dung, Dr. Hau_Ho Chi Minh',pic:'Thuong',status:'In Progress',type:'Marketing-Event',start:'2026-10-19',planned:'2026-10-19',vSrc:'EK:1a2b3c',vMeta:{s:'event',ym:'202610',src:'R'},
+   result:'🔄 Đồng bộ từ file MKT Offline ▸ REPORT_EVENT\nSeminar · Dental Products · Dental/MMG\nNgày: 19/10/2026\nTham dự thực tế: 0 / mục tiêu 40',subs:[
+   {no:'4.3',row:43,subTask:'Tuyển sinh_Design post_Before event',pic:'Minh Trang',status:'Completed',start:'2026-10-03',planned:'2026-10-03',progress:100,vSrc:'E:9x1',vMeta:{s:'eventpost',t:'Design post',pg:'Mani Dental',ts:'On air đúng hạn'},result:'Status: On air đúng hạn\nhttps://www.facebook.com/share/p/demo1/'},
+   {no:'4.4',row:44,subTask:'Recap_Photo_After event',pic:'Minh Trang',status:'To Do',start:'2026-10-21',planned:'2026-10-21',vSrc:'E:9x2',vMeta:{s:'eventpost',t:'Photo',pg:'Mani Dental',ts:''},result:'Status: (chưa có)'},
    {no:'4.1',row:41,subTask:'Truyền thông: Agenda sự kiện',pic:'Minh Trang',status:'Not started',start:'2026-10-06',planned:'2026-10-08'},
    {no:'4.2',row:42,subTask:'Đặt phòng hội thảo',pic:'Thuong',status:'On going',start:'2026-10-05',planned:'2026-10-09'}]},
  {no:'3',row:30,keyTask:'Weekly report & meeting',pic:'Giang',status:'On going',type:'Routine',start:'2026-10-05',planned:'2026-10-09',subs:[
    {no:'3.1',row:31,subTask:'Weekly meeting Sales & Marketing',pic:'Giang',status:'Completed',start:'2026-10-05',planned:'2026-10-05'}]},
+ {no:'5',row:50,keyTask:'Internal Meeting 102026 · Product Team',pic:'Giang',status:'To Do',type:'Plan',start:'2026-10-01',planned:'2026-10-31',subs:[]},
+ {no:'6',row:60,keyTask:'Internal Meeting 102026 · MMH (toàn công ty)',pic:'Nguyen Ha',status:'To Do',type:'Plan',start:'2026-10-01',planned:'2026-10-31',subs:[]},
 ];
 const ROSTER=require('./roster.json');
 /* ★ v15.5 — giả lập Training Hub v3.12: việc được giao (rhAssign*) */
@@ -94,7 +99,7 @@ async function install(page, o){
   const handle=async route=>{
     const req=route.request(); const u=new URL(req.url()); let a=u.searchParams.get('action'); const src=u.searchParams.get('src'); const cb=u.searchParams.get('callback');
     let body=null;
-    if(req.method()==='POST'){ const pd=new URLSearchParams(req.postData()||''); a=pd.get('action')||a; try{ body=JSON.parse(pd.get('payload')||'{}'); }catch(_){ body={}; } }
+    if(req.method()==='POST'){ const raw=req.postData()||''; if(/^\s*\{/.test(raw)){ try{ body=JSON.parse(raw); a=body.action||a; }catch(_){ body={}; } } else { const pd=new URLSearchParams(raw); a=pd.get('action')||a; try{ body=JSON.parse(pd.get('payload')||'{}'); }catch(_){ body={}; } } }
     else { body=Object.fromEntries(u.searchParams.entries()); }
     let d={ok:true,events:[]};
     TKS.push([a||'',u.searchParams.get('tk')||'',req.method()]);
@@ -113,6 +118,7 @@ async function install(page, o){
     if(src==='trip') d=D.trip; else if(src==='offline') d=D.off; else if(src==='online') d=D.on;
     else if(a==='calendar') d=D.trip;
     else if(a==='boot'||a==='weekly') d={ok:true,source:'marketing',picList:ROSTER,keyTasks:JSON.parse(JSON.stringify(o.staleMs&&Date.now()<staleUntil&&staleCopy?staleCopy:KK)),monthly:[],activityLog:[]};
+    else if(a==='eventSync'){ d={ok:true,skipped:true}; }
     else if(a==='addKey'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); const no=String(++seq); KK.push({no,row:+no*10,keyTask:body.keyTask,pic:body.pic,status:body.status||'To Do',type:body.type||'',start:body.start,planned:body.planned,subs:[]}); d={ok:true,no,row:+no*10,task:{}}; }
     else if(a==='deleteKey'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); const i=KK.findIndex(k=>k.no===String(body.no)); if(i>=0) KK.splice(i,1); d={ok:true}; }
     else if(a==='deleteSub'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); KK.forEach(k=>{ k.subs=(k.subs||[]).filter(x=>x.no!==String(body.no)); }); d={ok:true}; }
@@ -139,6 +145,8 @@ async function install(page, o){
       d=(o.revoked||!AUTH_USERS[l])?{ok:false,code:'AUTH',error:'Phiên đăng nhập đã bị đăng xuất từ xa.'}:{ok:true,user:{email:l+'@mani.inc',local:l,pic:AUTH_USERS[l],level:l==='nt.ha'?'director':((au&&au.level)||'pic'),admin:l==='mmh.product',perms:(o.perms)||(au&&au.perms)||{}}}; }
     else if(a==='rhMeta') d=META;
     else if(a==='rhSessions') d={ok:true,sessions:SESS.concat(o.extraSess||[])};
+    else if(a==='evProof'){ const P=(global.__EVP=global.__EVP||[]); if(body.op==='upload'){ const f={name:'20261019_Bang chung tham du_'+body.name,url:'https://drive.google.com/file/d/demo'+P.length+'/view',mime:body.mime}; P.push(f); d={ok:true,url:f.url}; } else d={ok:true,folder:'https://drive.google.com/drive/folders/demo',files:P.slice(),proof:''}; }
+    else if(a==='rhCoachReview') d={ok:true,hasPdf:false,files:[]};
     else if(a==='rhMaterials') d=mats(body.sid||u.searchParams.get('sid'));
     else if(a==='rhMyChecks') d={ok:true,empty:o.noChecks?[]:[{sid:'S20261003-01',topic:'Dia-burs IPR-01EF — case lâm sàng & USP',date:'2026-10-03',due:'2026-10-04',overdue:true}]};
     else if(a==='rhSaveSession') d={ok:true,sid:'S20261014-01',message:'Đã tạo buổi đào tạo mới.'};

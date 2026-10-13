@@ -33,9 +33,15 @@ TOUR.add([
     { el:"#c10a-start", t:"Ngày bắt đầu và hạn", x:"Điền ngày bắt đầu và hạn hoàn thành. Việc quá hạn sẽ hiện màu đỏ trên lịch." },
     { el:"#c10a-save", t:"Lưu", x:"Bấm <b>Thêm</b>: việc hiện ngay trên lịch, hệ thống lưu vào Google Sheet ở nền — không phải chờ." }
    ] },
- { id:"update", v:1, d:"2026-10-11", g:"Công việc", ic:"task", t:"Cập nhật tiến độ việc", x:"Đổi trạng thái, % hoàn thành, kết quả và file đính kèm.",
+ { id:"evsync", v:1, d:"2026-10-13", g:"Công việc", ic:"task", t:"Sự kiện MKT & Key task họp chung", x:"Sự kiện offline tự thành Key task, bài đăng thành sub-task; mỗi tháng 1 key họp chung.",
    steps:[
-    { el:".c10-card", do:cal, t:"Thẻ công việc", x:"Mỗi thẻ là một việc. Viền đỏ = quá hạn. Bấm vào thẻ (hoặc biểu tượng bút) để cập nhật." },
+    { el:".kt-panel .v-sync-chip.ev", do:function(){ try{ switchTab("detail"); setDetailTime("all"); S.detailPics=[]; renderDetail(); }catch(_){} }, wait:500, t:"Key task sự kiện", x:"Mỗi sự kiện ở file <b>MKT Offline</b> (REPORT_EVENT / PLAN_EVENT) tự thành 1 Key task loại <b>Marketing-Event</b>, nhãn <b>📅 SỰ KIỆN</b>. Thêm / sửa / xoá sự kiện ở file đó ⇒ Key task tự đổi theo." },
+    { el:function(){ var a=document.querySelectorAll(".kt-panel"); for(var i=0;i<a.length;i++){ if(/Internal Meeting/.test(a[i].textContent)) return a[i].querySelector(".kt-head")||a[i]; } return null; }, t:"Key task họp chung", x:"Mỗi tháng hệ thống tự có <b>Internal Meeting MMYYYY · Nhóm</b> và <b>· MMH (toàn công ty)</b>. Cuộc họp của bạn thêm thành <b>sub-task</b> dưới key này, không tạo key họp riêng." },
+    { el:".rhk-box .rhk-hit", do:function(){ try{ openAddKey(); var i=document.getElementById("ak-name"); if(i) i.value="Họp team tháng này"; saveAddKey(); }catch(_){} }, wait:400, t:"Không tạo Key task lặp", x:"Tạo Key task trùng tên trong tháng, hoặc tên có chữ <b>họp / meeting</b> ⇒ app gợi ý thêm thành <b>sub-task</b> dưới key có sẵn. Vẫn tạo key mới được nếu thật sự cần." }
+   ] },
+ { id:"update", v:2, d:"2026-10-13", g:"Công việc", ic:"task", t:"Cập nhật tiến độ việc", x:"Đổi trạng thái, % hoàn thành, kết quả và file đính kèm.",
+   steps:[
+    { el:".c10-card", do:function(){ cal(); for(var i=0;i<6 && !q(".c10-card");i++){ try{ c10Nav(-1); }catch(_){ break; } } }, wait:400, t:"Thẻ công việc", x:"Mỗi thẻ là một việc. Viền đỏ = quá hạn. Bấm vào thẻ (hoặc biểu tượng bút) để cập nhật." },
     { el:"#q10-st", do:function(){ var b=q(".c10-ebtn"); if(b) b.click(); }, t:"Trạng thái", x:"Chọn <b>To Do</b>, <b>Đang làm</b>, <b>Xong</b> hoặc <b>Huỷ</b>." },
     { el:"#q10-steps", t:"Phần trăm hoàn thành", x:"Bấm nhanh 0 – 25 – 50 – 75 – 100% hoặc kéo thanh trượt phía trên." },
     { el:"#q10-due", t:"Hạn", x:"Đổi hạn nếu kế hoạch thay đổi. Báo cáo tuần ghi nhận hạn mới." },

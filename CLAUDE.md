@@ -149,3 +149,10 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   đặt `mmh_pic=TEST` + thêm TEST vào `FALLBACK_ROSTER` (`window.__RH_TF`, bỏ qua `enterAs`). Mọi lệnh gắn `tm=1&tmAs` + `tk` ⇒ ghi thật dưới tên TEST, email chỉ về Admin,
   `forceTest` đổi người nhận việc (addKey / addSub / rhAssignAdd) thành TEST. Bảng Luồng dữ liệu `#tf-fab` / `TESTFLOW.open()`; vai Giám đốc ⇒ TFA chỉ duyệt đề xuất TEST.
   "Xoá dữ liệu test" = `tmClean` (3 backend phòng ban + Training Hub). Lệnh ghi mới ⇒ thêm nhãn vào `TESTFLOW_CFG.labels`. Mock (`tools/guide/mock.js`): `tm=1` ⇒ `_tm.mails`, `tmInfo`, `tmClean`.
+- **v17.8 — Sự kiện MKT ⇒ Key task, key họp chung, bằng chứng tham dự, Coaching (khối `v178-js` + `v178b-js`)**: backend marketing `Event_Sync.gs` ghi mỗi sự kiện
+  (REPORT_EVENT, bổ sung PLAN_EVENT) thành Key task `Marketing-Event` (cột U `EK:…`), bài đăng EVENT REPORT (file Digital) thành sub-task chỉ đọc (`E:…`, tên
+  Type of content_Format_Pillar, kết quả = Status + Note). App: `vIsSync` trả false cho key `EK:` (sửa kết quả / trạng thái / hạn, thêm sub tay; không đổi tên / không xoá
+  — backend chặn), chip 📅 SỰ KIỆN, `rtCat` = "event" (mặc định hiện). MMH Calendar ghi xong ⇒ `evSyncSoon()` gọi `eventSync`. `MMH_MonthlyKeys.gs` (marketing / backoffice /
+  management) tự tạo "Internal Meeting MMYYYY · Nhóm" + "· MMH (toàn công ty)"; `doAddKey` bọc `RHK.match` ⇒ key trùng tên trong tháng / tên có họp-meeting ⇒ gợi ý thêm sub-task.
+  Sự kiện offline: bảng "Bằng chứng tham dự" (`V178.proofPaint`, backend marketing `evProof` list/upload vào folder sự kiện). Buổi Coaching: khối "PDF Review" (`rhCoachReview`,
+  upload `rhUploadInit` path `["Review"]`). Mock: key 4 = sự kiện (`EK:`), key 5–6 = Internal Meeting; `evProof` / `rhCoachReview` / `eventSync`. Cảnh `cap.js v178`, `v178proof`.

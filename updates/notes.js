@@ -8,6 +8,24 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-13-v17.8", version:"v17.8", date:"2026-10-13",
+    title:"Sự kiện MKT tự thành Key task · Key task họp chung hằng tháng · Bằng chứng tham dự · Coaching",
+    summary:"Sự kiện ở file <b>MKT Offline</b> tự hiện thành Key task <b>Marketing-Event</b> (bài đăng của sự kiện là sub-task), mỗi tháng có sẵn <b>1 Key task Internal Meeting</b> cho từng nhóm và toàn công ty, sự kiện offline có chỗ tải <b>bằng chứng tham dự</b>, buổi <b>Coaching</b> cần file PDF Review.",
+    items:[
+      { type:"new", icon:"📅", title:"Sự kiện offline ⇒ Key task tự động", text:"Thêm / sửa / xoá sự kiện ở <b>PLAN_EVENT</b> hoặc <b>REPORT_EVENT</b> (file MKT Offline) ⇒ Key task loại <b>Marketing-Event</b> trên Weekly new tự thêm / sửa / xoá theo, nhãn <b>📅 SỰ KIỆN</b>. Bài đăng của sự kiện ở <b>EVENT REPORT</b> (file Digital) hiện thành sub-task chỉ xem (vd. <i>Recap_Photo_After event</i>, kết quả = Status + Note, bắt đầu = On-air dự kiến). Bạn vẫn thêm sub-task của mình dưới key sự kiện.", img:"updates/v17.8/event-key.jpg" },
+      { type:"imp", icon:"🗂️", title:"Không còn Key task họp lặp lại", text:"Mỗi tháng hệ thống tự tạo <b>Internal Meeting MMYYYY · Nhóm</b> và <b>· MMH (toàn công ty)</b>. Khi bạn thêm Key task tên có chữ <b>họp / meeting</b>, hoặc trùng tên một key trong tháng ⇒ app gợi ý <b>thêm thành sub-task</b> dưới key có sẵn.", img:"updates/v17.8/no-dup.jpg" },
+      { type:"new", icon:"✅", title:"Bằng chứng tham dự sự kiện", text:"MMH Calendar ▸ mở sự kiện offline ▸ <b>Tải bằng chứng</b>: bản scan danh sách ký tên (sự kiện trực tiếp) hoặc báo cáo người tham dự xuất từ Zoom (webinar). File lưu vào folder của sự kiện; chưa có bằng chứng thì số tham dự không tính KPI.", img:"updates/v17.8/proof.jpg" },
+      { type:"new", icon:"📄", title:"Coaching cần file PDF Review", text:"Tạo buổi đào tạo hình thức <b>Coaching</b> ▸ mở buổi trên MMH Calendar ▸ <b>Tải file PDF Review</b>. Chưa có file PDF thì buổi không chuyển được Completed và không tính KPI coaching." }
+    ],
+    en:{ title:"MKT events become Key tasks · one monthly meeting Key task · attendance proof · Coaching",
+      items:[
+        { title:"Offline events ⇒ automatic Key tasks", text:"Adding / editing / deleting an event in PLAN_EVENT or REPORT_EVENT (MKT Offline file) adds / updates / removes a Marketing-Event Key task on Weekly new, tagged 📅 EVENT. The event's posts in EVENT REPORT (Digital file) appear as read-only sub-tasks. You can still add your own sub-tasks." },
+        { title:"No more duplicated meeting Key tasks", text:"Each month the system creates 'Internal Meeting MMYYYY · Team' and '· MMH (company)'. Adding a Key task named like a meeting, or duplicating a name in the same month, suggests adding it as a sub-task instead." },
+        { title:"Event attendance proof", text:"MMH Calendar ▸ open an offline event ▸ Upload proof: signed check-in sheet (in-person) or Zoom attendee report (webinar). Saved into the event folder; without proof the actual attendance is not counted in KPI." },
+        { title:"Coaching requires a PDF Review", text:"For a Coaching session, open it on MMH Calendar ▸ Upload PDF Review. Without the PDF the session cannot be set to Completed and does not count for coaching KPI." }
+      ] }
+  },
+  {
     id:"2026-10-13-v17.7", version:"v17.7", date:"2026-10-13",
     title:"Chế độ TEST của Admin: thử mọi chức năng, ghi thật, xem dữ liệu đi đâu",
     summary:"Chỉ dành cho Admin. Report Hub chạy như người dùng <b>TEST</b>: thêm việc, đề xuất / duyệt công tác, báo cáo tuần / tháng / KPI, giao việc… đều <b>lưu thật</b> dưới tên TEST, mọi email chỉ gửi về Admin, bảng <b>Luồng dữ liệu</b> cho thấy mỗi lần lưu đi vào file nào, tab nào, dòng nào. Người khác không thấy dữ liệu TEST, không tính KPI.",

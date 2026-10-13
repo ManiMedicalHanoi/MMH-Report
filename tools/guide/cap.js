@@ -189,6 +189,26 @@ S.v163=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',noChecks
 S.v168kpn=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',noChecks:true,time:'2026-12-09T09:00:00+07:00',vp:{width:1100,height:700}});
   await ev(p,()=>{ NT.close&&NT.close(); }); await p.waitForSelector('#kpn.show',{timeout:30000}); await p.waitForTimeout(300);
   await shot(p,'v168kpn',{clip:'#kpn .c'}); };
+/* ★ v17.8 — sự kiện MKT ⇒ key task + key task không lặp */
+S.v178=async b=>{ const p=await newPage(b,{pic:'Thuong',noChecks:true,time:'2026-10-20T09:00:00+07:00',vp:{width:1440,height:900}}); await p.waitForTimeout(3500); await ev(p,()=>{ NT.close&&NT.close(); if(window.UPD&&UPD.isOpen()) UPD.close(); });
+  await ev(p,()=>{ switchTab('detail'); setDetailTime('all'); S.detailOpen['4']=true; renderDetail(); }); await p.waitForTimeout(800);
+  await ev(p,()=>{ var el=document.querySelector('[data-kno="4"]'); if(el) el.scrollIntoView({block:'center'}); }); await p.waitForTimeout(400);
+  console.log('ERRS', JSON.stringify(p.errs));
+  console.log('CHIP', await p.evaluate(()=>!!document.querySelector('[data-kno="4"] .v-sync-chip.ev')));
+  await shot(p,'v178ev',{clip:'[data-kno="4"]',marks:[['[data-kno="4"] .v-sync-chip.ev',1,'tl'],['#sub-4\\.4',2,'tl']]});
+  await ev(p,()=>openAddKey()); await p.fill('#ak-name','Họp team tháng 10'); await p.click('#ak-save'); await p.waitForTimeout(500);
+  console.log('RHK', await p.evaluate(()=>document.querySelectorAll('.rhk-hit').length));
+  await shot(p,'v178dup',{clip:'#modals .modal-box',marks:[['.rhk-hit',1,'tl'],['.rhk-box .btn-secondary',2,'tl']]});
+  await p.click('.rhk-hit'); await p.waitForTimeout(800);
+  console.log('SUB', await p.evaluate(()=>JSON.stringify((S._allKeys.find(k=>k.no==='5')||{}).subs.map(s=>s.subTask))));
+  console.log('ERRS', JSON.stringify(p.errs)); };
+S.v178proof=async b=>{ const p=await newPage(b,{pic:'Thuong',vp:{width:1440,height:1000}}); await openCal(p,[2026,9,1],'month');
+  const id=await ev(p,()=>{ const e=MC.ev.find(x=>x.k==='offline'&&/Contemporary Endodontics/.test(x.title))||MC.ev.find(x=>x.k==='offline'); return e.id; });
+  await ev(p,id=>MC.open(id),id); await p.waitForTimeout(1500);
+  console.log('PROOF', await p.evaluate(()=>{ var w=document.getElementById('v178-proof'); return w?w.innerText.slice(0,200):'none'; }));
+  await ev(p,()=>{ var w=document.getElementById('v178-proof'); if(w) w.scrollIntoView({block:'center'}); }); await p.waitForTimeout(300);
+  await shot(p,'v178proof',{clip:'#mc-dr',marks:[['#v178-proof h5',1,'tl'],['#v178-proof label.up',2,'tl']]});
+  console.log('ERRS', JSON.stringify(p.errs)); };
 module.exports={S,newPage,shot,ev};
 if(require.main===module)(async()=>{
   const b=await chromium.launch({args:['--lang=vi-VN']});
