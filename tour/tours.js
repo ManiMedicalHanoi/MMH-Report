@@ -13,11 +13,11 @@ function cal(){ try{ if(window.switchTab) switchTab("calendar"); }catch(_){} }
 function today(){ var d=new Date(); return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2); }
 function me(){ try{ return window.AUTH && AUTH.user && AUTH.user(); }catch(_){ return null; } }
 TOUR.add([
- { id:"start", v:2, d:"2026-10-11", g:"Bắt đầu", ic:"start", t:"Làm quen Report Hub", x:"Các khu vực chính trên màn hình và chỗ tìm mọi chức năng.",
+ { id:"start", v:3, d:"2026-10-13", g:"Bắt đầu", ic:"start", t:"Làm quen Report Hub", x:"Các khu vực chính trên màn hình và chỗ tìm mọi chức năng.",
    steps:[
     { el:ver, t:"Số phiên bản", x:"Bấm số phiên bản để xem lại mọi <b>thông báo cập nhật</b> từ trước tới nay." },
     { el:".src-tab", do:cal, t:"Chọn phòng ban", x:"Đổi giữa <b>Marketing &amp; Sales</b>, <b>Back Office</b> và <b>Management</b>. Mỗi phòng ban có danh sách việc riêng." },
-    { el:function(){ var b=q(".tabbtn"); return b&&b.parentElement; }, t:"Các chức năng", x:"Tổng quan, Tiến độ, Cập nhật công việc, Báo cáo tuần / tháng, <b>Lịch làm việc</b>, Biên bản họp và <b>KPI</b>." },
+    { el:function(){ var b=q(".tabbtn"); return b&&b.parentElement; }, t:"Các chức năng — 4 nhóm", x:"<b>Tổng quan</b> (Tổng quan · Tiến độ · KPI) · <b>Cập nhật</b> (Lịch làm việc · Cập nhật công việc · Biên bản họp) · <b>Báo cáo</b> (tuần · tháng) · <b>Liên kết</b> (MMH Calendar, app khác). Bấm 1 chức năng ⇒ xem <b>toàn màn hình</b>; nhấn <b>Esc</b> hoặc <b>‹ Chức năng</b> để quay lại chọn chức năng khác." },
     { el:"#qs-btn", t:"Tìm nhanh", x:"Bấm hoặc nhấn <b>Ctrl + K</b> để tìm việc, sự kiện, bài đăng, chuyến công tác, buổi đào tạo." },
     { el:"#tb-tools", t:"Thanh công cụ", x:"Hướng dẫn, Thông báo cập nhật, Việc đã giao, Màu giao diện và đổi ngôn ngữ VN / EN." },
     { el:".tb-user", t:"Tài khoản", x:"Bấm tên của bạn để xem tài khoản hoặc đăng xuất." }

@@ -226,6 +226,15 @@ S.v179=async b=>{ const p=await newPage(b,{pic:'Thuong',noChecks:true,time:'2026
   await ev(p,()=>closeModal());
   console.log('TFA', await p.evaluate(()=>!!document.getElementById('tfa-btn')));
   console.log('ERRS', JSON.stringify(p.errs)); };
+S.v180=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',vp:{width:1440,height:900}}); await p.waitForTimeout(2500); await ev(p,()=>{ NT.close&&NT.close(); });
+  await ev(p,()=>switchTab('calendar')); await p.waitForTimeout(500);
+  await shot(p,'v180side',{clip:{x:0,y:0,width:520,height:900},marks:[['#tabnav .v18-gh',1,'tr'],['#tabnav .v18-lk',2,'tr']]});
+  await p.click('#tabnav .tabbtn[data-tab="detail"]'); await p.waitForTimeout(800);
+  await shot(p,'v180full',{clip:{x:0,y:0,width:1440,height:560},marks:[['#v18-back',1,'tr'],['#v18-fv .tabs',2,'tr']]});
+  await p.keyboard.press('Escape'); await p.waitForTimeout(300);
+  await p.click('#lang-switch button:last-child').catch(()=>{}); await p.waitForTimeout(800);
+  console.log('EN', await p.evaluate(()=>[...document.querySelectorAll('#tabnav .tabbtn, #tabnav .v18-gh')].map(x=>x.textContent.trim()).join(' | ')));
+  console.log('ERRS', JSON.stringify(p.errs)); };
 module.exports={S,newPage,shot,ev};
 if(require.main===module)(async()=>{
   const b=await chromium.launch({args:['--lang=vi-VN']});

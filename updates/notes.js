@@ -8,6 +8,22 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-13-v18.0", version:"v18.0", date:"2026-10-13",
+    title:"Giao diện gọn: thanh bên 4 nhóm chức năng, xem toàn màn hình, biểu tượng nét mảnh",
+    summary:"Thanh bên chia <b>Tổng quan · Cập nhật · Báo cáo · Liên kết</b>. Bấm 1 chức năng là xem <b>toàn màn hình</b>, nhấn <b>Esc</b> để quay lại chọn chức năng khác. Emoji màu được thay bằng biểu tượng nét mảnh, tiêu đề bảng nền nhạt — giống CRM.",
+    items:[
+      { type:"imp", icon:"▦", title:"Thanh bên 4 nhóm chức năng", text:"<b>Tổng quan</b>: Tổng quan · Tiến độ công việc · KPI. <b>Cập nhật</b>: Lịch làm việc · Cập nhật công việc · Biên bản họp. <b>Báo cáo</b>: Báo cáo tuần · Monthly Report. <b>Liên kết</b>: MMH Calendar · Thông tin thầu · Product Data · Dự trù &amp; Doanh số.", img:"updates/v18.0/sidebar.jpg" },
+      { type:"new", icon:"⛶", title:"Xem toàn màn hình, Esc để quay lại", text:"Bấm 1 chức năng ở thanh bên ⇒ thanh bên tự ẩn, chức năng chiếm cả màn hình; thanh nhỏ phía trên chuyển nhanh giữa các chức năng cùng nhóm. Nhấn <b>Esc</b> (hoặc <b>‹ Chức năng</b>) để hiện lại thanh bên và chọn chức năng khác.", img:"updates/v18.0/fullscreen.jpg" },
+      { type:"imp", icon:"✓", title:"Biểu tượng gọn, bảng nhã hơn", text:"Nút, nhãn, tiêu đề không còn emoji màu — dùng biểu tượng nét mảnh như CRM. Tiêu đề bảng (Cập nhật công việc, Báo cáo) đổi nền nhạt, chữ navy; khối Việc của tôi và nút Hoạt động là thẻ trắng viền mảnh." }
+    ],
+    en:{ title:"Cleaner layout: 4 menu groups, full-screen view, thin line icons",
+      items:[
+        { title:"Sidebar in 4 groups", text:"Overview: Overview · Timeline · KPI. Update: Work calendar · All tasks · Meeting minutes. Reports: Weekly · Monthly report. Links: MMH Calendar · Tender info · Product Data · Forecast & Turnover." },
+        { title:"Full-screen view, Esc to go back", text:"Click a function in the sidebar ⇒ the sidebar hides and the function fills the screen; the small bar on top switches between functions of the same group. Press Esc (or ‹ Menu) to show the sidebar again." },
+        { title:"Tidy icons, calmer tables", text:"Buttons, labels and titles no longer use colour emoji — thin line icons like the CRM. Table headers use a light background with navy text." }
+      ] }
+  },
+  {
     id:"2026-10-13-v17.9", version:"v17.9", date:"2026-10-13",
     title:"Gõ tên là thấy Key task trùng · Key task sự kiện gọn, có link Folder · Họp chung còn 3 nhóm + MMH Monthly Meeting · Bỏ Duyệt công tác",
     summary:"Thêm Key task: đang gõ tên là app hiện ngay key có sẵn gần giống để thêm thành <b>sub-task</b>. Key task sự kiện MKT chỉ ghi thông tin sự kiện và có nút <b>📁 Folder</b>. Họp chung hằng tháng chỉ còn <b>Dental Sales · Surgical Sales · Marketing</b> và 1 key <b>MMH Monthly Meeting</b> cả kỳ. Nút <b>Duyệt công tác</b> đã bỏ — chỉ còn Đề xuất công tác.",
