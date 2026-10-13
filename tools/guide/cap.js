@@ -209,6 +209,23 @@ S.v178proof=async b=>{ const p=await newPage(b,{pic:'Thuong',vp:{width:1440,heig
   await ev(p,()=>{ var w=document.getElementById('v178-proof'); if(w) w.scrollIntoView({block:'center'}); }); await p.waitForTimeout(300);
   await shot(p,'v178proof',{clip:'#mc-dr',marks:[['#v178-proof h5',1,'tl'],['#v178-proof label.up',2,'tl']]});
   console.log('ERRS', JSON.stringify(p.errs)); };
+S.v179=async b=>{ const p=await newPage(b,{pic:'Thuong',noChecks:true,time:'2026-10-20T09:00:00+07:00',vp:{width:1440,height:900}}); await p.waitForTimeout(3500); await ev(p,()=>{ NT.close&&NT.close(); if(window.UPD&&UPD.isOpen()) UPD.close(); });
+  await ev(p,()=>{ switchTab('detail'); setDetailTime('all'); S.detailOpen['4']=true; renderDetail(); }); await p.waitForTimeout(800);
+  await ev(p,()=>{ var el=document.querySelector('[data-kno="4"]'); if(el) el.scrollIntoView({block:'center'}); }); await p.waitForTimeout(400);
+  console.log('FOLDER', await p.evaluate(()=>{ var a=document.querySelector('[data-kno="4"] .v-sync-chip.evf'); return a?a.href:'none'; }));
+  await shot(p,'v179ev',{clip:'[data-kno="4"]',marks:[['[data-kno="4"] .v-sync-chip.evf',1,'tl']]});
+  await ev(p,()=>openAddKey()); await p.type('#ak-name','Dental seminar Ho Chi Minh',{delay:20}); await p.waitForTimeout(400);
+  console.log('SD', await p.evaluate(()=>document.querySelectorAll('#sd-pan-ak-name .sd-it').length));
+  await shot(p,'v179dup',{clip:'#modals .modal-box',marks:[['#sd-pan-ak-name .sd-it',1,'tl']]});
+  await p.click('#sd-pan-ak-name .sd-it'); await p.waitForTimeout(300);
+  await shot(p,'v179sub',{clip:'#modals .modal-box',marks:[['#sd-chosen',1,'tl'],['#ak-save',2,'tl']]});
+  await p.click('#ak-save'); await p.waitForTimeout(800);
+  console.log('SUB4', await p.evaluate(()=>JSON.stringify((S._allKeys.find(k=>k.no==='4')||{}).subs.map(s=>s.subTask))));
+  await ev(p,()=>openAddKey()); await p.type('#ak-name','Họp tháng',{delay:20}); await p.waitForTimeout(400);
+  console.log('MEET', await p.evaluate(()=>[...document.querySelectorAll('#sd-pan-ak-name .sd-it b')].map(x=>x.textContent).join(' | ')));
+  await ev(p,()=>closeModal());
+  console.log('TFA', await p.evaluate(()=>!!document.getElementById('tfa-btn')));
+  console.log('ERRS', JSON.stringify(p.errs)); };
 module.exports={S,newPage,shot,ev};
 if(require.main===module)(async()=>{
   const b=await chromium.launch({args:['--lang=vi-VN']});

@@ -22,22 +22,23 @@ TOUR.add([
     { el:"#tb-tools", t:"Thanh công cụ", x:"Hướng dẫn, Thông báo cập nhật, Việc đã giao, Màu giao diện và đổi ngôn ngữ VN / EN." },
     { el:".tb-user", t:"Tài khoản", x:"Bấm tên của bạn để xem tài khoản hoặc đăng xuất." }
    ] },
- { id:"addtask", v:1, d:"2026-10-11", g:"Công việc", ic:"task", t:"Thêm Key task và Sub-task", x:"Tạo đầu việc chính, thêm việc phụ, chọn người làm và hạn.",
+ { id:"addtask", v:2, d:"2026-10-13", g:"Công việc", ic:"task", t:"Thêm Key task và Sub-task", x:"Tạo đầu việc chính, thêm việc phụ, chọn người làm và hạn.",
    steps:[
     { el:".c10-btn.pri", do:cal, t:"Nút Thêm việc", x:"Ở <b>Lịch làm việc</b>, bấm <b>＋ Thêm việc</b>. Có thể bấm thẳng vào một ngày trên lịch để thêm việc cho ngày đó." },
     { el:"#ksm-key", do:function(){ try{ c10Add(today()); }catch(_){} }, t:"Key task mới", x:"Chọn <b>Key task mới</b> khi đây là một đầu việc chính (vd. một dự án, một chương trình)." },
     { el:"#ksm-sub", t:"Hoặc Sub-task", x:"Chọn <b>Sub-task</b> để thêm việc phụ vào một Key task có sẵn." },
-    { el:"#c10a-name", t:"Tên công việc", x:"Viết ngắn, rõ việc cần làm. Ví dụ: <b>Chốt danh mục Key SKUs Dental FY68</b>." },
+    { el:"#c10a-name", t:"Tên công việc", x:"Viết ngắn, rõ việc cần làm. Ví dụ: <b>Chốt danh mục Key SKUs Dental FY68</b>. Gõ tên trùng / gần giống key có sẵn ⇒ app gợi ý ngay để thêm thành sub-task." },
     { el:"#c10a-type", t:"Loại việc", x:"Chọn trong danh sách hoặc gõ để lọc." },
     { el:"#c10a-pic", t:"Người làm (PIC)", x:"Chọn người phụ trách. Trưởng nhóm giao cho người khác thì người đó nhận thông báo." },
     { el:"#c10a-start", t:"Ngày bắt đầu và hạn", x:"Điền ngày bắt đầu và hạn hoàn thành. Việc quá hạn sẽ hiện màu đỏ trên lịch." },
     { el:"#c10a-save", t:"Lưu", x:"Bấm <b>Thêm</b>: việc hiện ngay trên lịch, hệ thống lưu vào Google Sheet ở nền — không phải chờ." }
    ] },
- { id:"evsync", v:1, d:"2026-10-13", g:"Công việc", ic:"task", t:"Sự kiện MKT & Key task họp chung", x:"Sự kiện offline tự thành Key task, bài đăng thành sub-task; mỗi tháng 1 key họp chung.",
+ { id:"evsync", v:2, d:"2026-10-13", g:"Công việc", ic:"task", t:"Sự kiện MKT & Key task họp chung", x:"Sự kiện offline tự thành Key task (có link Folder), gõ tên key trùng là app gợi ý thêm sub-task.",
    steps:[
-    { el:".kt-panel .v-sync-chip.ev", do:function(){ try{ switchTab("detail"); setDetailTime("all"); S.detailPics=[]; renderDetail(); }catch(_){} }, wait:500, t:"Key task sự kiện", x:"Mỗi sự kiện ở file <b>MKT Offline</b> (REPORT_EVENT / PLAN_EVENT) tự thành 1 Key task loại <b>Marketing-Event</b>, nhãn <b>📅 SỰ KIỆN</b>. Thêm / sửa / xoá sự kiện ở file đó ⇒ Key task tự đổi theo." },
-    { el:function(){ var a=document.querySelectorAll(".kt-panel"); for(var i=0;i<a.length;i++){ if(/Internal Meeting/.test(a[i].textContent)) return a[i].querySelector(".kt-head")||a[i]; } return null; }, t:"Key task họp chung", x:"Mỗi tháng hệ thống tự có <b>Internal Meeting MMYYYY · Nhóm</b> và <b>· MMH (toàn công ty)</b>. Cuộc họp của bạn thêm thành <b>sub-task</b> dưới key này, không tạo key họp riêng." },
-    { el:".rhk-box .rhk-hit", do:function(){ try{ openAddKey(); var i=document.getElementById("ak-name"); if(i) i.value="Họp team tháng này"; saveAddKey(); }catch(_){} }, wait:400, t:"Không tạo Key task lặp", x:"Tạo Key task trùng tên trong tháng, hoặc tên có chữ <b>họp / meeting</b> ⇒ app gợi ý thêm thành <b>sub-task</b> dưới key có sẵn. Vẫn tạo key mới được nếu thật sự cần." }
+    { el:".kt-panel .v-sync-chip.ev", do:function(){ try{ switchTab("detail"); setDetailTime("all"); S.detailPics=[]; renderDetail(); }catch(_){} }, wait:500, t:"Key task sự kiện", x:"Mỗi sự kiện ở file <b>MKT Offline</b> (REPORT_EVENT / PLAN_EVENT) tự thành 1 Key task loại <b>Marketing-Event</b>, nhãn <b>📅 SỰ KIỆN</b>. Task Result chỉ ghi thông tin sự kiện (loại, đối tác, địa điểm, ngày, kế hoạch, tham dự, link folder)." },
+    { el:".kt-panel .v-sync-chip.evf", t:"Mở folder sự kiện", x:"Bấm <b>📁 Folder</b> để mở thư mục sự kiện trên Google Drive (link lấy từ cột Detail event folder link)." },
+    { el:function(){ var a=document.querySelectorAll(".kt-panel"); for(var i=0;i<a.length;i++){ if(/Internal Meeting|MMH Monthly Meeting/.test(a[i].textContent)) return a[i].querySelector(".kt-head")||a[i]; } return null; }, t:"Key task họp chung", x:"Họp nội bộ tháng chỉ có 3 nhóm: <b>Internal Meeting MMYYYY · Dental Sales / Surgical Sales / Marketing</b>. Họp toàn công ty: 1 key <b>MMH Monthly Meeting FYxx</b> cho cả kỳ, mỗi tháng 1 sub-task (vd. <b>202610</b>)." },
+    { el:"#sd-pan-ak-name .sd-it", do:function(){ try{ openAddKey(); var i=document.getElementById("ak-name"); if(i){ i.value="Họp tháng"; i.dispatchEvent(new Event("input",{bubbles:true})); } }catch(_){} }, wait:400, t:"Gõ tên là thấy key trùng", x:"Đang gõ tên Key task mới, app hiện ngay các key có tên gần giống. Bấm 1 key ⇒ việc của bạn thành <b>sub-task</b> của key đó (tên giữ nguyên). Bấm <b>Tạo key mới</b> nếu thật sự là việc khác." }
    ] },
  { id:"update", v:2, d:"2026-10-13", g:"Công việc", ic:"task", t:"Cập nhật tiến độ việc", x:"Đổi trạng thái, % hoàn thành, kết quả và file đính kèm.",
    steps:[
@@ -89,15 +90,6 @@ TOUR.add([
     { el:"#tp-sched", t:"Lịch trình", x:"Ghi theo từng ngày, ví dụ <b>24/9: HN – HP – HN</b>." },
     { el:"#ms-eq", t:"Thiết bị mang theo", x:"Chọn thiết bị (Laptop, hàng mẫu…). Email đề xuất kèm cam kết bảo quản thiết bị." },
     { el:"#tp-send", t:"Gửi đề xuất", x:"Email theo mẫu <b>Business Trip Approval Request</b> gửi tới Giám đốc, CC trưởng phòng và bạn. Duyệt xong bạn nhận email phê duyệt." }
-   ] },
- { id:"approve", v:1, d:"2026-10-11", g:"Công tác", ic:"trip", t:"Duyệt đề xuất công tác", x:"Dành cho Giám đốc: duyệt nhiều đề xuất cùng lúc.",
-   when:function(){ var u=me(); return !!u && (u.level==="director" || u.admin); },
-   steps:[
-    { el:"#tfa-btn", t:"Nút Duyệt công tác", x:"Số đỏ = số đề xuất đang chờ duyệt của mọi người." },
-    { el:"#tfa-ov .tfa-it", do:function(){ try{ TFA.open(); }catch(_){} }, wait:900, t:"Từng đề xuất", x:"Mỗi thẻ có mục đích, lịch trình, chi phí, thiết bị. Bấm vào thẻ để chọn." },
-    { el:"#tfa-ov [data-cm], #tfa-ov .tfa-note", t:"Ghi chú / lý do", x:"Ghi chú khi duyệt (không bắt buộc). <b>Từ chối thì phải ghi lý do.</b>" },
-    { el:"#tfa-ov .tfa-bar label", t:"Chọn tất cả", x:"Tick để chọn mọi đề xuất đang chờ." },
-    { el:"#tfa-ov .tfa-ok", t:"Duyệt / Từ chối", x:"Mỗi người đề xuất nhận 1 email riêng theo mẫu phê duyệt. Chuyến được duyệt tự có thư mục nộp tài liệu." }
    ] },
  { id:"report", v:1, d:"2026-10-11", g:"Báo cáo", ic:"report", t:"Gửi báo cáo tuần / tháng", x:"Gửi báo cáo bằng email ngay từ lịch.",
    steps:[

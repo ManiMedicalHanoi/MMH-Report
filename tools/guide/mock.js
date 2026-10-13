@@ -31,16 +31,16 @@ const KEY=[
  {no:'2',row:20,keyTask:'Ophthalmic — tender FY68',pic:'Giang',status:'On going',type:'Tender',start:'2026-10-01',planned:'2026-10-20',subs:[
    {no:'2.1',row:21,subTask:'Hồ sơ thầu BV Mắt TW',pic:'Giang',status:'On going',start:'2026-10-06',planned:'2026-10-06'},
    {no:'2.2',row:22,subTask:'Review spec chỉ khâu với NPP I Care',pic:'Giang',status:'Not started',start:'2026-10-07',planned:'2026-10-08'}]},
- {no:'4',row:40,keyTask:'20261019 Dental Products_Seminar_Dr. Nguyen Thanh Dung, Dr. Hau_Ho Chi Minh',pic:'Thuong',status:'In Progress',type:'Marketing-Event',start:'2026-10-19',planned:'2026-10-19',vSrc:'EK:1a2b3c',vMeta:{s:'event',ym:'202610',src:'R'},
-   result:'🔄 Đồng bộ từ file MKT Offline ▸ REPORT_EVENT\nSeminar · Dental Products · Dental/MMG\nNgày: 19/10/2026\nTham dự thực tế: 0 / mục tiêu 40',subs:[
+ {no:'4',row:40,keyTask:'20261019 Dental Products_Seminar_Dr. Nguyen Thanh Dung, Dr. Hau_Ho Chi Minh',pic:'Thuong',status:'In Progress',type:'Marketing-Event',start:'2026-10-19',planned:'2026-10-19',vSrc:'EK:1a2b3c',vMeta:{s:'event',ym:'202610',src:'R',f:'https://drive.google.com/drive/folders/demoEventFolder'},
+   result:'Seminar · Dental Products · Dental/MMG\nĐối tác: Nam Dung · Địa điểm: Ho Chi Minh\nNgày: 19/10/2026\nKế hoạch: Fixed · As planned\nTham dự thực tế: 0 / mục tiêu 40\nFolder sự kiện: https://drive.google.com/drive/folders/demoEventFolder',subs:[
    {no:'4.3',row:43,subTask:'Tuyển sinh_Design post_Before event',pic:'Minh Trang',status:'Completed',start:'2026-10-03',planned:'2026-10-03',progress:100,vSrc:'E:9x1',vMeta:{s:'eventpost',t:'Design post',pg:'Mani Dental',ts:'On air đúng hạn'},result:'Status: On air đúng hạn\nhttps://www.facebook.com/share/p/demo1/'},
    {no:'4.4',row:44,subTask:'Recap_Photo_After event',pic:'Minh Trang',status:'To Do',start:'2026-10-21',planned:'2026-10-21',vSrc:'E:9x2',vMeta:{s:'eventpost',t:'Photo',pg:'Mani Dental',ts:''},result:'Status: (chưa có)'},
    {no:'4.1',row:41,subTask:'Truyền thông: Agenda sự kiện',pic:'Minh Trang',status:'Not started',start:'2026-10-06',planned:'2026-10-08'},
    {no:'4.2',row:42,subTask:'Đặt phòng hội thảo',pic:'Thuong',status:'On going',start:'2026-10-05',planned:'2026-10-09'}]},
  {no:'3',row:30,keyTask:'Weekly report & meeting',pic:'Giang',status:'On going',type:'Routine',start:'2026-10-05',planned:'2026-10-09',subs:[
    {no:'3.1',row:31,subTask:'Weekly meeting Sales & Marketing',pic:'Giang',status:'Completed',start:'2026-10-05',planned:'2026-10-05'}]},
- {no:'5',row:50,keyTask:'Internal Meeting 102026 · Product Team',pic:'Giang',status:'To Do',type:'Plan',start:'2026-10-01',planned:'2026-10-31',subs:[]},
- {no:'6',row:60,keyTask:'Internal Meeting 102026 · MMH (toàn công ty)',pic:'Nguyen Ha',status:'To Do',type:'Plan',start:'2026-10-01',planned:'2026-10-31',subs:[]},
+ {no:'5',row:50,keyTask:'Internal Meeting 102026 · Marketing',pic:'Thuong',status:'To Do',type:'Plan',start:'2026-10-01',planned:'2026-10-31',subs:[]},
+ {no:'6',row:60,keyTask:'MMH Monthly Meeting FY68',pic:'Nguyen Ha',status:'In Progress',type:'Plan',start:'2026-09-01',planned:'2027-08-31',subs:[{no:'6.1',row:61,subTask:'202609',pic:'Nguyen Ha',status:'Completed',start:'2026-09-01',planned:'2026-09-30'},{no:'6.2',row:62,subTask:'202610',pic:'Nguyen Ha',status:'To Do',start:'2026-10-01',planned:'2026-10-31'}]},
 ];
 const ROSTER=require('./roster.json');
 /* ★ v15.5 — giả lập Training Hub v3.12: việc được giao (rhAssign*) */

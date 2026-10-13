@@ -156,3 +156,9 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   management) tự tạo "Internal Meeting MMYYYY · Nhóm" + "· MMH (toàn công ty)"; `doAddKey` bọc `RHK.match` ⇒ key trùng tên trong tháng / tên có họp-meeting ⇒ gợi ý thêm sub-task.
   Sự kiện offline: bảng "Bằng chứng tham dự" (`V178.proofPaint`, backend marketing `evProof` list/upload vào folder sự kiện). Buổi Coaching: khối "PDF Review" (`rhCoachReview`,
   upload `rhUploadInit` path `["Review"]`). Mock: key 4 = sự kiện (`EK:`), key 5–6 = Internal Meeting; `evProof` / `rhCoachReview` / `eventSync`. Cảnh `cap.js v178`, `v178proof`.
+- **v17.9 (13/10/2026, khối `v179-css` + `v179-js`)**: ① gợi ý Key task trùng NGAY KHI GÕ (`SD`): ô `#ak-name`, `#c10a-name` (dạng Key task mới), `#v10-qname` ⇒ bảng
+  `#sd-pan-<id>` (≥ 3 ký tự, so theo từ không dấu, ưu tiên key họp chung) ⇒ bấm 1 key = thêm thành sub-task (`doAddSub`); `RHK` lúc bấm Thêm vẫn là lớp cuối.
+  ② key sự kiện `EK:` có nút `📁 Folder` (`vMeta.f`, backend Event_Sync v1.1 đọc link thật của ô Detail event folder link; Task Result chỉ còn thông tin sự kiện,
+  KHÔNG dòng "🔄 Đồng bộ từ…"). ③ Key họp chung (`MMH_MonthlyKeys.gs` v2.0): chỉ `Internal Meeting MMYYYY · Dental Sales / Surgical Sales / Marketing` (backend marketing)
+  + `MMH Monthly Meeting FYxx` (management, 1 key cả kỳ, sub-task = `yyyyMM`). ④ **Đã bỏ Duyệt công tác (`TFA_CFG={off:true}`)** ở Report Hub + CRM — chỉ còn Đề xuất
+  (người dùng yêu cầu 13/10/2026); backend `tfDecide` giữ nguyên nhưng app không gọi. Cảnh chụp `cap.js v179`.

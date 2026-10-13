@@ -8,6 +8,26 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-13-v17.9", version:"v17.9", date:"2026-10-13",
+    title:"Gõ tên là thấy Key task trùng · Key task sự kiện gọn, có link Folder · Họp chung còn 3 nhóm + MMH Monthly Meeting · Bỏ Duyệt công tác",
+    summary:"Thêm Key task: đang gõ tên là app hiện ngay key có sẵn gần giống để thêm thành <b>sub-task</b>. Key task sự kiện MKT chỉ ghi thông tin sự kiện và có nút <b>📁 Folder</b>. Họp chung hằng tháng chỉ còn <b>Dental Sales · Surgical Sales · Marketing</b> và 1 key <b>MMH Monthly Meeting</b> cả kỳ. Nút <b>Duyệt công tác</b> đã bỏ — chỉ còn Đề xuất công tác.",
+    items:[
+      { type:"new", icon:"🔎", title:"Gõ tên Key task là thấy key trùng", text:"Bấm <b>Thêm Key Task</b> (hoặc Lịch ▸ Thêm việc ▸ Key task mới) ▸ gõ tên ⇒ ngay dưới ô tên hiện các key đã có tên gần giống. Bấm 1 key ⇒ việc của bạn thành <b>sub-task</b> của key đó, bấm <b>Thêm sub-task</b> là xong. Không đúng thì bấm <b>Tạo key mới</b>.", img:"updates/v17.9/smart-search.jpg" },
+      { type:"imp", icon:"📂", title:"Thêm thẳng thành sub-task", text:"Sau khi chọn key có sẵn, hộp thoại đổi thành <b>Thêm sub-task</b>: tên giữ nguyên chữ bạn vừa gõ, chọn PIC và hạn như bình thường.", img:"updates/v17.9/add-sub.jpg" },
+      { type:"imp", icon:"📅", title:"Key task sự kiện gọn hơn, có link Folder", text:"Task Result của key sự kiện chỉ còn: loại · sản phẩm · segment, đối tác · địa điểm, ngày, kế hoạch, tham dự thực tế, <b>Folder sự kiện</b> (link thật). Bấm nút <b>📁 Folder</b> cạnh nhãn 📅 SỰ KIỆN để mở thư mục trên Drive.", img:"updates/v17.9/event-folder.jpg" },
+      { type:"imp", icon:"🗓️", title:"Key task họp chung theo nhóm mới", text:"Mỗi tháng chỉ còn <b>Internal Meeting MMYYYY · Dental Sales / Surgical Sales / Marketing</b>. Họp toàn công ty là 1 key <b>MMH Monthly Meeting FY68</b> cho cả kỳ, mỗi tháng 1 sub-task tên theo tháng (vd. <b>202610</b>). Key họp kiểu cũ còn trống tự được dọn." },
+      { type:"imp", icon:"🧳", title:"Bỏ Duyệt công tác trên app", text:"Nút <b>Duyệt công tác</b> trên thanh trên cùng đã bỏ. Bạn vẫn <b>Đề xuất công tác</b> như cũ (Lịch làm việc ▸ Đề xuất công tác), email xin duyệt gửi Giám đốc theo mẫu Business Trip." }
+    ],
+    en:{ title:"Duplicate Key tasks shown while typing · tidy event Key tasks with a Folder link · new shared meetings · trip approval removed",
+      items:[
+        { title:"See duplicate Key tasks while typing", text:"Add Key Task (or Calendar ▸ Add task ▸ New key task) ▸ type the name ⇒ existing keys with a similar name appear under the box. Click one to add your task as its sub-task, or click Create new key." },
+        { title:"Add directly as a sub-task", text:"After picking an existing key the dialog becomes Add sub-task: the name you typed is kept; choose PIC and dates as usual." },
+        { title:"Tidier event Key tasks with a Folder link", text:"The Task Result of an event key only shows event info (type, partner, place, dates, plan, attendance, event folder link). Click 📁 Folder next to the 📅 EVENT tag to open the Drive folder." },
+        { title:"New shared meeting Key tasks", text:"Monthly internal meetings now exist only for Dental Sales, Surgical Sales and Marketing. The company meeting is one Key task 'MMH Monthly Meeting FY68' for the whole year with one sub-task per month (e.g. 202610)." },
+        { title:"Trip approval removed from the app", text:"The Approve trips button is gone. You still propose business trips as before; the approval request email goes to the Director using the Business Trip template." }
+      ] }
+  },
+  {
     id:"2026-10-13-v17.8", version:"v17.8", date:"2026-10-13",
     title:"Sự kiện MKT tự thành Key task · Key task họp chung hằng tháng · Bằng chứng tham dự · Coaching",
     summary:"Sự kiện ở file <b>MKT Offline</b> tự hiện thành Key task <b>Marketing-Event</b> (bài đăng của sự kiện là sub-task), mỗi tháng có sẵn <b>1 Key task Internal Meeting</b> cho từng nhóm và toàn công ty, sự kiện offline có chỗ tải <b>bằng chứng tham dự</b>, buổi <b>Coaching</b> cần file PDF Review.",
