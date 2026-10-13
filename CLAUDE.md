@@ -162,3 +162,8 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   KHÔNG dòng "🔄 Đồng bộ từ…"). ③ Key họp chung (`MMH_MonthlyKeys.gs` v2.0): chỉ `Internal Meeting MMYYYY · Dental Sales / Surgical Sales / Marketing` (backend marketing)
   + `MMH Monthly Meeting FYxx` (management, 1 key cả kỳ, sub-task = `yyyyMM`). ④ **Đã bỏ Duyệt công tác (`TFA_CFG={off:true}`)** ở Report Hub + CRM — chỉ còn Đề xuất
   (người dùng yêu cầu 13/10/2026); backend `tfDecide` giữ nguyên nhưng app không gọi. Cảnh chụp `cap.js v179`.
+- **v18.0 — giao diện gọn (khối `v180-css` + `v180-js`, người dùng: icon / bảng lòe loẹt)**: `#tabnav` trong thanh bên chia 4 nhóm `GROUPS` (Tổng quan: overview · gantt · kpi /
+  Cập nhật: calendar · detail · meet / Báo cáo: report · month / Liên kết: MMH Calendar + link `.qlinks`) — bọc `buildTabs` ⇒ `regroup()`; tab mới phải thêm vào 1 nhóm.
+  Bấm chức năng ở thanh bên ⇒ `body.v18-fv` (toàn màn hình, thanh `#v18-fv` chuyển nhanh trong nhóm), **Esc** / `‹ Chức năng` ⇒ `V18.exit()` (bỏ qua khi có hộp thoại / tour).
+  Emoji màu trong nút / nhãn / tiêu đề bị bỏ bởi bộ quét `V18.clean` (giống CRM v30, danh sách `SEL`), ô 1 emoji ⇒ SVG `V18_ICON`; `DICT_EN` tự thêm khoá đã bỏ emoji.
+  Giao diện mới: không thêm emoji, dùng `V18_ICON(k)`; tiêu đề bảng nền `--t-soft` chữ `--t-ink`. Cảnh chụp `cap.js v180`.
