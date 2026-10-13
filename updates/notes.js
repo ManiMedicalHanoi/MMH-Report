@@ -8,6 +8,24 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-13-v17.7", version:"v17.7", date:"2026-10-13",
+    title:"Chế độ TEST của Admin: thử mọi chức năng, ghi thật, xem dữ liệu đi đâu",
+    summary:"Chỉ dành cho Admin. Report Hub chạy như người dùng <b>TEST</b>: thêm việc, đề xuất / duyệt công tác, báo cáo tuần / tháng / KPI, giao việc… đều <b>lưu thật</b> dưới tên TEST, mọi email chỉ gửi về Admin, bảng <b>Luồng dữ liệu</b> cho thấy mỗi lần lưu đi vào file nào, tab nào, dòng nào. Người khác không thấy dữ liệu TEST, không tính KPI.",
+    items:[
+      { type:"new", icon:"🧪", title:"Bật chế độ TEST", text:"Bấm <b>tên của bạn</b> (góc phải trên) ▸ <b>Chế độ TEST · luồng dữ liệu</b> (hoặc Ctrl+K gõ \"test\") ▸ chọn phòng nhận dữ liệu ▸ chọn vai <b>Nhân viên</b>, <b>Quản lý</b> hoặc <b>Giám đốc</b> ▸ <b>Bắt đầu</b>. Tạo việc cho người khác ⇒ người nhận tự đổi thành TEST.", img:"updates/v17.7/test-mode-pick.jpg" },
+      { type:"new", icon:"➜", title:"Bảng Luồng dữ liệu", text:"Bấm nút vàng <b>TEST</b> (góc trái dưới). Mỗi lần lưu hiện ① thao tác → ② backend → ③ file ▸ tab ▸ dòng (có link) → ④ email lẽ ra gửi tới ai — chỉ gửi về Admin, tiêu đề <b>[TEST]</b>. Danh sách kịch bản tự đánh dấu chức năng đã thử.", img:"updates/v17.7/test-mode-flow.jpg" },
+      { type:"new", icon:"✔", title:"Đóng vai Giám đốc duyệt công tác", text:"Đề xuất công tác ở vai Nhân viên ▸ đổi sang vai <b>Giám đốc</b> ▸ <b>Duyệt công tác</b> ▸ chọn đề xuất có nhãn <b>TEST</b> ▸ <b>Duyệt</b>. Đề xuất thật bị khoá — vẫn cần Giám đốc thật duyệt.", img:"updates/v17.7/test-mode-director.jpg" },
+      { type:"imp", icon:"🧹", title:"Xoá dữ liệu test, dùng được trên điện thoại", text:"Trong bảng Luồng dữ liệu bấm <b>Xoá dữ liệu test</b>: dòng có PIC TEST, đề xuất công tác TEST + folder, việc giao cho TEST bị xoá; dữ liệu thật không bị đụng tới. <b>Thoát chế độ TEST</b> để về tài khoản của bạn.", img:"updates/v17.7/test-mode-phone.jpg" }
+    ],
+    en:{ title:"Admin TEST mode: try every function with real saves and see where the data goes",
+      items:[
+        { title:"Start TEST mode", text:"Click your name (top right) ▸ TEST mode · data flow (or Ctrl+K \"test\") ▸ pick the department that receives the data ▸ pick a role: Staff, Manager or Director ▸ Start. Tasks created for others are re-assigned to TEST." },
+        { title:"Data flow panel", text:"Click the yellow TEST button (bottom left). Each save shows ① the action → ② the backend → ③ file ▸ tab ▸ row (with a link) → ④ who the e-mail would go to — it is sent to the Admin only with [TEST] in the subject. A checklist ticks off each function tested." },
+        { title:"Play the Director and approve a trip", text:"Propose a trip as Staff ▸ switch to Director ▸ Approve trips ▸ select the proposal labelled TEST ▸ Approve. Real proposals are locked — they still need the real Director." },
+        { title:"Delete test data, works on phones", text:"In the Data flow panel click Delete test data: rows with PIC TEST, TEST trip proposals + folders and tasks assigned to TEST are removed; real data is untouched. Exit TEST mode returns to your own account." }
+      ] }
+  },
+  {
     id:"2026-10-11-v17.6", version:"v17.6", date:"2026-10-11",
     title:"Hướng dẫn từng bước chạy mượt hơn, cả trên điện thoại",
     summary:"Bài hướng dẫn không còn giật, không làm thu nhỏ trang trên điện thoại: app cuộn êm tới đúng chỗ, vùng sáng trượt theo và chỉ phóng to riêng nút / ô cần xem.",

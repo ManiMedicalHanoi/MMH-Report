@@ -127,6 +127,17 @@ TOUR.add([
     { el:"#adm", do:function(){ try{ if(window.ADM&&ADM.open) ADM.open(); }catch(_){} }, wait:1000, t:"Danh sách người dùng", x:"Bấm một người để sửa email, phòng ban, vai trò. Cột đăng nhập gần nhất màu đỏ = chưa từng đăng nhập." },
     { el:"#adm .tg", do:function(){ var r=q("#adm tr.r"); if(r && !q("#adm .tg")) r.click(); }, wait:500, t:"Bật / tắt chức năng", x:"Công tắc viền vàng = khác quyền mặc định của vai trò." },
     { el:"#af-save", t:"Lưu", x:"Lưu quyền. Có nút <b>Đăng xuất khỏi mọi máy</b> cho từng người." }
+   ] },
+ { id:"testmode", v:1, d:"2026-10-13", g:"Quản trị", ic:"gear", t:"Chế độ TEST · Luồng dữ liệu", x:"Admin thử mọi chức năng dưới tên TEST, ghi thật, xem dữ liệu đi đâu.",
+   when:function(){ var u=me(); return !!u && u.admin && !!window.TESTFLOW; },
+   steps:[
+    { el:".tb-user", when:function(){ return !TESTFLOW.on(); }, t:"Mở menu tên", x:"Bấm tên của bạn ▸ <b>Chế độ TEST · luồng dữ liệu</b> (hoặc Ctrl+K gõ \"test\"). Chỉ Admin thấy." },
+    { el:"#tf-pk .tf-scopes", do:function(){ try{ TESTFLOW.pick(); }catch(_){} }, wait:500, when:function(){ return !TESTFLOW.on(); }, t:"Chọn phòng", x:"File công việc của phòng nào nhận dữ liệu TEST (Sales & Marketing hoặc Back Office)." },
+    { el:"#tf-pk .tf-roles", when:function(){ return !TESTFLOW.on(); }, t:"Chọn vai", x:"<b>Nhân viên</b>: việc, báo cáo, công tác, KPI · <b>Quản lý</b>: giao việc · <b>Giám đốc</b>: duyệt công tác — chỉ hồ sơ TEST." },
+    { el:"#tf-pk [data-go]", when:function(){ return !TESTFLOW.on(); }, t:"Bắt đầu", x:"Dữ liệu lưu thật dưới tên TEST, email chỉ về Admin, người khác không thấy, không tính KPI." },
+    { el:"#tf-fab", when:function(){ return TESTFLOW.on(); }, t:"Nút TEST", x:"Góc trái dưới: vai đang dùng + số thao tác. Bấm để mở bảng Luồng dữ liệu." },
+    { el:"#tf-pn .tf-roles", do:function(){ try{ TESTFLOW.open(); }catch(_){} }, wait:400, when:function(){ return TESTFLOW.on(); }, t:"Đổi vai", x:"Đổi sang <b>Giám đốc</b> để duyệt công tác của TEST." },
+    { el:"#tf-pn .tf-tl", when:function(){ return TESTFLOW.on(); }, t:"Luồng dữ liệu", x:"Mỗi lần lưu: ① thao tác → ② backend → ③ file ▸ tab ▸ dòng → ④ email lẽ ra gửi tới ai. Xong thì bấm <b>Xoá dữ liệu test</b>." }
    ] }
 ]);
 /* lệnh nhanh trong Ctrl+K: mở danh mục hướng dẫn */

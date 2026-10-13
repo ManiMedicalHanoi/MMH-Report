@@ -144,3 +144,8 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   Kiểm tra: `tools/tour_check.js` (chạy mọi bài với mock, báo bước không tìm thấy). Nhãn "Mới" / "Cập nhật" theo `d` ≤ 14 ngày, "Đã xem" lưu `localStorage.mmh_tour_seen`.
 - **Tour v1.1 (v17.6)**: không biến đổi `<body>` nữa (giật, điện thoại bị co trang / lộ bảng tin) — cuộn mượt tới phần tử, vùng sáng trượt theo, phóng to riêng
   phần tử (scale ≤ 1,3, không vượt mép), `html.tr-on` khoá tràn ngang. Kiểm tra cả khung điện thoại: `tools/tour_check.js --mobile`.
+- **Chế độ TEST của Admin (v17.7, `testflow/testflow.js` GIỐNG HỆT MMH-CRM — sửa 1 nơi chép sang nơi kia; backend `MMH_TestMode.gs` ở mmh-backend)**: menu tên ▸
+  "Chế độ TEST · luồng dữ liệu" (Ctrl+K "test") ⇒ chọn phòng (marketing / backoffice) + vai (Nhân viên · Quản lý · Giám đốc) ⇒ `localStorage.mmh_test_rh`, khối đăng nhập
+  đặt `mmh_pic=TEST` + thêm TEST vào `FALLBACK_ROSTER` (`window.__RH_TF`, bỏ qua `enterAs`). Mọi lệnh gắn `tm=1&tmAs` + `tk` ⇒ ghi thật dưới tên TEST, email chỉ về Admin,
+  `forceTest` đổi người nhận việc (addKey / addSub / rhAssignAdd) thành TEST. Bảng Luồng dữ liệu `#tf-fab` / `TESTFLOW.open()`; vai Giám đốc ⇒ TFA chỉ duyệt đề xuất TEST.
+  "Xoá dữ liệu test" = `tmClean` (3 backend phòng ban + Training Hub). Lệnh ghi mới ⇒ thêm nhãn vào `TESTFLOW_CFG.labels`. Mock (`tools/guide/mock.js`): `tm=1` ⇒ `_tm.mails`, `tmInfo`, `tmClean`.
