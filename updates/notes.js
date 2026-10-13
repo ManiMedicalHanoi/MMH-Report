@@ -8,6 +8,15 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-13-v18.1", version:"v18.1", date:"2026-10-13",
+    title:"Giao diện tiếng Anh đầy đủ hơn",
+    summary:"Bấm <b>EN</b> trên thanh trên cùng: thanh công cụ, MMH Calendar, trang KPI và ô gợi ý Key task trùng nay hiển thị tiếng Anh.",
+    items:[
+      { type:"fix", icon:"🌐", title:"Bổ sung bản dịch tiếng Anh", text:"Bấm <b>EN</b> ▸ các nút Tìm nhanh, Hướng dẫn, Thông báo cập nhật, Việc đã giao, toàn bộ MMH Calendar, trang KPI và ô gợi ý Key task trùng hiển thị tiếng Anh (trước đây còn sót tiếng Việt)." }
+    ],
+    en:{ title:"More complete English interface", items:[ { title:"English translations added", text:"Click EN: Quick search, Guide, What's new, Assignments, the whole MMH Calendar, the KPI page and the duplicate key-task suggestions are now in English." } ] }
+  },
+  {
     id:"2026-10-13-v18.0", version:"v18.0", date:"2026-10-13",
     title:"Giao diện gọn: thanh bên 4 nhóm chức năng, xem toàn màn hình, biểu tượng nét mảnh",
     summary:"Thanh bên chia <b>Tổng quan · Cập nhật · Báo cáo · Liên kết</b>. Bấm 1 chức năng là xem <b>toàn màn hình</b>, nhấn <b>Esc</b> để quay lại chọn chức năng khác. Emoji màu được thay bằng biểu tượng nét mảnh, tiêu đề bảng nền nhạt — giống CRM.",
