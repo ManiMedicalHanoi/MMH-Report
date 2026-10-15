@@ -8,6 +8,22 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-15-v18.2", version:"v18.2", date:"2026-10-15",
+    title:"Cập nhật công việc gọn, đều · Key task sự kiện: gợi ý đúng tên sự kiện · MIR từ file Ads Manager",
+    summary:"Dòng Key task giờ <b>đều nhau</b>. Hệ thống <b>không tự tạo Key task sự kiện</b> nữa (các key tự tạo trước đây đã được dọn) — khi đặt tên, app <b>gợi ý tên sự kiện</b> có sẵn để chọn, bài đăng MKT online của sự kiện tự thành sub-task. Tải file <b>Ads Manager</b> là có ngay MIR.",
+    items:[
+      { type:"imp", icon:"▤", title:"Dòng Key task gọn, đều nhau", text:"Trang <b>Cập nhật công việc</b>: hàng trên = loại việc + nhãn (Sự kiện, Quá hạn) + PIC; hàng dưới = tên Key task cùng cỡ chữ, 1 dòng (tên dài hiện “…”, rê chuột hoặc mở key để xem đủ). Kết quả tối đa 2 dòng ⇒ các dòng cao bằng nhau, thẳng hàng.", img:"updates/v18.2/v182rows.jpg" },
+      { type:"new", icon:"📅", title:"Đặt tên Key task sự kiện: chọn từ danh sách sự kiện", text:"Bấm <b>Thêm Key Task</b> ▸ gõ vài chữ (vd. “compo”) hoặc chọn loại <b>Marketing-Event</b> ⇒ hiện các sự kiện trong file Marketing Offline ▸ bấm <b>Chọn</b> ⇒ điền đúng tên, loại và ngày sự kiện. Bài đăng MKT online của sự kiện (file Digital ▸ EVENT REPORT) tự thêm thành sub-task. Tên gõ lệch ⇒ app hỏi lại trước khi lưu.", img:"updates/v18.2/v182ev.jpg" },
+      { type:"new", icon:"📈", title:"MIR quảng cáo Facebook: tải file Ads Manager", text:"Thanh bên ▸ <b>Liên kết</b> ▸ <b>Quảng cáo · MIR</b> (hoặc Ctrl+K “MIR”) ▸ <b>Chọn file Ads Manager</b> (.xlsx / .csv) ⇒ mỗi chiến dịch thành 1 dòng ở tab ADS REPORT (Tiếp cận, Kết quả, Chi tiêu, MIR), tab KPI MIR report tự cập nhật. Hoặc thả file vào thư mục Drive “ADS REPORT - file Ads Manager”, hệ thống tự đọc ~10 phút/lần.", img:"updates/v18.2/v182ads.jpg" }
+    ],
+    en:{ title:"Tidier task list · Event key tasks use the exact event name · MIR from Ads Manager files",
+      items:[
+        { title:"Even, compact key-task rows", text:"All tasks page: top line = type + labels (Event, Overdue) + PIC; second line = the key-task name, same size, one line (long names end with “…”, hover or open to see it all). Results take at most 2 lines, so every row has the same height." },
+        { title:"Name event key tasks from the event list", text:"Add Key Task ▸ type a few letters or pick type Marketing-Event ⇒ events from the Marketing Offline file are listed ▸ click Use ⇒ the exact name, type and dates are filled in. Event posts (Digital file ▸ EVENT REPORT) are added as sub-tasks automatically. Key tasks are no longer created automatically." },
+        { title:"Facebook Ads MIR: upload the Ads Manager file", text:"Sidebar ▸ Links ▸ Facebook Ads · MIR (or Ctrl+K “MIR”) ▸ choose the Ads Manager export (.xlsx / .csv) ⇒ each campaign becomes one row of ADS REPORT (reach, results, spend, MIR) and KPI MIR report is updated. Or drop the file into the Drive folder “ADS REPORT - file Ads Manager” (read every ~10 minutes)." }
+      ] }
+  },
+  {
     id:"2026-10-13-v18.1", version:"v18.1", date:"2026-10-13",
     title:"Giao diện tiếng Anh đầy đủ hơn",
     summary:"Bấm <b>EN</b> trên thanh trên cùng: thanh công cụ, MMH Calendar, trang KPI và ô gợi ý Key task trùng nay hiển thị tiếng Anh.",

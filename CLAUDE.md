@@ -167,3 +167,10 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   Bấm chức năng ở thanh bên ⇒ `body.v18-fv` (toàn màn hình, thanh `#v18-fv` chuyển nhanh trong nhóm), **Esc** / `‹ Chức năng` ⇒ `V18.exit()` (bỏ qua khi có hộp thoại / tour).
   Emoji màu trong nút / nhãn / tiêu đề bị bỏ bởi bộ quét `V18.clean` (giống CRM v30, danh sách `SEL`), ô 1 emoji ⇒ SVG `V18_ICON`; `DICT_EN` tự thêm khoá đã bỏ emoji.
   Giao diện mới: không thêm emoji, dùng `V18_ICON(k)`; tiêu đề bảng nền `--t-soft` chữ `--t-ink`. Cảnh chụp `cap.js v180`.
+- **v18.2 (15/10/2026, khối `v182-css` + `v182-js`)**: ① Cập nhật công việc — `detailKeyPanels` được bọc lớp cuối (`relayout`): `.kt-namecell.v182` = hàng `.kt-l1` (loại + nhãn
+  SỰ KIỆN / QUÁ HẠN / đang lưu + PIC) + tên 1 dòng cùng cỡ (`.kt-title`, mở key thì xuống dòng), Kết quả ≤ 2 dòng ⇒ mọi dòng cao bằng nhau. Nhãn mới trên dòng key phải nằm
+  trong `.kt-title` / namecell để được đưa lên `.kt-l1` (danh sách `LIFT`). ② Sự kiện MKT: backend Event_Sync v2.0 KHÔNG tự tạo key; `EVL` (`evList`, `localStorage.mmh_evlist`,
+  10 phút) gợi ý tên sự kiện ở `#ak-name` / `#c10a-name` / `#v10-qname` (bảng `#evl-pan-<id>`, nguồn marketing), chọn ⇒ đúng tên + loại Marketing-Event + ngày; key đã có ⇒ thêm sub (`SD.pick`).
+  `doAddKey` loại Marketing-Event mà tên không khớp ⇒ hỏi lại; thêm xong ⇒ `evSyncSoon()` (bài đăng EVENT REPORT thành sub `E:`). Key đúng tên sự kiện ⇒ nhãn SỰ KIỆN + Folder.
+  ③ `ADS` (Liên kết ▸ Quảng cáo · MIR, Ctrl+K "MIR"; Marketing / Admin / Director / HOD): tải file Ads Manager ⇒ backend `adsReport op=upload` (MKT_AdsImport.gs) ⇒ ADS REPORT + KPI MIR report.
+  Mock: `evList`, `adsReport`; cảnh `cap.js v182` (`ADS_FILE=<file xlsx giả>`). Không đưa số Ads thật vào repo.

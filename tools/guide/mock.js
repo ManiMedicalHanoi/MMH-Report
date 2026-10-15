@@ -31,8 +31,8 @@ const KEY=[
  {no:'2',row:20,keyTask:'Ophthalmic — tender FY68',pic:'Giang',status:'On going',type:'Tender',start:'2026-10-01',planned:'2026-10-20',subs:[
    {no:'2.1',row:21,subTask:'Hồ sơ thầu BV Mắt TW',pic:'Giang',status:'On going',start:'2026-10-06',planned:'2026-10-06'},
    {no:'2.2',row:22,subTask:'Review spec chỉ khâu với NPP I Care',pic:'Giang',status:'Not started',start:'2026-10-07',planned:'2026-10-08'}]},
- {no:'4',row:40,keyTask:'20261019 Dental Products_Seminar_Dr. Nguyen Thanh Dung, Dr. Hau_Ho Chi Minh',pic:'Thuong',status:'In Progress',type:'Marketing-Event',start:'2026-10-19',planned:'2026-10-19',vSrc:'EK:1a2b3c',vMeta:{s:'event',ym:'202610',src:'R',f:'https://drive.google.com/drive/folders/demoEventFolder'},
-   result:'Seminar · Dental Products · Dental/MMG\nĐối tác: Nam Dung · Địa điểm: Ho Chi Minh\nNgày: 19/10/2026\nKế hoạch: Fixed · As planned\nTham dự thực tế: 0 / mục tiêu 40\nFolder sự kiện: https://drive.google.com/drive/folders/demoEventFolder',subs:[
+ {no:'4',row:40,keyTask:'20261019 Dental Products_Seminar_Dr. Nguyen Thanh Dung, Dr. Hau_Ho Chi Minh',pic:'Thuong',status:'In Progress',type:'Marketing-Event',start:'2026-10-19',planned:'2026-10-19',
+   result:'Seminar 2 chuyên đề, mục tiêu 40 bác sĩ',subs:[
    {no:'4.3',row:43,subTask:'Tuyển sinh_Design post_Before event',pic:'Minh Trang',status:'Completed',start:'2026-10-03',planned:'2026-10-03',progress:100,vSrc:'E:9x1',vMeta:{s:'eventpost',t:'Design post',pg:'Mani Dental',ts:'On air đúng hạn'},result:'Status: On air đúng hạn\nhttps://www.facebook.com/share/p/demo1/'},
    {no:'4.4',row:44,subTask:'Recap_Photo_After event',pic:'Minh Trang',status:'To Do',start:'2026-10-21',planned:'2026-10-21',vSrc:'E:9x2',vMeta:{s:'eventpost',t:'Photo',pg:'Mani Dental',ts:''},result:'Status: (chưa có)'},
    {no:'4.1',row:41,subTask:'Truyền thông: Agenda sự kiện',pic:'Minh Trang',status:'Not started',start:'2026-10-06',planned:'2026-10-08'},
@@ -119,6 +119,19 @@ async function install(page, o){
     else if(a==='calendar') d=D.trip;
     else if(a==='boot'||a==='weekly') d={ok:true,source:'marketing',picList:ROSTER,keyTasks:JSON.parse(JSON.stringify(o.staleMs&&Date.now()<staleUntil&&staleCopy?staleCopy:KK)),monthly:[],activityLog:[]};
     else if(a==='eventSync'){ d={ok:true,skipped:true}; }
+    else if(a==='evList'){ d={ok:true,events:[
+      {n:'20261019 Dental Products_Seminar_Dr. Nguyen Thanh Dung, Dr. Hau_Ho Chi Minh',s:'2026-10-19',e:'2026-10-19',ym:'202610',t:'Seminar',sg:'Dental',pd:'Dental Products',pl:'Ho Chi Minh',k:'Dr. Nguyen Thanh Dung',src:'R',f:'https://drive.google.com/drive/folders/demoEventFolder',np:3},
+      {n:'20261024 Composite_Seminar_Dr. Nguyen Van Thuy_Vietnam Cuba',s:'2026-10-24',e:'2026-10-24',ym:'202610',t:'Seminar',sg:'Dental',pd:'Composite',pl:'Ha Noi',k:'Dr. Nguyen Van Thuy',src:'R',f:'',np:2},
+      {n:'20261111 Dental Products_Workshop_Dr. Nguyen Thanh Dung, Haiphong Medical University_Hai Phong',s:'2026-11-11',e:'2026-11-11',ym:'202611',t:'Workshop',sg:'Dental',pd:'Dental Products',pl:'Hai Phong',k:'Dr. Nguyen Thanh Dung',src:'P',f:'',np:1},
+      {n:'20261113-15 Ophthalmic Products_Exhibition_VOS_Da Nang',s:'2026-11-13',e:'2026-11-15',ym:'202611',t:'Exhibition',sg:'Surgical/Eyeless',pd:'Ophthalmic Products',pl:'Da Nang',k:'',src:'P',f:'',np:0}]}; }
+    else if(a==='adsReport'){ if(body.op==='upload'){ const C=[
+        {name:'2.10.2026 - Event - Demo Seminar A',label:'Demo Seminar A',type:'Event',month:202610,reach:12000,impr:40000,results:30,spend:2500000,cpr:83333,mir:30/12000,start:'2026-10-02',end:'2026-10-12',adsets:[]},
+        {name:'2.10.2026 - Product - Demo CTKM',label:'Demo CTKM',type:'Product',month:202610,reach:10000,impr:36000,results:45,spend:2000000,cpr:44444,mir:45/10000,start:'2026-10-02',end:'2026-10-12',adsets:[]},
+        {name:'2.10.2026 - Event - Demo Workshop B',label:'Demo Workshop B',type:'Event',month:202610,reach:8000,impr:25000,results:20,spend:1500000,cpr:75000,mir:20/8000,start:'2026-10-02',end:'2026-10-08',adsets:[]}];
+        LOG.push(['ads',body.name]);
+        d={ok:true,campaigns:C,rows:C.map((c,i)=>({name:c.name,type:c.type,month:c.month,row:7+i,act:'new'})),rstart:'2026-10-01',rend:'2026-10-13',file:{name:'20261015_0930_'+body.name,url:'https://drive.google.com/file/d/demoAds/view'},
+          message:'Ads Manager "'+body.name+'": 3 chiến dịch · thêm 3 · cập nhật 0 dòng ADS REPORT · KPI MIR report: thêm 2 dòng tháng (202610 Event, 202610 Product)'}; }
+      else d={ok:true,folderUrl:'https://drive.google.com/drive/folders/demoAdsDir',files:[{name:'20261002_Ads Manager tháng 9.xlsx',at:Date.parse('2026-10-02T09:00:00+07:00'),n:4}]}; }
     else if(a==='addKey'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); const no=String(++seq); KK.push({no,row:+no*10,keyTask:body.keyTask,pic:body.pic,status:body.status||'To Do',type:body.type||'',start:body.start,planned:body.planned,subs:[]}); d={ok:true,no,row:+no*10,task:{}}; }
     else if(a==='deleteKey'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); const i=KK.findIndex(k=>k.no===String(body.no)); if(i>=0) KK.splice(i,1); d={ok:true}; }
     else if(a==='deleteSub'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); KK.forEach(k=>{ k.subs=(k.subs||[]).filter(x=>x.no!==String(body.no)); }); d={ok:true}; }

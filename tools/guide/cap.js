@@ -235,6 +235,25 @@ S.v180=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',vp:{widt
   await p.click('#lang-switch button:last-child').catch(()=>{}); await p.waitForTimeout(800);
   console.log('EN', await p.evaluate(()=>[...document.querySelectorAll('#tabnav .tabbtn, #tabnav .v18-gh')].map(x=>x.textContent.trim()).join(' | ')));
   console.log('ERRS', JSON.stringify(p.errs)); };
+S.v182=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',vp:{width:1440,height:900},time:'2026-10-15T09:00:00+07:00'}); await p.waitForTimeout(2500); await ev(p,()=>{ NT.close&&NT.close(); });
+  await p.click('#tabnav .tabbtn[data-tab="detail"]'); await p.waitForTimeout(1500);
+  await ev(p,()=>{ var b=[...document.querySelectorAll('button')].find(x=>/^Tất cả$/.test((x.textContent||'').trim())&&x.offsetParent); if(b) b.click(); }); await p.waitForTimeout(600);
+  await ev(p,()=>{ S.detailPics=[]; try{ localStorage.removeItem('mmh_detail_pics'); }catch(_){} renderDetail(); }); await p.waitForTimeout(700);
+  await ev(p,()=>{ var h=document.querySelector('.kt-panel'); if(h) h.scrollIntoView({block:'start'}); window.scrollBy(0,-120); }); await p.waitForTimeout(400);
+  await shot(p,'v182rows',{marks:[['.kt-panel .kt-l1',1,'tl'],['.kt-panel .kt-namecell .kt-title',2,'tr']]});
+  await ev(p,()=>{ window.V18&&V18.exit&&V18.exit(); openAddKey(); }); await p.waitForTimeout(500);
+  await p.fill('#ak-type','Marketing-Event'); await p.dispatchEvent('#ak-type','change'); await p.click('#ak-name'); await p.type('#ak-name','compo',{delay:40}); await p.waitForTimeout(800);
+  await shot(p,'v182ev',{clip:'.modal-box',marks:[['#evl-pan-ak-name .evl-it',1,'tl',1]]});
+  await ev(p,()=>EVL.pick(0)); await p.waitForTimeout(300);
+  console.log('picked', await ev(p,()=>[$('ak-name').value,$('ak-type').value,$('ak-start').value,$('ak-planned').value].join(' | ')));
+  await shot(p,'v182evpicked',{clip:'.modal-box',marks:[['#ak-name',1,'tl',1]]});
+  await ev(p,()=>closeModal()); await p.waitForTimeout(300);
+  await ev(p,()=>ADS.open()); await p.waitForTimeout(800);
+  await p.setInputFiles('#ads-drop input[type=file]', process.env.ADS_FILE||'/tmp/demo_ads.xlsx').catch(e=>console.log('upload',e.message));
+  await p.waitForTimeout(1500);
+  await shot(p,'v182ads',{clip:'.modal-box',marks:[['#ads-drop',1,'tl',1],['.ads-sum',2,'tl',1],['.ads-box table',3,'tl']]});
+  console.log('mount', await ev(p,()=>!!document.querySelector('#tabnav .v182-ads')));
+  console.log('ERRS', JSON.stringify(p.errs)); };
 module.exports={S,newPage,shot,ev};
 if(require.main===module)(async()=>{
   const b=await chromium.launch({args:['--lang=vi-VN']});
