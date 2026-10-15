@@ -174,3 +174,6 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   `doAddKey` loại Marketing-Event mà tên không khớp ⇒ hỏi lại; thêm xong ⇒ `evSyncSoon()` (bài đăng EVENT REPORT thành sub `E:`). Key đúng tên sự kiện ⇒ nhãn SỰ KIỆN + Folder.
   ③ `ADS` (Liên kết ▸ Quảng cáo · MIR, Ctrl+K "MIR"; Marketing / Admin / Director / HOD): tải file Ads Manager ⇒ backend `adsReport op=upload` (MKT_AdsImport.gs) ⇒ ADS REPORT + KPI MIR report.
   Mock: `evList`, `adsReport`; cảnh `cap.js v182` (`ADS_FILE=<file xlsx giả>`). Không đưa số Ads thật vào repo.
+- **v18.3 (15/10/2026, khối `v183-css` + `v183-js`)**: `salesChartsHTML` (Tổng quan ▸ Customer Visiting Rate / Customer Type Breakdown) đọc thẳng CRM Dental / Surgical / Eyeless
+  (`V183_CRM`: `visitFeed` from/to = `S.dateFrom/dateTo` ⇒ lượt gặp khách theo `accType`; `weekly&at=1` ALL TASK ⇒ Công việc khác), đệm 5 phút; bộ lọc nhóm `.v183-f`
+  (`localStorage.mmh_dash_team`). Lý do: từ 10/10 Sales không chép lịch đi địa bàn vào file MKT nữa. Mock: deployment CRM trong `mock.js`; cảnh `cap.js v183`.

@@ -103,6 +103,12 @@ async function install(page, o){
     else { body=Object.fromEntries(u.searchParams.entries()); }
     let d={ok:true,events:[]};
     TKS.push([a||'',u.searchParams.get('tk')||'',req.method()]);
+    { const crmT=/^AKfycbyzmh/.test(u.pathname.split('/')[3]||'')?'dental':/^AKfycbxxck/.test(u.pathname.split('/')[3]||'')?'surgical':/^AKfycbxsoT/.test(u.pathname.split('/')[3]||'')?'eyeless':'';
+      if(crmT){ let out={ok:true};   /* ⭐ v18.3: backend CRM (biểu đồ Sales ở Tổng quan) */
+        const V={dental:[['Viet','Hospital',6],['Viet','Clinic',9],['Vinh','Clinic',7],['Phuong','Dealer',3],['Phuong','University',2],['Vinh','Distributor',2]],surgical:[['Viet Ha','Hospital',8],['Khang','Hospital',5],['Khang','Distributor',1]],eyeless:[['Trang','Hospital',4],['Trang','Clinic',2]]}[crmT];
+        if(a==='visitFeed'){ const rows=[]; V.forEach(v=>{ for(let i=0;i<v[2];i++) rows.push({pic:v[0],account:'Khách '+i+'/'+v[1]+'/Ha Noi',accType:v[1],start:'2026-10-0'+(1+i%9),status:'Completed'}); }); rows.push({pic:V[0][0],account:'Văn phòng',accType:'',start:'2026-10-05',status:'Completed'}); out={ok:true,rows}; }
+        else if(a==='weekly'&&body.at=='1'){ out={ok:true,keyTasks:[{keyTask:'Báo cáo tháng',start:'2026-10-01',planned:'2026-10-31',status:'In Progress',subs:[{subTask:'Tổng hợp số liệu',start:'2026-10-05',planned:'2026-10-06',status:'Completed'},{subTask:'Họp nhóm',start:'2026-10-10',planned:'2026-10-10',status:'To Do'}]}]}; }
+        return route.fulfill({status:200,contentType:'application/javascript',body:(cb||'cb')+'('+JSON.stringify(out)+');'}); } }
     const dep=(u.pathname.split('/')[3]||''), srcName=/^AKfycbzK/.test(dep)?'management':/^AKfycbxW/.test(dep)?'backoffice':'marketing';   /* 3 backend phòng ban */
     if(srcName!=='marketing' && u.hostname==='script.google.com' && /^(boot|weekly|version)$/.test(a||'')){ const out={ok:true,source:srcName,picList:ROSTER,keyTasks:[],monthly:[],activityLog:[]};
       return route.fulfill({status:200,contentType:'application/javascript',body:(cb||'cb')+'('+JSON.stringify(out)+');'}); }
