@@ -254,6 +254,16 @@ S.v182=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',vp:{widt
   await shot(p,'v182ads',{clip:'.modal-box',marks:[['#ads-drop',1,'tl',1],['.ads-sum',2,'tl',1],['.ads-box table',3,'tl']]});
   console.log('mount', await ev(p,()=>!!document.querySelector('#tabnav .v182-ads')));
   console.log('ERRS', JSON.stringify(p.errs)); };
+S.v183=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',vp:{width:1440,height:900},time:'2026-10-15T09:00:00+07:00'}); await p.waitForTimeout(2500); await ev(p,()=>{ NT.close&&NT.close(); });
+  await ev(p,()=>{ switchTab('overview'); }); await p.waitForTimeout(800);
+  await ev(p,()=>{ var b=[...document.querySelectorAll('button')].find(x=>/^Tháng$/.test((x.textContent||'').trim())&&x.offsetParent); if(b) b.click(); }); await p.waitForTimeout(1500);
+  await ev(p,()=>{ var e=document.getElementById('v183-sales'); if(e) e.scrollIntoView({block:'center'}); }); await p.waitForTimeout(800);
+  await shot(p,'v183all',{clip:'#v183-sales',marks:[['#v183-sales .v183-f',1,'tl',1]]});
+  await ev(p,()=>V183.team('dental')); await p.waitForTimeout(1200);
+  await shot(p,'v183dental',{clip:'#v183-sales',marks:[['#v183-sales .v183-f button.on',1,'tl',1]]});
+  console.log('TXT', await ev(p,()=>JSON.stringify({c:V183.CACHE,f:S.dateFrom,t:S.dateTo,m:S.dateMode})));
+  await ev(p,()=>V183.team('all'));
+  console.log('ERRS', JSON.stringify(p.errs)); };
 module.exports={S,newPage,shot,ev};
 if(require.main===module)(async()=>{
   const b=await chromium.launch({args:['--lang=vi-VN']});

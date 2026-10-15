@@ -8,6 +8,16 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-15-v18.3", version:"v18.3", date:"2026-10-15",
+    title:"Biểu đồ Sales ở Tổng quan lấy thẳng từ CRM, có bộ lọc nhóm",
+    summary:"2 biểu đồ <b>Customer Visiting Rate</b> và <b>Customer Type Breakdown</b> nay đọc trực tiếp dữ liệu đi địa bàn của CRM Dental / Surgical / Eyeless (không còn trống), chọn nhóm ngay trên biểu đồ.",
+    items:[
+      { type:"fix", icon:"◔", title:"Biểu đồ Sales có dữ liệu trở lại, lọc theo nhóm", text:"Tổng quan ▸ Phân tích &amp; tiến độ ▸ 2 biểu đồ Sales đếm lượt đi gặp khách (CRM ▸ 6. WEEKLY REPORT, theo loại khách) và Công việc khác (ALL TASK) trong khoảng ngày đang xem. Bấm <b>Tất cả · Dental · Surgical · Eyeless</b> ở góc biểu đồ để xem từng nhóm.", img:"updates/v18.3/v183sales.jpg" }
+    ],
+    en:{ title:"Sales charts on Overview read directly from the CRM, with a team filter",
+      items:[ { title:"Sales charts have data again, filter by team", text:"Overview ▸ Analysis ▸ the two Sales charts count customer visits (CRM ▸ 6. WEEKLY REPORT, by customer type) and other tasks (ALL TASK) in the selected period. Click All · Dental · Surgical · Eyeless on the chart to see one team." } ] }
+  },
+  {
     id:"2026-10-15-v18.2", version:"v18.2", date:"2026-10-15",
     title:"Cập nhật công việc gọn, đều · Key task sự kiện: gợi ý đúng tên sự kiện · MIR từ file Ads Manager",
     summary:"Dòng Key task giờ <b>đều nhau</b>. Hệ thống <b>không tự tạo Key task sự kiện</b> nữa (các key tự tạo trước đây đã được dọn) — khi đặt tên, app <b>gợi ý tên sự kiện</b> có sẵn để chọn, bài đăng MKT online của sự kiện tự thành sub-task. Tải file <b>Ads Manager</b> là có ngay MIR.",
