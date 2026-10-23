@@ -182,3 +182,9 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   Test: `NODE_PATH=$(npm root -g) node tools/guide/t184.js`.
 - **v18.5 (23/10/2026)**: báo cáo tuần (email + PDF, backend `MMH_WeeklyExtra.gs` v1.1) — việc quá hạn chỉ nằm ở mục riêng **② Overdue tasks**, không lặp ở This week / Plan for next week.
   Hộp Gửi báo cáo tuần đổi chữ giải thích theo đó.
+- **v18.6 (23/10/2026) — Thống kê gửi báo cáo + email tự đánh giá quý (`rpstat/rpstat.js` GIỐNG HỆT MMH-CRM, khối `v186-js` = `RPSTAT_CFG`)**: nút `#rps-btn` trong `#tb-tools` / Ctrl+K "thống kê"
+  (Admin / Director / HOD hoặc quyền `rps` — `PERM.FEAT` + `def`, Training Hub `RH_PERM_KEYS.rps`) ⇒ đọc `rpLog` ở 8 backend (sheet ẩn `_MMH_REPORT_LOG`, backend `MMH_ReportLog.gs` ở mmh-backend) +
+  `rhAdminList` (danh sách người) ⇒ Excel (SheetJS cdnjs): theo tháng · theo quý · chi tiết tuần / KPI tháng / quý · lịch làm việc · cách tính. Mỗi PIC · loại · kỳ lấy LẦN GỬI GẦN NHẤT so với hạn:
+  tuần = trước 24:00 (≤ 23:59) ngày làm việc cuối T2–T7 theo lịch MMH VN / TH (`RPL_CAL` backend — năm mới phải thêm), KPI tháng = trước 16:00 ngày 02, quý = 17:00 ngày 09 tháng đầu quý sau; kỳ trước mốc bắt đầu ghi ⇒ "Chưa ghi nhận".
+  Form Setting Expectation có nút **Gửi email** (`#se-mail`): `seDownload` nhận `SE_NODL` / `SE_ONBUILT` (không tải, trả `SE_LAST`) ⇒ kpi `rhSeSend` (file Word đính kèm, người nhận lấy từ `rhKpiMail`) ⇒ được tính là đã nộp.
+  Mock: `rpLog` / `rhSeSend` / `rhKpiMail` trong `tools/guide/mock.js`; test `tools/guide/t186.js` (cần SheetJS cục bộ, cdnjs bị chặn khi test); ảnh `tools/guide/cap186.js`.
