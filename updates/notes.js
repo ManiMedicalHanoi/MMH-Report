@@ -8,6 +8,16 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-23-v18.5", version:"v18.5", date:"2026-10-23",
+    title:"Báo cáo tuần: việc quá hạn thành mục riêng",
+    summary:"Email + PDF <b>báo cáo tuần</b> không còn lặp việc quá hạn ở cả kết quả tuần này lẫn kế hoạch tuần sau — tất cả gom vào mục riêng <b>Overdue tasks</b>.",
+    items:[
+      { type:"imp", icon:"!", title:"Mục riêng Overdue tasks", text:"Bấm <b>Gửi báo cáo</b> ▸ Gửi ⇒ email và PDF có 3 mục: ① <b>This week</b> · ② <b>Overdue tasks</b> (việc quá deadline, chưa xong — mỗi việc 1 lần, tô đỏ) · ③ <b>Plan for next week</b>. Muốn việc ra khỏi mục quá hạn: cập nhật Completed hoặc đổi deadline (Revised deadline).", img:"updates/v18.5/v185od.jpg" }
+    ],
+    en:{ title:"Weekly report: overdue tasks in their own section",
+      items:[ { title:"Separate Overdue tasks section", text:"Click Send report ▸ Send ⇒ the email and PDF have 3 sections: ① This week · ② Overdue tasks (past deadline, not completed — each task once, in red) · ③ Plan for next week. To move a task out of Overdue: mark it Completed or set a revised deadline." } ] }
+  },
+  {
     id:"2026-10-23-v18.4", version:"v18.4", date:"2026-10-23",
     title:"Báo cáo tuần có thêm buổi đào tạo",
     summary:"Email + PDF <b>báo cáo tuần</b> nay có thêm mục <b>Đào tạo (Training Hub)</b>: buổi bạn là trainer hoặc được mời trong tuần báo cáo và tuần sau. Lịch công tác (kế hoạch và báo cáo công tác) vẫn có sẵn như trước.",
