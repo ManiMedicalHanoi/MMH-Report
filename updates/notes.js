@@ -8,6 +8,16 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-23-v18.4", version:"v18.4", date:"2026-10-23",
+    title:"Báo cáo tuần có thêm buổi đào tạo",
+    summary:"Email + PDF <b>báo cáo tuần</b> nay có thêm mục <b>Đào tạo (Training Hub)</b>: buổi bạn là trainer hoặc được mời trong tuần báo cáo và tuần sau. Lịch công tác (kế hoạch và báo cáo công tác) vẫn có sẵn như trước.",
+    items:[
+      { type:"new", icon:"◎", title:"Buổi đào tạo trong báo cáo tuần", text:"Bấm <b>Gửi báo cáo</b> ▸ chọn tuần ▸ Gửi ⇒ email và PDF có thêm khối <b>Đào tạo (Training Hub)</b>: tên buổi, giờ, vai trò (Trainer / Học viên), loại, mục đích. Phần <b>Plan for next week</b> liệt kê buổi đào tạo sắp tới. Khối <b>Lịch công tác</b> hiện kế hoạch + báo cáo công tác (Key Activities, Key Findings, Follow Up) rõ ràng hơn.", img:"updates/v18.4/v184mail.jpg" }
+    ],
+    en:{ title:"Weekly report now includes training sessions",
+      items:[ { title:"Training sessions in the weekly report", text:"Click Send report ▸ choose the week ▸ Send ⇒ the email and PDF now include a Training (Training Hub) block: session name, time, your role (Trainer / Attendee), type and purpose. Plan for next week lists upcoming sessions. The Business trip block shows the trip plan and trip report (Key Activities, Key Findings, Follow Up) more clearly." } ] }
+  },
+  {
     id:"2026-10-15-v18.3", version:"v18.3", date:"2026-10-15",
     title:"Biểu đồ Sales ở Tổng quan lấy thẳng từ CRM, có bộ lọc nhóm",
     summary:"2 biểu đồ <b>Customer Visiting Rate</b> và <b>Customer Type Breakdown</b> nay đọc trực tiếp dữ liệu đi địa bàn của CRM Dental / Surgical / Eyeless (không còn trống), chọn nhóm ngay trên biểu đồ.",
