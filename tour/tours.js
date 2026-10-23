@@ -126,6 +126,13 @@ TOUR.add([
     { el:"#adm .tg", do:function(){ var r=q("#adm tr.r"); if(r && !q("#adm .tg")) r.click(); }, wait:500, t:"Bật / tắt chức năng", x:"Công tắc viền vàng = khác quyền mặc định của vai trò." },
     { el:"#af-save", t:"Lưu", x:"Lưu quyền. Có nút <b>Đăng xuất khỏi mọi máy</b> cho từng người." }
    ] },
+ { id:"rpstat", v:1, d:"2026-10-23", g:"Quản trị", ic:"doc", t:"Thống kê gửi báo cáo", x:"Ai gửi báo cáo tuần, KPI tháng, tự đánh giá quý đúng hạn / muộn — xuất Excel.",
+   when:function(){ return !!(window.RPSTAT && RPSTAT.can()); },
+   steps:[
+    { el:"#rps-btn", t:"Thống kê báo cáo", x:"Nút trên thanh trên cùng (Admin, Director, HOD hoặc người được cấp quyền). Ctrl+K gõ \"thống kê\" cũng mở được." },
+    { el:"#rps-ov .rps-row", do:function(){ try{ RPSTAT.open(); }catch(_){} }, wait:800, t:"Chọn tháng", x:"Chọn từ tháng – đến tháng. Mỗi PIC · kỳ lấy <b>email gần nhất</b> so với hạn: báo cáo tuần trước 24:00 ngày làm việc cuối của tuần, KPI tháng trước 16:00 ngày 02." },
+    { el:"#rps-xls", t:"Xuất Excel", x:"File gồm: theo tháng, theo quý, chi tiết từng loại báo cáo, lịch làm việc VN / Thái Lan." }
+   ] },
  { id:"testmode", v:1, d:"2026-10-13", g:"Quản trị", ic:"gear", t:"Chế độ TEST · Luồng dữ liệu", x:"Admin thử mọi chức năng dưới tên TEST, ghi thật, xem dữ liệu đi đâu.",
    when:function(){ var u=me(); return !!u && u.admin && !!window.TESTFLOW; },
    steps:[

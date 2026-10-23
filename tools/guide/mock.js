@@ -79,7 +79,8 @@ function mkWrite(body){
   return {ok:true,op,kind,row,src:kind==='offline'?'offline':'online',data:D[src]};
 }
 
-const RIDS={}, WLOG=[], TRIPS=[];
+const RIDS={}, WLOG=[], TRIPS=[], RPLOG=[];
+const RPL_CAL0=(()=>{ try{ const t=require('fs').readFileSync(require('path').resolve(__dirname,'../../../mmh-backend/backends/marketing/MMH_ReportLog.gs'),'utf8'); return eval('('+t.match(/var RPL_CAL = ([\s\S]*?\n\});/)[1]+')'); }catch(_){ return {}; } })();
 /* ★ v16.0 — giả lập đăng nhập email + mã 6 số (Training Hub v3.12). Mã đúng luôn là 123456. TKS ghi tham số tk của mọi lệnh gọi. */
 const AUTH_USERS=Object.fromEntries(Object.entries(ROSTER_NAMES).map(([k,v])=>[v,k])), AUTHL=[], TKS=[];
 AUTH_USERS['nt.ha']='Nguyen Ha';   /* Giám đốc (v17.4 duyệt công tác) */
@@ -103,6 +104,24 @@ async function install(page, o){
     else { body=Object.fromEntries(u.searchParams.entries()); }
     let d={ok:true,events:[]};
     TKS.push([a||'',u.searchParams.get('tk')||'',req.method()]);
+    /* ⭐ v18.6: nhật ký gửi báo cáo (rpLog, mọi backend) + email tự đánh giá quý (rhSeSend) — dữ liệu giả */
+    if(a==='rpLog'||a==='rhSeSend'||(a==='rhKpiMail'&&/AKfycbx58/.test(u.pathname))){
+      const dep2=u.pathname.split('/')[3]||'', key=/^AKfycbzn/.test(dep2)?'marketing':/^AKfycbxW/.test(dep2)?'backoffice':/^AKfycbzK/.test(dep2)?'management':/^AKfycbwglP/.test(dep2)?'crm-thai':/^AKfycbx58/.test(dep2)?'kpi':/^AKfycbyzmh/.test(dep2)?'crm-dental':'other';
+      let out;
+      if(a==='rhSeSend'){ RPLOG.push(body); out={ok:true,message:'Đã gửi tự đánh giá FY'+body.fy+' '+body.q+' tới '+body.to}; }
+      else if(a==='rhKpiMail') out={ok:true,data:{to:'hod@example.com',cc:'director@example.com'}};
+      else { const R={
+        marketing:[['2026-10-10 17:00','week','Giang','2026-10-05','2026-10-05','2026-10-11','2026-10-09 23:59','Muộn',17,'Giang','dept','VN','marketing',''],
+                   ['2026-10-17 10:00','week','Giang','2026-10-12','2026-10-12','2026-10-18','2026-10-17 23:59','Đúng hạn','','Giang','dept','VN','marketing',''],
+                   ['2026-10-23 16:00','week','Giang','2026-10-19','2026-10-19','2026-10-25','2026-10-23 23:59','Đúng hạn','','Giang','dept','VN','marketing',''],
+                   ['2026-10-19 09:00','week','Minh Trang','2026-10-12','2026-10-12','2026-10-18','2026-10-17 23:59','Muộn',33,'Minh Trang','dept','VN','marketing','']],
+        'crm-thai':[['2026-10-23 08:00','week','Miew','2026-10-19','2026-10-19','2026-10-25','2026-10-22 23:59','Muộn',8,'Miew','team','TH','crm-thai','']],
+        'crm-dental':[['2026-10-17 15:00','week','Viet','2026-10-12','2026-10-12','2026-10-18','2026-10-17 23:59','Đúng hạn','','Viet','team','VN','crm-dental','']],
+        kpi:[['2026-10-02 15:00','kpi','Giang','202609','202609','202609','2026-10-02 16:00','Đúng hạn','','Giang','email','VN','kpi',''],
+             ['2026-10-03 09:00','kpi','Minh Trang','202609','202609','202609','2026-10-02 16:00','Muộn',17,'Minh Trang','email','VN','kpi','']]}[key]||[];
+        out=o.rpFail&&key==='backoffice'?{ok:false,error:'Không tìm thấy chức năng: rpLog'}:{ok:true,src:key,since:'2026-10-01 00:00',head:[],rows:R,cal:RPL_CAL0,rule:{week:'23:59',kpiDay:2,kpi:'16:00',qDay:9,q:'17:00'}}; }
+      return route.fulfill({status:200,contentType:cb?'application/javascript':'application/json',body:cb?cb+'('+JSON.stringify(out)+');':JSON.stringify(out)});
+    }
     { const crmT=/^AKfycbyzmh/.test(u.pathname.split('/')[3]||'')?'dental':/^AKfycbxxck/.test(u.pathname.split('/')[3]||'')?'surgical':/^AKfycbxsoT/.test(u.pathname.split('/')[3]||'')?'eyeless':'';
       if(crmT){ let out={ok:true};   /* ⭐ v18.3: backend CRM (biểu đồ Sales ở Tổng quan) */
         const V={dental:[['Viet','Hospital',6],['Viet','Clinic',9],['Vinh','Clinic',7],['Phuong','Dealer',3],['Phuong','University',2],['Vinh','Distributor',2]],surgical:[['Viet Ha','Hospital',8],['Khang','Hospital',5],['Khang','Distributor',1]],eyeless:[['Trang','Hospital',4],['Trang','Clinic',2]]}[crmT];
@@ -215,4 +234,4 @@ async function install(page, o){
   });
 }
 const TMLOG=[];
-module.exports={TMLOG,install,D,SESS,ASSIGN,LOG,WLOG,TRIPS,RIDS,AUTHL,TKS,AUTH_USERS,ADMU};
+module.exports={RPLOG,RPL_CAL0,TMLOG,install,D,SESS,ASSIGN,LOG,WLOG,TRIPS,RIDS,AUTHL,TKS,AUTH_USERS,ADMU};

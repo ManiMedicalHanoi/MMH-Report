@@ -8,6 +8,20 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-23-v18.6", version:"v18.6", date:"2026-10-23",
+    title:"Thống kê gửi báo cáo đúng hạn / muộn · gửi email tự đánh giá quý",
+    summary:"Mỗi email báo cáo tuần, báo cáo KPI tháng, tự đánh giá quý được ghi nhận và so với hạn nộp theo <b>lịch làm việc MMH Việt Nam / Thái Lan</b>. Admin, Director, HOD xuất được thống kê từng PIC ra Excel.",
+    items:[
+      { type:"new", icon:"▥", title:"Thống kê gửi báo cáo (Excel)", text:"Thanh trên cùng ▸ <b>Thống kê báo cáo</b> (hoặc Ctrl+K gõ \"thống kê\") ▸ chọn tháng ▸ <b>Xuất Excel</b>. Mỗi PIC · kỳ lấy email gần nhất: báo cáo tuần gửi trước 24:00 ngày làm việc cuối của tuần (tính cả thứ 7 đi làm, ngày lễ), KPI tháng trước 16:00 ngày 02, tự đánh giá quý trước 17:00 ngày 09 tháng đầu quý sau. Chỉ Admin, Director, HOD hoặc người được cấp quyền.", img:"updates/v18.6/v186stat.jpg" },
+      { type:"new", icon:"✉", title:"Gửi email tự đánh giá quý", text:"KPI ▸ <b>Setting Expectation</b> ▸ điền xong ▸ <b>Gửi email</b> ⇒ file Word tự đính kèm, người nhận điền sẵn theo quản lý của bạn (sửa được) ▸ <b>Gửi</b>. Có <b>Gửi thử cho tôi</b>. Gửi bằng nút này mới được tính là đã nộp tự đánh giá quý.", img:"updates/v18.6/v186se.jpg" }
+    ],
+    en:{ title:"Report submission statistics (on time / late) · e-mail the quarterly self-evaluation",
+      items:[
+        { title:"Report statistics (Excel)", text:"Top bar ▸ Report stats (or Ctrl+K “stats”) ▸ choose the months ▸ Export Excel. The latest e-mail per PIC and period is compared with the deadline: weekly report before 24:00 on the last working day of the week (MMH Vietnam / Thailand calendar), monthly KPI before 16:00 on day 02, quarterly self-evaluation before 17:00 on day 09 of the next quarter. Admin, Director, HOD or granted users only." },
+        { title:"E-mail the quarterly self-evaluation", text:"KPI ▸ Setting Expectation ▸ fill in ▸ Send e-mail ⇒ the Word file is attached and recipients are pre-filled from your manager ▸ Send. Only e-mails sent this way count as submitted." }
+      ] }
+  },
+  {
     id:"2026-10-23-v18.5", version:"v18.5", date:"2026-10-23",
     title:"Báo cáo tuần: việc quá hạn thành mục riêng",
     summary:"Email + PDF <b>báo cáo tuần</b> không còn lặp việc quá hạn ở cả kết quả tuần này lẫn kế hoạch tuần sau — tất cả gom vào mục riêng <b>Overdue tasks</b>.",
