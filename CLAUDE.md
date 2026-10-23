@@ -180,3 +180,5 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
 - **v18.4 (23/10/2026, khối `v184-js`)**: Gửi báo cáo tuần ⇒ `apiPost` bọc lệnh `weeklyReport`: tải `rhSessions` (tuần báo cáo + tuần sau, ≤ 15 giây), lọc buổi người gửi là trainer / trong `people`,
   gửi kèm `trn` (JSON gọn) + `trnPic` ⇒ backend `MMH_WeeklyExtra.gs` (mmh-backend, 3 phòng ban) thêm khối "Đào tạo (Training Hub)" vào email + PDF. Công tác đã có sẵn (key "Lịch công tác MMYYYY").
   Test: `NODE_PATH=$(npm root -g) node tools/guide/t184.js`.
+- **v18.5 (23/10/2026)**: báo cáo tuần (email + PDF, backend `MMH_WeeklyExtra.gs` v1.1) — việc quá hạn chỉ nằm ở mục riêng **② Overdue tasks**, không lặp ở This week / Plan for next week.
+  Hộp Gửi báo cáo tuần đổi chữ giải thích theo đó.

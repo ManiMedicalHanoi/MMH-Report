@@ -14,7 +14,7 @@ const {chromium}=require('playwright'), path=require('path'), M=require('./mock.
   await p.waitForFunction(()=>window.S&&S.user&&S.user.pic==='Giang'&&document.getElementById('app').style.display==='block',null,{timeout:20000});
   await p.waitForTimeout(1500);
   await p.evaluate(()=>{ if(window.UPD&&UPD.isOpen&&UPD.isOpen()) UPD.close(); openSendReport(); });
-  const note=await p.evaluate(()=>{ const n=document.querySelector('.v184-n'); return n&&n.textContent; });
+  const note=await p.evaluate(()=>{ const n=document.querySelector('.v184-n'), h=document.querySelector('.modal-box .field-hint'); return n&&/Overdue tasks/.test(h.textContent)&&n.textContent; });
   await p.evaluate(()=>doSendReport()); await p.waitForTimeout(3000);
   const u=urls.join('\n'); const m=decodeURIComponent(u);
   const ok=!!note && /Buổi học thử/.test(m) && /Giang dạy tuần sau/.test(m) && !/Không liên quan/.test(m) && /trnPic=Giang|"trnPic":"Giang"/.test(m);
