@@ -177,3 +177,6 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
 - **v18.3 (15/10/2026, khối `v183-css` + `v183-js`)**: `salesChartsHTML` (Tổng quan ▸ Customer Visiting Rate / Customer Type Breakdown) đọc thẳng CRM Dental / Surgical / Eyeless
   (`V183_CRM`: `visitFeed` from/to = `S.dateFrom/dateTo` ⇒ lượt gặp khách theo `accType`; `weekly&at=1` ALL TASK ⇒ Công việc khác), đệm 5 phút; bộ lọc nhóm `.v183-f`
   (`localStorage.mmh_dash_team`). Lý do: từ 10/10 Sales không chép lịch đi địa bàn vào file MKT nữa. Mock: deployment CRM trong `mock.js`; cảnh `cap.js v183`.
+- **v18.4 (23/10/2026, khối `v184-js`)**: Gửi báo cáo tuần ⇒ `apiPost` bọc lệnh `weeklyReport`: tải `rhSessions` (tuần báo cáo + tuần sau, ≤ 15 giây), lọc buổi người gửi là trainer / trong `people`,
+  gửi kèm `trn` (JSON gọn) + `trnPic` ⇒ backend `MMH_WeeklyExtra.gs` (mmh-backend, 3 phòng ban) thêm khối "Đào tạo (Training Hub)" vào email + PDF. Công tác đã có sẵn (key "Lịch công tác MMYYYY").
+  Test: `NODE_PATH=$(npm root -g) node tools/guide/t184.js`.
