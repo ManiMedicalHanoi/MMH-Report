@@ -188,3 +188,5 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   tuần = trước 24:00 (≤ 23:59) ngày làm việc cuối T2–T7 theo lịch MMH VN / TH (`RPL_CAL` backend — năm mới phải thêm), KPI tháng = trước 16:00 ngày 02, quý = 17:00 ngày 09 tháng đầu quý sau; kỳ trước mốc bắt đầu ghi ⇒ "Chưa ghi nhận".
   Form Setting Expectation có nút **Gửi email** (`#se-mail`): `seDownload` nhận `SE_NODL` / `SE_ONBUILT` (không tải, trả `SE_LAST`) ⇒ kpi `rhSeSend` (file Word đính kèm, người nhận lấy từ `rhKpiMail`) ⇒ được tính là đã nộp.
   Mock: `rpLog` / `rhSeSend` / `rhKpiMail` trong `tools/guide/mock.js`; test `tools/guide/t186.js` (cần SheetJS cục bộ, cdnjs bị chặn khi test); ảnh `tools/guide/cap186.js`.
+- **v18.7 (29/10/2026, khối `v187-js`, backend marketing / backoffice / management 29/10)**: sửa thẳng trên Google Sheet không hiện / báo cáo tuần thiếu dòng ⇒ vân tay backend thêm dấu nội dung
+  (`liveSig_`, ≤ 60 giây) + tự cài trigger onChange / onEdit; gửi báo cáo đọc thẳng sheet. App: mở trang Báo cáo tuần / hộp Gửi báo cáo ⇒ `RH_FRESH()` = `apiGet("weekly",{fresh:1})` + `applyWeekly` (≤ 1 lần / 15 giây).

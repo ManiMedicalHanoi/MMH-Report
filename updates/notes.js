@@ -8,6 +8,20 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-29-v18.7", version:"v18.7", date:"2026-10-29",
+    title:"Sửa trên Google Sheet hiện ngay trên Report Hub · báo cáo tuần đủ dòng",
+    summary:"Thêm việc hoặc sửa thẳng trên Google Sheet (vd. chuyển sang Completed) giờ hiện trên Report Hub sau tối đa 1 phút, và báo cáo tuần luôn lấy dữ liệu mới nhất.",
+    items:[
+      { type:"fix", icon:"↻", title:"Dữ liệu sửa trên Sheet hiện ngay", text:"Thêm dòng, sửa kết quả hay đổi trạng thái thẳng trên Google Sheet ⇒ Report Hub tự cập nhật sau tối đa 1 phút, không cần tải lại trang." },
+      { type:"fix", icon:"✉", title:"Báo cáo tuần không còn thiếu dòng", text:"Bấm <b>Gửi báo cáo</b> ⇒ hệ thống đọc thẳng Google Sheet ngay lúc gửi. Trang <b>Báo cáo tuần</b> và hộp gửi cũng tự lấy bản mới nhất nên bảng xem trước khớp với email." }
+    ],
+    en:{ title:"Sheet edits show up right away · complete weekly reports",
+      items:[
+        { title:"Sheet edits show up right away", text:"Rows added or edited directly in Google Sheet (e.g. set to Completed) appear in Report Hub within 1 minute, without reloading the page." },
+        { title:"Weekly reports no longer miss rows", text:"Send report ⇒ the system reads Google Sheet at the moment of sending. The Weekly report page and the send dialog also load the latest data, so the preview matches the e-mail." }
+      ] }
+  },
+  {
     id:"2026-10-23-v18.6", version:"v18.6", date:"2026-10-23",
     title:"Thống kê gửi báo cáo đúng hạn / muộn · gửi email tự đánh giá quý",
     summary:"Mỗi email báo cáo tuần, báo cáo KPI tháng, tự đánh giá quý được ghi nhận và so với hạn nộp theo <b>lịch làm việc MMH Việt Nam / Thái Lan</b>. Admin, Director, HOD xuất được thống kê từng PIC ra Excel.",
