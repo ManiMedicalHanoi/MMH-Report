@@ -8,12 +8,17 @@ const SESS=[
  {sid:'S20261014-01',date:'2026-10-14',timeFrom:'09:00',timeTo:'10:30',topic:'Mani Dental product — Key SKUs FY68',trainer:'Giang',audience:'MMH - Sales team',status:'Plan',type:'Internal',category:'Product',invited:false,canEdit:true,location:'Phòng họp tầng 5'},
  {sid:'S20261022-01',date:'2026-10-22',timeFrom:'14:00',timeTo:'15:30',topic:'Jizai — kỹ thuật nội nha cơ bản cho Sales',trainer:'Viet',audience:'MMH - Dental Sales team',status:'Plan',type:'Internal',category:'Product',invited:true,canEdit:false,location:'Lab Kim · Hà Nội',folderUrl:'https://drive.google.com/drive/folders/demo4'},
 ];
+
+/* ⭐ v18.8 — MMH Library (Training Hub v3.35 rhLibList / rhLibAttach) */
+const LIBV=(()=>{ let v=[]; try{ v=JSON.parse(fs.readFileSync(__dirname+'/lib_catalog.json','utf8')).videos||[]; }catch(e){}
+  return v.map(x=>({id:x.id,title:x.title,category:x.category,group:x.group,product:x.product,topic:x.topic,desc:x.desc,duration:x.duration,mb:x.mb,thumb:x.thumb||'',attached:false,blocked:''})); })();
+const LIBA={};   // sid -> [id]
 const FILES={
  'S20260925-01':[['Ophthalmic Suture — Product Guide FY68.pptx','application/vnd.openxmlformats-officedocument.presentationml.presentation','6.8 MB'],['Ophthalmic Knife — Catalogue.pdf','application/pdf','3.1 MB'],['Bài kiểm tra sau đào tạo','application/vnd.google-apps.form',''],['Ghi chú buổi học','application/vnd.google-apps.document','']],
  'S20261008-01':[['Hướng dẫn Business Trip trên Report Hub.pdf','application/pdf','2.4 MB'],['Mẫu báo cáo công tác','application/vnd.google-apps.document','']],
  'S20261022-01':[['Jizai — Endo basics.pptx','application/vnd.openxmlformats-officedocument.presentationml.presentation','12.6 MB']],
 };
-function mats(sid){ const f=(FILES[sid]||[]).map((x,i)=>({id:sid+'-'+i,name:x[0],mime:x[1],sizeText:x[2],url:'https://drive.google.com/file/d/'+sid+i+'/view',preview:'https://drive.google.com/file/d/'+sid+i+'/preview',download:'https://drive.google.com/uc?export=download&id='+sid+i}));
+function mats(sid){ const f=(LIBA[sid]||[]).map((id,i)=>{ const v=LIBV.find(x=>x.id===id)||{}; return {id:'V'+i,name:v.title,mime:'video/mp4',kind:'video',sizeText:Math.round(v.duration||0)+' giây',url:'https://manimedicalhanoi.github.io/Training-Hub/media/lib/'+id+'.mp4',preview:'https://manimedicalhanoi.github.io/Training-Hub/media/lib/'+id+'.mp4',isVideo:true}; }).concat((FILES[sid]||[]).map((x,i)=>({id:sid+'-'+i,name:x[0],mime:x[1],sizeText:x[2],url:'https://drive.google.com/file/d/'+sid+i+'/view',preview:'https://drive.google.com/file/d/'+sid+i+'/preview',download:'https://drive.google.com/uc?export=download&id='+sid+i})));
   return {ok:true,files:f,folderUrl:'https://drive.google.com/drive/folders/'+sid,canUpload:true}; }
 const META={ok:true,me:{name:'Giang',email:'mmh.product@manimedicalhanoi.com',position:'Product Team Leader',canCreate:true},
   meta:{categories:['Product','SOP','Skill','Compliance'],types:['Internal','External'],trainers:['Giang','Thuong','Tuyen','Viet','Nguyen Ha'],locations:['Phòng họp tầng 5','Online · Google Meet','Lab Kim · Hà Nội']},
@@ -186,6 +191,10 @@ async function install(page, o){
     else if(a==='evProof'){ const P=(global.__EVP=global.__EVP||[]); if(body.op==='upload'){ const f={name:'20261019_Bang chung tham du_'+body.name,url:'https://drive.google.com/file/d/demo'+P.length+'/view',mime:body.mime}; P.push(f); d={ok:true,url:f.url}; } else d={ok:true,folder:'https://drive.google.com/drive/folders/demo',files:P.slice(),proof:''}; }
     else if(a==='rhCoachReview') d={ok:true,hasPdf:false,files:[]};
     else if(a==='rhMaterials') d=mats(body.sid||u.searchParams.get('sid'));
+    else if(a==='rhLibList'){ const sid=body.sid; d=o.libFail?{ok:false,code:'LIB_NOACCESS',error:'Training Hub chưa có quyền đọc kho MMH Library — Admin vào Giao diện & GitHub ▸ MMH Library dán token có quyền Contents: Read trên kho mmh-library.'}
+        :{ok:true,canWrite:true,videos:LIBV.map(v=>Object.assign({},v,{attached:(LIBA[sid]||[]).includes(v.id)}))}; }
+    else if(a==='rhLibAttach'){ LOG.push(['libAttach',body]); const v=LIBV.find(x=>x.id===body.id); (LIBA[body.sid]=LIBA[body.sid]||[]); if(v&&!LIBA[body.sid].includes(v.id)) LIBA[body.sid].push(v.id);
+        d=v?{ok:true,video:{id:'V1',name:v.title,src:'https://manimedicalhanoi.github.io/Training-Hub/media/lib/'+v.id+'.mp4',isVideo:true},message:'Đã thêm video "'+v.title+'" từ MMH Library. GitHub cần khoảng 1–2 phút để phát được trên mọi máy.'}:{ok:false,error:'Không tìm thấy video'}; }
     else if(a==='rhMyChecks') d={ok:true,empty:o.noChecks?[]:[{sid:'S20261003-01',topic:'Dia-burs IPR-01EF — case lâm sàng & USP',date:'2026-10-03',due:'2026-10-04',overdue:true}]};
     else if(a==='rhSaveSession') d={ok:true,sid:'S20261014-01',message:'Đã tạo buổi đào tạo mới.'};
     else if(a==='rhPreviewInvite') d={ok:true,subject:'[MMH Training] Mani Dental product — Key SKUs FY68 · 14/10/2026',html:'<p>x</p>',recipients:['a']};

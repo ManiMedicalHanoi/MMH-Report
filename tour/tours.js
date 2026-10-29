@@ -11,6 +11,7 @@ function wide(){ return window.innerWidth>720; }
 function q(s){ return document.querySelector(s); }
 function cal(){ try{ if(window.switchTab) switchTab("calendar"); }catch(_){} }
 function today(){ var d=new Date(); return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2); }
+function trnMine(){ try{ var p=(window.S&&S.user&&S.user.pic)||""; return (window.MC&&MC.ev||[]).filter(function(e){ return e.k==="training" && e.sid && e.n && String(e.n.trainer||"").indexOf(p)>=0; })[0]||null; }catch(_){ return null; } }
 function me(){ try{ return window.AUTH && AUTH.user && AUTH.user(); }catch(_){ return null; } }
 TOUR.add([
  { id:"start", v:3, d:"2026-10-13", g:"Bắt đầu", ic:"start", t:"Làm quen Report Hub", x:"Các khu vực chính trên màn hình và chỗ tìm mọi chức năng.",
@@ -68,6 +69,14 @@ TOUR.add([
     { el:".mc-tg", t:"Bật / tắt loại", x:"Bấm từng loại ở cột trái để ẩn / hiện trên lịch." },
     { el:".mc-kpi", t:"Tóm tắt nhanh", x:"Số chuyến công tác, buổi đào tạo, sự kiện, bài đăng trong khoảng đang xem. Bấm để chỉ xem loại đó." },
     { el:".mc-new", t:"Tạo mới", x:"Tạo buổi đào tạo, sự kiện… ngay trên lịch. Buổi đào tạo tự có thư mục tài liệu." }
+   ] },
+ { id:"trnvideo", v:1, d:"2026-10-29", g:"Lịch & sự kiện", ic:"cal", t:"Thêm video từ MMH Library", x:"Gắn video đào tạo đã lưu (Sản phẩm · Kiến thức chuyên môn · Kỹ năng) vào buổi đào tạo của bạn.",
+   when:function(){ return !!trnMine(); },
+   steps:[
+    { el:"#mc-src", do:function(){ try{ openMMHCalendar(); }catch(_){} }, wait:700, t:"Mở MMH Calendar", x:"Buổi đào tạo nằm trên MMH Calendar (màu tím)." },
+    { el:"#v188-lib", do:function(){ var e=trnMine(); try{ if(e) MC.open(e.id); }catch(_){} }, wait:1500, t:"Thêm video từ MMH Library", x:"Trong buổi đào tạo <b>do bạn tạo / làm trainer</b>, dưới ô kéo thả tài liệu có nút này." },
+    { el:"#v188-ov .tabs", do:function(){ try{ var e=trnMine(); V188.open(e); }catch(_){} }, wait:1500, t:"Chọn video", x:"Lọc <b>Sản phẩm · Kiến thức chuyên môn · Kỹ năng</b> hoặc gõ tên ▸ <b>Thêm vào buổi</b>. Video vào Training Hub của buổi, PIC xem ≥ 70% mỗi video là hoàn thành." },
+    { el:"#v188-ov .q", do:function(){}, t:"Tìm nhanh", x:"Gõ tên sản phẩm hoặc chủ đề (không cần dấu). Đóng bằng nút × hoặc phím Esc." }
    ] },
  { id:"search", v:1, d:"2026-10-11", g:"Lịch & sự kiện", ic:"search", t:"Tìm nhanh (Ctrl + K)", x:"Tìm mọi thứ trong app, không cần gõ dấu.",
    steps:[

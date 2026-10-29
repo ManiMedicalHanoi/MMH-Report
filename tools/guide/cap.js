@@ -254,6 +254,17 @@ S.v182=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',vp:{widt
   await shot(p,'v182ads',{clip:'.modal-box',marks:[['#ads-drop',1,'tl',1],['.ads-sum',2,'tl',1],['.ads-box table',3,'tl']]});
   console.log('mount', await ev(p,()=>!!document.querySelector('#tabnav .v182-ads')));
   console.log('ERRS', JSON.stringify(p.errs)); };
+S.v188=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',vp:{width:1440,height:900}}); await openCal(p,[2026,8,1],'month');
+  await ev(p,()=>{ NT.close&&NT.close(); if(window.UPD&&UPD.isOpen()) UPD.close(); });
+  await ev(p,()=>MC.open('training:S20260925-01')); await p.waitForSelector('#v188-lib',{timeout:8000}); await p.waitForTimeout(600);
+  await ev(p,()=>{ const b=document.getElementById('v188-lib'); b.scrollIntoView({block:'center'}); });
+  await shot(p,'v188btn',{marks:[['#mc-drop',1,'tl'],['#v188-lib',2,'tr']]});
+  await p.click('#v188-lib'); await p.waitForSelector('#v188-ov .it',{timeout:8000}); await p.waitForTimeout(500);
+  await shot(p,'v188pick',{clip:'#v188-ov .bx',marks:[['#v188-ov .q',1,'tl'],['#v188-ov .tabs',2,'tl'],['#v188-ov .it .ft button',3,'tr']]});
+  await p.click('#v188-ov .it .ft button'); await p.waitForTimeout(900);
+  await ev(p,()=>V188.close()); await p.waitForTimeout(900);
+  await ev(p,()=>{ const f=document.querySelector('#mc-mats .mc-file'); if(f) f.scrollIntoView({block:'center'}); });
+  await shot(p,'v188done',{marks:[['#mc-mats .mc-files:last-child .mc-file',1,'tl']]}); };
 S.v183=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',vp:{width:1440,height:900},time:'2026-10-15T09:00:00+07:00'}); await p.waitForTimeout(2500); await ev(p,()=>{ NT.close&&NT.close(); });
   await ev(p,()=>{ switchTab('overview'); }); await p.waitForTimeout(800);
   await ev(p,()=>{ var b=[...document.querySelectorAll('button')].find(x=>/^Tháng$/.test((x.textContent||'').trim())&&x.offsetParent); if(b) b.click(); }); await p.waitForTimeout(1500);
