@@ -190,3 +190,7 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   Mock: `rpLog` / `rhSeSend` / `rhKpiMail` trong `tools/guide/mock.js`; test `tools/guide/t186.js` (cần SheetJS cục bộ, cdnjs bị chặn khi test); ảnh `tools/guide/cap186.js`.
 - **v18.7 (29/10/2026, khối `v187-js`, backend marketing / backoffice / management 29/10)**: sửa thẳng trên Google Sheet không hiện / báo cáo tuần thiếu dòng ⇒ vân tay backend thêm dấu nội dung
   (`liveSig_`, ≤ 60 giây) + tự cài trigger onChange / onEdit; gửi báo cáo đọc thẳng sheet. App: mở trang Báo cáo tuần / hộp Gửi báo cáo ⇒ `RH_FRESH()` = `apiGet("weekly",{fresh:1})` + `applyWeekly` (≤ 1 lần / 15 giây).
+- **v18.8 (29/10/2026, khối `v188-css` + `v188-js`) — Thêm video từ MMH Library vào buổi đào tạo**: Lịch ▸ buổi đào tạo (người tạo / trainer, nút hiện dưới `#mc-drop`) ▸ `#v188-lib`
+  ⇒ `V188.open(e)` (khung `#v188-ov`: lọc Sản phẩm · Kiến thức chuyên môn · Kỹ năng, tìm không dấu) ⇒ Training Hub v3.35 `rhLibList` / `rhLibAttach` (kho riêng tư `mmh-library` ▸ `Videos/catalog.json`,
+  chép video sang GitHub Pages của Training Hub + HUB_Videos) ⇒ `MC.open(id)` vẽ lại danh sách tài liệu. Buổi đang mở: bọc `MC.open` (`V188.cur()`); `mcPost` / `MATS` là biến nội bộ ⇒ khối có `rhPost` riêng.
+  Mock: `rhLibList` / `rhLibAttach` + `tools/guide/lib_catalog.json` (ảnh thu nhỏ, video mẫu); cảnh `cap.js v188`; tour `trnvideo`. Video mới cho thư viện: skill mmh-video-maker ▸ `mmh-library/tools/lib_video.py`.

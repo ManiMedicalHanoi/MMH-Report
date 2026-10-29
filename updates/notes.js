@@ -8,6 +8,20 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-29-v18.8", version:"v18.8", date:"2026-10-29",
+    title:"Thêm video từ MMH Library vào buổi đào tạo · học online tính hoàn thành đúng",
+    summary:"Video đào tạo đã làm xong được lưu trong <b>MMH Library</b> theo 3 thư mục: <b>Sản phẩm · Kiến thức chuyên môn · Kỹ năng</b>. Trainer chọn video ngay trong buổi đào tạo trên Lịch, PIC xem và học online trên Training Hub.",
+    items:[
+      { type:"new", icon:"▶", title:"Thêm video từ MMH Library", text:"Lịch ▸ bấm buổi đào tạo của bạn ▸ phần <b>Tài liệu đào tạo</b> ▸ <b>Thêm video từ MMH Library</b> ▸ lọc Sản phẩm / Kiến thức chuyên môn / Kỹ năng hoặc gõ tên ▸ <b>Thêm vào buổi</b>. Video vào danh sách tài liệu và Training Hub của buổi; PIC xem ≥ 70% mỗi video là hoàn thành.", img:"updates/v18.8/chon-video.jpg" },
+      { type:"fix", icon:"✓", title:"Học online: tính hoàn thành và chứng chỉ đúng", text:"Học xong bài cuối đúng lúc hệ thống đang làm mới danh sách bài trước đây có thể không được cấp chứng chỉ ⇒ nay luôn được tính. Admin học xong khoá (không phải trainer của khoá) nay cũng được cấp chứng chỉ. Khoá có bài kiểm tra mà làm bài chưa đạt không còn hiện \"Hoàn thành\".", img:"updates/v18.8/nut-thu-vien.jpg" }
+    ],
+    en:{ title:"Add videos from MMH Library to training sessions · correct online-learning completion",
+      items:[
+        { title:"Add videos from MMH Library", text:"Calendar ▸ open your training session ▸ Training materials ▸ Add video from MMH Library ▸ filter Product / Knowledge / Skill or search ▸ Add to session. The video joins the session on Training Hub; watching ≥ 70% of each video counts as completed." },
+        { title:"Online learning: correct completion and certificates", text:"Finishing the last lesson while the lesson list was refreshing could previously skip the certificate; it is now always counted. Admins who finish a course they do not teach now receive the certificate too. Courses with a test no longer show “Completed” when the test was not passed." }
+      ] }
+  },
+  {
     id:"2026-10-29-v18.7", version:"v18.7", date:"2026-10-29",
     title:"Sửa trên Google Sheet hiện ngay trên Report Hub · báo cáo tuần đủ dòng",
     summary:"Thêm việc hoặc sửa thẳng trên Google Sheet (vd. chuyển sang Completed) giờ hiện trên Report Hub sau tối đa 1 phút, và báo cáo tuần luôn lấy dữ liệu mới nhất.",
