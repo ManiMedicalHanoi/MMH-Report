@@ -8,6 +8,20 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-10-31-v18.9", version:"v18.9", date:"2026-10-31",
+    title:"Bảng Cập nhật công việc hiển thị đúng · xem được cả sub-task của người khác trong key task",
+    summary:"Cột <b>Công việc</b> ở dạng Bảng không còn bị bóp hẹp. PIC giờ xem được <b>mọi sub-task</b> của key task mình tham gia, kể cả việc của đồng nghiệp (chỉ xem).",
+    items:[
+      { type:"fix", icon:"▦", title:"Dạng Bảng không còn vỡ cột Công việc", text:"Cập nhật công việc ▸ <b>Bảng</b>: trước đây trên màn hình nhỏ hoặc khi phóng to trình duyệt, cột <b>Công việc</b> chỉ còn vài ký tự, chữ xuống dòng từng chữ. Nay cột luôn đủ rộng để đọc tên việc; bảng hẹp quá thì cuộn ngang.", img:"updates/v18.9/bang.jpg" },
+      { type:"new", icon:"👥", title:"Xem cả key task", text:"Cập nhật công việc ▸ nút <b>Xem cả key task</b> (bật sẵn) ⇒ hiện mọi sub-task của những key task bạn tham gia, kể cả việc của người khác. Dòng của người khác ghi <b>chỉ xem</b> (có khoá 🔒 ở dạng Danh sách) — xem được tiến độ, kết quả nhưng không sửa. Tắt nút ⇒ chỉ còn việc của bạn.", img:"updates/v18.9/danhsach.jpg" }
+    ],
+    en:{ title:"Task update table fixed · see every sub-task of your key tasks",
+      items:[
+        { title:"Table view no longer squeezes the Task column", text:"Task update ▸ Table: on small screens or with browser zoom, the Task column used to shrink to a few characters. It now always stays wide enough to read; a narrow table scrolls sideways." },
+        { title:"All sub-tasks of my key tasks", text:"Task update ▸ the All sub-tasks of my key tasks switch (on by default) shows every sub-task in the key tasks you take part in, including colleagues' work. Their rows are marked view only — you can follow progress and results but not edit. Switch it off to see only your own tasks." }
+      ] }
+  },
+  {
     id:"2026-10-29-v18.8", version:"v18.8", date:"2026-10-29",
     title:"Thêm video từ MMH Library vào buổi đào tạo · học online tính hoàn thành đúng",
     summary:"Video đào tạo đã làm xong được lưu trong <b>MMH Library</b> theo 3 thư mục: <b>Sản phẩm · Kiến thức chuyên môn · Kỹ năng</b>. Trainer chọn video ngay trong buổi đào tạo trên Lịch, PIC xem và học online trên Training Hub.",
