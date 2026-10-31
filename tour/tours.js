@@ -51,6 +51,12 @@ TOUR.add([
     { el:".ref-btn", t:"File tham chiếu", x:"Đính kèm file (báo giá, slide, ảnh…) để người khác mở ngay từ thẻ việc." },
     { el:"#q10-save", t:"Lưu", x:"Bấm <b>Lưu</b>. Thẻ cập nhật ngay, mạng yếu thì app tự gửi lại." }
    ] },
+ { id:"teamsubs", v:1, d:"2026-10-31", g:"Công việc", ic:"task", t:"Bảng Cập nhật công việc · xem cả key task", x:"Sửa thẳng trong bảng và xem việc của đồng nghiệp trong cùng key task.",
+   steps:[
+    { el:".v10-viewseg", do:function(){ try{ switchTab("detail"); if(S.detailView!=="table") setDetailView("table"); }catch(_){} }, wait:500, t:"Dạng Bảng", x:"Cập nhật công việc ▸ <b>Bảng</b>: mỗi dòng là 1 việc, bấm thẳng vào ô để sửa tên, hạn, trạng thái, tiến độ, kết quả — tự lưu khi rời ô." },
+    { el:"#v189-team", t:"Xem cả key task", x:"Bật để thấy <b>mọi sub-task</b> của những key task bạn tham gia, kể cả việc của người khác. Tắt ⇒ chỉ còn việc của bạn." },
+    { el:".v10-tbl tr.v189-oth td.c-pic[data-ro]", when:function(){ return !!q(".v10-tbl tr.v189-oth td.c-pic[data-ro]"); }, t:"Việc của người khác", x:"Dòng nền xám nhạt, ghi <b>chỉ xem</b> dưới tên PIC: xem được tiến độ, kết quả nhưng không sửa được." }
+   ] },
  { id:"calendar", v:1, d:"2026-10-11", g:"Công việc", ic:"cal", t:"Lịch làm việc", x:"Xem việc theo tuần / tháng, lọc người, xem việc quá hạn.",
    steps:[
     { el:function(){ var b=q("[onclick=\"c10Face('cal')\"]"); return b&&b.parentElement; }, do:cal, t:"Hôm nay và Pending", x:"<b>Today task</b> = việc theo lịch. <b>Pending</b> = việc còn tồn, chưa xong." },
