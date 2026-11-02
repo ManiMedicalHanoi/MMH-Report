@@ -117,12 +117,17 @@ TOUR.add([
     { el:"[onclick^=\"c10RepMenu\"]", do:cal, t:"Gửi báo cáo", x:"Bấm <b>Gửi báo cáo</b> để chọn báo cáo tuần hoặc tháng. Báo cáo lấy đúng việc trên lịch của bạn." },
     { el:"[onclick=\"switchTab('report')\"]", t:"Xem trước báo cáo tuần", x:"Mục <b>Báo cáo tuần</b> ở cột trái cho xem toàn bộ nội dung trước khi gửi." }
    ] },
- { id:"kpi", v:1, d:"2026-10-11", g:"Báo cáo", ic:"kpi", t:"KPI của tôi", x:"Xem KPI theo tháng / quý / năm, báo cáo KPI, Setting Expectation.",
+ { id:"kpi", v:2, d:"2026-11-02", g:"Báo cáo", ic:"kpi", t:"KPI của tôi", x:"Xem KPI theo tháng / quý / năm, gửi Báo cáo KPI tháng (FM01) và Báo cáo KPI quý (FM02).",
    steps:[
     { el:"#kp-m", do:function(){ try{ switchTab("kpi"); }catch(_){} }, wait:900, t:"Chọn kỳ", x:"Chọn <b>Tháng</b>, <b>Quý</b> hoặc <b>Năm FY</b>, rồi chọn tháng cần xem." },
     { el:"#kp-person", t:"Người đang xem", x:"Quản lý chọn được từng thành viên; nhân viên xem KPI của mình. Màu %: xám &lt; 90% · xanh 90–100% · vàng 100–120% · xanh lá &gt; 120%." },
-    { el:"[onclick=\"KR.open()\"]", t:"Báo cáo KPI tháng", x:"Gửi báo cáo KPI tháng trước (hạn ngày 02, 16:00)." },
-    { el:"[onclick=\"SE.open()\"]", t:"Setting Expectation", x:"Điền tự đánh giá quý (hạn ngày 09 tháng đầu quý, trước 17:00) và tải file Word." }
+    { el:"[onclick=\"KR.open()\"]", t:"Báo cáo KPI tháng (FM01)", x:"Theo quy trình quản lý KPI: gửi chậm nhất <b>ngày 05</b> hằng tháng (kết quả tháng trước) tới Trưởng bộ phận + Tổng Giám đốc, CC Kế toán." },
+    { el:"#kr2 .ksp-k", do:function(){ try{ KR.open(); }catch(_){} }, wait:1800, t:"Lý do từng chỉ tiêu", x:"Mỗi KPI có số mục tiêu / thực tế / % lấy từ file KPI. Ghi <b>lý do đạt / chưa đạt</b> cho từng chỉ tiêu — bắt buộc trước khi gửi." },
+    { el:"#kr2-next", t:"Hành động · nổi bật · khó khăn", x:"Mục 2 (hành động tháng tới) và mục 3 (điểm nổi bật, khó khăn, hỗ trợ cần thiết) của biểu mẫu. Để trống hỗ trợ = \"Không có\"." },
+    { el:"#kr2-send", t:"Xem trước & gửi", x:"Bên phải là đúng email sẽ gửi; file Word FM01 tự đính kèm. <b>Tải file Word</b> để lưu bản riêng." },
+    { el:"[onclick=\"SE.open()\"]", do:function(){ var o=document.getElementById("kr2"); if(o) o.classList.remove("show"); }, wait:300, t:"Báo cáo KPI quý (FM02)", x:"Thiết lập mục tiêu đầu quý và đánh giá kết quả cuối quý. Hạn: <b>ngày 05 tháng đầu quý kế tiếp</b>." },
+    { el:"#kq .ksp-a", do:function(){ try{ SE.open(); }catch(_){} }, wait:1800, t:"A. Mục tiêu", x:"KPI quý tự điền từ file MMH KPI. Kết quả ghi nhận tối đa 130% (trừ KPI doanh số). Sửa được phần chi tiết kết quả." },
+    { el:"#kq-send", t:"Năng lực · tự đánh giá · gửi", x:"Điền 5 mục năng lực (điểm 1–5), điểm tốt, cần cải thiện, mức EE / AE / PA / NA rồi gửi email (file Word đính kèm) hoặc tải file Word." }
    ] },
  { id:"meet", v:1, d:"2026-10-11", g:"Báo cáo", ic:"people", t:"Biên bản họp", x:"Ghi, lưu và gửi email biên bản họp.",
    steps:[
@@ -147,11 +152,11 @@ TOUR.add([
     { el:"#adm .tg", do:function(){ var r=q("#adm tr.r"); if(r && !q("#adm .tg")) r.click(); }, wait:500, t:"Bật / tắt chức năng", x:"Công tắc viền vàng = khác quyền mặc định của vai trò." },
     { el:"#af-save", t:"Lưu", x:"Lưu quyền. Có nút <b>Đăng xuất khỏi mọi máy</b> cho từng người." }
    ] },
- { id:"rpstat", v:1, d:"2026-10-23", g:"Quản trị", ic:"doc", t:"Thống kê gửi báo cáo", x:"Ai gửi báo cáo tuần, KPI tháng, tự đánh giá quý đúng hạn / muộn — xuất Excel.",
+ { id:"rpstat", v:2, d:"2026-11-02", g:"Quản trị", ic:"doc", t:"Thống kê gửi báo cáo", x:"Ai gửi báo cáo tuần, báo cáo KPI tháng, báo cáo KPI quý đúng hạn / muộn — xuất Excel.",
    when:function(){ return !!(window.RPSTAT && RPSTAT.can()); },
    steps:[
     { el:"#rps-btn", t:"Thống kê báo cáo", x:"Nút trên thanh trên cùng (Admin, Director, HOD hoặc người được cấp quyền). Ctrl+K gõ \"thống kê\" cũng mở được." },
-    { el:"#rps-ov .rps-row", do:function(){ try{ RPSTAT.open(); }catch(_){} }, wait:800, t:"Chọn tháng", x:"Chọn từ tháng – đến tháng. Mỗi PIC · kỳ lấy <b>email gần nhất</b> so với hạn: báo cáo tuần trước 24:00 ngày làm việc cuối của tuần, KPI tháng trước 16:00 ngày 02." },
+    { el:"#rps-ov .rps-row", do:function(){ try{ RPSTAT.open(); }catch(_){} }, wait:800, t:"Chọn tháng", x:"Chọn từ tháng – đến tháng. Mỗi PIC · kỳ lấy <b>email gần nhất</b> so với hạn: báo cáo tuần trước 24:00 ngày làm việc cuối của tuần, KPI tháng chậm nhất ngày 05 tháng sau, KPI quý chậm nhất ngày 05 tháng đầu quý kế tiếp." },
     { el:"#rps-xls", t:"Xuất Excel", x:"File gồm: theo tháng, theo quý, chi tiết từng loại báo cáo, lịch làm việc VN / Thái Lan." }
    ] },
  { id:"testmode", v:1, d:"2026-10-13", g:"Quản trị", ic:"gear", t:"Chế độ TEST · Luồng dữ liệu", x:"Admin thử mọi chức năng dưới tên TEST, ghi thật, xem dữ liệu đi đâu.",

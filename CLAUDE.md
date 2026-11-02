@@ -108,8 +108,8 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
 - **Đọc Apps Script không kèm cookie (v16.7)**: trong module `AUTH`, bọc `<script>.src` ⇒ URL `script.google.com/macros/s/…` có `callback=`
   được đọc bằng `fetch(credentials:"omit")` rồi chạy đúng callback; hỏng 2 lần liền (web app chỉ cho domain, link `/a/macros/`) ⇒ dùng thẻ `<script>`
   như cũ. Sửa lỗi Chrome đăng nhập Gmail khác / nhiều tài khoản ⇒ không gửi được mã đăng nhập. Test: mock trả 404 cho `resourceType()==='script'`.
-- **Nhắc hạn KPI (`#kpn`, khối KPI)**: ngày 02 hằng tháng — báo cáo KPI tháng trước (16:00); **ngày 09 tháng đầu quý (09/12/03/06), trước 17:00** —
-  tự đánh giá quý trước (v16.8, trước đây ngày 01–08). CRM dùng cùng luật (+ popup hạn chứng từ `DL` chép từ đây). Cảnh chụp: `cap.js v168kpn`.
+- **Nhắc hạn KPI (`#kpn`, khối KPI)**: từ v19.1 theo MMHSOP_009 — **ngày 05** (KPI tháng trước) và ngày 05 tháng đầu quý (KPI quý trước), xem mục v19.1 (`KPI_NOTICE`).
+  (Cũ: 16:00 ngày 02 / 17:00 ngày 09.) CRM dùng cùng luật (+ popup hạn chứng từ `DL` chép từ đây). Cảnh chụp: `cap.js v168kpn`.
 - **KPI (v16.9, dùng chung CRM)**: màu % theo mã màu file KPI (sheet 6): `tone()` < 90% `low` (xám) · 90–<100% `mid` (xanh) · 100–120% `ok` (vàng) · > 120% `top` (xanh lá).
   Hàng `.kp-who` chọn người + người đang xem nổi bật trên biểu đồ so sánh. Actual trống ⇒ `pendTag` ("Chưa chốt", tháng đã chốt lấy từ `sync[]` của rhKpi).
   `window.kpiShort` / `window.KPI_GROUPS` = tên KPI tiếng Việt — giao diện KPI mới phải dùng, không hiện tên tiếng Anh dài.
@@ -198,3 +198,11 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   Training Hub v3.38 (sheet `RH_Notify`, `rhNotifyList` / `rhNotifySeen`, danh tính như RH_Assign). App **Sự kiện MKT** (`ManiMedicalHanoi/MMH-Event-MKTOnline`, backend marketing ▸ `MKT_EventHubPlus.gs`
   `ehFeed_`) ghi khi PIC được @nhắc tên (bình luận, biên bản họp), được giao việc, có việc chờ duyệt / bị trả lại ⇒ số đỏ + thẻ báo 1 lần / phiên (`RHN_CFG.busy` chờ popup khác) ⇒ bấm mở đúng
   việc / biên bản / thảo luận ở app Sự kiện (tab mới) + đánh dấu đã xem. Làm mới 5 phút / lần. Mock: `RHN` trong `tools/guide/mock.js`; test + ảnh `tools/guide/t190.js`; tour `nhactoi`.
+- **v19.1 (02/11/2026) — Báo cáo KPI theo Quy trình quản lý KPI MMHSOP_009 (hiệu lực 01/10/2026; `kpisop/kpisop.js` GIỐNG HỆT MMH-CRM, khối `v191-js` = `KPISOP_CFG`)**:
+  thay `KR` / `SE` / popup `#kpn` của khối v16.5 (khối đó chỉ thêm `window.KPI_H` = hàm dùng chung + `notice()` gọi `window.KPI_NOTICE`). **Báo cáo KPI tháng = biểu mẫu FM01** (`#kr2`):
+  lý do đạt / chưa đạt TỪNG chỉ tiêu (bắt buộc khi có số thực tế), hành động tháng tới (bắt buộc), điểm nổi bật · khó khăn · hỗ trợ cần thiết ⇒ backend kpi `rhKpiMailSend` (email theo FM01, `reasons` / `names` / `next` /
+  `high` / `chal` / `supp`) + file Word FM01 đính kèm (`attB64`). **Báo cáo KPI quý = FM02** (`#kq`, thay Setting Expectation): A. KPI quý (tối đa 130% trừ KPI doanh số `^F\d` / nhóm Turnover), B. năng lực 1–5,
+  C. tự đánh giá EE/AE/PA/NA ⇒ Tải Word / gửi `rhSeSend`. Người nhận (`rhKpiMail`, KpiSyncCenter `kscRecipients_`): **To Trưởng bộ phận (HOD; không có ⇒ Team Leader) + Tổng Giám đốc, CC Kế toán** (ô C2 KPI EMAIL DIRECTORY).
+  **Hạn: ngày 05** (KPI tháng) · **ngày 05 tháng đầu quý kế tiếp** (KPI quý) — `MMH_ReportLog.gs` v1.1 + `rpstat.js` v1.1; popup nhắc đúng ngày 05 (T7/CN ⇒ thứ Sáu trước), bỏ nếu máy đã ghi nhận gửi.
+  Mẫu Word `templates/kpi_fm01|fm02_vi|en.docx` dựng bằng `tools/kpi_tpl/mk_tpl.py` từ file mẫu của quy trình (ô `{…}`, dòng KPI lặp theo ô `{R_CODE}` / `{K_NO}`). Nhóm Thái (team / dept có "thai") ⇒ mẫu EN.
+  Mock: `rhKpi` / `rhKpiMail` / `rhKpiMailPreview` (dùng `kscMailHtml_` thật nếu có kho mmh-backend cạnh repo) / `rhKpiMailSend` (`M.KPIMAIL`); test + ảnh `tools/guide/t191.js [--shots]` (cần `npm i -g jszip`, trang chạy qua http).

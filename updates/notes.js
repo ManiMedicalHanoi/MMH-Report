@@ -8,6 +8,24 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-11-02-v19.1", version:"v19.1", date:"2026-11-02",
+    title:"Báo cáo KPI tháng và quý theo quy trình mới MMHSOP_009: đúng biểu mẫu, hạn ngày 05",
+    summary:"Theo <b>Quy trình quản lý KPI MMHSOP_009</b> (hiệu lực 01/10/2026): Báo cáo KPI tháng (biểu mẫu <b>FM01</b>) và Báo cáo KPI quý (<b>FM02</b>) làm ngay trên Report Hub, gửi <b>Trưởng bộ phận + Tổng Giám đốc, CC Kế toán</b>, hạn <b>ngày 05</b>. File Word đúng mẫu tự đính kèm.",
+    items:[
+      { type:"new", icon:"📊", title:"Báo cáo KPI tháng theo biểu mẫu FM01", text:"KPI ▸ <b>Báo cáo KPI tháng</b> ⇒ mục tiêu / thực tế / % tự điền từ file KPI ⇒ ghi <b>lý do đạt / chưa đạt</b> cho từng chỉ tiêu, hành động tháng tới, điểm nổi bật, khó khăn, hỗ trợ cần thiết ⇒ <b>Gửi</b>. Email theo đúng bố cục FM01, kèm file Word.", img:"updates/v19.1/kpithang.jpg" },
+      { type:"new", icon:"📝", title:"Báo cáo KPI quý theo biểu mẫu FM02", text:"KPI ▸ <b>Báo cáo KPI quý</b> (thay Setting Expectation) ⇒ KPI quý tự điền, kết quả tối đa 130% (trừ KPI doanh số) ⇒ điền 5 mục năng lực (1–5), điểm tốt, cần cải thiện, mức EE / AE / PA / NA ⇒ <b>Gửi báo cáo KPI quý</b> hoặc <b>Tải file Word</b> để trình ký.", img:"updates/v19.1/kpiquy.jpg" },
+      { type:"imp", icon:"⏰", title:"Hạn mới ngày 05, gửi đúng người", text:"Báo cáo KPI tháng: chậm nhất <b>ngày 05</b> hằng tháng; báo cáo KPI quý: <b>ngày 05 tháng đầu quý kế tiếp</b> (trước đây 16:00 ngày 02 / 17:00 ngày 09). Người nhận tự điền theo quy trình. Popup nhắc vào ngày 05 nếu chưa gửi; Thống kê gửi báo cáo tính theo hạn mới.", img:"updates/v19.1/nhachan.jpg" },
+      { type:"imp", icon:"📄", title:"Nhóm Việt Nam mẫu tiếng Việt, nhóm Thái mẫu tiếng Anh", text:"File Word dùng đúng mẫu của quy trình: các phòng ban Việt Nam (Marketing, Sales, Back office…) dùng bản tiếng Việt; nhóm Thái Lan dùng bản tiếng Anh. Bấm <b>Tải file Word</b> để lưu bản riêng.", img:"updates/v19.1/word.jpg" }
+    ],
+    en:{ title:"Monthly and quarterly KPI reports follow the new procedure MMHSOP_009: official forms, due on day 05",
+      items:[
+        { title:"Monthly KPI report on form FM01", text:"KPI ▸ <b>Monthly KPI report</b>: targets, actuals and % are filled from the KPI file. Write the <b>reason for each target</b>, next-month actions, highlights, challenges and support needed, then <b>Send</b>. The e-mail follows FM01 and the Word file is attached." },
+        { title:"Quarterly KPI report on form FM02", text:"KPI ▸ <b>Quarterly KPI report</b> (replaces Setting Expectation): quarter KPIs are pre-filled, results capped at 130% except sales KPIs. Fill the 5 competencies (1–5), strengths, improvements and EE / AE / PA / NA, then send it or download the Word file for signature." },
+        { title:"New deadline: day 05, sent to the right people", text:"Monthly KPI report by <b>day 05</b>; quarterly report by <b>day 05 of the first month of the next quarter</b> (was 16:00 on day 02 / 17:00 on day 09). Recipients: Department Head + General Director, CC Accounting. A reminder pops up on day 05 if not sent yet." },
+        { title:"Vietnamese form for Vietnam teams, English form for Thailand", text:"The Word file uses the official form: Vietnamese for Vietnam departments (Marketing, Sales, Back office…), English for the Thailand team." }
+      ] }
+  },
+  {
     id:"2026-11-02-v19.0", version:"v19.0", date:"2026-11-02",
     title:"Nút Nhắc tôi: được @nhắc tên hay giao việc ở app Sự kiện MKT là thấy ngay trên Report Hub",
     summary:"App <b>Sự kiện MKT</b> có thảo luận, biên bản họp và giao việc. Khi ai đó <b>@nhắc tên bạn</b>, giao việc cho bạn hoặc có việc chờ bạn duyệt, Report Hub báo ngay ở nút <b>Nhắc tôi</b> (số đỏ) — bấm là mở đúng chỗ bên app Sự kiện.",

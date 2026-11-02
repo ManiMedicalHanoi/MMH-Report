@@ -91,6 +91,51 @@ function mkWrite(body){
 }
 
 const RIDS={}, WLOG=[], TRIPS=[], RPLOG=[];
+/* ⭐ v19.1 — KPI (backend kpi ▸ RH_KpiView): rhKpi · rhKpiMail · rhKpiMailPreview · rhKpiMailSend — dữ liệu giả (không phải số thật) */
+const KPIMAIL=[];
+const KPI_PER=['FY68','Q1','Q2','Q3','Q4'].concat(['202609','202610','202611','202612','202701','202702','202703','202704','202705','202706','202707','202708']);
+const KPI_STAFF={ Giang:{full:'Hoàng Giang',title:'Product Specialist',team:'Product',dept:'Product',level:'Staff',role:''},
+  'Minh Trang':{full:'Nguyễn Minh Trang',title:'Digital Marketing Executive',team:'Marketing',dept:'Marketing',level:'Staff',role:''},
+  Thuong:{full:'Lê Thương',title:'Marketing Team Leader',team:'Marketing',dept:'Marketing',level:'Manager',role:'HOD'},
+  Viet:{full:'Trần Minh Việt',title:'Sales Representative',team:'Dental',dept:'Sales',level:'Staff',role:''},
+  Tuyen:{full:'Trần Thị Tuyên',title:'Sales Manager',team:'',dept:'Sales',level:'Manager',role:'HOD'},
+  Dao:{full:'Dao Srisuk',title:'Sales Team Leader',team:'Thailand Surgical',dept:'Sales Thailand',level:'Manager',role:'Team Leader'},
+  'Nguyen Ha':{full:'Nguyễn Thị Thu Hà',title:'General Director',team:'',dept:'BOD',level:'Director',role:'Director'} };
+const KPI_DEF={ Giang:[['C17-03','On-time Social Media Publishing Rate','Marketing – Digital & Design','%',0.3,[0.95,0.97]],['C12-01','Number of T&E Events – Led by MMH Members – Dental','Marketing – Event Number','events',0.3,[2,3]],['C13-02','Number of Product Content Items Published – Dental','Marketing – New Product Launch','items',0.2,[2,2]],['C21-00','Key Behavioural Indicator Score','People – Behaviour','Point',0.2,[4,4]]],
+  'Minh Trang':[['C17-03','On-time Social Media Publishing Rate','Marketing – Digital & Design','%',0.4,[0.9,0.95]],['C17-05','Number of Digital Content Items Created – Facebook & Zalo OA','Marketing – Digital & Design','posts',0.4,[20,24]],['C21-00','Key Behavioural Indicator Score','People – Behaviour','Point',0.2,[4,4]]],
+  Viet:[['F4-01','MMH Sales Amount to Distributors – Dental VN','Sales – Turnover','USD',0.4,[52000,61000]],['C1-01','Number of New Customer Accounts – Dental VN','Sales – New Customer Accounts','acc',0.2,[2,2]],['C3-01','Number of Customer Visits – Dealers – Dental VN','Sales – Customer Visits & Co-visits','visits',0.3,[40,40]],['C21-00','Key Behavioural Indicator Score','People – Behaviour','Point',0.1,[4,4]]],
+  Dao:[['F4-02','MMH Sales Amount to Distributors – Surgical TH','Sales – Turnover','USD',0.5,[30000,30000]],['C3-02','Number of Customer Visits – Surgical TH','Sales – Customer Visits & Co-visits','visits',0.3,[30,30]],['C21-00','Key Behavioural Indicator Score','People – Behaviour','Point',0.2,[4,4]]] };
+const KPI_ACT={ Giang:{'C17-03':[0.96,0.99],'C12-01':[2,1],'C13-02':[4,5],'C21-00':[4,4.5]}, 'Minh Trang':{'C17-03':[0.92,0.97],'C17-05':[22,18],'C21-00':[4,4]},
+  Viet:{'F4-01':[49400,67100],'C1-01':[3,1],'C3-01':[38,46],'C21-00':[4,4]}, Dao:{'F4-02':[31500,27600],'C3-02':[28,33],'C21-00':[4,4]} };
+function kpiRows(){
+  const out=[];
+  Object.keys(KPI_DEF).forEach(m=>KPI_DEF[m].forEach(d=>{ const [code,name,group,unit,w,tg]=d, ac=(KPI_ACT[m]||{})[code]||[];
+    const v=KPI_PER.map(p=>{ const mi=['202609','202610','202611'].indexOf(p);
+      if(mi>=0){ const t=tg[Math.min(mi,1)], a=mi<2?ac[mi]:null, pp=a==null?null:(t?a/t:1); return [t,a,w,pp,pp==null?null:pp*w]; }
+      if(p==='Q1'||p==='FY68'){ const avg=unit==='%'||unit==='Point'; const t=avg?tg[1]:tg[0]+tg[1]+tg[1], a=avg?(ac[0]+ac[1])/2:(ac[0]+ac[1]), pp=t?a/t:1; return [t,a,w,pp,pp*w]; }
+      if(/^Q/.test(p)) return [tg[1]*3,null,w,null,null];
+      return [tg[1],null,w,null,null]; });
+    out.push({member:m,code,name,group,unit,pos:(KPI_STAFF[m]||{}).title||'',dept:(KPI_STAFF[m]||{}).dept||'',v}); }));
+  return out;
+}
+const KPI_MAIL_FAKE={ to:'truongbophan@manimedicalhanoi.com, tonggiamdoc@manimedicalhanoi.com', cc:'ketoan@manimedicalhanoi.com' };
+function kpiMailData(pic, month){
+  const rows=kpiRows().filter(r=>r.member===pic), i=KPI_PER.indexOf(String(month)), iq=KPI_PER.indexOf('Q1'), st=KPI_STAFF[pic]||{};
+  const R=rows.map(r=>{ const v=r.v[i]||[]; return {code:r.code,link:'Link',url:'https://example.com/kpi/'+r.code,type:r.group,kpi:r.name,unit:r.unit,w:v[2],t:v[0],a:v[1],p:v[3],pw:v[4]}; }).filter(r=>r.w);
+  const tot=R.some(r=>r.pw!=null)?R.reduce((s,r)=>s+(r.pw||0),0):null, qt=rows.reduce((s,r)=>s+((r.v[iq]||[])[4]||0),0);
+  const head=pic==='Dao'?'Thailand Lead':(st.dept==='Sales'?'Tuyen':st.dept==='Marketing'?'Thuong':'Thuong');
+  return {ok:true,pic,month:+month,q:'Q1',fy:'FY68',rows:R,total:tot,wsum:R.reduce((s,r)=>s+(r.w||0),0),qtotal:qt,to:KPI_MAIL_FAKE.to,cc:KPI_MAIL_FAKE.cc,
+    toName:head+', Nguyen Ha',toNames:[head,'Nguyen Ha'],head,dir:'Nguyen Ha',dept:st.dept||'',team:st.team||'',title:st.title||'',miss:[],full:st.full||pic};
+}
+let KSC_REAL=null;
+function kpiHtml(d, f){
+  /* dùng đúng hàm dựng email của backend (kho mmh-backend cạnh repo này) nếu có — ảnh chụp giống email thật */
+  try{ if(KSC_REAL===null){ const p=require('path').resolve(__dirname,process.env.MMH_BACKEND||'../../../mmh-backend','backends/kpi/KpiSyncCenter.gs'); const vm=require('vm');
+      const c={console,Utilities:{formatDate:()=>''},PropertiesService:{getScriptProperties:()=>({getProperty:()=>null})}}; vm.createContext(c); vm.runInContext(require('fs').readFileSync(p,'utf8'),c); KSC_REAL=c; } }catch(e){ KSC_REAL=false; }
+  if(KSC_REAL && KSC_REAL.kscMailHtml_) return KSC_REAL.kscMailHtml_(d, f);
+  return '<div style="font-family:Arial"><p>'+(f.greeting||'')+'</p><p><b>BÁO CÁO KPI THÁNG (MMHSOP_009-FM01)</b></p><table border="1">'+d.rows.map(r=>'<tr><td>'+r.code+'</td><td>'+((f.names||{})[r.code]||r.kpi)+'</td><td>'+((f.reasons||{})[r.code]||'')+'</td></tr>').join('')+'</table><p>'+(f.next||'')+'</p></div>';
+}
+
 const RPL_CAL0=(()=>{ try{ const t=require('fs').readFileSync(require('path').resolve(__dirname,'../../../mmh-backend/backends/marketing/MMH_ReportLog.gs'),'utf8'); return eval('('+t.match(/var RPL_CAL = ([\s\S]*?\n\});/)[1]+')'); }catch(_){ return {}; } })();
 /* ★ v16.0 — giả lập đăng nhập email + mã 6 số (Training Hub v3.12). Mã đúng luôn là 123456. TKS ghi tham số tk của mọi lệnh gọi. */
 const AUTH_USERS=Object.fromEntries(Object.entries(ROSTER_NAMES).map(([k,v])=>[v,k])), AUTHL=[], TKS=[];
@@ -115,6 +160,18 @@ async function install(page, o){
     else { body=Object.fromEntries(u.searchParams.entries()); }
     let d={ok:true,events:[]};
     TKS.push([a||'',u.searchParams.get('tk')||'',req.method()]);
+    /* ⭐ v19.1: KPI */
+    if(/AKfycbx58/.test(u.pathname) && /^rhKpi(Mail|MailPreview|MailSend)?$/.test(a||'')){
+      let out;
+      if(a==='rhKpi'){ const me=AUTH_USERS[(u.searchParams.get('tk')||'').replace(/^mocktk\./,'')]||'Giang';
+        const org=Object.keys(KPI_STAFF).map(k=>({key:k,full:KPI_STAFF[k].full,role:KPI_STAFF[k].role,team:KPI_STAFF[k].team,dept:KPI_STAFF[k].dept,level:KPI_STAFF[k].level}));
+        out={ok:true,me:KPI_DEF[me]?me:'Giang',scope:'all',periods:KPI_PER,rows:kpiRows(),staff:KPI_STAFF,org,sync:[],total:true,at:new Date().toISOString(),v:'1.4'}; }
+      else { const d0=kpiMailData(body.pic||'Giang', body.month||'202610');
+        if(a==='rhKpiMail') out={ok:true,data:d0};
+        else if(a==='rhKpiMailPreview') out={ok:true,html:kpiHtml(d0, body)};
+        else { KPIMAIL.push(body); out={ok:true,message:'Đã gửi email KPI T'+String(body.month).slice(4)+'/'+String(body.month).slice(0,4)+' tới '+body.to+(body.cc?' · CC '+body.cc:'')}; } }
+      return route.fulfill({status:200,contentType:cb?'application/javascript':'application/json',headers:{'access-control-allow-origin':'*'},body:cb?cb+'('+JSON.stringify(out)+');':JSON.stringify(out)});
+    }
     /* ⭐ v18.6: nhật ký gửi báo cáo (rpLog, mọi backend) + email tự đánh giá quý (rhSeSend) — dữ liệu giả */
     if(a==='rpLog'||a==='rhSeSend'||(a==='rhKpiMail'&&/AKfycbx58/.test(u.pathname))){
       const dep2=u.pathname.split('/')[3]||'', key=/^AKfycbzn/.test(dep2)?'marketing':/^AKfycbxW/.test(dep2)?'backoffice':/^AKfycbzK/.test(dep2)?'management':/^AKfycbwglP/.test(dep2)?'crm-thai':/^AKfycbx58/.test(dep2)?'kpi':/^AKfycbyzmh/.test(dep2)?'crm-dental':'other';
@@ -130,7 +187,7 @@ async function install(page, o){
         'crm-dental':[['2026-10-17 15:00','week','Viet','2026-10-12','2026-10-12','2026-10-18','2026-10-17 23:59','Đúng hạn','','Viet','team','VN','crm-dental','']],
         kpi:[['2026-10-02 15:00','kpi','Giang','202609','202609','202609','2026-10-02 16:00','Đúng hạn','','Giang','email','VN','kpi',''],
              ['2026-10-03 09:00','kpi','Minh Trang','202609','202609','202609','2026-10-02 16:00','Muộn',17,'Minh Trang','email','VN','kpi','']]}[key]||[];
-        out=o.rpFail&&key==='backoffice'?{ok:false,error:'Không tìm thấy chức năng: rpLog'}:{ok:true,src:key,since:'2026-10-01 00:00',head:[],rows:R,cal:RPL_CAL0,rule:{week:'23:59',kpiDay:2,kpi:'16:00',qDay:9,q:'17:00'}}; }
+        out=o.rpFail&&key==='backoffice'?{ok:false,error:'Không tìm thấy chức năng: rpLog'}:{ok:true,src:key,since:'2026-10-01 00:00',head:[],rows:R,cal:RPL_CAL0,rule:{week:'23:59',kpiDay:5,kpi:'23:59',qDay:5,q:'23:59'}}; }
       return route.fulfill({status:200,contentType:cb?'application/javascript':'application/json',body:cb?cb+'('+JSON.stringify(out)+');':JSON.stringify(out)});
     }
     { const crmT=/^AKfycbyzmh/.test(u.pathname.split('/')[3]||'')?'dental':/^AKfycbxxck/.test(u.pathname.split('/')[3]||'')?'surgical':/^AKfycbxsoT/.test(u.pathname.split('/')[3]||'')?'eyeless':'';
@@ -251,4 +308,4 @@ async function install(page, o){
   });
 }
 const TMLOG=[];
-module.exports={RPLOG,RPL_CAL0,TMLOG,install,D,SESS,ASSIGN,LOG,WLOG,TRIPS,RIDS,AUTHL,TKS,AUTH_USERS,ADMU};
+module.exports={KPIMAIL,kpiMailData,RPLOG,RPL_CAL0,TMLOG,install,D,SESS,ASSIGN,LOG,WLOG,TRIPS,RIDS,AUTHL,TKS,AUTH_USERS,ADMU};
