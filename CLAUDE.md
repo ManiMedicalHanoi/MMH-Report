@@ -194,3 +194,7 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   ⇒ `V188.open(e)` (khung `#v188-ov`: lọc Sản phẩm · Kiến thức chuyên môn · Kỹ năng, tìm không dấu) ⇒ Training Hub v3.35 `rhLibList` / `rhLibAttach` (kho riêng tư `mmh-library` ▸ `Videos/catalog.json`,
   chép video sang GitHub Pages của Training Hub + HUB_Videos) ⇒ `MC.open(id)` vẽ lại danh sách tài liệu. Buổi đang mở: bọc `MC.open` (`V188.cur()`); `mcPost` / `MATS` là biến nội bộ ⇒ khối có `rhPost` riêng.
   Mock: `rhLibList` / `rhLibAttach` + `tools/guide/lib_catalog.json` (ảnh thu nhỏ, video mẫu); cảnh `cap.js v188`; tour `trnvideo`. Video mới cho thư viện: skill mmh-video-maker ▸ `mmh-library/tools/lib_video.py`.
+- **v19.0 (02/11/2026, khối `v190-js` + `rhnotify/rhnotify.js` GIỐNG HỆT MMH-CRM — sửa 1 nơi chép sang nơi kia) — nút "Nhắc tôi" `#rhn-btn` trong `#tb-tools`**: hộp thông báo chung
+  Training Hub v3.38 (sheet `RH_Notify`, `rhNotifyList` / `rhNotifySeen`, danh tính như RH_Assign). App **Sự kiện MKT** (`ManiMedicalHanoi/MMH-Event-MKTOnline`, backend marketing ▸ `MKT_EventHubPlus.gs`
+  `ehFeed_`) ghi khi PIC được @nhắc tên (bình luận, biên bản họp), được giao việc, có việc chờ duyệt / bị trả lại ⇒ số đỏ + thẻ báo 1 lần / phiên (`RHN_CFG.busy` chờ popup khác) ⇒ bấm mở đúng
+  việc / biên bản / thảo luận ở app Sự kiện (tab mới) + đánh dấu đã xem. Làm mới 5 phút / lần. Mock: `RHN` trong `tools/guide/mock.js`; test + ảnh `tools/guide/t190.js`; tour `nhactoi`.

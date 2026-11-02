@@ -89,6 +89,12 @@ TOUR.add([
     { el:"#qs-btn", t:"Mở Tìm nhanh", x:"Bấm nút này hoặc nhấn <b>Ctrl + K</b> (máy Mac: ⌘ + K) ở bất kỳ màn hình nào." },
     { el:".qs-in", do:function(){ try{ QS.open(); }catch(_){} }, t:"Gõ để tìm", x:"Gõ vài chữ, không cần dấu: tên việc, sự kiện, bài đăng, chuyến công tác. Dùng ↑ ↓ và Enter để mở." }
    ] },
+ { id:"nhactoi", v:1, d:"2026-11-02", g:"Giao việc", ic:"mail", t:"Nhắc tôi — thông báo từ app Sự kiện MKT", x:"Được @nhắc tên, được giao việc hay có việc chờ duyệt ở app Sự kiện MKT ⇒ báo ngay trên Report Hub.",
+   when:function(){ return !!document.getElementById("rhn-btn"); },
+   steps:[
+    { el:"#rhn-btn", t:"Nút Nhắc tôi", x:"Số đỏ = thông báo chưa xem: bạn được <b>@nhắc tên</b> trong thảo luận / biên bản họp, được <b>giao việc</b>, có việc <b>chờ bạn duyệt</b> hoặc bị <b>trả lại</b> ở app Sự kiện MKT." },
+    { el:"#rhn-pop", do:function(){ try{ RHN.open(); }catch(_){} }, wait:600, t:"Danh sách thông báo", x:"Mới nhất ở trên, chấm xanh = chưa xem. Bấm 1 dòng ⇒ mở đúng việc / biên bản / thảo luận ở app Sự kiện MKT (tab mới)." }
+   ] },
  { id:"assign", v:1, d:"2026-10-11", g:"Giao việc", ic:"mail", t:"Việc đã giao & trao đổi", x:"Theo dõi việc mình giao, việc được giao và trả lời trong app.",
    steps:[
     { el:"#tt-at", t:"Việc đã giao", x:"Mở danh sách việc bạn giao cho người khác và việc người khác giao cho bạn." },
