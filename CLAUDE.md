@@ -206,3 +206,6 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   **Hạn: ngày 05** (KPI tháng) · **ngày 05 tháng đầu quý kế tiếp** (KPI quý) — `MMH_ReportLog.gs` v1.1 + `rpstat.js` v1.1; popup nhắc đúng ngày 05 (T7/CN ⇒ thứ Sáu trước), bỏ nếu máy đã ghi nhận gửi.
   Mẫu Word `templates/kpi_fm01|fm02_vi|en.docx` dựng bằng `tools/kpi_tpl/mk_tpl.py` từ file mẫu của quy trình (ô `{…}`, dòng KPI lặp theo ô `{R_CODE}` / `{K_NO}`). Nhóm Thái (team / dept có "thai") ⇒ mẫu EN.
   Mock: `rhKpi` / `rhKpiMail` / `rhKpiMailPreview` (dùng `kscMailHtml_` thật nếu có kho mmh-backend cạnh repo) / `rhKpiMailSend` (`M.KPIMAIL`); test + ảnh `tools/guide/t191.js [--shots]` (cần `npm i -g jszip`, trang chạy qua http).
+- **v19.2 (02/11/2026, `kpisop.js` v1.1, backend kpi `KSC_MAIL.HONOR`)**: gửi CHÍNH THỨC báo cáo KPI không dùng `confirm()` nữa (trình duyệt đã chặn hộp hỏi / app cài ⇒ bấm Gửi không có gì xảy ra; Gửi thử không hỏi nên chạy) —
+  `askInline` = thanh xác nhận trong `.kx-ft` (`#kr2-ft` / `#kq-ft`), gửi xong lưu `mmh_kpi_sentinfo:<pic>:<tháng>` (backend trả `sent`) và hiện "Đã gửi lúc … tới …". Lời chào = `dearOf(d)` từ `rhKpiMail ▸ toHonor / toHonorEn`
+  (chị Tuyên · chị Hòa · sếp Hà; Director "sếp <tên>"; nhóm Thái "<tên> san"); nháp còn lời chào mặc định cũ ⇒ tự thay. Mã mới: không dùng `confirm` / `prompt` / `alert` cho thao tác quan trọng.

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
- * kpisop.js — v1.0 (02/11/2026) · GIỐNG HỆT ở MMH-Report và MMH-CRM (sửa 1 nơi ⇒ chép sang nơi kia)
+ * kpisop.js — v1.1 (02/11/2026 · lời chào theo chức danh · xác nhận gửi ngay trên khung, không dùng confirm()) · GIỐNG HỆT ở MMH-Report và MMH-CRM (sửa 1 nơi ⇒ chép sang nơi kia)
  *
  * BÁO CÁO KPI THEO QUY TRÌNH QUẢN LÝ KPI MMHSOP_009 (phiên bản 20260801, hiệu lực 01/10/2026)
  *  · Báo cáo KPI Tháng = Biểu mẫu MMHSOP_009-FM01 (KR.open) — chậm nhất ngày 05 hằng tháng, cho kết quả tháng trước.
@@ -120,9 +120,31 @@ function mDraft(){
   return d||{};
 }
 function mRows(){ return ((M.data&&M.data.rows)||[]).slice(); }
+/* ⭐ v1.1 — lời chào theo chức danh (backend rhKpiMail ▸ toHonor / toHonorEn): "Dear chị Tuyên, sếp Hà," · nhóm Thái "Dear Tuyen san, Ha san," */
+function dearOf(d, en){
+  d=d||{}; var h=en?d.toHonorEn:d.toHonor, names=(d.toNames&&d.toNames.length?d.toNames:(d.toName?[d.toName]:[]));
+  if(h && h.length) return "Dear "+h.join(", ")+",";
+  return en?"Dear "+(names.join(", ")||"all")+",":"Dear anh/chị"+(names.length?" "+names.join(", "):"")+",";
+}
+function oldDear(d, en){ d=d||{}; var names=(d.toNames&&d.toNames.length?d.toNames:(d.toName?[d.toName]:[])); return en?"Dear "+(names.join(", ")||"all")+",":"Dear anh/chị"+(names.length?" "+names.join(", "):"")+","; }
+/* ⭐ v1.1 — xác nhận NGAY TRÊN KHUNG (không dùng confirm() của trình duyệt: trình duyệt đã chặn hộp hỏi / app trên điện thoại ⇒ bấm Gửi không có gì xảy ra) */
+function askInline(ftId, text, yes){
+  var ft=$(ftId); if(!ft) return;
+  var old=ft.querySelector(".ksp-ask"); if(old) old.remove();
+  var box=document.createElement("div"); box.className="ksp-ask";
+  box.innerHTML='<span class="t">'+text+'</span><button type="button" class="kp-btn" data-a="no">'+T("Huỷ","Cancel")+'</button><button type="button" class="kp-btn pri" data-a="yes">'+T("Xác nhận gửi","Confirm & send")+'</button>';
+  ft.classList.add("asking"); ft.appendChild(box);
+  box.querySelector('[data-a="no"]').onclick=function(){ box.remove(); ft.classList.remove("asking"); };
+  box.querySelector('[data-a="yes"]').onclick=function(){ box.remove(); ft.classList.remove("asking"); yes(); };
+  try{ box.querySelector('[data-a="yes"]').focus(); }catch(_){}
+}
+function sentLine(info, en){
+  if(!info) return "";
+  return '<br><span class="ksp-ok">'+T("Đã gửi lúc ","Sent at ")+esc(info.at||"")+'</span> · '+T("tới ","to ")+esc((info.to||[]).join(", "))+(info.cc&&info.cc.length?' · CC '+esc(info.cc.join(", ")):'');
+}
 function mDefaults(){
-  var d=M.data||{}, en=M.lang==="en", names=(d.toNames&&d.toNames.length?d.toNames:(d.toName?[d.toName]:[])), full=d.full||(staffOf(M.pic).full)||M.pic;
-  return { greeting:en?"Dear "+(names.join(", ")||"all")+",":"Dear anh/chị"+(names.length?" "+names.join(", "):"")+",",
+  var d=M.data||{}, en=M.lang==="en", full=d.full||(staffOf(M.pic).full)||M.pic;
+  return { greeting:dearOf(d, en),
     intro:en?"Please find below my Monthly KPI Report for "+ml(M.month)+" (form MMHSOP_009-FM01). The Word file is attached.":"Em xin gửi Báo cáo KPI tháng "+ml(M.month)+" theo biểu mẫu MMHSOP_009-FM01 như sau (file Word đính kèm):",
     subject:(en?"Monthly KPI Report ":"Báo cáo KPI tháng ")+ml(M.month)+" (MMHSOP_009-FM01) · "+full,
     sign:"Best regards,\n"+full };
@@ -137,6 +159,7 @@ function mSave(){ var f=mFields(); lsS(mKey(), { subject:f.subject, greeting:f.g
 function mMissing(){ return mRows().filter(function(r){ var t=$("kr2-why-"+r.code); return r.a!==null && r.a!==undefined && !(t && t.value.trim()); }); }
 function mForm(){
   var o=$("kr2"), L=o.querySelector(".kx-l"), h=H(), mem=(h.members?h.members():[]), d=M.data||{}, dr=mDraft(), def=mDefaults(), en=M.lang==="en";
+  if(dr.greeting && dr.greeting===oldDear(d, en)) dr.greeting="";   /* v1.1 — lời chào mặc định cũ ⇒ đổi sang xưng hô theo chức danh */
   var ms=(h.months?h.months():[]).filter(function(m){ return m<=(h.ymNow?h.ymNow():"999999"); });
   var sent=lsG("mmh_kpi_sent:"+M.pic+":"+M.month);
   var tot=h.total?h.total(M.pic,M.month):null, tone=function(v){ return h.tone?h.tone(v):"na"; };
@@ -145,7 +168,7 @@ function mForm(){
     +'<div class="kx-f"><label>'+T("Tổng KPI tháng","Month KPI total")+'</label><div class="ksp-big g-'+tone(tot)+'">'+esc(h.pct?h.pct(tot):"")+'</div></div></div>'
     +'<div class="kx-f"><label>'+T("Tháng báo cáo","Report month")+'</label><div class="kx-months">'+ms.map(function(m){ var t=h.total?h.total(M.pic,m):null; return '<button type="button" data-m="'+m+'" class="'+(m===M.month?"on":"")+'">'+ml(m)+(t!==null&&h.hasAct&&h.hasAct(M.pic,m)?'<small class="g-'+tone(t)+'">'+Math.round(t*100)+'%</small>':'')+'</button>'; }).join("")+'</div>'
       +'<div class="ksp-due">'+T("Hạn gửi: <b>ngày "+dueMonth(M.month)+"</b> · Trưởng bộ phận phản hồi qua email trong 02 ngày làm việc. Báo cáo tháng không cần ký.","Deadline: <b>"+dueMonth(M.month)+"</b> · the Department Head replies by e-mail within 2 working days. No signature needed.")
-      +(sent?'<br><span class="ksp-ok">'+T("Máy này đã gửi lúc ","Sent from this device at ")+esc(new Date(sent).toLocaleString(en?"en-GB":"vi-VN"))+'</span>':'')+'</div></div>'
+      +(lsG("mmh_kpi_sentinfo:"+M.pic+":"+M.month)?sentLine(lsG("mmh_kpi_sentinfo:"+M.pic+":"+M.month), en):(sent?'<br><span class="ksp-ok">'+T("Máy này đã gửi lúc ","Sent from this device at ")+esc(new Date(sent).toLocaleString(en?"en-GB":"vi-VN"))+'</span>':''))+'</div></div>'
     +'<div class="kx-f"><label>'+T("Gửi tới (To)","To")+'</label><div class="kx-chips" id="kr2-to"></div></div>'
     +'<div class="kx-f"><label>CC</label><div class="kx-chips" id="kr2-cc"></div><small>'+T("Theo quy trình MMHSOP_009: gửi Trưởng bộ phận + Tổng Giám đốc, CC Kế toán. Chỉ email công ty.","Per MMHSOP_009: to the Department Head + General Director, CC Accounting. Company e-mails only.")+'</small></div>'
     +'<div class="kx-f"><label>'+T("Tiêu đề","Subject")+'</label><input id="kr2-sub" maxlength="200" value="'+esc(dr.subject||def.subject)+'"></div>'
@@ -218,22 +241,22 @@ function mSend(test){
     var miss=mMissing();
     if(miss.length){ toast(T("Còn "+miss.length+" chỉ tiêu chưa ghi lý do đạt / chưa đạt: ","Reason missing for "+miss.length+" target(s): ")+miss.map(function(r){ return r.code; }).join(", ")); var t=$("kr2-why-"+miss[0].code); if(t){ t.focus(); t.scrollIntoView({block:"center",behavior:"smooth"}); } return; }
     if(!f.next.trim()){ toast(T("Vui lòng ghi Hành động tháng tới (mục 2).","Please fill in Actions for next month (section 2).")); $("kr2-next").focus(); return; }
-    if(!confirm(T("Gửi Báo cáo KPI tháng "+ml(M.month)+" của "+M.pic+" tới ","Send the Monthly KPI Report "+ml(M.month)+" of "+M.pic+" to ")+to.join(", ")+(cc.length?"\nCC: "+cc.join(", "):"")+" ?")) return;
+    if(!mSend._ok){ askInline("kr2-ft", T("Gửi tới ","Send to ")+'<b>'+esc(to.join(", "))+'</b>'+(cc.length?' · CC '+esc(cc.join(", ")):'')+' ?', function(){ mSend._ok=1; try{ mSend(false); } finally { mSend._ok=0; } }); return; }
   }
   f.to=to.join(","); f.cc=cc.join(","); if(test) f.subject="[TEST] "+f.subject;
   var b=$(test?"kr2-test":"kr2-send"), t0=b.textContent; b.disabled=true; b.textContent=T("Đang gửi…","Sending…");
   var att=($("kr2-att")||{}).checked;
   (att?mWord().then(b64):Promise.resolve("")).then(function(x){ if(x){ f.attB64=x; f.attName=mFile(); } return post("rhKpiMailSend", f); }).then(function(r){
     b.disabled=false; b.textContent=t0; toast(r.message||r.msg||T("Đã gửi Báo cáo KPI tháng","Monthly KPI report sent"));
-    if(!test){ lsS("mmh_kpi_sent:"+M.pic+":"+M.month, Date.now()); mForm(); }
-  }, function(e){ b.disabled=false; b.textContent=t0; toast(T("⚠ Chưa gửi được: ","⚠ Not sent: ")+e.message); });
+    if(!test){ lsS("mmh_kpi_sent:"+M.pic+":"+M.month, Date.now()); lsS("mmh_kpi_sentinfo:"+M.pic+":"+M.month, r.sent||{ to:to, cc:cc, at:new Date().toLocaleString("vi-VN") }); mForm(); }
+  }, function(e){ b.disabled=false; b.textContent=t0; toast(T("⚠ Chưa gửi được: ","⚠ Not sent: ")+e.message); var m=$("kr2-msg"); if(m) m.textContent=T("⚠ Chưa gửi được: ","⚠ Not sent: ")+e.message; });
 }
 function mOpen(pic, month){
   if(!(window.AUTH && AUTH.tk())){ toast(T("Báo cáo KPI cần đăng nhập bằng email.","The KPI report needs an e-mail sign-in.")); if(window.AUTH&&AUTH.open) AUTH.open(); return; }
   var o=ov("kr2", T("Báo cáo KPI tháng · MMHSOP_009-FM01","Monthly KPI Report · MMHSOP_009-FM01"), [T("Chọn tháng","Month"),T("Lý do từng chỉ tiêu","Reasons"),T("Hành động · nổi bật · khó khăn","Actions · highlights"),T("Xem trước & gửi","Preview & send")]);
   if(!$("kr2-frame")){
     o.querySelector(".kx-r").innerHTML='<div class="kx-st" id="kr2-st"></div><div class="kx-prev"><div class="meta" id="kr2-meta"></div><iframe id="kr2-frame" title="'+T("Xem trước email","E-mail preview")+'" sandbox=""></iframe></div>';
-    o.querySelector(".kx-ft").innerHTML='<span class="msg" id="kr2-msg"></span><button class="kp-btn" id="kr2-dl">'+T("Tải file Word","Download Word")+'</button><button class="kp-btn" id="kr2-test">'+T("Gửi thử cho tôi","Test to me")+'</button><button class="kp-btn pri" id="kr2-send">'+T("Gửi báo cáo KPI tháng","Send monthly KPI report")+'</button>';
+    o.querySelector(".kx-ft").id="kr2-ft"; o.querySelector(".kx-ft").innerHTML='<span class="msg" id="kr2-msg"></span><button class="kp-btn" id="kr2-dl">'+T("Tải file Word","Download Word")+'</button><button class="kp-btn" id="kr2-test">'+T("Gửi thử cho tôi","Test to me")+'</button><button class="kp-btn pri" id="kr2-send">'+T("Gửi báo cáo KPI tháng","Send monthly KPI report")+'</button>';
     $("kr2-dl").onclick=mDownload; $("kr2-test").onclick=function(){ mSend(true); }; $("kr2-send").onclick=function(){ mSend(false); };
   }
   o.classList.add("show");
@@ -397,13 +420,13 @@ function qSend(test){
   var me=(H().myEmail&&H().myEmail())||"", to=test?[me]:Q.to.slice(), cc=test?[]:Q.cc.slice(), bad=to.concat(cc).filter(function(e){ return !okMail(e); });
   if(!to.length||!to[0]){ toast(test?T("Chưa có email của bạn.","Your e-mail is unknown."):T("Chưa có người nhận (To).","No recipient (To).")); return; }
   if(bad.length){ toast(T("Email không hợp lệ: ","Invalid e-mail: ")+bad.join(", ")); return; }
-  if(!test && !confirm(T("Gửi Báo cáo KPI quý "+Q.q+" FY"+Q.fy+" của "+Q.pic+" tới ","Send the Quarterly KPI Report "+Q.q+" FY"+Q.fy+" of "+Q.pic+" to ")+to.join(", ")+(cc.length?"\nCC: "+cc.join(", "):"")+" ?")) return;
+  if(!test && !qSend._ok){ askInline("kq-ft", T("Gửi tới ","Send to ")+'<b>'+esc(to.join(", "))+'</b>'+(cc.length?' · CC '+esc(cc.join(", ")):'')+' ?', function(){ qSend._ok=1; try{ qSend(false); } finally { qSend._ok=0; } }); return; }
   var b=$(test?"kq-test":"kq-send"), t0=b.textContent; b.disabled=true; b.textContent=T("Đang gửi…","Sending…");
   qWord().then(b64).then(function(d){
     return post("rhSeSend", { pic:Q.pic, fy:Q.fy, q:Q.q, to:to.join(","), cc:cc.join(","), subject:$("kq-sub").value, body:$("kq-body").value, name:qFile(), b64:d, test:test?"1":"", lang:Q.lang==="en"?"en":"" });
   }).then(function(r){ b.disabled=false; b.textContent=t0; toast(r.message||T("Đã gửi","Sent"));
     if(!test){ var k="mmh_se_sent:"+Q.pic+":FY"+Q.fy+Q.q; try{ localStorage.setItem(k, String(Date.now())); }catch(_){} lsS("mmh_kq_sent:"+Q.pic+":FY"+Q.fy+Q.q, Date.now()); qForm(); } },
-    function(e){ b.disabled=false; b.textContent=t0; toast(T("⚠ Chưa gửi được: ","⚠ Not sent: ")+e.message); });
+    function(e){ b.disabled=false; b.textContent=t0; toast(T("⚠ Chưa gửi được: ","⚠ Not sent: ")+e.message); var m=$("kq-msg"); if(m) m.textContent=T("⚠ Chưa gửi được: ","⚠ Not sent: ")+e.message; });
 }
 /* quý mặc định: tháng đầu quý (đến ngày 15) ⇒ quý vừa kết thúc (đang đến hạn); còn lại ⇒ quý hiện tại */
 function qDefault(){
@@ -415,7 +438,7 @@ function qOpen(pic, fy, q){
   if(!(window.AUTH && AUTH.tk())){ toast(T("Báo cáo KPI quý cần đăng nhập bằng email.","The quarterly KPI report needs an e-mail sign-in.")); if(window.AUTH&&AUTH.open) AUTH.open(); return; }
   var o=ov("kq", T("Báo cáo KPI quý · MMHSOP_009-FM02","Quarterly KPI Report · MMHSOP_009-FM02"), [T("Chọn quý","Quarter"),T("KPI tự điền","KPI filled in"),T("Năng lực · tự đánh giá","Competencies · self-assessment"),T("Tải Word / gửi email","Download / e-mail")]);
   if(!$("kq-send")){
-    o.querySelector(".kx-ft").innerHTML='<span class="msg" id="kq-msg">'+T("Bản nháp tự lưu trên máy này.","Draft is saved on this device.")+'</span><button class="kp-btn" id="kq-dl">'+T("Tải file Word","Download Word")+'</button><button class="kp-btn" id="kq-test">'+T("Gửi thử cho tôi","Test to me")+'</button><button class="kp-btn pri" id="kq-send">'+T("Gửi báo cáo KPI quý","Send quarterly KPI report")+'</button>';
+    o.querySelector(".kx-ft").id="kq-ft"; o.querySelector(".kx-ft").innerHTML='<span class="msg" id="kq-msg">'+T("Bản nháp tự lưu trên máy này.","Draft is saved on this device.")+'</span><button class="kp-btn" id="kq-dl">'+T("Tải file Word","Download Word")+'</button><button class="kp-btn" id="kq-test">'+T("Gửi thử cho tôi","Test to me")+'</button><button class="kp-btn pri" id="kq-send">'+T("Gửi báo cáo KPI quý","Send quarterly KPI report")+'</button>';
     $("kq-dl").onclick=qDownload; $("kq-test").onclick=function(){ qSend(true); }; $("kq-send").onclick=function(){ qSend(false); };
   }
   o.classList.add("show"); o.querySelector(".kx-l").innerHTML='<div class="kp-skel"></div><div class="kp-skel" style="width:70%"></div>'; o.querySelector(".kx-r").innerHTML="";
@@ -433,6 +456,8 @@ function qOpen(pic, fy, q){
       splitMails(d2.to).forEach(function(e){ if(Q.to.indexOf(e)<0) Q.to.push(e); }); splitMails(d2.cc).forEach(function(e){ if(Q.to.indexOf(e)<0&&Q.cc.indexOf(e)<0) Q.cc.push(e); });
       var mm=splitMails(h.myEmail?h.myEmail():"")[0]; if(mm && Q.to.indexOf(mm)<0 && Q.cc.indexOf(mm)<0) Q.cc.push(mm);
       Q.ch.to=chips($("kq-to"), Q.to); Q.ch.cc=chips($("kq-cc"), Q.cc);
+      var bd=$("kq-body"), dear=dearOf(d2, Q.lang==="en");
+      if(bd && !qDraft().body && /^Dear [^\n]*,/.test(bd.value)) bd.value=bd.value.replace(/^Dear [^\n]*,/, dear);
       if(d2.miss && d2.miss.length) $("kq-msg").textContent=T("⚠ Chưa có email của: ","⚠ No e-mail for: ")+d2.miss.join(", ");
     }).catch(function(e){ $("kq-msg").textContent="⚠ "+e.message; });
   });
@@ -486,6 +511,8 @@ window.KPI_NOTICE=function(){
     ".ksp-sc{display:flex;align-items:center;gap:8px;margin-top:5px} .ksp-sc small{margin:0!important}",
     ".ksp-a td{vertical-align:top} .ksp-det{width:100%;box-sizing:border-box;min-height:54px;border:1px solid var(--fld-line,#C3CDD8);border-radius:7px;padding:5px 7px;font:inherit;font-size:12.5px;resize:vertical;outline:none;line-height:1.4}",
     ".ksp-cap{display:block;font-size:10.5px;color:#8A6A1F;font-weight:600}",
+    ".ksp .kx-ft.asking>button{display:none} .ksp-ask{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-left:auto;padding:6px 10px;border:1px solid var(--t-line,#CFE2F3);background:var(--t-soft,#F0F7FF);border-radius:10px;font-size:13px;color:#1F3347}",
+    ".ksp-ask .t{max-width:640px;line-height:1.4}",
     ".ksp-a td:nth-child(3){min-width:220px}",
     "@media(max-width:900px){ #kr2 .kx-bd,#kq .kx-bd{grid-template-columns:1fr} #kq .kx-l{order:1} #kq .kx-r{order:2;border-right:none} }"
   ].join("\n");
@@ -495,5 +522,5 @@ window.KPI_NOTICE=function(){
 /* ── lối vào: thay KR / SE cũ ── */
 window.KR={ open:function(pic, month){ mOpen(pic, month); } };
 window.SE={ open:function(pic, fy, q){ qOpen(pic, fy, q); } };
-window.KPISOP={ m:M, q:Q, mOpen:mOpen, qOpen:qOpen, mWord:mWord, qWord:qWord, remindDay:remindDay, dueMonth:dueMonth, dueQuarter:dueQuarter, docLang:docLang, v:"1.0" };
+window.KPISOP={ m:M, q:Q, mOpen:mOpen, qOpen:qOpen, mWord:mWord, qWord:qWord, remindDay:remindDay, dueMonth:dueMonth, dueQuarter:dueQuarter, docLang:docLang, dearOf:dearOf, v:"1.1" };
 })();

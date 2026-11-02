@@ -125,7 +125,7 @@ function kpiMailData(pic, month){
   const tot=R.some(r=>r.pw!=null)?R.reduce((s,r)=>s+(r.pw||0),0):null, qt=rows.reduce((s,r)=>s+((r.v[iq]||[])[4]||0),0);
   const head=pic==='Dao'?'Thailand Lead':(st.dept==='Sales'?'Tuyen':st.dept==='Marketing'?'Thuong':'Thuong');
   return {ok:true,pic,month:+month,q:'Q1',fy:'FY68',rows:R,total:tot,wsum:R.reduce((s,r)=>s+(r.w||0),0),qtotal:qt,to:KPI_MAIL_FAKE.to,cc:KPI_MAIL_FAKE.cc,
-    toName:head+', Nguyen Ha',toNames:[head,'Nguyen Ha'],head,dir:'Nguyen Ha',dept:st.dept||'',team:st.team||'',title:st.title||'',miss:[],full:st.full||pic};
+    toName:head+', Nguyen Ha',toNames:[head,'Nguyen Ha'],toHonor:[({Tuyen:'chị Tuyên',Thuong:'anh/chị Thuong'})[head]||('anh/chị '+head),'sếp Hà'],toHonorEn:[head.split(' ')[0]+' san','Ha san'],head,dir:'Nguyen Ha',dept:st.dept||'',team:st.team||'',title:st.title||'',miss:[],full:st.full||pic};
 }
 let KSC_REAL=null;
 function kpiHtml(d, f){

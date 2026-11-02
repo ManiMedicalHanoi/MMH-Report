@@ -8,6 +8,20 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-11-02-v19.2", version:"v19.2", date:"2026-11-02",
+    title:"Báo cáo KPI: lời chào đúng xưng hô, xác nhận gửi ngay trên khung",
+    summary:"Sửa lỗi bấm <b>Gửi báo cáo KPI tháng</b> mà không có gì xảy ra trên một số máy. Lời chào tự xưng hô theo chức danh người nhận.",
+    items:[
+      { type:"fix", icon:"✓", title:"Gửi chính thức không còn \"im lặng\"", text:"Bấm <b>Gửi báo cáo KPI tháng</b> (hoặc quý) ⇒ thanh xác nhận hiện ngay dưới khung, ghi rõ gửi tới ai ⇒ bấm <b>Xác nhận gửi</b>. Gửi xong khung ghi giờ gửi và người nhận. Trước đây trình duyệt chặn hộp hỏi nên bấm Gửi không có gì xảy ra.", img:"updates/v19.2/xacnhan.jpg" },
+      { type:"imp", icon:"✉", title:"Lời chào theo chức danh", text:"Lời chào tự điền: <b>Dear chị Tuyên</b>, <b>Dear chị Hòa</b>, <b>Dear sếp Hà</b> theo người nhận; nhóm Thái: <b>Dear Ha san</b>. Vẫn sửa được trước khi gửi." }
+    ],
+    en:{ title:"KPI report: greetings by title, send confirmation inside the window",
+      items:[
+        { title:"Sending no longer does \"nothing\"", text:"Click <b>Send monthly (or quarterly) KPI report</b>: a confirmation bar shows the recipients right below the window ⇒ <b>Confirm & send</b>. After sending, the window shows the time and recipients. Before, browsers that block pop-up questions did nothing." },
+        { title:"Greeting by title", text:"The greeting is filled in by recipient: Dear chị Tuyên, Dear chị Hòa, Dear sếp Hà; Thailand team: Dear Ha san. It can still be edited." }
+      ] }
+  },
+  {
     id:"2026-11-02-v19.1", version:"v19.1", date:"2026-11-02",
     title:"Báo cáo KPI tháng và quý theo quy trình mới MMHSOP_009: đúng biểu mẫu, hạn ngày 05",
     summary:"Theo <b>Quy trình quản lý KPI MMHSOP_009</b> (hiệu lực 01/10/2026): Báo cáo KPI tháng (biểu mẫu <b>FM01</b>) và Báo cáo KPI quý (<b>FM02</b>) làm ngay trên Report Hub, gửi <b>Trưởng bộ phận + Tổng Giám đốc, CC Kế toán</b>, hạn <b>ngày 05</b>. File Word đúng mẫu tự đính kèm.",
