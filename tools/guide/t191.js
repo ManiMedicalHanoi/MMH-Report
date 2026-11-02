@@ -1,4 +1,4 @@
-/* Kiểm thử + ảnh v19.1: Báo cáo KPI tháng (FM01) / quý (FM02) theo quy trình MMHSOP_009 (kpisop/kpisop.js).
+/* Kiểm thử + ảnh v19.1 (+ v19.2: lời chào theo chức danh, xác nhận gửi trên khung): Báo cáo KPI tháng (FM01) / quý (FM02) theo quy trình MMHSOP_009 (kpisop/kpisop.js).
    Chạy: NODE_PATH=$(npm root -g) node tools/guide/t191.js [--shots]   (cần JSZip cục bộ: npm i -g jszip, hoặc tự tải từ cdnjs nếu mạng cho phép)
    --shots ⇒ lưu ảnh vào updates/v19.1 */
 const {chromium}=require('playwright'), path=require('path'), fs=require('fs'), M=require('./mock.js');
@@ -58,10 +58,17 @@ const srv=http.createServer((q,r)=>{ const f=path.join(root,decodeURIComponent(q
   await p.fill('#kr2-next','- Ký hợp đồng phòng khám Hà Đông trước 15/11\n- Thêm 6 lượt viếng thăm đại lý khu vực phía Bắc');
   await p.fill('#kr2-high','Doanh số NPP vượt 10% nhờ đơn thầu.'); await p.fill('#kr2-chal','Một khách hàng lớn hoãn lịch ký hợp đồng.');
   await p.waitForTimeout(1500);
+  const gr=await p.$eval('#kr2-gr',x=>x.value); if(gr!=='Dear chị Tuyên, sếp Hà,') fail('lời chào: '+gr);
   const pv=await p.evaluate(()=>document.getElementById('kr2-frame').srcdoc||'');
   if(!/MMHSOP_009-FM01/.test(pv) || !/2 đơn thầu/.test(pv) || !/Không có/.test(pv)) fail('xem trước chưa theo FM01');
   if(SHOTS){ await p.evaluate(()=>{ document.querySelectorAll('#rhn-toast').forEach(e=>e.remove()); document.querySelectorAll('.ksp .kx-l,.ksp .kx-r').forEach(e=>e.scrollTop=0); }); }   if(SHOTS) await p.screenshot({path:OUT+'/kpithang.jpg',type:'jpeg',quality:82});
-  await p.click('#kr2-send'); await p.waitForTimeout(3000);
+  await p.click('#kr2-send'); await p.waitForTimeout(300);
+  if(M.KPIMAIL.length) fail('gửi khi chưa bấm Xác nhận gửi');
+  const ask=await p.$eval('#kr2-ft .ksp-ask',x=>x.innerText).catch(()=>'');
+  if(SHOTS){ const o2=path.resolve(__dirname,'../../updates/v19.2'); if(!fs.existsSync(o2)) fs.mkdirSync(o2,{recursive:true}); await p.evaluate(()=>{ document.querySelectorAll('#rhn-toast').forEach(e=>e.remove()); document.querySelectorAll('.ksp .kx-r').forEach(e=>e.scrollTop=0); });
+    const cb=await p.evaluate(()=>{ const c=document.querySelector('#kr2 .kx-card').getBoundingClientRect(); return {x:c.left+c.width*0.36,y:c.top,width:c.width*0.64,height:c.height}; }); await p.screenshot({path:o2+'/xacnhan.jpg',type:'jpeg',quality:82,clip:cb}); } if(!/truongbophan/.test(ask)) fail('chưa hiện xác nhận gửi trên khung: '+ask);
+  await p.click('#kr2-ft .ksp-ask [data-a="yes"]'); await p.waitForTimeout(3000);
+  const dueTxt=await p.$eval('#kr2 .ksp-due',x=>x.innerText); if(!/Đã gửi lúc/.test(dueTxt)) fail('chưa hiện đã gửi: '+dueTxt);
   const ms=M.KPIMAIL[M.KPIMAIL.length-1]||{};
   if(!ms.attB64 || ms.attB64.length<10000) fail('chưa đính kèm file Word FM01');
   if(!/^MMHSOP_009-FM01_KPI_Thang_202610_Tran_Minh_Viet\.docx$/.test(ms.attName||'')) fail('tên file FM01: '+ms.attName);
@@ -72,6 +79,7 @@ const srv=http.createServer((q,r)=>{ const f=path.join(root,decodeURIComponent(q
 
   /* ④ nhóm Thái ⇒ tiếng Anh */
   await p.evaluate(()=>KR.open('Dao','202610')); await p.waitForTimeout(1500);
+  const grTh=await p.$eval('#kr2-gr',x=>x.value); if(!/^Dear .*san, Ha san,$/.test(grTh)) fail('lời chào nhóm Thái: '+grTh);
   const en=await p.evaluate(()=>({h:document.querySelector('#kr2 .kx-l').innerText, f:KPISOP.m.lang}));
   if(en.f!=='en' || !/KPI Results Summary/.test(en.h)) fail('nhóm Thái chưa dùng mẫu tiếng Anh');
   await p.evaluate(()=>document.getElementById('kr2').classList.remove('show'));
@@ -86,7 +94,7 @@ const srv=http.createServer((q,r)=>{ const f=path.join(root,decodeURIComponent(q
   if(SHOTS){ await p.evaluate(()=>{ document.querySelectorAll('#rhn-toast').forEach(e=>e.remove()); document.querySelectorAll('.ksp .kx-l,.ksp .kx-r').forEach(e=>e.scrollTop=0); }); }   if(SHOTS) await p.screenshot({path:OUT+'/kpiquy.jpg',type:'jpeg',quality:82});
   const dl=p.waitForEvent('download'); await p.click('#kq-dl'); const d=await dl; await d.saveAs(TMP+'/t191_fm02.docx');
   if(!/^MMHSOP_009-FM02_KPI_Quy_FY68_Q1_Hoang_Giang\.docx$/.test(d.suggestedFilename())) fail('tên file FM02: '+d.suggestedFilename());
-  await p.click('#kq-send'); await p.waitForTimeout(3000);
+  await p.click('#kq-send'); await p.waitForTimeout(300); await p.click('#kq-ft .ksp-ask [data-a="yes"]'); await p.waitForTimeout(3000);
   const se=M.RPLOG[M.RPLOG.length-1]||{};
   if(!se.b64 || se.q!=='Q1' || !/FM02/.test(se.subject||'')) fail('gửi báo cáo quý: '+JSON.stringify({q:se.q,s:se.subject}).slice(0,200));
   if(p.errs.length) fail('lỗi trang: '+p.errs.join(' | '));
