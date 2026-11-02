@@ -57,6 +57,12 @@ ASSIGN.push({id:'A2610050930',createdAt:'2026-10-05T09:30:00',src:'marketing',no
   {id:'A2610040800',createdAt:'2026-10-04T08:00:00',src:'marketing',no:'2.1',name:'Báo cáo thị trường Bạc Liêu',keyTask:'Ophthalmic — tender FY68',pic:'Khang',assigner:'Giang',start:'2026-10-04',due:'2026-10-07',seen:false,done:false,via:'system',replies:[]},
   {id:'A2610010800',createdAt:'2026-10-01T08:00:00',src:'marketing',no:'3.1',name:'Ảnh sự kiện Jizai',keyTask:'Weekly report & meeting',pic:'Thuong',assigner:'Giang',start:'2026-10-01',due:'2026-10-03',seen:true,seenAt:'2026-10-01T09:00:00',done:true,doneAt:'2026-10-03T16:20:00',via:'own',replies:[]});
 const LOG=[];
+/* ★ v19.0 — giả lập Training Hub v3.38: hộp thông báo chung RH_Notify (app Sự kiện MKT ghi) */
+const RHN=[
+  {id:'N1',at:'2026-10-31T09:20:00',to:'Minh Trang',app:'event',kind:'mention',title:'Thuong nhắc đến bạn · Workshop Composite thẩm mỹ răng trước (mẫu)',text:'@Minh Trang đăng bài đếm ngược trước thứ Sáu nhé, key visual đã duyệt.',url:'https://manimedicalhanoi.github.io/MMH-Event-MKTOnline/#ev-EVMAU-1/talk',by:'Thuong',seen:false},
+  {id:'N2',at:'2026-10-31T08:05:00',to:'Minh Trang',app:'event',kind:'note',title:'Thuong nhắc đến bạn trong biên bản họp · Triển lãm Răng Hàm Mặt miền Bắc (mẫu)',text:'Họp chốt truyền thông (31/10): @Minh Trang mở form đăng ký + nhóm Zalo',url:'https://manimedicalhanoi.github.io/MMH-Event-MKTOnline/#ev-EVMAU-3/notes',by:'Thuong',seen:false},
+  {id:'N3',at:'2026-10-30T16:40:00',to:'Minh Trang',app:'event',kind:'assign',title:'Việc mới: Bài đăng teaser · Webinar nội nha với trâm JIZAI (mẫu)',text:'• Bài đăng teaser (hạn 01/11 (CN))',url:'https://manimedicalhanoi.github.io/MMH-Event-MKTOnline/#t-T1',by:'Thuong',seen:true},
+  {id:'N4',at:'2026-10-31T10:00:00',to:'Giang',app:'event',kind:'review',title:'Chờ duyệt: Key visual / poster sự kiện',text:'• Key visual / poster sự kiện (hạn 30/10)',url:'https://manimedicalhanoi.github.io/MMH-Event-MKTOnline/#t-T2',by:'Duc Anh',seen:false}];
 /* ★ v15.5 — giả lập MMH Calendar Feed v3.2: danh mục chọn + ghi dữ liệu Marketing */
 const MKOPT={
   offline:{type:['Seminar','Workshop','Exhibition','Presentation','Webinar'],prod:['Jizai','Composite','Dental Products','Acrylic','Dental Suture',"Bleach'N Shine",'Ophthalmic Suture','Ophthalmic knife','Ophthalmic Products'],
@@ -206,6 +212,8 @@ async function install(page, o){
     else if(a==='rhAssignReply'){ const x=ASSIGN.find(y=>y.id===body.id); LOG.push(['reply',body]); if(!x) d={ok:false,error:'Không tìm thấy'}; else { x.replies=(x.replies||[]).concat([{by:body.actor,at:new Date().toISOString(),text:body.text}]); d={ok:true,item:x}; } }
     else if(a==='rhDirectory'){ d=body.tk?{ok:true,people:Object.keys(ROSTER_NAMES).map(k=>({pic:k,email:ROSTER_NAMES[k]+'@mani.inc'}))}:{ok:false,code:'AUTH',error:'Chưa đăng nhập.'}; }
     else if(a==='rhAssignAdd'){ LOG.push(['add',body]); const id='A'+Date.now(); ASSIGN.push({id,createdAt:'2026-10-06 10:00',src:body.src,no:body.no,name:body.name,keyTask:body.keyTask,pic:body.pic,assigner:body.actor,start:body.start,due:body.due,seen:false,done:false}); d={ok:true,id}; }
+    else if(a==='rhNotifyList'){ const me=(body.actor||'').toLowerCase(), L=RHN.filter(x=>x.to.toLowerCase()===me); d={ok:true,items:L,unseen:L.filter(x=>!x.seen).length}; }
+    else if(a==='rhNotifySeen'){ LOG.push(['nseen',body]); RHN.forEach(x=>{ if(x.to.toLowerCase()===(body.actor||'').toLowerCase()&&(String(body.all)==='1'||String(body.ids||'').split(',').includes(x.id))) x.seen=true; }); d={ok:true}; }
     else if(a==='rhAssignSeen'){ LOG.push(['seen',body]); String(body.ids||'').split(',').forEach(id=>{ const x=ASSIGN.find(y=>y.id===id); if(x) x.seen=true; }); d={ok:true}; }
     else if(a==='rhAssignDone'){ LOG.push(['done',body]); const sent=[]; String(body.ids||'').split(',').forEach(id=>{ const x=ASSIGN.find(y=>y.id===id); if(x&&!x.done){ x.done=true; sent.push(id); } }); d={ok:true,sent}; }
     else if(a==='tripMaster') d={ok:true,to:'Nguyen Ha (Director)',cc:'Tuyen (HOD)',master:{destinations:['Ho Chi Minh','Da Nang','Nghe An','Can Tho','Hai Phong','Lao Cai','Dak Lak'],coTravelers:['Khang','Thuong','Tuyen','Viet Ha','Bui Trang'],equipment:['Laptop','Máy chiếu','Standee','Hàng mẫu']}};

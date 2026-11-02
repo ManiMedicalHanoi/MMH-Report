@@ -8,6 +8,16 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-11-02-v19.0", version:"v19.0", date:"2026-11-02",
+    title:"Nút Nhắc tôi: được @nhắc tên hay giao việc ở app Sự kiện MKT là thấy ngay trên Report Hub",
+    summary:"App <b>Sự kiện MKT</b> có thảo luận, biên bản họp và giao việc. Khi ai đó <b>@nhắc tên bạn</b>, giao việc cho bạn hoặc có việc chờ bạn duyệt, Report Hub báo ngay ở nút <b>Nhắc tôi</b> (số đỏ) — bấm là mở đúng chỗ bên app Sự kiện.",
+    items:[
+      { type:"new", icon:"@", title:"Nút Nhắc tôi trên thanh trên cùng", text:"Bấm <b>Nhắc tôi</b> (biểu tượng @, cạnh Hướng dẫn) ⇒ xem danh sách: được @nhắc tên trong thảo luận / <b>biên bản họp</b>, được giao việc, việc chờ duyệt, việc bị trả lại. Bấm 1 dòng ⇒ mở đúng việc ở app Sự kiện MKT, dòng đó được đánh dấu đã xem.", img:"updates/v19.0/nhactoi.jpg" }
+    ],
+    en:{ title:"Mentions button: see @mentions and assignments from the MKT Events app right in Report Hub",
+      items:[ { title:"Mentions button on the top bar", text:"Click <b>Nhắc tôi</b> (the @ icon next to Guide) to see when someone @mentions you in a discussion or <b>meeting note</b>, assigns you a task, sends you something to review or returns your work in the MKT Events app. Click a line to open that exact place in MKT Events; it is marked as read." } ] }
+  },
+  {
     id:"2026-10-31-v18.9", version:"v18.9", date:"2026-10-31",
     title:"Bảng Cập nhật công việc hiển thị đúng · xem được cả sub-task của người khác trong key task",
     summary:"Cột <b>Công việc</b> ở dạng Bảng không còn bị bóp hẹp. PIC giờ xem được <b>mọi sub-task</b> của key task mình tham gia, kể cả việc của đồng nghiệp (chỉ xem).",
