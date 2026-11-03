@@ -1,6 +1,6 @@
 /* MGM 2026 — service worker: works offline in Japan. Pages = network first (always newest), fall back to saved copy.
    Emergency removal: replace this file with:  self.addEventListener('install',()=>self.skipWaiting());self.addEventListener('activate',()=>self.registration.unregister()); */
-const V = 'mgm26-v1';
+const V = 'mgm26-v2';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icon-180.png', 'icon-192.png', 'icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => {
