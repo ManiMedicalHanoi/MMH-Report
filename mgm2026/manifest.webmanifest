@@ -1,0 +1,33 @@
+{
+  "name": "MGM 2026 · Hành trình Nhật Bản",
+  "short_name": "MGM 2026",
+  "description": "Lịch trình Nhật Bản 03–08/11/2026: training tại MANI, họp MGM, Tokyo Dental Show.",
+  "lang": "vi",
+  "start_url": "./",
+  "scope": "./",
+  "id": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#003047",
+  "theme_color": "#003047",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
