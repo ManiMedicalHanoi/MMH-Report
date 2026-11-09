@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
- * kpisop.js — v1.1 (02/11/2026 · lời chào theo chức danh · xác nhận gửi ngay trên khung, không dùng confirm()) · GIỐNG HỆT ở MMH-Report và MMH-CRM (sửa 1 nơi ⇒ chép sang nơi kia)
+ * kpisop.js — v1.2 (09/11/2026 · CHỈ gửi bản soạn sẵn về email của chính mình · nhắc hạn ngày 01–05, quá hạn 06–10) · v1.1 (02/11/2026 · lời chào theo chức danh) · GIỐNG HỆT ở MMH-Report và MMH-CRM (sửa 1 nơi ⇒ chép sang nơi kia)
  *
  * BÁO CÁO KPI THEO QUY TRÌNH QUẢN LÝ KPI MMHSOP_009 (phiên bản 20260801, hiệu lực 01/10/2026)
  *  · Báo cáo KPI Tháng = Biểu mẫu MMHSOP_009-FM01 (KR.open) — chậm nhất ngày 05 hằng tháng, cho kết quả tháng trước.
@@ -11,7 +11,12 @@
  *  · Người nhận (backend rhKpiMail): Trưởng bộ phận + Tổng Giám đốc, CC Kế toán.
  *  · Mẫu Word: templates/kpi_fm01_vi|en.docx, kpi_fm02_vi|en.docx (dựng bằng tools/kpi_tpl/mk_tpl.py từ đúng file mẫu của quy trình).
  *    Nhóm Việt Nam (MKT, Sales, Back office…) ⇒ mẫu tiếng Việt · nhóm Thái Lan ⇒ mẫu tiếng Anh.
- *  · Popup nhắc hạn (#kpn): ngày 05 (hoặc ngày làm việc liền trước nếu 05 là T7 / CN), chỉ khi máy này chưa ghi nhận đã gửi.
+ *  · v1.2 (người dùng yêu cầu 09/11/2026): hệ thống KHÔNG gửi báo cáo KPI cho người khác — người dùng TỰ SOẠN VÀ GỬI email từ hộp thư của mình.
+ *    Nút chính "Soạn email để gửi" (composeOpen): sao chép nội dung email (HTML) vào bộ nhớ tạm + thanh mở hộp thư Outlook / Gmail / ứng dụng mail
+ *    với To · CC · Tiêu đề điền sẵn ⇒ dán nội dung, đính kèm file Word, tự gửi ⇒ bấm "Đã gửi" (thôi nhắc hạn).
+ *    Phụ: "Gửi bản sao về email của tôi" (backend kpi v1.5 chỉ gửi về email người đăng nhập — bản tham khảo, có file Word), Tải file Word, Sao chép người nhận.
+ *  · Hạn mặc định: ngày 05 hằng tháng (KPI tháng trước) và ngày 05 tháng đầu quý kế tiếp (KPI quý). Popup nhắc (#kpn): ngày 01–05
+ *    mỗi ngày 1 lần ("còn n ngày" / "hôm nay là hạn"), ngày 06–10 "đã quá hạn" — dừng khi đã gửi bản soạn sẵn hoặc bấm "Đã gửi, không nhắc nữa".
  *
  * Cần ở app: window.KPI (khối KPI v16.5), window.KPI_H (hàm dùng chung của khối đó), AUTH, toast.
  * Cấu hình: window.KPISOP_CFG = { en:fn() (giao diện tiếng Anh?), thai:fn(pic, staff) (người này thuộc nhóm Thái?) }
@@ -36,6 +41,8 @@ function nextYm(ym){ var y=+ym.slice(0,4), m=+ym.slice(4)+1; if(m>12){ m=1; y++;
 function okMail(e){ return /^[^@\s]+@(mani\.inc|manimedicalhanoi\.com)$/i.test(e); }
 function splitMails(x){ return String(x||"").split(/[,;\s]+/).map(function(e){ return e.trim().toLowerCase().replace(/@mani\.inc$/,"@manimedicalhanoi.com"); }).filter(Boolean); }
 function st(){ return (H().st&&H().st())||{}; }
+/* v1.2 — email của chính người dùng, chuẩn hoá về @manimedicalhanoi.com (máy chủ cũng chỉ gửi về địa chỉ này) */
+function myMail(){ return splitMails((H().myEmail&&H().myEmail())||"")[0]||""; }
 function D(){ return st().d||null; }
 function staffOf(p){ return (H().staff&&H().staff(p))||{}; }
 /* nhóm Thái ⇒ mẫu tiếng Anh */
@@ -140,6 +147,8 @@ function askInline(ftId, text, yes){
 }
 function sentLine(info, en){
   if(!info) return "";
+  if(info.mine) return '<br><span class="ksp-ok">'+T("Bạn đã đánh dấu đã gửi lúc ","You marked it as sent at ")+esc(info.at||"")+'</span>'+(info.to?' · '+T("tới ","to ")+esc(info.to):'');
+  if(info.self) return '<br><span class="ksp-ok">'+T("Đã gửi bản sao về ","Copy sent to ")+esc((info.to||[]).join(", "))+T(" lúc "," at ")+esc(info.at||"")+'</span> · '+T("nhớ tự gửi email chính thức từ hộp thư của bạn","remember to send the official e-mail from your own mailbox");
   return '<br><span class="ksp-ok">'+T("Đã gửi lúc ","Sent at ")+esc(info.at||"")+'</span> · '+T("tới ","to ")+esc((info.to||[]).join(", "))+(info.cc&&info.cc.length?' · CC '+esc(info.cc.join(", ")):'');
 }
 function mDefaults(){
@@ -169,8 +178,9 @@ function mForm(){
     +'<div class="kx-f"><label>'+T("Tháng báo cáo","Report month")+'</label><div class="kx-months">'+ms.map(function(m){ var t=h.total?h.total(M.pic,m):null; return '<button type="button" data-m="'+m+'" class="'+(m===M.month?"on":"")+'">'+ml(m)+(t!==null&&h.hasAct&&h.hasAct(M.pic,m)?'<small class="g-'+tone(t)+'">'+Math.round(t*100)+'%</small>':'')+'</button>'; }).join("")+'</div>'
       +'<div class="ksp-due">'+T("Hạn gửi: <b>ngày "+dueMonth(M.month)+"</b> · Trưởng bộ phận phản hồi qua email trong 02 ngày làm việc. Báo cáo tháng không cần ký.","Deadline: <b>"+dueMonth(M.month)+"</b> · the Department Head replies by e-mail within 2 working days. No signature needed.")
       +(lsG("mmh_kpi_sentinfo:"+M.pic+":"+M.month)?sentLine(lsG("mmh_kpi_sentinfo:"+M.pic+":"+M.month), en):(sent?'<br><span class="ksp-ok">'+T("Máy này đã gửi lúc ","Sent from this device at ")+esc(new Date(sent).toLocaleString(en?"en-GB":"vi-VN"))+'</span>':''))+'</div></div>'
-    +'<div class="kx-f"><label>'+T("Gửi tới (To)","To")+'</label><div class="kx-chips" id="kr2-to"></div></div>'
-    +'<div class="kx-f"><label>CC</label><div class="kx-chips" id="kr2-cc"></div><small>'+T("Theo quy trình MMHSOP_009: gửi Trưởng bộ phận + Tổng Giám đốc, CC Kế toán. Chỉ email công ty.","Per MMHSOP_009: to the Department Head + General Director, CC Accounting. Company e-mails only.")+'</small></div>'
+    +'<div class="ksp-self">'+T("Hệ thống <b>không gửi</b> báo cáo cho người khác. Bấm <b>Soạn email để gửi</b>: nội dung được sao chép sẵn và hộp thư của bạn mở với người nhận, tiêu đề điền sẵn ⇒ dán nội dung, đính kèm file Word và <b>tự gửi</b> từ email của bạn.","The system <b>does not send</b> the report to anyone. Click <b>Compose e-mail</b>: the content is copied and your mailbox opens with the recipients and subject filled in ⇒ paste the content, attach the Word file and <b>send it yourself</b>.")+'</div>'
+    +'<div class="kx-f"><label>'+T("Người nhận — bạn tự gửi (To)","Recipients — you send it (To)")+'</label><div class="kx-chips" id="kr2-to"></div></div>'
+    +'<div class="kx-f"><label>CC</label><div class="kx-chips" id="kr2-cc"></div><small>'+T("Theo quy trình MMHSOP_009: Trưởng bộ phận + Tổng Giám đốc, CC Kế toán.","Per MMHSOP_009: Department Head + General Director, CC Accounting.")+'</small></div>'
     +'<div class="kx-f"><label>'+T("Tiêu đề","Subject")+'</label><input id="kr2-sub" maxlength="200" value="'+esc(dr.subject||def.subject)+'"></div>'
     +'<div class="kx-f"><label>'+T("Lời chào","Greeting")+'</label><input id="kr2-gr" value="'+esc(dr.greeting||def.greeting)+'"></div>'
     +'<div class="kx-f"><label>'+T("Mở đầu","Opening")+'</label><textarea id="kr2-in" style="min-height:48px">'+esc(dr.intro||def.intro)+'</textarea></div>'
@@ -198,7 +208,9 @@ function mForm(){
 }
 function mMeta(){
   var m=$("kr2-meta"); if(!m) return;
-  m.innerHTML='<div><b>To:</b> '+(M.to.length?esc(M.to.join(", ")):'<span class="g-low">'+T("chưa có người nhận","no recipient yet")+'</span>')+'</div>'+(M.cc.length?'<div><b>CC:</b> '+esc(M.cc.join(", "))+'</div>':'')
+  var me=myMail();
+  m.innerHTML='<div><b>'+T("Bạn tự gửi từ","You send from")+':</b> '+esc(me||T("email của bạn","your e-mail"))+'</div>'
+    +'<div><b>'+T("Tới","To")+':</b> '+(M.to.length?esc(M.to.join(", ")):'<span class="g-low">'+T("chưa có người nhận","no recipient yet")+'</span>')+(M.cc.length?' · CC '+esc(M.cc.join(", ")):'')+'</div>'
     +'<div><b>'+T("Tiêu đề","Subject")+':</b> '+esc(($("kr2-sub")||{}).value||"")+'</div>'
     +(($("kr2-att")||{}).checked?'<div><b>'+T("Đính kèm","Attachment")+':</b> '+esc(mFile())+'</div>':'');
 }
@@ -231,33 +243,93 @@ function mDownload(){
   mWord().then(function(blob){ saveBlob(blob, mFile()); b.disabled=false; b.textContent=t0; toast(T("Đã tạo ","Created ")+mFile()); },
     function(e){ b.disabled=false; b.textContent=t0; toast("⚠ "+e.message); });
 }
-function mSend(test){
+/* v1.2 — bản sao tham khảo về email của CHÍNH MÌNH (không phải gửi chính thức) */
+function mSend(){
   M.ch.to&&M.ch.to.flush(); M.ch.cc&&M.ch.cc.flush();
-  var f=mFields(), me=(H().myEmail&&H().myEmail())||"";
-  var to=test?[me]:M.to.slice(), cc=test?[]:M.cc.slice(), bad=to.concat(cc).filter(function(e){ return !okMail(e); });
-  if(!to.length||!to[0]){ toast(test?T("Chưa có email của bạn.","Your e-mail is unknown."):T("Chưa có người nhận (To).","No recipient (To).")); return; }
-  if(bad.length){ toast(T("Email không hợp lệ: ","Invalid e-mail: ")+bad.join(", ")); return; }
-  if(!test){
-    var miss=mMissing();
-    if(miss.length){ toast(T("Còn "+miss.length+" chỉ tiêu chưa ghi lý do đạt / chưa đạt: ","Reason missing for "+miss.length+" target(s): ")+miss.map(function(r){ return r.code; }).join(", ")); var t=$("kr2-why-"+miss[0].code); if(t){ t.focus(); t.scrollIntoView({block:"center",behavior:"smooth"}); } return; }
-    if(!f.next.trim()){ toast(T("Vui lòng ghi Hành động tháng tới (mục 2).","Please fill in Actions for next month (section 2).")); $("kr2-next").focus(); return; }
-    if(!mSend._ok){ askInline("kr2-ft", T("Gửi tới ","Send to ")+'<b>'+esc(to.join(", "))+'</b>'+(cc.length?' · CC '+esc(cc.join(", ")):'')+' ?', function(){ mSend._ok=1; try{ mSend(false); } finally { mSend._ok=0; } }); return; }
-  }
-  f.to=to.join(","); f.cc=cc.join(","); if(test) f.subject="[TEST] "+f.subject;
-  var b=$(test?"kr2-test":"kr2-send"), t0=b.textContent; b.disabled=true; b.textContent=T("Đang gửi…","Sending…");
+  var f=mFields(), me=myMail();
+  if(!me){ toast(T("Chưa có email của bạn — đăng nhập lại.","Your e-mail is unknown — sign in again.")); return; }
+  var miss=mMissing();
+  if(miss.length){ toast(T("Còn "+miss.length+" chỉ tiêu chưa ghi lý do đạt / chưa đạt: ","Reason missing for "+miss.length+" target(s): ")+miss.map(function(r){ return r.code; }).join(", ")); var t=$("kr2-why-"+miss[0].code); if(t){ t.focus(); t.scrollIntoView({block:"center",behavior:"smooth"}); } return; }
+  if(!f.next.trim()){ toast(T("Vui lòng ghi Hành động tháng tới (mục 2).","Please fill in Actions for next month (section 2).")); $("kr2-next").focus(); return; }
+  f.to=me; f.cc=""; f.fwdTo=M.to.join(","); f.fwdCc=M.cc.join(","); f.self="1";
+  var b=$("kr2-send"), t0=b.textContent; b.disabled=true; b.textContent=T("Đang gửi…","Sending…");
   var att=($("kr2-att")||{}).checked;
   (att?mWord().then(b64):Promise.resolve("")).then(function(x){ if(x){ f.attB64=x; f.attName=mFile(); } return post("rhKpiMailSend", f); }).then(function(r){
-    b.disabled=false; b.textContent=t0; toast(r.message||r.msg||T("Đã gửi Báo cáo KPI tháng","Monthly KPI report sent"));
-    if(!test){ lsS("mmh_kpi_sent:"+M.pic+":"+M.month, Date.now()); lsS("mmh_kpi_sentinfo:"+M.pic+":"+M.month, r.sent||{ to:to, cc:cc, at:new Date().toLocaleString("vi-VN") }); mForm(); }
+    b.disabled=false; b.textContent=t0; toast(T("Đã gửi bản sao về ","Copy sent to ")+me);
+    if(!lsG("mmh_kpi_sent:"+M.pic+":"+M.month)) lsS("mmh_kpi_sentinfo:"+M.pic+":"+M.month, { self:true, to:[me], at:(r.sent&&r.sent.at)||new Date().toLocaleString("vi-VN") }); mForm();
   }, function(e){ b.disabled=false; b.textContent=t0; toast(T("⚠ Chưa gửi được: ","⚠ Not sent: ")+e.message); var m=$("kr2-msg"); if(m) m.textContent=T("⚠ Chưa gửi được: ","⚠ Not sent: ")+e.message; });
+}
+/* ── v1.2 — TỰ SOẠN EMAIL: sao chép nội dung (HTML) + mở hộp thư với To · CC · Tiêu đề điền sẵn ── */
+function rawMail(){ return String((H().myEmail&&H().myEmail())||"").trim(); }
+function composeLinks(to, cc, sub, body){
+  var e=encodeURIComponent, b=String(body||"");
+  return { outlook:"https://outlook.office.com/mail/deeplink/compose?to="+e(to.join(";"))+(cc.length?"&cc="+e(cc.join(";")):"")+"&subject="+e(sub)+(b?"&body="+e(b):""),
+           gmail:"https://mail.google.com/mail/?view=cm&fs=1&to="+e(to.join(","))+(cc.length?"&cc="+e(cc.join(",")):"")+"&su="+e(sub)+(b?"&body="+e(b):""),
+           app:"mailto:"+to.map(e).join(",")+"?"+(cc.length?"cc="+cc.map(e).join(",")+"&":"")+"subject="+e(sub)+(b?"&body="+e(b):"") };
+}
+function copyHtml(html, text){
+  var ok=function(){ return true; };
+  try{ if(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write)
+    return navigator.clipboard.write([new ClipboardItem({ "text/html":new Blob([html],{type:"text/html"}), "text/plain":new Blob([text],{type:"text/plain"}) })]).then(ok, fb); }catch(_){}
+  return Promise.resolve(fb());
+  function fb(){ var d=document.createElement("div"); d.contentEditable="true"; d.style.cssText="position:fixed;left:-9999px;top:0"; d.innerHTML=html; document.body.appendChild(d);
+    var r=document.createRange(); r.selectNodeContents(d); var sel=getSelection(); sel.removeAllRanges(); sel.addRange(r); var k=false; try{ k=document.execCommand("copy"); }catch(_){} sel.removeAllRanges(); d.remove(); return k; }
+}
+/* thanh trong chân khung: mở hộp thư · tải Word · Đã gửi */
+function composeBar(ftId, o){
+  var ft=$(ftId); if(!ft) return;
+  var old=ft.querySelector(".ksp-ask"); if(old) old.remove();
+  var L=composeLinks(o.to, o.cc, o.sub, o.body), raw=rawMail(), pref=/@mani\.inc$/i.test(raw)?"outlook":/@manimedicalhanoi\.com$/i.test(raw)?"gmail":"app";
+  var a=function(k, t){ return '<a class="kp-btn'+(k===pref?' pri':'')+'" target="_blank" rel="noopener" href="'+esc(L[k])+'">'+t+'</a>'; };
+  var box=document.createElement("div"); box.className="ksp-ask ksp-compose";
+  box.innerHTML='<span class="t">'+(o.copied?T("✓ Đã sao chép nội dung email. ","✓ E-mail content copied. "):"")+T("Mở hộp thư của bạn ⇒ dán nội dung (Ctrl+V) ⇒ đính kèm file Word ⇒ <b>tự gửi</b>.","Open your mailbox ⇒ paste the content (Ctrl+V) ⇒ attach the Word file ⇒ <b>send it yourself</b>.")+'</span>'
+    +a("outlook","Outlook")+a("gmail","Gmail")+a("app",T("Ứng dụng mail","Mail app"))
+    +'<button type="button" class="kp-btn" data-a="word">'+T("Tải file Word","Download Word")+'</button>'
+    +'<button type="button" class="kp-btn" data-a="done">'+T("Đã gửi","I have sent it")+'</button>'
+    +'<button type="button" class="kp-btn" data-a="x" title="'+T("Đóng","Close")+'">×</button>';
+  ft.classList.add("asking"); ft.appendChild(box);
+  box.querySelector('[data-a="word"]').onclick=o.word;
+  box.querySelector('[data-a="done"]').onclick=function(){ box.remove(); ft.classList.remove("asking"); o.done(); };
+  box.querySelector('[data-a="x"]').onclick=function(){ box.remove(); ft.classList.remove("asking"); };
+}
+function mCompose(){
+  M.ch.to&&M.ch.to.flush(); M.ch.cc&&M.ch.cc.flush();
+  var f=mFields(), miss=mMissing();
+  if(miss.length){ toast(T("Còn "+miss.length+" chỉ tiêu chưa ghi lý do đạt / chưa đạt: ","Reason missing for "+miss.length+" target(s): ")+miss.map(function(r){ return r.code; }).join(", ")); var t=$("kr2-why-"+miss[0].code); if(t){ t.focus(); t.scrollIntoView({block:"center",behavior:"smooth"}); } return; }
+  if(!f.next.trim()){ toast(T("Vui lòng ghi Hành động tháng tới (mục 2).","Please fill in Actions for next month (section 2).")); $("kr2-next").focus(); return; }
+  if(!M.to.length){ toast(T("Chưa có người nhận (To).","No recipient (To).")); return; }
+  var fr=$("kr2-frame"), doc=fr&&fr.contentDocument, html=doc&&doc.body?doc.body.innerHTML:"", text=doc&&doc.body?doc.body.innerText:"";
+  if(!html){ var sd=fr?String(fr.srcdoc||""):""; var m=/<body[^>]*>([\s\S]*)<\/body>/i.exec(sd); html=m?m[1]:sd; var tmp=document.createElement("div"); tmp.innerHTML=html; text=tmp.innerText||tmp.textContent||""; }
+  copyHtml(html, text).then(function(ok){
+    composeBar("kr2-ft", { to:M.to.slice(), cc:M.cc.slice(), sub:f.subject, body:"", copied:ok!==false, word:mDownload,
+      done:function(){ post("rhKpiSent",{ pic:M.pic, kind:"m", month:M.month, to:M.to.concat(M.cc).join(","), lang:M.lang==="en"?"en":"" }).catch(function(){}); lsS("mmh_kpi_sent:"+M.pic+":"+M.month, Date.now()); lsS("mmh_kpi_sentinfo:"+M.pic+":"+M.month, { mine:true, to:M.to.join(", "), at:new Date().toLocaleString(uiEn()?"en-GB":"vi-VN") }); mForm(); toast(T("Đã ghi nhận — thôi nhắc hạn tháng này.","Recorded — no more reminders this month.")); } });
+  });
+}
+function qCompose(){
+  Q.ch.to&&Q.ch.to.flush(); Q.ch.cc&&Q.ch.cc.flush(); qSave();
+  if(!Q.to.length){ toast(T("Chưa có người nhận (To).","No recipient (To).")); return; }
+  var body=($("kq-body")||{}).value||"", sub=($("kq-sub")||{}).value||"";
+  var html=body.split(/\r?\n/).map(function(l){ return l?'<div>'+esc(l)+'</div>':'<div><br></div>'; }).join("");
+  copyHtml(html, body).then(function(ok){
+    composeBar("kq-ft", { to:Q.to.slice(), cc:Q.cc.slice(), sub:sub, body:body.length<1500?body:"", copied:ok!==false, word:qDownload,
+      done:function(){ post("rhKpiSent",{ pic:Q.pic, kind:"q", fy:Q.fy, q:Q.q, to:Q.to.concat(Q.cc).join(","), lang:Q.lang==="en"?"en":"" }).catch(function(){}); var k="mmh_se_sent:"+Q.pic+":FY"+Q.fy+Q.q; try{ localStorage.setItem(k, String(Date.now())); }catch(_){} lsS("mmh_kq_sent:"+Q.pic+":FY"+Q.fy+Q.q, Date.now()); toast(T("Đã ghi nhận — thôi nhắc hạn quý này.","Recorded — no more reminders this quarter.")); } });
+  });
+}
+/* sao chép người nhận gợi ý (To / CC) để dán vào email tự gửi */
+function copyRcpt(to, cc){
+  var txt="To: "+to.join("; ")+(cc.length?"\nCC: "+cc.join("; "):"");
+  var done=function(){ toast(T("Đã sao chép người nhận","Recipients copied")); };
+  try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done, function(){ fb(); }); return; } }catch(_){}
+  fb();
+  function fb(){ var t=document.createElement("textarea"); t.value=txt; t.style.position="fixed"; t.style.opacity="0"; document.body.appendChild(t); t.select(); try{ document.execCommand("copy"); done(); }catch(_){ toast(txt); } t.remove(); }
 }
 function mOpen(pic, month){
   if(!(window.AUTH && AUTH.tk())){ toast(T("Báo cáo KPI cần đăng nhập bằng email.","The KPI report needs an e-mail sign-in.")); if(window.AUTH&&AUTH.open) AUTH.open(); return; }
   var o=ov("kr2", T("Báo cáo KPI tháng · MMHSOP_009-FM01","Monthly KPI Report · MMHSOP_009-FM01"), [T("Chọn tháng","Month"),T("Lý do từng chỉ tiêu","Reasons"),T("Hành động · nổi bật · khó khăn","Actions · highlights"),T("Xem trước & gửi","Preview & send")]);
   if(!$("kr2-frame")){
     o.querySelector(".kx-r").innerHTML='<div class="kx-st" id="kr2-st"></div><div class="kx-prev"><div class="meta" id="kr2-meta"></div><iframe id="kr2-frame" title="'+T("Xem trước email","E-mail preview")+'" sandbox=""></iframe></div>';
-    o.querySelector(".kx-ft").id="kr2-ft"; o.querySelector(".kx-ft").innerHTML='<span class="msg" id="kr2-msg"></span><button class="kp-btn" id="kr2-dl">'+T("Tải file Word","Download Word")+'</button><button class="kp-btn" id="kr2-test">'+T("Gửi thử cho tôi","Test to me")+'</button><button class="kp-btn pri" id="kr2-send">'+T("Gửi báo cáo KPI tháng","Send monthly KPI report")+'</button>';
-    $("kr2-dl").onclick=mDownload; $("kr2-test").onclick=function(){ mSend(true); }; $("kr2-send").onclick=function(){ mSend(false); };
+    o.querySelector(".kx-ft").id="kr2-ft"; o.querySelector(".kx-ft").innerHTML='<span class="msg" id="kr2-msg"></span><button class="kp-btn" id="kr2-dl">'+T("Tải file Word","Download Word")+'</button><button class="kp-btn" id="kr2-send">'+T("Gửi bản sao về email của tôi","Send a copy to my e-mail")+'</button><button class="kp-btn pri" id="kr2-mail">'+T("Soạn email để gửi","Compose e-mail")+'</button>';
+    $("kr2-dl").onclick=mDownload; $("kr2-send").onclick=function(){ mSend(); }; $("kr2-mail").onclick=mCompose;
   }
   o.classList.add("show");
   o.querySelector(".kx-l").innerHTML='<div class="kp-skel"></div><div class="kp-skel" style="width:70%"></div>'; $("kr2-meta").innerHTML=""; $("kr2-frame").srcdoc=""; $("kr2-msg").textContent="";
@@ -362,8 +434,9 @@ function qForm(){
     +'<div class="kx-f"><label>'+(en?"Areas for improvement and next actions":"Cần cải thiện và hành động tiếp theo")+'</label><textarea id="kq-imp">'+esc(dr.imp||"")+'</textarea></div>'
     +'<div class="kx-f"><label>'+T("Mức tự đánh giá","Self-rating")+'</label><div class="kx-rate">'+R.map(function(r){ return '<button type="button" data-r="'+r[0]+'" class="'+(Q.rate===r[0]?"on":"")+'"><b>'+r[0]+'</b>'+esc(r[1])+'</button>'; }).join("")+'</div>'
       +'<small>'+T("Nhận xét của Trưởng bộ phận, đánh giá của Tổng Giám đốc và chữ ký: để trống trong file Word.","Department Head comments, General Director rating and signatures stay blank in the Word file.")+'</small></div>'
-    +'<div class="kx-h5">'+T("Gửi email","Send by e-mail")+' <small>'+T("Trưởng bộ phận + Tổng Giám đốc, CC Kế toán — file Word đính kèm","Department Head + General Director, CC Accounting — Word file attached")+'</small></div>'
-    +'<div class="kx-f"><label>'+T("Gửi tới (To)","To")+'</label><div class="kx-chips" id="kq-to"></div></div>'
+    +'<div class="kx-h5">'+T("Email soạn sẵn","Prepared e-mail")+' <small>'+T("bạn tự gửi từ email của mình — file Word đính kèm","you send it from your own e-mail — Word file attached")+'</small></div>'
+    +'<div class="ksp-self">'+T("Hệ thống <b>không gửi</b> báo cáo cho người khác. Bấm <b>Soạn email để gửi</b> ⇒ hộp thư của bạn mở với người nhận, tiêu đề, nội dung điền sẵn ⇒ đính kèm file Word và <b>tự gửi</b> tới Trưởng bộ phận + Tổng Giám đốc, CC Kế toán.","The system <b>does not send</b> the report to anyone. Click <b>Compose e-mail</b> ⇒ your mailbox opens with the recipients, subject and message filled in ⇒ attach the Word file and <b>send it yourself</b> to the Department Head + General Director, CC Accounting.")+'</div>'
+    +'<div class="kx-f"><label>'+T("Người nhận — bạn tự gửi (To)","Recipients — you send it (To)")+'</label><div class="kx-chips" id="kq-to"></div></div>'
     +'<div class="kx-f"><label>CC</label><div class="kx-chips" id="kq-cc"></div></div>'
     +'<div class="kx-f"><label>'+T("Tiêu đề","Subject")+'</label><input id="kq-sub" maxlength="200" value="'+esc(dr.sub||defSub)+'"></div>'
     +'<div class="kx-f"><label>'+T("Nội dung","Message")+'</label><textarea id="kq-body" style="min-height:120px">'+esc(dr.body||defBody)+'</textarea></div>';
@@ -415,17 +488,14 @@ function qDownload(){
     try{ if(window.TESTFLOW && TESTFLOW.on()) TESTFLOW.add({ action:"seWord", title:T("Báo cáo KPI quý (FM02)","Quarterly KPI report (FM02)"), bk:{ key:"local", name:"—" }, st:"ok", body:{ pic:Q.pic, term:"FY"+Q.fy+" "+Q.q, file:qFile() }, res:{ ok:true }, tab:T("File Word tải về máy","Word file downloaded"), next:[] }); }catch(_){}
   }, function(e){ b.disabled=false; b.textContent=t0; toast("⚠ "+e.message); });
 }
-function qSend(test){
+function qSend(){
   Q.ch.to&&Q.ch.to.flush(); Q.ch.cc&&Q.ch.cc.flush(); qSave();
-  var me=(H().myEmail&&H().myEmail())||"", to=test?[me]:Q.to.slice(), cc=test?[]:Q.cc.slice(), bad=to.concat(cc).filter(function(e){ return !okMail(e); });
-  if(!to.length||!to[0]){ toast(test?T("Chưa có email của bạn.","Your e-mail is unknown."):T("Chưa có người nhận (To).","No recipient (To).")); return; }
-  if(bad.length){ toast(T("Email không hợp lệ: ","Invalid e-mail: ")+bad.join(", ")); return; }
-  if(!test && !qSend._ok){ askInline("kq-ft", T("Gửi tới ","Send to ")+'<b>'+esc(to.join(", "))+'</b>'+(cc.length?' · CC '+esc(cc.join(", ")):'')+' ?', function(){ qSend._ok=1; try{ qSend(false); } finally { qSend._ok=0; } }); return; }
-  var b=$(test?"kq-test":"kq-send"), t0=b.textContent; b.disabled=true; b.textContent=T("Đang gửi…","Sending…");
+  var me=myMail();
+  if(!me){ toast(T("Chưa có email của bạn — đăng nhập lại.","Your e-mail is unknown — sign in again.")); return; }
+  var b=$("kq-send"), t0=b.textContent; b.disabled=true; b.textContent=T("Đang gửi…","Sending…");
   qWord().then(b64).then(function(d){
-    return post("rhSeSend", { pic:Q.pic, fy:Q.fy, q:Q.q, to:to.join(","), cc:cc.join(","), subject:$("kq-sub").value, body:$("kq-body").value, name:qFile(), b64:d, test:test?"1":"", lang:Q.lang==="en"?"en":"" });
-  }).then(function(r){ b.disabled=false; b.textContent=t0; toast(r.message||T("Đã gửi","Sent"));
-    if(!test){ var k="mmh_se_sent:"+Q.pic+":FY"+Q.fy+Q.q; try{ localStorage.setItem(k, String(Date.now())); }catch(_){} lsS("mmh_kq_sent:"+Q.pic+":FY"+Q.fy+Q.q, Date.now()); qForm(); } },
+    return post("rhSeSend", { pic:Q.pic, fy:Q.fy, q:Q.q, to:me, cc:"", fwdTo:Q.to.join(","), fwdCc:Q.cc.join(","), self:"1", subject:$("kq-sub").value, body:$("kq-body").value, name:qFile(), b64:d, lang:Q.lang==="en"?"en":"" });
+  }).then(function(r){ b.disabled=false; b.textContent=t0; toast(T("Đã gửi bản sao về ","Copy sent to ")+me); },
     function(e){ b.disabled=false; b.textContent=t0; toast(T("⚠ Chưa gửi được: ","⚠ Not sent: ")+e.message); var m=$("kq-msg"); if(m) m.textContent=T("⚠ Chưa gửi được: ","⚠ Not sent: ")+e.message; });
 }
 /* quý mặc định: tháng đầu quý (đến ngày 15) ⇒ quý vừa kết thúc (đang đến hạn); còn lại ⇒ quý hiện tại */
@@ -438,8 +508,8 @@ function qOpen(pic, fy, q){
   if(!(window.AUTH && AUTH.tk())){ toast(T("Báo cáo KPI quý cần đăng nhập bằng email.","The quarterly KPI report needs an e-mail sign-in.")); if(window.AUTH&&AUTH.open) AUTH.open(); return; }
   var o=ov("kq", T("Báo cáo KPI quý · MMHSOP_009-FM02","Quarterly KPI Report · MMHSOP_009-FM02"), [T("Chọn quý","Quarter"),T("KPI tự điền","KPI filled in"),T("Năng lực · tự đánh giá","Competencies · self-assessment"),T("Tải Word / gửi email","Download / e-mail")]);
   if(!$("kq-send")){
-    o.querySelector(".kx-ft").id="kq-ft"; o.querySelector(".kx-ft").innerHTML='<span class="msg" id="kq-msg">'+T("Bản nháp tự lưu trên máy này.","Draft is saved on this device.")+'</span><button class="kp-btn" id="kq-dl">'+T("Tải file Word","Download Word")+'</button><button class="kp-btn" id="kq-test">'+T("Gửi thử cho tôi","Test to me")+'</button><button class="kp-btn pri" id="kq-send">'+T("Gửi báo cáo KPI quý","Send quarterly KPI report")+'</button>';
-    $("kq-dl").onclick=qDownload; $("kq-test").onclick=function(){ qSend(true); }; $("kq-send").onclick=function(){ qSend(false); };
+    o.querySelector(".kx-ft").id="kq-ft"; o.querySelector(".kx-ft").innerHTML='<span class="msg" id="kq-msg">'+T("Bản nháp tự lưu trên máy này.","Draft is saved on this device.")+'</span><button class="kp-btn" id="kq-dl">'+T("Tải file Word","Download Word")+'</button><button class="kp-btn" id="kq-send">'+T("Gửi bản sao về email của tôi","Send a copy to my e-mail")+'</button><button class="kp-btn pri" id="kq-mail">'+T("Soạn email để gửi","Compose e-mail")+'</button>';
+    $("kq-dl").onclick=qDownload; $("kq-send").onclick=function(){ qSend(); }; $("kq-mail").onclick=qCompose;
   }
   o.classList.add("show"); o.querySelector(".kx-l").innerHTML='<div class="kp-skel"></div><div class="kp-skel" style="width:70%"></div>'; o.querySelector(".kx-r").innerHTML="";
   (window.KPI&&KPI.ensure?KPI.ensure():Promise.resolve()).then(function(){
@@ -464,26 +534,31 @@ function qOpen(pic, fy, q){
 }
 
 /* ════════════════ NHẮC HẠN (#kpn của khối KPI) ════════════════ */
-/* ngày nhắc = ngày 05, nếu 05 là T7 / CN ⇒ ngày thứ Sáu liền trước */
-function remindDay(y, m){ var d=5; while(d>1){ var w=new Date(y, m-1, d).getDay(); if(w!==0&&w!==6) break; d--; } return d; }
+/* v1.2 — hạn mặc định NGÀY 05 hằng tháng (KPI tháng trước) · ngày 05 tháng đầu quý kế tiếp (KPI quý trước).
+   Nhắc ngày 01–05 mỗi ngày 1 lần (còn n ngày / hôm nay là hạn), ngày 06–10 "đã quá hạn"; dừng khi người dùng bấm "Đã gửi" trong khung báo cáo
+   (mmh_kpi_sent / mmh_se_sent / mmh_kq_sent) hoặc "Đã gửi, không nhắc nữa" trên popup (mmh_kpn_<kq>). Bản sao gửi về email KHÔNG tính là đã gửi. */
+var DUE_DAY=5, LATE_TO=10;
+function remindDay(){ return DUE_DAY; }          /* giữ tên cũ cho mã khác gọi tới */
 window.KPI_NOTICE=function(){
   var h=H(), now=new Date(), y=now.getFullYear(), mo=now.getMonth()+1, day=now.getDate(), td=y+"-"+pad(mo)+"-"+pad(day), list=[], me=(h.me&&h.me())||"";
-  if(!h.ymNow || day!==remindDay(y, mo)) return list;
-  var pm=h.ymPrev(h.ymNow()), d5="05/"+pad(mo);
+  if(!h.ymNow || day>LATE_TO) return list;
+  var pm=h.ymPrev(h.ymNow()), d5=pad(DUE_DAY)+"/"+pad(mo)+"/"+y, left=DUE_DAY-day, late=left<0;
   var who=(D()&&D().me)||me;
-  if(!lsG("mmh_kpn_m:"+pm+":"+td) && !lsG("mmh_kpi_sent:"+who+":"+pm) && !lsG("mmh_kpi_sent:"+me+":"+pm))
-    list.push({ k:"m:"+pm+":"+td, kick:T("BÁO CÁO KPI THÁNG · MMHSOP_009-FM01","MONTHLY KPI REPORT · MMHSOP_009-FM01"),
-      title:T("Hạn gửi Báo cáo KPI tháng "+ml(pm)+": ngày "+d5,"Monthly KPI Report "+ml(pm)+" is due on "+d5),
-      text:T("Theo quy trình quản lý KPI, Báo cáo KPI tháng gửi chậm nhất <b>ngày 05</b> tới Trưởng bộ phận và Tổng Giám đốc, CC Kế toán. Ghi lý do đạt / chưa đạt cho từng chỉ tiêu, hành động tháng tới, điểm nổi bật và khó khăn.",
-             "Per the KPI procedure, send the Monthly KPI Report by <b>day 05</b> to your Department Head and the General Director, CC Accounting: reason for each target, next-month actions, highlights and challenges."),
+  var when=late?T("đã quá hạn ngày "+d5,"overdue since "+d5):left===0?T("hôm nay là hạn ("+d5+")","due today ("+d5+")"):T("hạn "+d5+" — còn "+left+" ngày","due "+d5+" — "+left+" day(s) left");
+  var how=T("Hệ thống soạn sẵn nội dung + file Word; bạn <b>tự gửi email</b> từ hộp thư của mình tới Trưởng bộ phận và Tổng Giám đốc, CC Kế toán, rồi bấm <b>Đã gửi</b>.",
+            "The system prepares the content + Word file; you <b>send the e-mail yourself</b> from your mailbox to your Department Head and the General Director, CC Accounting, then click <b>I have sent it</b>.");
+  var mk="m:"+pm;
+  if(!lsG("mmh_kpn_"+mk) && !lsG("mmh_kpn_"+mk+":"+td) && !lsG("mmh_kpi_sent:"+who+":"+pm) && !lsG("mmh_kpi_sent:"+me+":"+pm))
+    list.push({ k:mk+":"+td, kq:mk, kick:T("BÁO CÁO KPI THÁNG · MMHSOP_009-FM01","MONTHLY KPI REPORT · MMHSOP_009-FM01")+(late?T(" · QUÁ HẠN"," · OVERDUE"):""),
+      title:T("Báo cáo KPI tháng "+ml(pm)+": ","Monthly KPI Report "+ml(pm)+": ")+when,
+      text:T("Hạn gửi Báo cáo KPI tháng là <b>ngày 05</b> hằng tháng. Ghi lý do đạt / chưa đạt cho từng chỉ tiêu, hành động tháng tới, điểm nổi bật và khó khăn. ","The Monthly KPI Report is due on <b>day 05</b> of every month: reason for each target, next-month actions, highlights and challenges. ")+how,
       btn:T("Mở báo cáo KPI tháng","Open monthly KPI report"), go:function(){ mOpen(null, pm); } });
   if([12,3,6,9].indexOf(mo)>=0){
     var fy=h.fyOf(pm), q=h.qOf(pm), key="q:FY"+fy+q;
     if(!lsG("mmh_kpn_"+key) && !lsG("mmh_kpn_"+key+":"+td) && !lsG("mmh_se_sent:"+who+":FY"+fy+q) && !lsG("mmh_kq_sent:"+who+":FY"+fy+q))
-      list.push({ k:key+":"+td, kq:key, kick:T("BÁO CÁO KPI QUÝ · MMHSOP_009-FM02","QUARTERLY KPI REPORT · MMHSOP_009-FM02"),
-        title:T("Hạn nộp Báo cáo KPI quý "+q+" FY"+fy+": ngày "+d5,"Quarterly KPI Report "+q+" FY"+fy+" is due on "+d5),
-        text:T("Báo cáo KPI quý (thiết lập mục tiêu và đánh giá kết quả) nộp chậm nhất <b>ngày 05 tháng đầu quý kế tiếp</b>. KPI của quý được điền sẵn — bạn viết phần năng lực, tự đánh giá rồi gửi email (file Word đính kèm).",
-               "The Quarterly KPI Report is due by <b>day 05 of the first month of the next quarter</b>. KPIs are pre-filled — write the competencies and self-assessment, then e-mail it (Word file attached)."),
+      list.push({ k:key+":"+td, kq:key, kick:T("BÁO CÁO KPI QUÝ · MMHSOP_009-FM02","QUARTERLY KPI REPORT · MMHSOP_009-FM02")+(late?T(" · QUÁ HẠN"," · OVERDUE"):""),
+        title:T("Báo cáo KPI quý "+q+" FY"+fy+" (tự đánh giá): ","Quarterly KPI Report "+q+" FY"+fy+" (self-assessment): ")+when,
+        text:T("Hạn nộp Báo cáo KPI quý là <b>ngày 05 tháng đầu quý kế tiếp</b>. KPI của quý được điền sẵn — bạn viết phần năng lực và tự đánh giá. ","The Quarterly KPI Report is due on <b>day 05 of the first month of the next quarter</b>. KPIs are pre-filled — write the competencies and self-assessment. ")+how,
         btn:T("Mở báo cáo KPI quý","Open quarterly KPI report"), go:function(){ qOpen(null, fy, q); } });
   }
   return list;
@@ -501,6 +576,7 @@ window.KPI_NOTICE=function(){
     ".ksp-big{font-size:22px;font-weight:700;padding-top:2px}",
     ".ksp-due{font-size:12px;color:#5E738C;line-height:1.5;margin-top:6px;padding:7px 10px;background:var(--t-soft,#F0F7FF);border:1px solid var(--t-line,#CFE2F3);border-radius:8px}",
     ".ksp-due b{color:var(--t-ink,#003047)} .ksp-ok{color:#2F7A4A;font-weight:600}",
+    ".ksp-self{font-size:12.5px;line-height:1.5;color:#5B4A12;background:#FFF8E1;border:1px solid #E8C86A;border-radius:8px;padding:7px 10px;margin:8px 0}",
     ".ksp-k{border:1px solid #E6EAEF;border-radius:10px;padding:8px 10px;margin-bottom:8px;background:#fff}",
     ".ksp-k .h{display:flex;align-items:baseline;gap:7px;font-size:13px;color:#1F3347} .ksp-k .h b{flex:1;font-weight:600}",
     ".ksp .cd{font-size:11px;font-weight:700;color:#5E738C;background:#F3F6F9;border:1px solid #E6EAEF;border-radius:5px;padding:0 5px;white-space:nowrap}",
@@ -513,6 +589,7 @@ window.KPI_NOTICE=function(){
     ".ksp-cap{display:block;font-size:10.5px;color:#8A6A1F;font-weight:600}",
     ".ksp .kx-ft.asking>button{display:none} .ksp-ask{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-left:auto;padding:6px 10px;border:1px solid var(--t-line,#CFE2F3);background:var(--t-soft,#F0F7FF);border-radius:10px;font-size:13px;color:#1F3347}",
     ".ksp-ask .t{max-width:640px;line-height:1.4}",
+    ".ksp-compose a.kp-btn{text-decoration:none;display:inline-flex;align-items:center}",
     ".ksp-a td:nth-child(3){min-width:220px}",
     "@media(max-width:900px){ #kr2 .kx-bd,#kq .kx-bd{grid-template-columns:1fr} #kq .kx-l{order:1} #kq .kx-r{order:2;border-right:none} }"
   ].join("\n");
@@ -522,5 +599,5 @@ window.KPI_NOTICE=function(){
 /* ── lối vào: thay KR / SE cũ ── */
 window.KR={ open:function(pic, month){ mOpen(pic, month); } };
 window.SE={ open:function(pic, fy, q){ qOpen(pic, fy, q); } };
-window.KPISOP={ m:M, q:Q, mOpen:mOpen, qOpen:qOpen, mWord:mWord, qWord:qWord, remindDay:remindDay, dueMonth:dueMonth, dueQuarter:dueQuarter, docLang:docLang, dearOf:dearOf, v:"1.1" };
+window.KPISOP={ m:M, q:Q, mOpen:mOpen, qOpen:qOpen, mWord:mWord, qWord:qWord, remindDay:remindDay, dueMonth:dueMonth, dueQuarter:dueQuarter, docLang:docLang, dearOf:dearOf, copyRcpt:copyRcpt, mCompose:mCompose, qCompose:qCompose, composeLinks:composeLinks, v:"1.2" };
 })();

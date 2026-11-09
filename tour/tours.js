@@ -117,17 +117,17 @@ TOUR.add([
     { el:"[onclick^=\"c10RepMenu\"]", do:cal, t:"Gửi báo cáo", x:"Bấm <b>Gửi báo cáo</b> để chọn báo cáo tuần hoặc tháng. Báo cáo lấy đúng việc trên lịch của bạn." },
     { el:"[onclick=\"switchTab('report')\"]", t:"Xem trước báo cáo tuần", x:"Mục <b>Báo cáo tuần</b> ở cột trái cho xem toàn bộ nội dung trước khi gửi." }
    ] },
- { id:"kpi", v:3, d:"2026-11-02", g:"Báo cáo", ic:"kpi", t:"KPI của tôi", x:"Xem KPI theo tháng / quý / năm, gửi Báo cáo KPI tháng (FM01) và Báo cáo KPI quý (FM02).",
+ { id:"kpi", v:4, d:"2026-11-09", g:"Báo cáo", ic:"kpi", t:"KPI của tôi", x:"Xem KPI theo tháng / quý / năm, gửi Báo cáo KPI tháng (FM01) và Báo cáo KPI quý (FM02).",
    steps:[
     { el:"#kp-m", do:function(){ try{ switchTab("kpi"); }catch(_){} }, wait:900, t:"Chọn kỳ", x:"Chọn <b>Tháng</b>, <b>Quý</b> hoặc <b>Năm FY</b>, rồi chọn tháng cần xem." },
     { el:"#kp-person", t:"Người đang xem", x:"Quản lý chọn được từng thành viên; nhân viên xem KPI của mình. Màu %: xám &lt; 90% · xanh 90–100% · vàng 100–120% · xanh lá &gt; 120%." },
-    { el:"[onclick=\"KR.open()\"]", t:"Báo cáo KPI tháng (FM01)", x:"Theo quy trình quản lý KPI: gửi chậm nhất <b>ngày 05</b> hằng tháng (kết quả tháng trước) tới Trưởng bộ phận + Tổng Giám đốc, CC Kế toán." },
+    { el:"[onclick=\"KR.open()\"]", t:"Báo cáo KPI tháng (FM01)", x:"Hạn <b>ngày 05</b> hằng tháng (kết quả tháng trước). Hệ thống soạn sẵn nội dung + file Word; <b>bạn tự gửi email</b> từ hộp thư của mình tới Trưởng bộ phận + Tổng Giám đốc, CC Kế toán." },
     { el:"#kr2 .ksp-k", do:function(){ try{ KR.open(); }catch(_){} }, wait:1800, t:"Lý do từng chỉ tiêu", x:"Mỗi KPI có số mục tiêu / thực tế / % lấy từ file KPI. Ghi <b>lý do đạt / chưa đạt</b> cho từng chỉ tiêu — bắt buộc trước khi gửi." },
     { el:"#kr2-next", t:"Hành động · nổi bật · khó khăn", x:"Mục 2 (hành động tháng tới) và mục 3 (điểm nổi bật, khó khăn, hỗ trợ cần thiết) của biểu mẫu. Để trống hỗ trợ = \"Không có\"." },
-    { el:"#kr2-send", t:"Xem trước & gửi", x:"Bên phải là đúng email sẽ gửi; file Word FM01 tự đính kèm. Bấm Gửi ⇒ thanh <b>Xác nhận gửi</b> hiện ngay dưới khung. <b>Tải file Word</b> để lưu bản riêng." },
+    { el:"#kr2-mail", t:"Soạn email để gửi", x:"Bên phải là nội dung email. Bấm <b>Soạn email để gửi</b> ⇒ nội dung được sao chép, chọn <b>Outlook / Gmail / Ứng dụng mail</b> ⇒ dán (Ctrl+V), đính kèm file Word, <b>tự gửi</b> ⇒ bấm <b>Đã gửi</b>. <b>Gửi bản sao về email của tôi</b> = bản tham khảo cho riêng bạn." },
     { el:"[onclick=\"SE.open()\"]", do:function(){ var o=document.getElementById("kr2"); if(o) o.classList.remove("show"); }, wait:300, t:"Báo cáo KPI quý (FM02)", x:"Thiết lập mục tiêu đầu quý và đánh giá kết quả cuối quý. Hạn: <b>ngày 05 tháng đầu quý kế tiếp</b>." },
     { el:"#kq .ksp-a", do:function(){ try{ SE.open(); }catch(_){} }, wait:1800, t:"A. Mục tiêu", x:"KPI quý tự điền từ file MMH KPI. Kết quả ghi nhận tối đa 130% (trừ KPI doanh số). Sửa được phần chi tiết kết quả." },
-    { el:"#kq-send", t:"Năng lực · tự đánh giá · gửi", x:"Điền 5 mục năng lực (điểm 1–5), điểm tốt, cần cải thiện, mức EE / AE / PA / NA rồi gửi email (file Word đính kèm) hoặc tải file Word." }
+    { el:"#kq-mail", t:"Năng lực · tự đánh giá · gửi", x:"Điền 5 mục năng lực (điểm 1–5), điểm tốt, cần cải thiện, mức EE / AE / PA / NA ⇒ <b>Soạn email để gửi</b> ⇒ tự gửi từ hộp thư của bạn (đính kèm file Word) ⇒ <b>Đã gửi</b>." }
    ] },
  { id:"meet", v:1, d:"2026-10-11", g:"Báo cáo", ic:"people", t:"Biên bản họp", x:"Ghi, lưu và gửi email biên bản họp.",
    steps:[
