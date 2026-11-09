@@ -209,3 +209,4 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
 - **v19.2 (02/11/2026, `kpisop.js` v1.1, backend kpi `KSC_MAIL.HONOR`)**: gửi CHÍNH THỨC báo cáo KPI không dùng `confirm()` nữa (trình duyệt đã chặn hộp hỏi / app cài ⇒ bấm Gửi không có gì xảy ra; Gửi thử không hỏi nên chạy) —
   `askInline` = thanh xác nhận trong `.kx-ft` (`#kr2-ft` / `#kq-ft`), gửi xong lưu `mmh_kpi_sentinfo:<pic>:<tháng>` (backend trả `sent`) và hiện "Đã gửi lúc … tới …". Lời chào = `dearOf(d)` từ `rhKpiMail ▸ toHonor / toHonorEn`
   (chị Tuyên · chị Hòa · sếp Hà; Director "sếp <tên>"; nhóm Thái "<tên> san"); nháp còn lời chào mặc định cũ ⇒ tự thay. Mã mới: không dùng `confirm` / `prompt` / `alert` cho thao tác quan trọng.
+- **v19.3 (09/11/2026, `rpstat.js` v1.2)**: Thống kê gửi báo cáo đọc thêm CRM Thailand Dental (9 nguồn: + `crm-thai-dental`). Mock `rpLog` có key `crm-thai-dental` (Yong, lịch TH); `t186.js` kiểm Yong + đủ 9/9 nguồn.

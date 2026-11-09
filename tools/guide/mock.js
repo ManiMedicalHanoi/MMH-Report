@@ -174,7 +174,7 @@ async function install(page, o){
     }
     /* ⭐ v18.6: nhật ký gửi báo cáo (rpLog, mọi backend) + email tự đánh giá quý (rhSeSend) — dữ liệu giả */
     if(a==='rpLog'||a==='rhSeSend'||(a==='rhKpiMail'&&/AKfycbx58/.test(u.pathname))){
-      const dep2=u.pathname.split('/')[3]||'', key=/^AKfycbzn/.test(dep2)?'marketing':/^AKfycbxW/.test(dep2)?'backoffice':/^AKfycbzK/.test(dep2)?'management':/^AKfycbwglP/.test(dep2)?'crm-thai':/^AKfycbx58/.test(dep2)?'kpi':/^AKfycbyzmh/.test(dep2)?'crm-dental':'other';
+      const dep2=u.pathname.split('/')[3]||'', key=/^AKfycbzn/.test(dep2)?'marketing':/^AKfycbxW/.test(dep2)?'backoffice':/^AKfycbzK/.test(dep2)?'management':/^AKfycbwglP/.test(dep2)?'crm-thai':/^AKfycbwEvi4Y/.test(dep2)?'crm-thai-dental':/^AKfycbx58/.test(dep2)?'kpi':/^AKfycbyzmh/.test(dep2)?'crm-dental':'other';
       let out;
       if(a==='rhSeSend'){ RPLOG.push(body); out={ok:true,message:'Đã gửi tự đánh giá FY'+body.fy+' '+body.q+' tới '+body.to}; }
       else if(a==='rhKpiMail') out={ok:true,data:{to:'hod@example.com',cc:'director@example.com'}};
@@ -184,6 +184,7 @@ async function install(page, o){
                    ['2026-10-23 16:00','week','Giang','2026-10-19','2026-10-19','2026-10-25','2026-10-23 23:59','Đúng hạn','','Giang','dept','VN','marketing',''],
                    ['2026-10-19 09:00','week','Minh Trang','2026-10-12','2026-10-12','2026-10-18','2026-10-17 23:59','Muộn',33,'Minh Trang','dept','VN','marketing','']],
         'crm-thai':[['2026-10-23 08:00','week','Miew','2026-10-19','2026-10-19','2026-10-25','2026-10-22 23:59','Muộn',8,'Miew','team','TH','crm-thai','']],
+        'crm-thai-dental':[['2026-10-22 08:00','week','Yong','2026-10-19','2026-10-19','2026-10-25','2026-10-22 23:59','Đúng hạn','','Yong','team','TH','crm-thai-dental','']],
         'crm-dental':[['2026-10-17 15:00','week','Viet','2026-10-12','2026-10-12','2026-10-18','2026-10-17 23:59','Đúng hạn','','Viet','team','VN','crm-dental','']],
         kpi:[['2026-10-02 15:00','kpi','Giang','202609','202609','202609','2026-10-02 16:00','Đúng hạn','','Giang','email','VN','kpi',''],
              ['2026-10-03 09:00','kpi','Minh Trang','202609','202609','202609','2026-10-02 16:00','Muộn',17,'Minh Trang','email','VN','kpi','']]}[key]||[];

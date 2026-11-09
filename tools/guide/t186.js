@@ -24,8 +24,10 @@ async function page(b, o){
   console.log(sum.replace(/\n+/g,' | ').slice(0,400));
   const R=await p.evaluate(()=>{ const R=RPSTAT._st.R, g=n=>R.list.find(x=>x.p.pic===n);
     const w=x=>x?x.W.filter(j=>j.k!=='na'&&j.k!=='wait').map(j=>j.mon+':'+j.k).join(','):'(none)';
-    return { n:R.list.length, giang:w(g('Giang')), trang:w(g('Minh Trang')), miew:w(g('Miew'))+' cal='+(g('Miew')||{p:{}}).p.cal, kpiG:g('Giang').K.map(j=>j.ym+':'+j.k).join(','), kpiT:g('Minh Trang').K.map(j=>j.ym+':'+j.k).join(','), q:g('Giang').Q.map(j=>j.per+':'+j.k).join(',') }; });
+    return { n:R.list.length, giang:w(g('Giang')), trang:w(g('Minh Trang')), miew:w(g('Miew'))+' cal='+(g('Miew')||{p:{}}).p.cal, yong:w(g('Yong'))+' cal='+(g('Yong')||{p:{}}).p.cal, kpiG:g('Giang').K.map(j=>j.ym+':'+j.k).join(','), kpiT:g('Minh Trang').K.map(j=>j.ym+':'+j.k).join(','), q:g('Giang').Q.map(j=>j.per+':'+j.k).join(',') }; });
   console.log(R);
+  if(!/2026-10-19:ok/.test(R.yong)||!/cal=TH/.test(R.yong)) fail('Yong (CRM Thailand Dental) sai: '+R.yong);
+  if(!/9\/9/.test(sum)) fail('Không đọc đủ 9 nguồn');
   if(!/2026-10-05:late/.test(R.giang)||!/2026-10-12:ok/.test(R.giang)||!/2026-10-19:ok/.test(R.giang)) fail('Giang tuần sai');
   if(!/2026-10-12:late/.test(R.trang)||!/2026-10-19:miss/.test(R.trang)) fail('Minh Trang tuần sai');
   if(!/2026-10-19:late/.test(R.miew)||!/cal=TH/.test(R.miew)) fail('Miew (TH) sai');
