@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════════════════════════════════
- * rpstat.js v1.1 (02/11/2026 · hạn KPI theo quy trình MMHSOP_009) — GIỐNG HỆT ở MMH-Report và MMH-CRM (sửa 1 nơi ⇒ chép sang nơi kia)
+ * rpstat.js v1.2 (09/11/2026 · thêm CRM Thailand Dental; v1.1 02/11/2026 · hạn KPI theo quy trình MMHSOP_009) — GIỐNG HỆT ở MMH-Report và MMH-CRM (sửa 1 nơi ⇒ chép sang nơi kia)
  *
  * ① XUẤT THỐNG KÊ GỬI BÁO CÁO (RPSTAT.open) — Admin / Director / HOD hoặc quyền "rps" (Phân quyền người dùng)
- *    · Đọc nhật ký gửi báo cáo (action rpLog, sheet ẩn _MMH_REPORT_LOG — backend MMH_ReportLog.gs) ở 8 backend:
- *      Report Hub (Marketing · Back Office · Management), CRM (Dental · Surgical · Eyeless · Thailand), KPI.
+ *    · Đọc nhật ký gửi báo cáo (action rpLog, sheet ẩn _MMH_REPORT_LOG — backend MMH_ReportLog.gs) ở 9 backend:
+ *      Report Hub (Marketing · Back Office · Management), CRM (Dental · Surgical · Eyeless · Thailand Surgical · Thailand Dental), KPI.
  *    · Mỗi PIC · loại báo cáo · kỳ ⇒ lấy LẦN GỬI GẦN NHẤT so với hạn nộp (lịch làm việc MMH VN / TH do backend trả về):
  *      báo cáo tuần = 23:59 ngày làm việc cuối của tuần · Báo cáo KPI tháng (FM01) = hết ngày 05 tháng sau ·
  *      Báo cáo KPI quý (FM02) = hết ngày 05 tháng đầu quý kế tiếp (MMHSOP_009 · 4.2.1; trước đây 16:00 ngày 02 / 17:00 ngày 09).
@@ -23,7 +23,8 @@ var SRC = [
   { k:"crm-dental", lb:"CRM Dental",   u:"https://script.google.com/macros/s/AKfycbyzmhECZZfbOZUyXOK5O70ukwTgQ9DHp70MN-HUAL0wMpOptdTTbaGcvMEmcnCrCji6/exec" },
   { k:"crm-surgical", lb:"CRM Surgical", u:"https://script.google.com/macros/s/AKfycbxxckrqwkfhE0fszm1XVdpYyEHU_PCKQWMKE_2wBnMTgoJCZ-1nRZ_fhOCPXXsVfEE/exec" },
   { k:"crm-eyeless", lb:"CRM Eyeless",  u:"https://script.google.com/macros/s/AKfycbxsoTRbRWZRaf-z7-xRy_oIkM-Yv1HoCOjVRO-K6oRRh3Dr7MMg4v53K0qqpMfZ_K5IAg/exec" },
-  { k:"crm-thai",   lb:"CRM Thailand", u:"https://script.google.com/macros/s/AKfycbwglPhfcC3y20-lPO8mRC7yapGUyVHSO2Mp3k4fyPJXnraQEu6bbO4dysL0E9MNadwHwg/exec" },
+  { k:"crm-thai",   lb:"CRM Thailand Surgical", u:"https://script.google.com/macros/s/AKfycbwglPhfcC3y20-lPO8mRC7yapGUyVHSO2Mp3k4fyPJXnraQEu6bbO4dysL0E9MNadwHwg/exec" },
+  { k:"crm-thai-dental", lb:"CRM Thailand Dental", u:"https://script.google.com/macros/s/AKfycbwEvi4Y2rnLKwR0JKaqJKNCiHgyS6SEY473dEM9meSGHZ8B6b4tVka5jB4ppEAEPPHQ/exec" },   /* v1.2 — file thật "1. Thailand - Dental Action" */
   { k:"kpi",        lb:"KPI (báo cáo KPI tháng · báo cáo KPI quý)", u:KPI }
 ];
 var HUB = CFG.hub || "https://script.google.com/macros/s/AKfycbwsX4cQEoH4LNlmcNfe8qWIM9K6EiDEXy7PjhP9bHY2citL6xHn5L1unsAlQJHyL9EP/exec";
@@ -263,7 +264,7 @@ function range(){ var a=$("rps-f").value, b=$("rps-t").value; return a<=b ? [a,b
 function run(){
   if(ST.busy) return; ST.busy=true;
   var out=$("rps-out"), r=range(), bt=$("rps-xls"); bt.disabled=true;
-  out.innerHTML='<div class="rps-st">'+T("Đang đọc nhật ký gửi báo cáo ở 8 backend…","Reading the report logs of 8 backends…")+'</div>';
+  out.innerHTML='<div class="rps-st">'+T("Đang đọc nhật ký gửi báo cáo ở "+SRC.length+" backend…","Reading the report logs of "+SRC.length+" backends…")+'</div>';
   load(r[0].slice(0,4)+"-"+r[0].slice(4,6)+"-01").then(function(D){
     ST.busy=false; ST.D=D; var R=build(D, r[0], r[1]); ST.R=R; ST.rg=r;
     var tw=cnt([]), tk2=cnt([]), tq=cnt([]);

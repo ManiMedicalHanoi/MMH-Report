@@ -8,6 +8,18 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-11-09-v19.3", version:"v19.3", date:"2026-11-09",
+    title:"Thống kê gửi báo cáo có thêm CRM Thailand Dental",
+    summary:"File Excel thống kê gửi báo cáo nay đọc cả báo cáo tuần gửi từ CRM Thailand Dental (lịch làm việc Thái Lan).",
+    items:[
+      { type:"imp", icon:"#", title:"Thêm nguồn CRM Thailand Dental", text:"Bấm <b>Thống kê gửi báo cáo</b> trên thanh trên cùng (Admin / Giám đốc / HOD) ▸ <b>Xuất Excel</b> ⇒ báo cáo tuần của Yong, Man, Sui gửi từ CRM Thailand Dental được tính đúng hạn / muộn / chưa gửi theo lịch Thái Lan. Danh sách nguồn ghi riêng <b>CRM Thailand Surgical</b> và <b>CRM Thailand Dental</b>." }
+    ],
+    en:{ title:"Report submission statistics now include the Thailand Dental CRM",
+      items:[
+        { title:"New source: CRM Thailand Dental", text:"Top bar ▸ <b>Report stats</b> (Admin / Director / HOD) ▸ <b>Export Excel</b>: weekly reports of Yong, Man and Sui sent from the Thailand Dental CRM are counted with the Thailand working calendar." }
+      ] }
+  },
+  {
     id:"2026-11-02-v19.2", version:"v19.2", date:"2026-11-02",
     title:"Báo cáo KPI: lời chào đúng xưng hô, xác nhận gửi ngay trên khung",
     summary:"Sửa lỗi bấm <b>Gửi báo cáo KPI tháng</b> mà không có gì xảy ra trên một số máy. Lời chào tự xưng hô theo chức danh người nhận.",
