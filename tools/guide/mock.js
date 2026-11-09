@@ -92,7 +92,7 @@ function mkWrite(body){
 
 const RIDS={}, WLOG=[], TRIPS=[], RPLOG=[];
 /* ⭐ v19.1 — KPI (backend kpi ▸ RH_KpiView): rhKpi · rhKpiMail · rhKpiMailPreview · rhKpiMailSend — dữ liệu giả (không phải số thật) */
-const KPIMAIL=[];
+const KPIMAIL=[], KPISENT=[];
 const KPI_PER=['FY68','Q1','Q2','Q3','Q4'].concat(['202609','202610','202611','202612','202701','202702','202703','202704','202705','202706','202707','202708']);
 const KPI_STAFF={ Giang:{full:'Hoàng Giang',title:'Product Specialist',team:'Product',dept:'Product',level:'Staff',role:''},
   'Minh Trang':{full:'Nguyễn Minh Trang',title:'Digital Marketing Executive',team:'Marketing',dept:'Marketing',level:'Staff',role:''},
@@ -161,6 +161,7 @@ async function install(page, o){
     let d={ok:true,events:[]};
     TKS.push([a||'',u.searchParams.get('tk')||'',req.method()]);
     /* ⭐ v19.1: KPI */
+    if(/AKfycbx58/.test(u.pathname) && a==='rhKpiSent'){ KPISENT.push(body); const out={ok:true,logged:true}; return route.fulfill({status:200,contentType:cb?'application/javascript':'application/json',headers:{'access-control-allow-origin':'*'},body:cb?cb+'('+JSON.stringify(out)+');':JSON.stringify(out)}); }
     if(/AKfycbx58/.test(u.pathname) && /^rhKpi(Mail|MailPreview|MailSend)?$/.test(a||'')){
       let out;
       if(a==='rhKpi'){ const me=AUTH_USERS[(u.searchParams.get('tk')||'').replace(/^mocktk\./,'')]||'Giang';
@@ -309,4 +310,4 @@ async function install(page, o){
   });
 }
 const TMLOG=[];
-module.exports={KPIMAIL,kpiMailData,RPLOG,RPL_CAL0,TMLOG,install,D,SESS,ASSIGN,LOG,WLOG,TRIPS,RIDS,AUTHL,TKS,AUTH_USERS,ADMU};
+module.exports={KPIMAIL,KPISENT,kpiMailData,RPLOG,RPL_CAL0,TMLOG,install,D,SESS,ASSIGN,LOG,WLOG,TRIPS,RIDS,AUTHL,TKS,AUTH_USERS,ADMU};

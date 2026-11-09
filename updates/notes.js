@@ -8,6 +8,22 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-11-09-v19.4", version:"v19.4", date:"2026-11-09",
+    title:"Báo cáo KPI: hạn ngày 05, bạn tự gửi email từ hộp thư của mình",
+    summary:"Báo cáo KPI tháng và báo cáo KPI quý (tự đánh giá) có hạn <b>ngày 05</b>. Hệ thống không còn gửi báo cáo cho người khác: app soạn sẵn nội dung + file Word, <b>bạn tự gửi email</b> từ hộp thư của mình tới Trưởng bộ phận và Tổng Giám đốc, CC Kế toán.",
+    items:[
+      { type:"imp", icon:"✉", title:"Soạn email để gửi", text:"Mở <b>Báo cáo KPI tháng</b> hoặc <b>quý</b> ▸ điền lý do, hành động… ▸ bấm <b>Soạn email để gửi</b> ⇒ nội dung được sao chép sẵn, chọn <b>Outlook / Gmail / Ứng dụng mail</b> ⇒ hộp thư mở với người nhận và tiêu đề điền sẵn ⇒ dán nội dung (Ctrl+V), đính kèm file Word (<b>Tải file Word</b>), tự gửi ⇒ bấm <b>Đã gửi</b>.", img:"updates/v19.4/kpithang.jpg" },
+      { type:"imp", icon:"⏰", title:"Nhắc hạn từ ngày 01 đến ngày 05", text:"Ngày 01–05 hằng tháng, khi mở app sẽ nhắc 1 lần mỗi ngày (còn mấy ngày / hôm nay là hạn); ngày 06–10 nhắc <b>quá hạn</b>. Tháng đầu quý nhắc thêm Báo cáo KPI quý. Bấm <b>Đã gửi</b> trong khung báo cáo hoặc <b>Đã gửi, không nhắc nữa</b> trên lời nhắc ⇒ thôi nhắc. Áp dụng mọi phòng ban, cả CRM.", img:"updates/v19.4/nhachan.jpg" },
+      { type:"imp", icon:"✓", title:"Đã gửi được ghi nhận", text:"Bấm <b>Đã gửi</b> ⇒ khung hạn ghi lúc bạn gửi và thống kê gửi báo cáo tính đúng hạn / muộn theo lúc đó. Nút <b>Gửi bản sao về email của tôi</b> chỉ gửi 1 bản tham khảo cho chính bạn.", img:"updates/v19.4/dagui.jpg" }
+    ],
+    en:{ title:"KPI reports: due on day 05, you send the e-mail from your own mailbox",
+      items:[
+        { title:"Compose e-mail", text:"Open the <b>Monthly</b> or <b>Quarterly KPI Report</b> ▸ fill it in ▸ <b>Compose e-mail</b>: the content is copied, choose <b>Outlook / Gmail / Mail app</b> ⇒ your mailbox opens with recipients and subject filled in ⇒ paste (Ctrl+V), attach the Word file, send it yourself ⇒ click <b>I have sent it</b>." },
+        { title:"Reminders from day 01 to day 05", text:"From day 01 to 05 the app reminds you once a day (days left / due today); days 06–10 show an <b>overdue</b> reminder. The first month of a quarter also reminds the quarterly report. <b>I have sent it</b> or <b>Already sent</b> stops the reminders." },
+        { title:"Sending is recorded", text:"<b>I have sent it</b> records the time for the report statistics. <b>Send a copy to my e-mail</b> only sends a reference copy to you." }
+      ] }
+  },
+  {
     id:"2026-11-09-v19.3", version:"v19.3", date:"2026-11-09",
     title:"Thống kê gửi báo cáo có thêm CRM Thailand Dental",
     summary:"File Excel thống kê gửi báo cáo nay đọc cả báo cáo tuần gửi từ CRM Thailand Dental (lịch làm việc Thái Lan).",
