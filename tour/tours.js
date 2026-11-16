@@ -112,10 +112,11 @@ TOUR.add([
     { el:"#ms-eq", t:"Thiết bị mang theo", x:"Chọn thiết bị (Laptop, hàng mẫu…). Email đề xuất kèm cam kết bảo quản thiết bị." },
     { el:"#tp-send", t:"Gửi đề xuất", x:"Email theo mẫu <b>Business Trip Approval Request</b> gửi tới Giám đốc, CC trưởng phòng và bạn. Duyệt xong bạn nhận email phê duyệt." }
    ] },
- { id:"report", v:1, d:"2026-10-11", g:"Báo cáo", ic:"report", t:"Gửi báo cáo tuần / tháng", x:"Gửi báo cáo bằng email ngay từ lịch.",
+ { id:"report", v:2, d:"2026-11-16", g:"Báo cáo", ic:"report", t:"Gửi báo cáo tuần / tháng", x:"Gửi báo cáo bằng email ngay từ lịch.",
    steps:[
     { el:"[onclick^=\"c10RepMenu\"]", do:cal, t:"Gửi báo cáo", x:"Bấm <b>Gửi báo cáo</b> để chọn báo cáo tuần hoặc tháng. Báo cáo lấy đúng việc trên lịch của bạn." },
-    { el:"[onclick=\"switchTab('report')\"]", t:"Xem trước báo cáo tuần", x:"Mục <b>Báo cáo tuần</b> ở cột trái cho xem toàn bộ nội dung trước khi gửi." }
+    { el:"[onclick=\"switchTab('report')\"]", t:"Xem trước báo cáo tuần", x:"Mục <b>Báo cáo tuần</b> ở cột trái cho xem toàn bộ nội dung trước khi gửi." },
+    { el:"#v195-src", do:function(){ try{ switchTab("report"); }catch(_){} }, wait:700, t:"Phòng ban đang xem", x:"Báo cáo tuần chỉ hiện việc của <b>phòng ban đang chọn</b> (tô nổi). Tuần nào trống, bấm sang phòng khác — khung trống cũng báo việc của bạn đang nằm ở phòng nào." }
    ] },
  { id:"kpi", v:4, d:"2026-11-09", g:"Báo cáo", ic:"kpi", t:"KPI của tôi", x:"Xem KPI theo tháng / quý / năm, gửi Báo cáo KPI tháng (FM01) và Báo cáo KPI quý (FM02).",
    steps:[
