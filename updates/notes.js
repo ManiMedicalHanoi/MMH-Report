@@ -8,6 +8,22 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-11-16-v19.5", version:"v19.5", date:"2026-11-16",
+    title:"Báo cáo tuần: thấy rõ đang xem phòng ban nào",
+    summary:"Trang <b>Báo cáo tuần</b> chỉ hiện việc của <b>phòng ban đang chọn</b>. Trước đây ở chế độ toàn màn hình không thấy mình đang ở phòng nào, nên lùi về các tuần trước có thể trống dù việc vẫn còn đủ ở phòng khác. Nay phòng ban hiện ngay trên thanh công cụ, và khi trống app báo việc đang nằm ở phòng nào.",
+    items:[
+      { type:"fix", icon:"▦", title:"Hàng Phòng ban trên Báo cáo tuần", text:"Mở <b>Báo cáo tuần</b> ⇒ cạnh ô chọn tuần có hàng <b>Phòng ban</b> (Marketing & Sales · Back Office · Management), phòng đang xem được tô nổi. Bấm tên phòng để chuyển, tuần và bộ lọc nhân sự giữ nguyên.", img:"updates/v19.5/xem-phong-co-viec.jpg" },
+      { type:"imp", icon:"?", title:"Trống thì báo việc ở phòng khác", text:"Tuần đang xem không có việc ⇒ khung trống ghi rõ đang xem phòng nào, lọc theo ai, kèm nút <b>Có n việc ở … · Xem</b> (chuyển sang phòng có việc) và <b>Xem cả nhóm</b> (bỏ lọc nhân sự).", img:"updates/v19.5/phong-ban-trong.jpg" },
+      { type:"imp", icon:"◎", title:"Quản lý không có việc ở phòng đang xem", text:"Trưởng phòng / quản lý chuyển sang phòng mà bản thân không có việc ⇒ Báo cáo tuần tự hiện việc của cả phòng thay vì để trống.", img:"" }
+    ],
+    en:{ title:"Weekly report: you can see which department you are viewing",
+      items:[
+        { title:"Department row on the weekly report", text:"Open the <b>Weekly report</b> ⇒ next to the week picker there is a <b>Department</b> row (Marketing & Sales · Back Office · Management) with the current one highlighted. Click a department to switch; the week and the people filter are kept." },
+        { title:"Empty week points to the other departments", text:"When the week has no tasks, the empty box shows the current department and filter, plus <b>n item(s) in … · View</b> (switch to the department that has them) and <b>Show the whole team</b> (clear the people filter)." },
+        { title:"Managers without tasks in a department", text:"A head / manager who switches to a department where they have no tasks of their own now sees the whole department on the weekly report instead of an empty page." }
+      ] }
+  },
+  {
     id:"2026-11-09-v19.4", version:"v19.4", date:"2026-11-09",
     title:"Báo cáo KPI: hạn ngày 05, bạn tự gửi email từ hộp thư của mình",
     summary:"Báo cáo KPI tháng và báo cáo KPI quý (tự đánh giá) có hạn <b>ngày 05</b>. Hệ thống không còn gửi báo cáo cho người khác: app soạn sẵn nội dung + file Word, <b>bạn tự gửi email</b> từ hộp thư của mình tới Trưởng bộ phận và Tổng Giám đốc, CC Kế toán.",

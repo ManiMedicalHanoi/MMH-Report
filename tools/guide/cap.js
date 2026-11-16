@@ -275,6 +275,36 @@ S.v183=async b=>{ const p=await newPage(b,{pic:'Giang',tk:'mmh.product',vp:{widt
   console.log('TXT', await ev(p,()=>JSON.stringify({c:V183.CACHE,f:S.dateFrom,t:S.dateTo,m:S.dateMode})));
   await ev(p,()=>V183.team('all'));
   console.log('ERRS', JSON.stringify(p.errs)); };
+/* v19.5 — Báo cáo tuần: hiện phòng ban đang xem + gợi ý khi trống (Tuyen đang ở Management, việc nằm ở Marketing) */
+S.v195=async b=>{ const p=await newPage(b,{pic:'Tuyen',tk:'mmh.sales',vp:{width:1440,height:860},time:'2026-11-16T09:00:00+07:00'});
+  await ev(p,()=>{ try{ NT.close&&NT.close(); }catch(_){} document.querySelectorAll('.show[role=dialog],#dl.show,#kpn.show').forEach(e=>e.classList.remove('show')); switchTab('report'); });
+  await p.waitForTimeout(3500);
+  await p.route(/script\.google\.com/, r=>r.fulfill({status:200,contentType:'application/javascript',body:''}));   /* giữ nguyên dữ liệu giả vừa dựng */
+  await ev(p,()=>{
+    const sub=(no,t,pic,st,a,z)=>({no,row:+no.replace('.',''),subTask:t,pic,status:st,start:a,planned:z,progress:/Comp/.test(st)?100:40});
+    const mk=[{no:'179',row:100,keyTask:'202611 Internal Report',pic:'Thuong',status:'In Progress',type:'Marketing',start:'2026-11-02',planned:'2026-11-30',subs:[
+      sub('179.1','202611 MKT monthly report','Thuong','Completed','2026-11-02','2026-11-02'),
+      sub('179.4','Báo cáo KPI tháng 10','Tuyen','Completed','2026-11-06','2026-11-06'),
+      sub('179.6','Danh sách PIC theo khách hàng','Tuyen','Completed','2026-11-06','2026-11-06'),
+      sub('179.11','Duyệt đơn hàng và mở mới trên CRM cho sale','Tuyen','Completed','2026-11-03','2026-11-06')]},
+     {no:'154',row:200,keyTask:'Review ngân sách tháng 11',pic:'Tuyen',status:'Completed',type:'Management',start:'2026-11-04',planned:'2026-11-07',subs:[
+      sub('154.1','Họp dental team','Tuyen','Completed','2026-11-02','2026-11-02'),
+      sub('154.2','Review quy trình mở mới','Tuyen','Completed','2026-11-02','2026-11-02')]}];
+    SRC_CACHE.marketing={ts:Date.now(),res:{ok:true,source:'marketing',keyTasks:JSON.parse(JSON.stringify(S.keyTasks.concat(mk))),picList:S.picList,monthly:[],activityLog:[]}};
+    S.source='management'; GAS_URL=GAS_URLS.management;
+    S.keyTasks=[{no:'1',row:5,keyTask:'Check hồ sơ đăng ký',pic:'Tuyen',status:'In Progress',start:'2027-02-15',planned:'2027-03-01',subs:[]},
+                {no:'2',row:9,keyTask:'Pháp lý — hợp đồng NPP',pic:'Hoa',status:'In Progress',start:'2026-11-01',planned:'2026-11-30',subs:[]}];
+    S.reportFrom='2026-11-02'; S.reportTo='2026-11-08'; S.reportPics=['Tuyen']; S.reportFilterOpen='';
+    V18.enter(); switchTab('report'); renderReport();
+  });
+  await p.waitForTimeout(600);
+  await shot(p,'v195mg',{marks:[['#v195-src',1,'tl',1],['#tab-report .v195-hint button',2,'tr',1]]});
+  await ev(p,()=>{ document.querySelectorAll('.show[role=dialog]').forEach(e=>e.classList.remove('show')); document.querySelector('#tab-report .v195-hint button').click(); });
+  await p.waitForTimeout(900);
+  await ev(p,()=>{ const t=document.getElementById('toast'); if(t) t.classList.remove('show'); });
+  await shot(p,'v195mk',{marks:[['#v195-src button.on',1,'tl',1],['#tab-report .rp-table',2,'tl']]});
+  console.log('v195', await ev(p,()=>JSON.stringify({src:S.source,rows:document.querySelectorAll('#tab-report .rp-table tbody tr').length,pics:S.reportPics})));
+  console.log('ERRS', JSON.stringify(p.errs)); };
 module.exports={S,newPage,shot,ev};
 if(require.main===module)(async()=>{
   const b=await chromium.launch({args:['--lang=vi-VN']});
