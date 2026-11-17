@@ -235,7 +235,7 @@ async function install(page, o){
     else if(a==='addKey'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); const no=String(++seq); KK.push({no,row:+no*10,keyTask:body.keyTask,pic:body.pic,status:body.status||'To Do',type:body.type||'',start:body.start,planned:body.planned,subs:[]}); d={ok:true,no,row:+no*10,task:{}}; }
     else if(a==='deleteKey'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); const i=KK.findIndex(k=>k.no===String(body.no)); if(i>=0) KK.splice(i,1); d={ok:true}; }
     else if(a==='deleteSub'){ if(lag) await new Promise(r=>setTimeout(r,lag)); snap(); KK.forEach(k=>{ k.subs=(k.subs||[]).filter(x=>x.no!==String(body.no)); }); d={ok:true}; }
-    else if(/^(updateSub|updateProgress)$/.test(a)){ KK.forEach(k=>(k.subs||[]).forEach(x=>{ if(x.no===String(body.no)){ if(body.status) x.status=body.status; if(body.progress!=null) x.progress=+body.progress; } })); d={ok:true}; }
+    else if(/^(updateSub|updateProgress)$/.test(a)){ KK.forEach(k=>(k.subs||[]).forEach(x=>{ if(x.no===String(body.no)){ if(body.status) x.status=body.status; if(body.progress!=null) x.progress=+body.progress; } })); d={ok:true,v:'mv'+Date.now()}; }   /* ⭐ v19.8: lệnh ghi trả vân tay như máy chủ thật */
     else if(a==='roster') d={ok:true,picList:ROSTER};
     else if(a==='rhAuthStart'){ const e=String(body.email||'').toLowerCase(), l=e.split('@')[0];
       if(!/^(mani\.inc|manimedicalhanoi\.com)$/.test(e.split('@')[1]||'')) d={ok:false,code:'EMAIL',error:'Chỉ dùng email công ty: @mani.inc hoặc @manimedicalhanoi.com.'};
