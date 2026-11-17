@@ -8,6 +8,22 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-11-17-v19.8", version:"v19.8", date:"2026-11-17",
+    title:"Sửa, xoá và tải dữ liệu mượt hơn",
+    summary:"Sửa kết quả, trạng thái, % hoàn thành… giờ không còn làm app tải lại cả danh sách sau mỗi lần sửa. Máy chủ cũng trả dữ liệu nhanh hơn khi nhiều người cùng dùng.",
+    items:[
+      { type:"imp", icon:"⚡", title:"Sửa liên tiếp không bị khựng", text:"Sửa nhiều ô liền nhau ⇒ thay đổi hiện ngay, app chỉ đối chiếu với Google Sheet <b>1 lần</b> sau khi bạn ngừng sửa khoảng 8 giây (trước đây tải lại cả danh sách sau mỗi ô).", img:"" },
+      { type:"fix", icon:"↻", title:"Không còn báo \"Có cập nhật mới\" vì chính mình", text:"Sau khi bạn sửa, khoảng 1 phút sau app không còn tự tải lại lần thứ hai và báo \"Có cập nhật mới\" nữa.", img:"" },
+      { type:"imp", icon:"◎", title:"Nhiều người cùng dùng vẫn nhanh", text:"Khi có người vừa sửa, máy chủ dựng sẵn dữ liệu mới một lần cho mọi người; kiểm tra thay đổi định kỳ nhẹ hơn, nên mở app, sửa, xoá ít phải chờ hơn.", img:"" }
+    ],
+    en:{ title:"Smoother editing, deleting and loading",
+      items:[
+        { title:"Consecutive edits no longer stutter", text:"Edit several cells in a row ⇒ changes show at once and the app checks with Google Sheets only <b>once</b>, about 8 seconds after you stop (previously it reloaded the whole list after every cell)." },
+        { title:"No more \"New updates\" caused by your own edit", text:"About a minute after you edit, the app no longer reloads a second time and shows \"New updates\"." },
+        { title:"Fast even when many people work at once", text:"When someone edits, the server prepares the new data once for everyone and the periodic change check is lighter, so opening, editing and deleting wait less." }
+      ] }
+  },
+  {
     id:"2026-11-17-v19.7", version:"v19.7", date:"2026-11-17",
     title:"Thống kê gửi báo cáo: lịch làm việc 2027 và luật mới",
     summary:"Báo cáo tuần phải gửi <b>trong ngày làm việc cuối của tuần</b> (theo lịch MMH Việt Nam / Thái Lan, đã có lịch 2027). Báo cáo KPI tháng / quý không còn tính đúng hạn vì bạn tự gửi từ hộp thư.",

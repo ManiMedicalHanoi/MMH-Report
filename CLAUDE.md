@@ -216,3 +216,6 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   Nay: hàng `#v195-src` (Phòng ban, bấm = `switchSource`) cạnh ô chọn tuần; `reportSection` bọc ⇒ phần trống đếm việc cùng tuần + cùng bộ lọc ở 2 phòng kia (`SRC_CACHE` / `LS_BOOT`, thiếu thì `prefetchSources`)
   ⇒ nút "Có n việc ở … · Xem" + "Xem cả nhóm"; `applyDefaultPicFilter` bọc: quản lý (`canViewOthers`, trừ Giám đốc) không có việc ở phòng đang xem ⇒ `S.reportPics=[]`. Cảnh chụp `cap.js v195`.
   Kiểm dữ liệu thật của 1 người: workflow Kiểm tra (mmh-backend) ▸ ping `marketing?action=weekly&grep=<PIC>` (đếm + liệt kê, `grep` chỉ ở công cụ).
+- **v19.8 (17/11/2026, khối `v198-js` + mmh-backend 17/11) — sửa / xoá mượt hơn**: đo thật `version` Marketing 7,0 s, đọc cả sheet 0,9–1,7 s ⇒ nghẽn do lượt gọi chồng nhau.
+  App: sau lệnh ghi, `lrAfterWrite(ms, action, r)` (2 chỗ gọi: `apiPost` + `done` của OUTBOX) — lệnh SỬA (`update*`, `setPriorityFlag`) thành công có `v` ⇒ `lightRefreshSoon(8000)` (gộp nhiều lần sửa), thêm / xoá / chuyển giữ 0,9 giây.
+  Backend: vân tay đổi 1 lần / lần ghi, `version` đệm 15 giây, `readWeekly` chống dồn đọc, ghi xong dựng sẵn bản đệm (xem CLAUDE.md mmh-backend). Test: `NODE_PATH=$(npm root -g) node tools/guide/t198.js`.
