@@ -29,6 +29,11 @@ function tripInfo(id){
   return {ok:true,trip:{id:t.row,pic:t.pic,hubPic:t.pic,dest:t.destination,start:t.date,finish:t.endDate,days:t.days,co:t.coTraveler||'No',equip:t.equipment||'Laptop',purpose:t.purpose,expect:t.expected,schedule:t.schedule,
     estCost:'Vé máy bay: 4.200.000\nKhách sạn: 2.400.000\nDi chuyển & ăn uống: 1.850.000',total:t.costTotal,approval:t.status,approved:/approv/i.test(t.status),folder:t.folder,report:t.report||'',reportDate:t.reportDate||'',canReport:t.pic==='Giang'&&/approv/i.test(t.status),canEdit:false,canDelete:false}};
 }
+/* ⭐ v19.6 — nội dung email báo cáo công tác (tự gửi từ hộp thư) */
+function TRIPMAIL_M(t,b){ b=b||{}; const esc=x=>String(x||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  return {to:['nt.ha@manimedicalhanoi.com'],cc:['tt.tuyen@manimedicalhanoi.com','thuong@manimedicalhanoi.com'],subject:'Business Trip Report - '+t.pic+' - '+t.dest+' - From 10/10/2026 to 12/10/2026',
+    html:'<html><body style="font-family:Calibri,sans-serif;font-size:11pt"><p>Dear Ha-san,</p><p>Dear Tuyen-san,</p><p>Here is my report for business trip at <b>'+esc(t.dest)+'</b>:</p><p><b>I. Key Activities</b><br>'+esc(b.keyActivities||'Gặp 6 phòng khám, demo JIZAI')+'</p><p><b>II. Key Findings</b><br>'+esc(b.keyFindings||'2 phòng khám muốn dùng thử')+'</p><p><b>III. Follow Up Actions</b><br>'+esc(b.followUp||'Gửi mẫu tuần sau')+'</p><p>Best regards,<br><b>'+esc(t.pic)+'</b></p></body></html>',
+    me:'giang@manimedicalhanoi.com'}; }
 const KEY=[
  {no:'1',row:10,keyTask:'FY68 Product plan — Dental',pic:'Giang',status:'On going',type:'Plan',start:'2026-10-01',planned:'2026-10-31',progress:40,subs:[
    {no:'1.1',row:11,subTask:'Chốt danh mục Key SKUs Dental FY68',pic:'Giang',status:'On going',start:'2026-10-05',planned:'2026-10-07',progress:60},
@@ -276,7 +281,10 @@ async function install(page, o){
     else if(a==='rhAssignSeen'){ LOG.push(['seen',body]); String(body.ids||'').split(',').forEach(id=>{ const x=ASSIGN.find(y=>y.id===id); if(x) x.seen=true; }); d={ok:true}; }
     else if(a==='rhAssignDone'){ LOG.push(['done',body]); const sent=[]; String(body.ids||'').split(',').forEach(id=>{ const x=ASSIGN.find(y=>y.id===id); if(x&&!x.done){ x.done=true; sent.push(id); } }); d={ok:true,sent}; }
     else if(a==='tripMaster') d={ok:true,to:'Nguyen Ha (Director)',cc:'Tuyen (HOD)',master:{destinations:['Ho Chi Minh','Da Nang','Nghe An','Can Tho','Hai Phong','Lao Cai','Dak Lak'],coTravelers:['Khang','Thuong','Tuyen','Viet Ha','Bui Trang'],equipment:['Laptop','Máy chiếu','Standee','Hàng mẫu']}};
-    else if(a==='tripInfo') d=tripInfo(body.r||body.id);
+    else if(a==='tripInfo'){ d=tripInfo(body.r||body.id); if(String(body.mail)==='1') d.trip.mail=TRIPMAIL_M(d.trip); }
+    else if(a==='tripReport'){ LOG.push(['tripReport',body]); const t=tripInfo(body.r||body.id).trip; t.report='**I. Key Activities**\n'+body.keyActivities;
+      d={ok:true,message:'Đã lưu báo cáo công tác · đã tạo file báo cáo'+(body.mailMode==='self'?' · mời bạn tự gửi email báo cáo':' · đã gửi email báo cáo'),docLink:'https://docs.google.com/document/d/demo',mailed:body.mailMode!=='self',mail:body.mailMode==='self'?TRIPMAIL_M(t,body):null,warn:[]}; }
+    else if(a==='tripReportSent'){ LOG.push(['tripReportSent',body]); d={ok:true,at:'31/10/2026 10:05'}; }
     else if(a==='version'||a==='ping') d={ok:true};
     else if(a==='tfPending'){ const l=String(body.tk||'').replace(/^mocktk\./,''); const dir=l==='nt.ha'; TFP=TFP||[
         {row:605,no:'601',pic:'Thuong',start:'2026-10-18',finish:'2026-10-20',days:3,dest:'Ho Chi Minh',co:'Duc Anh',purpose:'Tổ chức sự kiện Dr. Hậu, Dr Dũng — HT nha Chu phục hình',expect:'40 bác sĩ tham dự',estCost:'Công tác phí: 1.140.000\nVé máy bay: 7.000.000\nKhách sạn: 3.000.000',total:11140000,schedule:'18/10: Di chuyển HN - HCM, set up sự kiện\n19/10: Tham gia sự kiện\n20/10: Di chuyển HCM - HN',equip:'Laptop',status:'Already sent propose email'},

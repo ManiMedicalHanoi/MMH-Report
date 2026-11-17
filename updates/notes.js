@@ -8,6 +8,22 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-11-17-v19.6", version:"v19.6", date:"2026-11-17",
+    title:"Báo cáo công tác: bạn tự gửi email báo cáo từ hộp thư của mình",
+    summary:"Lưu báo cáo công tác xong, app soạn sẵn email báo cáo — To <b>Giám đốc</b>, CC <b>trưởng phòng</b> và <b>người đi cùng</b>. Bạn mở Outlook / Gmail, dán nội dung và <b>tự gửi</b>; email không còn gửi từ địa chỉ của hệ thống.",
+    items:[
+      { type:"new", icon:"✉", title:"Khung Gửi email báo cáo công tác", text:"Lịch ▸ bấm chuyến công tác ▸ điền 3 mục ▸ <b>Lưu báo cáo</b> ⇒ hiện khung có To · CC · Tiêu đề và nội dung. Bấm <b>Outlook</b>, <b>Gmail</b> hoặc <b>Ứng dụng mail</b> (nội dung tự sao chép) ⇒ dán (Ctrl+V) ⇒ gửi ⇒ quay lại bấm <b>Đã gửi</b>.", img:"updates/v19.6/gui-email.jpg" },
+      { type:"imp", icon:"↻", title:"Biết chuyến nào đã gửi email", text:"Mở lại chuyến đi đã có báo cáo: chưa gửi ⇒ nút <b>Soạn email báo cáo</b>; đã gửi ⇒ hiện giờ gửi và nút <b>Gửi lại email</b>.", img:"updates/v19.6/dai-chua-gui.jpg" },
+      { type:"imp", icon:"?", title:"Không mở được hộp thư", text:"Trong khung gửi email bấm <b>Không mở được hộp thư?</b> ▸ <b>Gửi thay</b> ⇒ hệ thống gửi giúp, người nhận trả lời về email của bạn.", img:"" }
+    ],
+    en:{ title:"Business trip report: you send the report e-mail from your own mailbox",
+      items:[
+        { title:"Send the business trip report e-mail", text:"Calendar ▸ click the trip ▸ fill in the 3 sections ▸ <b>Save report</b> ⇒ a box shows To · CC · Subject and the content. Click <b>Outlook</b>, <b>Gmail</b> or <b>Mail app</b> (content copied) ⇒ paste (Ctrl+V) ⇒ send ⇒ come back and click <b>I have sent it</b>." },
+        { title:"See which trips have been e-mailed", text:"Re-open a trip with a report: not sent ⇒ <b>Write the report e-mail</b>; sent ⇒ the time it was sent and <b>Send again</b>." },
+        { title:"Cannot open your mailbox", text:"In the e-mail box click <b>Cannot open your mailbox?</b> ▸ <b>Send for me</b> ⇒ the system sends it; replies go to your own e-mail." }
+      ] }
+  },
+  {
     id:"2026-11-16-v19.5", version:"v19.5", date:"2026-11-16",
     title:"Báo cáo tuần: thấy rõ đang xem phòng ban nào",
     summary:"Trang <b>Báo cáo tuần</b> chỉ hiện việc của <b>phòng ban đang chọn</b>. Trước đây ở chế độ toàn màn hình không thấy mình đang ở phòng nào, nên lùi về các tuần trước có thể trống dù việc vẫn còn đủ ở phòng khác. Nay phòng ban hiện ngay trên thanh công cụ, và khi trống app báo việc đang nằm ở phòng nào.",
