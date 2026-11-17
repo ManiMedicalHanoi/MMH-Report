@@ -112,6 +112,14 @@ TOUR.add([
     { el:"#ms-eq", t:"Thiết bị mang theo", x:"Chọn thiết bị (Laptop, hàng mẫu…). Email đề xuất kèm cam kết bảo quản thiết bị." },
     { el:"#tp-send", t:"Gửi đề xuất", x:"Email theo mẫu <b>Business Trip Approval Request</b> gửi tới Giám đốc, CC trưởng phòng và bạn. Duyệt xong bạn nhận email phê duyệt." }
    ] },
+ { id:"tripmail", v:1, d:"2026-11-17", g:"Công tác", ic:"trip", t:"Gửi email báo cáo công tác", x:"Lưu báo cáo xong, bạn tự gửi email báo cáo từ hộp thư của mình.",
+   steps:[
+    { el:"#tpm-ov .tpm-r", do:function(){ try{ TRIPMAIL.open({to:["nt.ha@manimedicalhanoi.com"],cc:["tt.tuyen@manimedicalhanoi.com"],subject:"Business Trip Report - Ví dụ - Da Nang",html:"<p>Dear Ha-san,</p><p>Here is my report…</p>"},{id:"__tour",row:0},{saved:true}); }catch(_){} }, wait:400,
+      t:"Người nhận soạn sẵn", x:"To Giám đốc, CC trưởng phòng và người đi cùng. Bấm <b>Sao chép</b> nếu cần dán tay." },
+    { el:"#tpm-ov a[data-k]", t:"Mở hộp thư của bạn", x:"Bấm <b>Outlook</b>, <b>Gmail</b> hoặc <b>Ứng dụng mail</b>: người nhận, tiêu đề điền sẵn, nội dung tự sao chép ⇒ dán (Ctrl+V) rồi gửi." },
+    { el:"#tpm-ov [data-a=\"done\"]", t:"Bấm Đã gửi", x:"Gửi xong quay lại bấm <b>Đã gửi</b>. Mở lại chuyến đi sẽ thấy giờ đã gửi, có nút <b>Gửi lại email</b>." },
+    { el:"#tpm-ov [data-a=\"sys\"]", t:"Không mở được hộp thư?", x:"Bấm để nhờ hệ thống gửi thay từ email MMH (người nhận trả lời về email của bạn)." }
+   ] },
  { id:"report", v:2, d:"2026-11-16", g:"Báo cáo", ic:"report", t:"Gửi báo cáo tuần / tháng", x:"Gửi báo cáo bằng email ngay từ lịch.",
    steps:[
     { el:"[onclick^=\"c10RepMenu\"]", do:cal, t:"Gửi báo cáo", x:"Bấm <b>Gửi báo cáo</b> để chọn báo cáo tuần hoặc tháng. Báo cáo lấy đúng việc trên lịch của bạn." },
