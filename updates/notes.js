@@ -8,6 +8,20 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-11-17-v19.7", version:"v19.7", date:"2026-11-17",
+    title:"Thống kê gửi báo cáo: lịch làm việc 2027 và luật mới",
+    summary:"Báo cáo tuần phải gửi <b>trong ngày làm việc cuối của tuần</b> (theo lịch MMH Việt Nam / Thái Lan, đã có lịch 2027). Báo cáo KPI tháng / quý không còn tính đúng hạn vì bạn tự gửi từ hộp thư.",
+    items:[
+      { type:"imp", icon:"↻", title:"Báo cáo tuần: gửi trong ngày cuối tuần", text:"Hạn = ngày làm việc cuối của tuần (thứ 7 đi làm, ngày lễ theo lịch MMH). Gửi trong ngày đó, trước 23:59 ⇒ <b>Đúng hạn</b>; gửi trước ngày đó ⇒ <b>Gửi sớm</b>; sau 23:59 ⇒ <b>Muộn</b>.", img:"" },
+      { type:"imp", icon:"↻", title:"Thống kê chỉ còn báo cáo tuần", text:"Menu Thống kê gửi báo cáo (Admin / Director / HOD) ▸ bảng và file Excel chỉ tính báo cáo tuần, thêm cột <b>Gửi sớm</b>; lịch làm việc 2026–2027 nằm ở sheet Lịch làm việc.", img:"" }
+    ],
+    en:{ title:"Report statistics: 2027 working calendar and new rules",
+      items:[
+        { title:"Weekly report: send it on the last working day", text:"Deadline = the last working day of the week (MMH Vietnam / Thailand calendar). Sent on that day before 23:59 ⇒ <b>On time</b>; earlier ⇒ <b>Early</b>; after 23:59 ⇒ <b>Late</b>." },
+        { title:"Statistics count weekly reports only", text:"Report statistics (Admin / Director / HOD): the table and the Excel file count weekly reports only, with a new <b>Early</b> column. KPI reports are no longer counted." }
+      ] }
+  },
+  {
     id:"2026-11-17-v19.6", version:"v19.6", date:"2026-11-17",
     title:"Báo cáo công tác: bạn tự gửi email báo cáo từ hộp thư của mình",
     summary:"Lưu báo cáo công tác xong, app soạn sẵn email báo cáo — To <b>Giám đốc</b>, CC <b>trưởng phòng</b> và <b>người đi cùng</b>. Bạn mở Outlook / Gmail, dán nội dung và <b>tự gửi</b>; email không còn gửi từ địa chỉ của hệ thống.",
