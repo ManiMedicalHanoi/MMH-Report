@@ -194,7 +194,7 @@ async function install(page, o){
         'crm-dental':[['2026-10-17 15:00','week','Viet','2026-10-12','2026-10-12','2026-10-18','2026-10-17 23:59','Đúng hạn','','Viet','team','VN','crm-dental','']],
         kpi:[['2026-10-02 15:00','kpi','Giang','202609','202609','202609','2026-10-02 16:00','Đúng hạn','','Giang','email','VN','kpi',''],
              ['2026-10-03 09:00','kpi','Minh Trang','202609','202609','202609','2026-10-02 16:00','Muộn',17,'Minh Trang','email','VN','kpi','']]}[key]||[];
-        out=o.rpFail&&key==='backoffice'?{ok:false,error:'Không tìm thấy chức năng: rpLog'}:{ok:true,src:key,since:'2026-10-01 00:00',head:[],rows:R,cal:RPL_CAL0,rule:{week:'23:59',kpiDay:5,kpi:'23:59',qDay:5,q:'23:59'}}; }
+        out=o.rpFail&&key==='backoffice'?{ok:false,error:'Không tìm thấy chức năng: rpLog'}:{ok:true,src:key,since:'2026-10-01 00:00',head:[],rows:R,cal:RPL_CAL0,rule:{week:'23:59',weekFrom:'00:00',count:['week'],kpiDay:5,kpi:'23:59',qDay:5,q:'23:59'}}; }
       return route.fulfill({status:200,contentType:cb?'application/javascript':'application/json',body:cb?cb+'('+JSON.stringify(out)+');':JSON.stringify(out)});
     }
     { const crmT=/^AKfycbyzmh/.test(u.pathname.split('/')[3]||'')?'dental':/^AKfycbxxck/.test(u.pathname.split('/')[3]||'')?'surgical':/^AKfycbxsoT/.test(u.pathname.split('/')[3]||'')?'eyeless':'';

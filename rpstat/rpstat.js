@@ -1,13 +1,14 @@
 /* ═══════════════════════════════════════════════════════════════════════════
- * rpstat.js v1.2 (09/11/2026 · thêm CRM Thailand Dental; v1.1 02/11/2026 · hạn KPI theo quy trình MMHSOP_009) — GIỐNG HỆT ở MMH-Report và MMH-CRM (sửa 1 nơi ⇒ chép sang nơi kia)
+ * rpstat.js v1.3 (17/11/2026 · chỉ tính BÁO CÁO TUẦN: phải gửi trong ngày làm việc cuối của tuần, trước đó = Gửi sớm; KPI tháng / quý bỏ khỏi luật vì PIC tự gửi;
+ *   lịch 2027 từ backend) · v1.2 (09/11/2026 · thêm CRM Thailand Dental; v1.1 02/11/2026 · hạn KPI theo quy trình MMHSOP_009) — GIỐNG HỆT ở MMH-Report và MMH-CRM (sửa 1 nơi ⇒ chép sang nơi kia)
  *
  * ① XUẤT THỐNG KÊ GỬI BÁO CÁO (RPSTAT.open) — Admin / Director / HOD hoặc quyền "rps" (Phân quyền người dùng)
- *    · Đọc nhật ký gửi báo cáo (action rpLog, sheet ẩn _MMH_REPORT_LOG — backend MMH_ReportLog.gs) ở 9 backend:
- *      Report Hub (Marketing · Back Office · Management), CRM (Dental · Surgical · Eyeless · Thailand Surgical · Thailand Dental), KPI.
+ *    · Đọc nhật ký gửi báo cáo (action rpLog, sheet ẩn _MMH_REPORT_LOG — backend MMH_ReportLog.gs) ở 8 backend:
+ *      Report Hub (Marketing · Back Office · Management), CRM (Dental · Surgical · Eyeless · Thailand Surgical · Thailand Dental).
  *    · Mỗi PIC · loại báo cáo · kỳ ⇒ lấy LẦN GỬI GẦN NHẤT so với hạn nộp (lịch làm việc MMH VN / TH do backend trả về):
- *      báo cáo tuần = 23:59 ngày làm việc cuối của tuần · Báo cáo KPI tháng (FM01) = hết ngày 05 tháng sau ·
- *      Báo cáo KPI quý (FM02) = hết ngày 05 tháng đầu quý kế tiếp (MMHSOP_009 · 4.2.1; trước đây 16:00 ngày 02 / 17:00 ngày 09).
- *    · Xuất Excel (SheetJS): tổng hợp theo tháng, theo quý, chi tiết từng loại, lịch làm việc, cách tính.
+ *      báo cáo tuần = gửi TRONG ngày làm việc cuối của tuần (00:00 → 23:59): sớm hơn = "Gửi sớm", sau 23:59 = "Muộn".
+ *      (v1.3: Báo cáo KPI tháng FM01 / quý FM02 KHÔNG tính nữa — PIC tự gửi từ hộp thư.)
+ *    · Xuất Excel (SheetJS): tổng hợp theo tháng, theo quý, chi tiết từng tuần, lịch làm việc, cách tính.
  * ② GỬI EMAIL TỰ ĐÁNH GIÁ QUÝ — thêm nút "Gửi email" ở form Setting Expectation cũ (#se). Từ 02/11/2026 form quý mới (kpisop.js, #kq)
  *    tự gửi qua backend KPI (rhSeSend) ⇒ nhánh này chỉ còn cho bản cũ.
  * Cấu hình: window.RPSTAT_CFG = { lang:fn→'vi'|'en', mount:fn(btn), hub, rhKey }.
@@ -24,8 +25,8 @@ var SRC = [
   { k:"crm-surgical", lb:"CRM Surgical", u:"https://script.google.com/macros/s/AKfycbxxckrqwkfhE0fszm1XVdpYyEHU_PCKQWMKE_2wBnMTgoJCZ-1nRZ_fhOCPXXsVfEE/exec" },
   { k:"crm-eyeless", lb:"CRM Eyeless",  u:"https://script.google.com/macros/s/AKfycbxsoTRbRWZRaf-z7-xRy_oIkM-Yv1HoCOjVRO-K6oRRh3Dr7MMg4v53K0qqpMfZ_K5IAg/exec" },
   { k:"crm-thai",   lb:"CRM Thailand Surgical", u:"https://script.google.com/macros/s/AKfycbwglPhfcC3y20-lPO8mRC7yapGUyVHSO2Mp3k4fyPJXnraQEu6bbO4dysL0E9MNadwHwg/exec" },
-  { k:"crm-thai-dental", lb:"CRM Thailand Dental", u:"https://script.google.com/macros/s/AKfycbwEvi4Y2rnLKwR0JKaqJKNCiHgyS6SEY473dEM9meSGHZ8B6b4tVka5jB4ppEAEPPHQ/exec" },   /* v1.2 — file thật "1. Thailand - Dental Action" */
-  { k:"kpi",        lb:"KPI (báo cáo KPI tháng · báo cáo KPI quý)", u:KPI }
+  { k:"crm-thai-dental", lb:"CRM Thailand Dental", u:"https://script.google.com/macros/s/AKfycbwEvi4Y2rnLKwR0JKaqJKNCiHgyS6SEY473dEM9meSGHZ8B6b4tVka5jB4ppEAEPPHQ/exec" }   /* v1.2 — file thật "1. Thailand - Dental Action" */
+  /* v1.3 — bỏ nguồn KPI: báo cáo KPI tháng / quý không còn tính đúng hạn (PIC tự gửi từ hộp thư) */
 ];
 var HUB = CFG.hub || "https://script.google.com/macros/s/AKfycbwsX4cQEoH4LNlmcNfe8qWIM9K6EiDEXy7PjhP9bHY2citL6xHn5L1unsAlQJHyL9EP/exec";
 var ALIAS = { "minh viet":"viet", "bui trang":"trang" };
@@ -67,7 +68,7 @@ function jsonp(url, q, ms){
 }
 
 /* ══════════════ LỊCH LÀM VIỆC (từ backend: cal = {VN:{2026:{sat,off}}, TH:{…}}) ══════════════ */
-var CAL=null, RULE={ week:"23:59", kpiDay:5, kpi:"23:59", qDay:5, q:"23:59" };
+var CAL=null, RULE={ week:"23:59", weekFrom:"00:00", kpiDay:5, kpi:"23:59", qDay:5, q:"23:59" };
 function isWork(iso, c){
   var y=(CAL&&CAL[c==="TH"?"TH":"VN"]||{})[iso.slice(0,4)], md=iso.slice(5,10), w=dOf(iso).getDay();
   if(w===0) return false;
@@ -114,7 +115,7 @@ function build(D, ymFrom, ymTo){
     var sc=String(r.since||"");
     var first=(r.rows||[]).reduce(function(m,v){ var a=String(v[0]); return !m||a<m?a:m; }, "");
     var s0=[sc,first].filter(Boolean).sort()[0]||"";
-    if(s0){ var kk=x.s.k==="kpi" ? ["kpi","quarter"] : ["week"]; kk.forEach(function(t){ if(t==="quarter" && !sc) return; var v=t==="quarter"?sc:s0; if(!since[t]||v<since[t]) since[t]=v; }); }
+    if(s0 && (!since.week || s0<since.week)) since.week=s0;
   });
   /* người: RH_Users (đang hoạt động, bỏ TEST) + mọi PIC trong nhật ký */
   var P={};
@@ -127,7 +128,8 @@ function build(D, ymFrom, ymTo){
     var c=p.cal||"VN", due=dueOf(type, per, c), L=(p.g[type+"|"+per]||[]).slice().sort(function(a,b){ return a.at<b.at?-1:1; });
     if(type==="week" && !due) return { per:per, due:"", st:T("Không tính (tuần nghỉ)","Not counted (no working day)"), k:"na", n:L.length };
     var last=L[L.length-1];
-    if(last){ var late=due && last.at>due; return { per:per, due:due, last:last, first:L[0], n:L.length, st:late?T("Muộn","Late"):T("Đúng hạn","On time"), k:late?"late":"ok",
+    if(last){ var late=due && last.at>due, early=!late && type==="week" && due && last.at<due.slice(0,10)+" "+(RULE.weekFrom||"00:00");   /* v1.3 — gửi trước ngày làm việc cuối */
+      return { per:per, due:due, last:last, first:L[0], n:L.length, st:late?T("Muộn","Late"):early?T("Gửi sớm (trước ngày cuối tuần)","Early (before the last working day)"):T("Đúng hạn","On time"), k:late?"late":early?"early":"ok",
       hrs:late? Math.round((new Date(last.at.replace(" ","T")+":00+07:00")-new Date(due.replace(" ","T")+":00+07:00"))/36e5*10)/10 : "" }; }
     if(due>now) return { per:per, due:due, n:0, st:T("Chưa đến hạn","Not due yet"), k:"wait" };
     if(!since[type] || due<since[type]) return { per:per, due:due, n:0, st:T("Chưa ghi nhận (trước khi bắt đầu theo dõi)","Not tracked yet"), k:"na" };
@@ -135,19 +137,17 @@ function build(D, ymFrom, ymTo){
   }
   var out=[];
   Object.keys(P).sort(function(a,b){ return P[a].pic.localeCompare(P[b].pic); }).forEach(function(k){
-    var p=P[k], W=[], K=[], Q=[];
+    var p=P[k], W=[];
     for(var mon=monOf(startIso); mon<=endIso; mon=addD(mon,7)){
       var j=judge(p,"week",mon), we=weekEnd(mon,p.cal||"VN"), ym=(we||addD(mon,4)).slice(0,7).replace("-","");
       if(ym<ymFrom||ym>ymTo) continue; j.ym=ym; j.mon=mon; W.push(j);
     }
-    months.forEach(function(ym){ var j=judge(p,"kpi",ym); j.ym=ym; K.push(j); });
     var qs=[]; months.forEach(function(ym){ var q=fyq(ym).id; if(qs.indexOf(q)<0) qs.push(q); });
-    qs.forEach(function(q){ var j=judge(p,"quarter",q); Q.push(j); });
-    out.push({ p:p, W:W, K:K, Q:Q, qs:qs });
+    out.push({ p:p, W:W, qs:qs });
   });
   return { list:out, months:months, since:since, ok:ok, bad:bad, n:rows.length };
 }
-function cnt(arr){ var c={ need:0, sent:0, ok:0, late:0, miss:0 }; arr.forEach(function(j){ if(j.k==="ok"||j.k==="late"){ c.need++; c.sent++; c[j.k]++; } else if(j.k==="miss"){ c.need++; c.miss++; } }); return c; }
+function cnt(arr){ var c={ need:0, sent:0, ok:0, early:0, late:0, miss:0 }; arr.forEach(function(j){ if(j.k==="ok"||j.k==="late"||j.k==="early"){ c.need++; c.sent++; c[j.k]++; } else if(j.k==="miss"){ c.need++; c.miss++; } }); return c; }
 function pct(c){ return c.need ? Math.round(c.ok/c.need*100)+"%" : ""; }
 
 /* ══════════════ EXCEL ══════════════ */
@@ -158,37 +158,27 @@ function loadXlsx(){
 function sheet(X, aoa, widths){ var ws=X.utils.aoa_to_sheet(aoa); ws["!cols"]=(widths||[]).map(function(w){ return { wch:w }; }); if(aoa.length>1) ws["!autofilter"]={ ref:X.utils.encode_range({ s:{ r:0, c:0 }, e:{ r:aoa.length-1, c:aoa[0].length-1 } }) }; return ws; }
 function workbook(X, R, ymFrom, ymTo){
   var wb=X.utils.book_new(), calName=function(p){ return p.cal==="TH"?T("Thái Lan","Thailand"):T("Việt Nam","Vietnam"); };
-  /* 1. theo tháng */
-  var a=[[T("PIC","PIC"),T("Phòng ban","Department"),T("Lịch","Calendar"),T("Tháng","Month"),
-          T("BC tuần: cần gửi","Weekly: due"),T("BC tuần: đã gửi","Weekly: sent"),T("BC tuần: đúng hạn","Weekly: on time"),T("BC tuần: muộn","Weekly: late"),T("BC tuần: chưa gửi","Weekly: not sent"),T("BC tuần: % đúng hạn","Weekly: % on time"),
-          T("KPI tháng","Monthly KPI"),T("KPI: gửi lúc (gần nhất)","KPI: sent at (latest)"),T("KPI: hạn","KPI: deadline")]];
+  /* 1. theo tháng — v1.3: chỉ báo cáo tuần */
+  var WH=[T("BC tuần: cần gửi","Weekly: due"),T("BC tuần: đã gửi","Weekly: sent"),T("Đúng hạn (trong ngày cuối tuần)","On time (on the last working day)"),T("Gửi sớm","Early"),T("Muộn","Late"),T("Chưa gửi","Not sent"),T("% đúng hạn","% on time")];
+  var a=[[T("PIC","PIC"),T("Phòng ban","Department"),T("Lịch","Calendar"),T("Tháng","Month")].concat(WH)];
   R.list.forEach(function(x){ R.months.forEach(function(ym){
-    var c=cnt(x.W.filter(function(j){ return j.ym===ym; })), k=x.K.filter(function(j){ return j.ym===ym; })[0]||{};
-    a.push([x.p.pic, x.p.dept, calName(x.p), ymLbl(ym), c.need, c.sent, c.ok, c.late, c.miss, pct(c), k.st||"", k.last?dmyT(k.last.at):"", dmyT(k.due)]);
+    var c=cnt(x.W.filter(function(j){ return j.ym===ym; }));
+    a.push([x.p.pic, x.p.dept, calName(x.p), ymLbl(ym), c.need, c.sent, c.ok, c.early, c.late, c.miss, pct(c)]);
   }); });
-  X.utils.book_append_sheet(wb, sheet(X, a, [16,20,10,9,10,10,11,9,11,12,24,18,16]), T("Theo thang","By month"));
+  X.utils.book_append_sheet(wb, sheet(X, a, [16,20,10,9,10,10,14,9,9,10,11]), T("Theo thang","By month"));
   /* 2. theo quý */
-  var b=[[T("PIC","PIC"),T("Phòng ban","Department"),T("Quý","Quarter"),T("Các tháng","Months"),
-          T("BC tuần: cần gửi","Weekly: due"),T("BC tuần: đã gửi","Weekly: sent"),T("BC tuần: đúng hạn","Weekly: on time"),T("BC tuần: muộn","Weekly: late"),T("BC tuần: chưa gửi","Weekly: not sent"),
-          T("KPI tháng: cần gửi","KPI: due"),T("KPI tháng: đã gửi","KPI: sent"),T("KPI tháng: đúng hạn","KPI: on time"),T("KPI tháng: muộn","KPI: late"),T("KPI tháng: chưa gửi","KPI: not sent"),
-          T("Báo cáo KPI quý","Quarterly KPI report"),T("BC KPI quý: gửi lúc","Quarterly KPI: sent at"),T("BC KPI quý: hạn","Quarterly KPI: deadline")]];
+  var b=[[T("PIC","PIC"),T("Phòng ban","Department"),T("Quý","Quarter"),T("Các tháng","Months")].concat(WH)];
   R.list.forEach(function(x){ x.qs.forEach(function(q){
-    var ms=qMonths(q), cw=cnt(x.W.filter(function(j){ return ms.indexOf(j.ym)>=0; })), ck=cnt(x.K.filter(function(j){ return ms.indexOf(j.ym)>=0; })), qq=x.Q.filter(function(j){ return j.per===q; })[0]||{};
-    b.push([x.p.pic, x.p.dept, q.replace("-"," "), ymLbl(ms[0])+" – "+ymLbl(ms[2]), cw.need, cw.sent, cw.ok, cw.late, cw.miss, ck.need, ck.sent, ck.ok, ck.late, ck.miss, qq.st||"", qq.last?dmyT(qq.last.at):"", dmyT(qq.due)]);
+    var ms=qMonths(q), cw=cnt(x.W.filter(function(j){ return ms.indexOf(j.ym)>=0; }));
+    b.push([x.p.pic, x.p.dept, q.replace("-"," "), ymLbl(ms[0])+" – "+ymLbl(ms[2]), cw.need, cw.sent, cw.ok, cw.early, cw.late, cw.miss, pct(cw)]);
   }); });
-  X.utils.book_append_sheet(wb, sheet(X, b, [16,20,11,17,10,10,11,9,11,10,10,11,9,11,26,18,16]), T("Theo quy","By quarter"));
-  /* 3–5. chi tiết */
-  function det(list, name, perLbl){
-    var c=[[T("PIC","PIC"),T("Phòng ban","Department"),T("Lịch","Calendar"),perLbl,T("Hạn nộp","Deadline"),T("Kết quả","Result"),T("Lần gửi gần nhất","Latest e-mail"),T("Trễ (giờ)","Late (hours)"),T("Số lần gửi","E-mails sent"),T("Lần gửi đầu","First e-mail"),T("Người bấm gửi","Sent by"),T("Nguồn","Source")]];
-    R.list.forEach(function(x){ x[list].forEach(function(j){
-      c.push([x.p.pic, x.p.dept, calName(x.p), j.lbl||j.per, dmyT(j.due), j.st, j.last?dmyT(j.last.at):"", j.hrs||"", j.n||0, j.first?dmyT(j.first.at):"", j.last?j.last.by:"", j.last?j.last.src:""]);
-    }); });
-    X.utils.book_append_sheet(wb, sheet(X, c, [16,20,10,26,16,22,18,10,10,18,14,26]), name);
-  }
-  R.list.forEach(function(x){ x.W.forEach(function(j){ j.lbl=dmy(j.mon)+" – "+dmy(addD(j.mon,6)); }); x.K.forEach(function(j){ j.lbl=ymLbl(j.ym); }); x.Q.forEach(function(j){ j.lbl=j.per.replace("-"," "); }); });
-  det("W", T("BC tuan","Weekly"), T("Tuần","Week"));
-  det("K", T("KPI thang","Monthly KPI"), T("Tháng","Month"));
-  det("Q", T("Tu danh gia quy","Quarterly"), T("Quý","Quarter"));
+  X.utils.book_append_sheet(wb, sheet(X, b, [16,20,11,17,10,10,14,9,9,10,11]), T("Theo quy","By quarter"));
+  /* 3. chi tiết từng tuần */
+  var c=[[T("PIC","PIC"),T("Phòng ban","Department"),T("Lịch","Calendar"),T("Tuần","Week"),T("Ngày làm việc cuối","Last working day"),T("Kết quả","Result"),T("Lần gửi gần nhất","Latest e-mail"),T("Trễ (giờ)","Late (hours)"),T("Số lần gửi","E-mails sent"),T("Lần gửi đầu","First e-mail"),T("Người bấm gửi","Sent by"),T("Nguồn","Source")]];
+  R.list.forEach(function(x){ x.W.forEach(function(j){
+    c.push([x.p.pic, x.p.dept, calName(x.p), dmy(j.mon)+" – "+dmy(addD(j.mon,6)), j.due?dmy(j.due):"", j.st, j.last?dmyT(j.last.at):"", j.hrs||"", j.n||0, j.first?dmyT(j.first.at):"", j.last?j.last.by:"", j.last?j.last.src:""]);
+  }); });
+  X.utils.book_append_sheet(wb, sheet(X, c, [16,20,10,26,16,28,18,10,10,18,14,26]), T("BC tuan","Weekly"));
   /* 6. lịch làm việc */
   var l=[[T("Lịch","Calendar"),T("Năm","Year"),T("Loại ngày","Type"),T("Ngày","Date"),T("Thứ","Weekday")]], DW=T("CN T2 T3 T4 T5 T6 T7","Sun Mon Tue Wed Thu Fri Sat").split(" ");
   Object.keys(CAL||{}).forEach(function(c){ Object.keys(CAL[c]).forEach(function(y){
@@ -198,14 +188,12 @@ function workbook(X, R, ymFrom, ymTo){
   X.utils.book_append_sheet(wb, sheet(X, l, [12,8,26,12,8]), T("Lich lam viec","Work calendar"));
   /* 7. cách tính */
   var n=[[T("Cách tính","How it is counted")],
-    [T("Báo cáo tuần: gửi trước 24:00 (≤ "+RULE.week+") ngày làm việc cuối của tuần (thứ 2 → thứ 7) theo lịch MMH Việt Nam / Thái Lan; tuần không có ngày làm việc không tính. Tuần được tính vào tháng chứa ngày làm việc cuối.",
-       "Weekly report: deadline = "+RULE.week+" on the last working day of the week (Mon → Sat) of the MMH Vietnam / Thailand calendar; weeks without a working day are not counted.")],
-    [T("Báo cáo KPI tháng (MMHSOP_009-FM01): gửi chậm nhất ngày "+pad(RULE.kpiDay)+" tháng sau (≤ "+RULE.kpi+").","Monthly KPI report (MMHSOP_009-FM01): deadline = day "+pad(RULE.kpiDay)+" of the next month (≤ "+RULE.kpi+").")],
-    [T("Báo cáo KPI quý (MMHSOP_009-FM02): hạn = ngày "+pad(RULE.qDay)+" tháng đầu quý kế tiếp (≤ "+RULE.q+"; Q1 → "+pad(RULE.qDay)+"/12, Q2 → "+pad(RULE.qDay)+"/03, Q3 → "+pad(RULE.qDay)+"/06, Q4 → "+pad(RULE.qDay)+"/09). Chỉ tính khi gửi bằng nút Gửi trong form Báo cáo KPI quý.",
-       "Quarterly KPI report (MMHSOP_009-FM02): deadline = day "+pad(RULE.qDay)+" of the first month of the next quarter (≤ "+RULE.q+"). Counted when sent with the form's Send button.")],
+    [T("Báo cáo tuần: phải gửi TRONG ngày làm việc cuối của tuần (thứ 2 → thứ 7, từ "+(RULE.weekFrom||"00:00")+" đến "+RULE.week+") theo lịch làm việc MMH Việt Nam / Thái Lan. Gửi trước ngày đó = \"Gửi sớm\" (chưa đạt), sau "+RULE.week+" = \"Muộn\". Tuần không có ngày làm việc không tính. Tuần được tính vào tháng chứa ngày làm việc cuối.",
+       "Weekly report: must be sent ON the last working day of the week (Mon → Sat, "+(RULE.weekFrom||"00:00")+"–"+RULE.week+") of the MMH Vietnam / Thailand calendar. Earlier = \"Early\" (not on time), after "+RULE.week+" = \"Late\". Weeks without a working day are not counted.")],
+    [T("Báo cáo KPI tháng / Báo cáo KPI quý: KHÔNG tính (từ 17/11/2026 PIC tự gửi từ hộp thư của mình).","Monthly / quarterly KPI reports: not counted (since 17/11/2026 each PIC sends them from his / her own mailbox).")],
     [T("Mỗi PIC · loại · kỳ lấy LẦN GỬI EMAIL GẦN NHẤT so với hạn nộp. Gửi thử cho chính mình / chế độ TEST không tính.","Per PIC · report · period the LATEST e-mail is compared with the deadline. Test e-mails are ignored.")],
-    [T("Bắt đầu ghi nhận: báo cáo tuần "+(dmyT(R.since.week)||"—")+" · KPI tháng "+(dmyT(R.since.kpi)||"—")+" · KPI quý "+(dmyT(R.since.quarter)||"—")+". Kỳ trước mốc này: \"Chưa ghi nhận\" (không tính là chưa gửi).",
-       "Tracking started: weekly "+(dmyT(R.since.week)||"—")+" · KPI "+(dmyT(R.since.kpi)||"—")+" · quarterly "+(dmyT(R.since.quarter)||"—")+".")],
+    [T("Bắt đầu ghi nhận báo cáo tuần: "+(dmyT(R.since.week)||"—")+". Tuần trước mốc này: \"Chưa ghi nhận\" (không tính là chưa gửi).",
+       "Weekly tracking started: "+(dmyT(R.since.week)||"—")+".")],
     [T("Nguồn đã đọc: ","Sources read: ")+R.ok.join(" · ")],
     R.bad.length?[T("Chưa đọc được: ","Not read: ")+R.bad.join(" · ")]:[""],
     [T("Xuất lúc ","Exported ")+dmyT(nowStr())+T(" · kỳ "," · period ")+ymLbl(ymFrom)+" – "+ymLbl(ymTo)]];
@@ -252,8 +240,8 @@ function open(){
     +'<div class="rps-bd"><div class="rps-row"><div><label>'+T("Từ tháng","From")+'</label><select id="rps-f">'+monthOpts(f0)+'</select></div>'
     +'<div><label>'+T("Đến tháng","To")+'</label><select id="rps-t">'+monthOpts(cur)+'</select></div>'
     +'<button class="rps-btn" id="rps-load">'+T("Xem số liệu","Load")+'</button></div>'
-    +'<div class="rps-note">'+T("Báo cáo tuần · báo cáo KPI tháng · báo cáo KPI quý của từng PIC, theo email gần nhất đã gửi. Báo cáo tuần: trước 24:00 ngày làm việc cuối của tuần (lịch MMH Việt Nam / Thái Lan) · KPI tháng: chậm nhất ngày 05 tháng sau · KPI quý: chậm nhất ngày 05 tháng đầu quý kế tiếp (quy trình MMHSOP_009).",
-      "Weekly report · monthly KPI report · quarterly self-evaluation per PIC, by the latest e-mail sent. Weekly deadline = last working day of the week (MMH Vietnam / Thailand calendar).")+'</div>'
+    +'<div class="rps-note">'+T("Báo cáo tuần của từng PIC, theo email gần nhất đã gửi: phải gửi TRONG ngày làm việc cuối của tuần (lịch MMH Việt Nam / Thái Lan 2026–2027). Gửi trước ngày đó = Gửi sớm, sau 23:59 = Muộn. Báo cáo KPI tháng / quý không tính (PIC tự gửi).",
+      "Weekly report per PIC, by the latest e-mail sent: must be sent ON the last working day of the week (MMH Vietnam / Thailand calendar). Earlier = Early, after 23:59 = Late. KPI reports are not counted.")+'</div>'
     +'<div id="rps-out"></div></div>'
     +'<div class="rps-ft"><button class="rps-btn" id="rps-close">'+T("Đóng","Close")+'</button><button class="rps-btn pri" id="rps-xls" disabled>'+T("Xuất Excel","Export Excel")+'</button></div>';
   o.querySelector(".rps-x").onclick=$("rps-close").onclick=function(){ o.classList.remove("show"); };
@@ -267,15 +255,15 @@ function run(){
   out.innerHTML='<div class="rps-st">'+T("Đang đọc nhật ký gửi báo cáo ở "+SRC.length+" backend…","Reading the report logs of "+SRC.length+" backends…")+'</div>';
   load(r[0].slice(0,4)+"-"+r[0].slice(4,6)+"-01").then(function(D){
     ST.busy=false; ST.D=D; var R=build(D, r[0], r[1]); ST.R=R; ST.rg=r;
-    var tw=cnt([]), tk2=cnt([]), tq=cnt([]);
+    var tw=cnt([]);
     function add(t, c){ Object.keys(c).forEach(function(k){ t[k]+=c[k]; }); }
-    R.list.forEach(function(x){ add(tw, cnt(x.W)); add(tk2, cnt(x.K)); add(tq, cnt(x.Q)); });
-    var row=function(lb, c){ return '<tr><td>'+lb+'</td><td class="n">'+c.need+'</td><td class="n">'+c.sent+'</td><td class="n">'+c.ok+'</td><td class="n">'+c.late+'</td><td class="n">'+c.miss+'</td><td class="n">'+(pct(c)||"—")+'</td></tr>'; };
+    R.list.forEach(function(x){ add(tw, cnt(x.W)); });
+    var row=function(lb, c){ return '<tr><td>'+lb+'</td><td class="n">'+c.need+'</td><td class="n">'+c.sent+'</td><td class="n">'+c.ok+'</td><td class="n">'+c.early+'</td><td class="n">'+c.late+'</td><td class="n">'+c.miss+'</td><td class="n">'+(pct(c)||"—")+'</td></tr>'; };
     out.innerHTML='<div class="rps-st">'+T("Đã đọc ","Read ")+R.ok.length+'/'+SRC.length+T(" nguồn · "," sources · ")+R.n+T(" lượt gửi · "," e-mails · ")+R.list.length+' PIC'
       +(R.bad.length?'<div class="bad">'+T("Chưa đọc được: ","Not read: ")+esc(R.bad.join(" · "))+'</div>':'')+'</div>'
-      +'<table class="rps-tb"><thead><tr><th>'+T("Loại báo cáo","Report")+'</th><th>'+T("Cần gửi","Due")+'</th><th>'+T("Đã gửi","Sent")+'</th><th>'+T("Đúng hạn","On time")+'</th><th>'+T("Muộn","Late")+'</th><th>'+T("Chưa gửi","Not sent")+'</th><th>'+T("% đúng hạn","% on time")+'</th></tr></thead><tbody>'
-      +row(T("Báo cáo tuần","Weekly report"), tw)+row(T("Báo cáo KPI tháng","Monthly KPI report"), tk2)+row(T("Báo cáo KPI quý","Quarterly KPI report"), tq)+'</tbody></table>'
-      +'<div class="rps-note" style="margin-top:8px">'+T("Kỳ trước khi bắt đầu theo dõi ghi \"Chưa ghi nhận\", không tính là chưa gửi. File Excel có chi tiết từng PIC theo tháng / quý.","Periods before tracking started are not counted. The Excel file has per-PIC detail by month / quarter.")+'</div>';
+      +'<table class="rps-tb"><thead><tr><th>'+T("Loại báo cáo","Report")+'</th><th>'+T("Cần gửi","Due")+'</th><th>'+T("Đã gửi","Sent")+'</th><th>'+T("Đúng hạn","On time")+'</th><th>'+T("Gửi sớm","Early")+'</th><th>'+T("Muộn","Late")+'</th><th>'+T("Chưa gửi","Not sent")+'</th><th>'+T("% đúng hạn","% on time")+'</th></tr></thead><tbody>'
+      +row(T("Báo cáo tuần","Weekly report"), tw)+'</tbody></table>'
+      +'<div class="rps-note" style="margin-top:8px">'+T("Tuần trước khi bắt đầu theo dõi ghi \"Chưa ghi nhận\", không tính là chưa gửi. File Excel có chi tiết từng PIC theo tháng / quý / tuần.","Weeks before tracking started are not counted. The Excel file has per-PIC detail by month / quarter / week.")+'</div>';
     bt.disabled=!R.ok.length;
   }).catch(function(e){ ST.busy=false; out.innerHTML='<div class="rps-st bad">⚠ '+esc(e.message)+'</div>'; });
 }
@@ -343,7 +331,7 @@ function mount(){
   if(!can()) { var b0=$("rps-btn"); if(b0) b0.remove(); return; }
   if($("rps-btn") || !CFG.mount) return;
   var b=document.createElement("button"); b.id="rps-btn"; b.type="button"; b.textContent=T("Thống kê báo cáo","Report stats");
-  b.title=T("Xuất thống kê gửi báo cáo tuần / KPI tháng / KPI quý (Excel)","Export report submission statistics (Excel)");
+  b.title=T("Xuất thống kê gửi báo cáo tuần (Excel)","Export weekly report submission statistics (Excel)");
   b.onclick=open;
   try{ CFG.mount(b); }catch(_){}
 }

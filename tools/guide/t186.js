@@ -24,19 +24,29 @@ async function page(b, o){
   console.log(sum.replace(/\n+/g,' | ').slice(0,400));
   const R=await p.evaluate(()=>{ const R=RPSTAT._st.R, g=n=>R.list.find(x=>x.p.pic===n);
     const w=x=>x?x.W.filter(j=>j.k!=='na'&&j.k!=='wait').map(j=>j.mon+':'+j.k).join(','):'(none)';
-    return { n:R.list.length, giang:w(g('Giang')), trang:w(g('Minh Trang')), miew:w(g('Miew'))+' cal='+(g('Miew')||{p:{}}).p.cal, yong:w(g('Yong'))+' cal='+(g('Yong')||{p:{}}).p.cal, kpiG:g('Giang').K.map(j=>j.ym+':'+j.k).join(','), kpiT:g('Minh Trang').K.map(j=>j.ym+':'+j.k).join(','), q:g('Giang').Q.map(j=>j.per+':'+j.k).join(',') }; });
+    return { n:R.list.length, giang:w(g('Giang')), trang:w(g('Minh Trang')), miew:w(g('Miew'))+' cal='+(g('Miew')||{p:{}}).p.cal, yong:w(g('Yong'))+' cal='+(g('Yong')||{p:{}}).p.cal, hasK:!!g('Giang').K }; });
   console.log(R);
   if(!/2026-10-19:ok/.test(R.yong)||!/cal=TH/.test(R.yong)) fail('Yong (CRM Thailand Dental) sai: '+R.yong);
-  if(!/9\/9/.test(sum)) fail('Không đọc đủ 9 nguồn');
+  if(!/8\/8/.test(sum)) fail('Không đọc đủ 8 nguồn (v1.3 bỏ nguồn KPI)');
+  if(/KPI tháng|KPI quý/.test(sum.split('Loại báo cáo')[1]||'')) fail('Bảng tóm tắt còn KPI tháng / quý');
+  if(R.hasK) fail('Còn tính KPI tháng');
   if(!/2026-10-05:late/.test(R.giang)||!/2026-10-12:ok/.test(R.giang)||!/2026-10-19:ok/.test(R.giang)) fail('Giang tuần sai');
   if(!/2026-10-12:late/.test(R.trang)||!/2026-10-19:miss/.test(R.trang)) fail('Minh Trang tuần sai');
   if(!/2026-10-19:late/.test(R.miew)||!/cal=TH/.test(R.miew)) fail('Miew (TH) sai');
-  if(!/202609:ok/.test(R.kpiG)||!/202609:late/.test(R.kpiT)) fail('KPI tháng sai');
+  /* v1.3 — gửi trước ngày làm việc cuối = Gửi sớm; lịch 2027 (tuần Tết VN: ngày cuối = thứ Ba 02/02/2027) */
+  const E=await p.evaluate(()=>{ const row=(at,pic,per,cal)=>[at,'week',pic,per,per,per,'','','',pic,'team',cal,'x',''];
+    RPSTAT._st.D.src[0].r.rows.push(row('2026-10-21 10:00','Minh Trang','2026-10-19','VN'));
+    const R=RPSTAT.build(RPSTAT._st.D,'202610','202610'), g=n=>R.list.find(x=>x.p.pic===n);
+    const j=g('Minh Trang').W.find(j=>j.mon==='2026-10-19'); RPSTAT._st.D.src[0].r.rows.pop();
+    return { k:j.k, st:j.st, tet:RPSTAT.dueOf('week','2027-02-01','VN'), tetTH:RPSTAT.dueOf('week','2027-02-01','TH'), song:RPSTAT.dueOf('week','2027-04-12','TH') }; });
+  console.log('early:',E);
+  if(E.k!=='early') fail('Gửi sớm chưa nhận ra: '+E.k);
+  if(E.tet!=='2027-02-02 23:59'||E.tetTH!=='2027-02-05 23:59'||E.song!=='2027-04-16 23:59') fail('Lịch 2027 sai: '+JSON.stringify(E));
   const [dl]=await Promise.all([p.waitForEvent('download',{timeout:30000}), p.click('#rps-xls')]);
   const fp=path.resolve(__dirname,'out_rpstat.xlsx'); await dl.saveAs(fp); console.log('excel:',dl.suggestedFilename());
   const info=await p.evaluate(async(b64)=>{ const wb=XLSX.read(b64,{type:'base64'}); const o={}; wb.SheetNames.forEach(n=>{ o[n]=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1}).slice(0,4); }); return o; }, require('fs').readFileSync(fp).toString('base64'));
   Object.keys(info).forEach(n=>console.log('#',n,JSON.stringify(info[n]).slice(0,300)));
-  if(Object.keys(info).length!==7) fail('Excel thiếu sheet');
+  if(Object.keys(info).length!==5) fail('Excel sai số sheet (v1.3: 5)');
   /* 2. Email tự đánh giá quý: giả lập form #se + nút Tải (seDownload) */
   await p.evaluate(()=>{ document.querySelectorAll('.rps-ov').forEach(o=>o.classList.remove('show'));
     const o=document.createElement('div'); o.id='se'; o.innerHTML='<div class="kx-ft"><button id="se-dl">Tải</button></div>'; document.body.appendChild(o);
@@ -52,5 +62,5 @@ async function page(b, o){
   /* 3. PIC thường: không có nút */
   const p2=await page(b,{who:'Minh Trang',tk:'mmh.trang'});
   if(await p2.$('#rps-btn')) fail('PIC thường thấy nút Thống kê');
-  await b.close(); console.log(ok?'OK v18.6':'FAIL v18.6'); process.exit(ok?0:1);
+  await b.close(); console.log(ok?'OK v18.6 / rpstat v1.3':'FAIL v18.6 / rpstat v1.3'); process.exit(ok?0:1);
 })();
