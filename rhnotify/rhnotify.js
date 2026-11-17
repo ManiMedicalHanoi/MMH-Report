@@ -1,7 +1,8 @@
 /* ══════ THÔNG BÁO TỪ APP KHÁC (RHN) — GIỐNG HỆT ở MMH-Report và MMH-CRM (sửa 1 nơi ⇒ chép sang nơi kia) ══════
    Hộp thông báo chung: sheet RH_Notify (Training Master). App "Sự kiện MKT" ghi khi bạn được @nhắc tên (bình luận, biên bản họp),
    được giao việc, có việc chờ bạn duyệt / bị trả lại, được nhắc việc. Đọc qua Training Hub: rhNotifyList / rhNotifySeen (RH_Notify.gs).
-   Cấu hình trước khi nạp file: window.RHN_CFG = { url, key, actor:fn→PIC, mount:fn(btn), lang:fn→"vi"|"en", busy:fn→bool }.
+   Cấu hình trước khi nạp file: window.RHN_CFG = { url, key, actor:fn→PIC, mount:fn(btn), lang:fn→"vi"|"en", busy:fn→bool, go:fn(url)→true nếu app tự mở }.
+   17/11/2026: CRM nhóm Thái ghi thông báo khi đồng nghiệp @tag bạn trong task (App "CRM") — CRM tự mở trong chính app (go), Report Hub mở tab CRM.
    Bấm 1 thông báo ⇒ mở đúng việc / biên bản / thảo luận ở app nguồn (tab mới) + đánh dấu đã xem. */
 (function(){
   "use strict";
@@ -16,7 +17,7 @@
     var d = Math.round(h / 24); return d + T(" ngày trước", " d ago"); };
   var KIND = { mention: ["Nhắc tên bạn", "Mentioned you"], note: ["Biên bản họp", "Meeting note"], assign: ["Giao việc", "Assigned"], review: ["Chờ bạn duyệt", "Needs your review"],
     "return": ["Cần chỉnh sửa", "Changes requested"], comment: ["Bình luận", "Comment"], remind: ["Nhắc việc", "Reminder"], team: ["Sự kiện mới", "New event"] };
-  var APP = { event: ["Sự kiện MKT", "MKT Events"] };
+  var APP = { event: ["Sự kiện MKT", "MKT Events"], CRM: ["CRM", "CRM"] };   /* 17/11/2026: CRM — đồng nghiệp @tag bạn trong task (nhóm Thái) */
   function call(action, params){
     return new Promise(function(res, rej){
       if (!C.url) return rej(new Error("RHN_CFG.url?"));
@@ -65,7 +66,7 @@
     try { if (sessionStorage.getItem("rhn_toast")) return; sessionStorage.setItem("rhn_toast", "1"); } catch(e){}
     var go = function(){ if (C.busy && C.busy()) return setTimeout(go, 1500);
       var t = document.createElement("div"); t.id = "rhn-toast"; t.setAttribute("role", "status");
-      t.innerHTML = "<span>" + T("Bạn có <b>" + R.unseen + "</b> thông báo mới từ <b>Sự kiện MKT</b>", "You have <b>" + R.unseen + "</b> new notification" + (R.unseen > 1 ? "s" : "") + " from <b>MKT Events</b>") + '</span><button type="button" class="o">' + T("Xem", "View") + '</button><button type="button" class="c" aria-label="' + T("Đóng", "Close") + '">✕</button>';
+      t.innerHTML = "<span>" + T("Bạn có <b>" + R.unseen + "</b> thông báo mới", "You have <b>" + R.unseen + "</b> new notification" + (R.unseen > 1 ? "s" : "")) + '</span><button type="button" class="o">' + T("Xem", "View") + '</button><button type="button" class="c" aria-label="' + T("Đóng", "Close") + '">✕</button>';
       document.body.appendChild(t);
       t.querySelector(".o").onclick = function(){ t.remove(); open(); }; t.querySelector(".c").onclick = function(){ t.remove(); };
       setTimeout(function(){ if (t.isConnected) t.remove(); }, 12000); };
@@ -78,7 +79,7 @@
         return '<li class="' + (x.seen ? "" : "new") + '" data-id="' + esc(x.id) + '" data-url="' + esc(x.url) + '"><i></i><div style="min-width:0"><div class="k">' + esc(T(al[0], al[1])) + " · " + esc(T(kl[0], kl[1])) + " · " + esc(ago(x.at)) + '</div><div class="t">' + esc(x.title) + "</div>" + (x.text ? '<div class="x">' + esc(x.text) + "</div>" : "") + "</div></li>"; }).join("") + "</ul>"
         : '<div class="em">' + T("Chưa có thông báo. Khi ai đó @nhắc tên bạn hoặc giao việc cho bạn ở app Sự kiện MKT, thông báo hiện ở đây.", "No notifications yet. When someone @mentions you or assigns you a task in MKT Events, it appears here.") + "</div>");
     var a = p.querySelector("[data-all]"); if (a) a.onclick = function(ev){ ev.stopPropagation(); seen(null); };
-    Array.prototype.forEach.call(p.querySelectorAll("li[data-id]"), function(li){ li.onclick = function(){ seen([li.dataset.id]); if (li.dataset.url) window.open(li.dataset.url, "_blank", "noopener"); close(); }; });
+    Array.prototype.forEach.call(p.querySelectorAll("li[data-id]"), function(li){ li.onclick = function(){ seen([li.dataset.id]); var u = li.dataset.url; close(); if (u){ var done = false; try { done = !!(C.go && C.go(u)); } catch(e){} if (!done) window.open(u, "_blank", "noopener"); } }; });
   }
   function place(){
     var p = document.getElementById("rhn-pop"); if (!p || !btn) return; var r = btn.getBoundingClientRect();
