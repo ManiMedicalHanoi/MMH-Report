@@ -219,3 +219,6 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
 - **v19.8 (17/11/2026, khối `v198-js` + mmh-backend 17/11) — sửa / xoá mượt hơn**: đo thật `version` Marketing 7,0 s, đọc cả sheet 0,9–1,7 s ⇒ nghẽn do lượt gọi chồng nhau.
   App: sau lệnh ghi, `lrAfterWrite(ms, action, r)` (2 chỗ gọi: `apiPost` + `done` của OUTBOX) — lệnh SỬA (`update*`, `setPriorityFlag`) thành công có `v` ⇒ `lightRefreshSoon(8000)` (gộp nhiều lần sửa), thêm / xoá / chuyển giữ 0,9 giây.
   Backend: vân tay đổi 1 lần / lần ghi, `version` đệm 15 giây, `readWeekly` chống dồn đọc, ghi xong dựng sẵn bản đệm (xem CLAUDE.md mmh-backend). Test: `NODE_PATH=$(npm root -g) node tools/guide/t198.js`.
+- **v19.9 (18/11/2026, khối `v199-js`) — Key task sự kiện không lặp**: Marketing ▸ thêm Key task có tên trùng / chứa tên một sự kiện (EVL, nay gồm cả sự kiện tạo trên app Sự kiện MKT: `e.eh` / `e.u`)
+  mà sự kiện đó ĐÃ có Key task (mọi tháng) ⇒ hộp "Sự kiện này đã có Key task": Thêm thành sub-task (khuyến nghị) · **Vẫn tạo Key task mới** (người dùng chốt: vẫn cho tạo khi cần). Key task sự kiện có nút **App** (mở `#ev-<id>` app Sự kiện).
+  Lớp ngoài cùng của `doAddKey` (chạy trước RHK / EVL). Backend marketing Event Hub v2.2 (`MKT_EventHubRH.gs`): evList + sự kiện app; app Sự kiện thấy Key task Report Hub (`rhk`). Không chép việc sang WEEKLY.
