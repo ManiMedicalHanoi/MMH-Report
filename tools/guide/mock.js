@@ -46,7 +46,9 @@ const KEY=[
    {no:'4.3',row:43,subTask:'Tuyển sinh_Design post_Before event',pic:'Minh Trang',status:'Completed',start:'2026-10-03',planned:'2026-10-03',progress:100,vSrc:'E:9x1',vMeta:{s:'eventpost',t:'Design post',pg:'Mani Dental',ts:'On air đúng hạn'},result:'Status: On air đúng hạn\nhttps://www.facebook.com/share/p/demo1/'},
    {no:'4.4',row:44,subTask:'Recap_Photo_After event',pic:'Minh Trang',status:'To Do',start:'2026-10-21',planned:'2026-10-21',vSrc:'E:9x2',vMeta:{s:'eventpost',t:'Photo',pg:'Mani Dental',ts:''},result:'Status: (chưa có)'},
    {no:'4.1',row:41,subTask:'Truyền thông: Agenda sự kiện',pic:'Minh Trang',status:'Not started',start:'2026-10-06',planned:'2026-10-08'},
-   {no:'4.2',row:42,subTask:'Đặt phòng hội thảo',pic:'Thuong',status:'On going',start:'2026-10-05',planned:'2026-10-09'}]},
+   {no:'4.2',row:42,subTask:'Đặt phòng hội thảo',pic:'Thuong',status:'On going',start:'2026-10-05',planned:'2026-10-09'},
+   {no:'4.5',row:45,subTask:'Khảo sát bác sĩ · Thói quen sử dụng trâm nội nha',pic:'Giang',status:'In Progress',progress:50,start:'2026-10-07',planned:'2026-10-19',
+    result:'Link khảo sát: https://manimedicalhanoi.github.io/Training-Hub/khao-sat/?s=demo123\nGửi email + QR cho Marketing: https://manimedicalhanoi.github.io/Training-Hub/khao-sat/gui.html?s=demo123'}]},
  {no:'3',row:30,keyTask:'Weekly report & meeting',pic:'Giang',status:'On going',type:'Routine',start:'2026-10-05',planned:'2026-10-09',subs:[
    {no:'3.1',row:31,subTask:'Weekly meeting Sales & Marketing',pic:'Giang',status:'Completed',start:'2026-10-05',planned:'2026-10-05'}]},
  {no:'5',row:50,keyTask:'Internal Meeting 102026 · Marketing',pic:'Thuong',status:'To Do',type:'Plan',start:'2026-10-01',planned:'2026-10-31',subs:[]},
@@ -148,6 +150,7 @@ AUTH_USERS['nt.ha']='Nguyen Ha';   /* Giám đốc (v17.4 duyệt công tác) */
 /* ★ v16.2 — danh sách RH_Users giả lập cho trang phân quyền (email giả, không phải email thật) */
 let _ADMU=null;
 let TFP=null;
+const SVMAIL=[];   /* ⭐ v20.0: lệnh gửi email khảo sát */
 const ADMU=()=>_ADMU||(_ADMU=ROSTER.map((r,i)=>{ const local=ROSTER_NAMES[r.pic]||('mmh.'+r.pic.toLowerCase().replace(/\s+/g,''));
   return {local,email:local+'@mani.inc',pic:r.pic,level:r.level||'pic',admin:r.pic==='Giang',active:true,session:1,dept:'',title:'',perms:{},
     logins:i%5===4?0:3+i,lastLogin:i%5===4?'':new Date(Date.now()-(i%4)*86400000-3600000*(i%7)).toISOString(),lastEmail:''}; }));
@@ -165,6 +168,15 @@ async function install(page, o){
     else { body=Object.fromEntries(u.searchParams.entries()); }
     let d={ok:true,events:[]};
     TKS.push([a||'',u.searchParams.get('tk')||'',req.method()]);
+    /* ⭐ v20.0: khảo sát MMH — nsInfo / nsMailSend (máy chủ survey AKfycbx8l7u4) */
+    if(/AKfycbx8l7u4/.test(u.pathname) && /^ns(Info|MailSend)$/.test(a||'')){
+      const inf=JSON.parse(require('fs').readFileSync(__dirname+'/sv_info.json','utf8'));
+      let out=inf;
+      if(a==='nsMailSend'){ SVMAIL.push(body); const sub=KK.find(k=>k.no==='4').subs.find(x=>x.no==='4.5'); if(sub){ sub.status='Completed'; sub.progress=100; }
+        out={ok:true,sent:{at:new Date().toISOString(),by:'Giang',to:inf.mail.to,cc:inf.mail.cc,miss:[]},task:Object.assign({},inf.task,{status:'Completed'}),taskOk:true,miss:[],notes:[]}; }
+      else if(SVMAIL.length){ out=Object.assign({},inf,{mail:Object.assign({},inf.mail,{sent:{at:new Date().toISOString(),to:inf.mail.to,cc:inf.mail.cc}}),task:Object.assign({},inf.task,{status:'Completed'})}); }
+      return route.fulfill({status:200,contentType:'application/json',headers:{'access-control-allow-origin':'*'},body:JSON.stringify(out)});
+    }
     /* ⭐ v19.1: KPI */
     if(/AKfycbx58/.test(u.pathname) && a==='rhKpiSent'){ KPISENT.push(body); const out={ok:true,logged:true}; return route.fulfill({status:200,contentType:cb?'application/javascript':'application/json',headers:{'access-control-allow-origin':'*'},body:cb?cb+'('+JSON.stringify(out)+');':JSON.stringify(out)}); }
     if(/AKfycbx58/.test(u.pathname) && /^rhKpi(Mail|MailPreview|MailSend)?$/.test(a||'')){

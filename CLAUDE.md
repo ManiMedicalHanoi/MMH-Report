@@ -222,3 +222,8 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
 - **v19.9 (18/11/2026, khối `v199-js`) — Key task sự kiện không lặp**: Marketing ▸ thêm Key task có tên trùng / chứa tên một sự kiện (EVL, nay gồm cả sự kiện tạo trên app Sự kiện MKT: `e.eh` / `e.u`)
   mà sự kiện đó ĐÃ có Key task (mọi tháng) ⇒ hộp "Sự kiện này đã có Key task": Thêm thành sub-task (khuyến nghị) · **Vẫn tạo Key task mới** (người dùng chốt: vẫn cho tạo khi cần). Key task sự kiện có nút **App** (mở `#ev-<id>` app Sự kiện).
   Lớp ngoài cùng của `doAddKey` (chạy trước RHK / EVL). Backend marketing Event Hub v2.2 (`MKT_EventHubRH.gs`): evList + sự kiện app; app Sự kiện thấy Key task Report Hub (`rhk`). Không chép việc sang WEEKLY.
+- **v20.0 (18/11/2026, khối `v200-css` + `v200-js`) — nút "Gửi email khảo sát" trên task (người dùng yêu cầu)**: hệ thống khảo sát MMH (mmh-backend ▸ survey ▸ `MMH_SurveyNotify.gs`) tự tạo task
+  "Khảo sát bác sĩ · …" (sub-task dưới Key task sự kiện) có kết quả chứa link `Training-Hub/khao-sat/gui.html?s=<mã>` ⇒ `linkify` / `resultCellEditable` được bọc: link đó thành nút `.svm-btn` (+ chữ Chưa gửi / Đã gửi)
+  ⇒ `SVM.open(mã)`: hộp `#svm-ov` (máy chủ survey `nsInfo`: tóm tắt, link, bản xem trước email) ⇒ "Xác nhận hoàn thành & gửi email" ⇒ xác nhận trong hộp ⇒ `nsMailSend` (email To Thương, Trang · CC Tuyên, Nguyễn Hà + QR; task ⇒ Completed) ⇒ `lightRefreshSoon`.
+  `SVM.find` / `SVM.show` cho tour `svmail`. Mock: sub 4.5 + `tools/guide/sv_info.json` (route `AKfycbx8l7u4` nsInfo / nsMailSend); test + ảnh `tools/guide/t200.js [--shots]` (đồng hồ 08/10/2026).
+
