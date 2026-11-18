@@ -8,6 +8,20 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-11-18-v19.9", version:"v19.9", date:"2026-11-18",
+    title:"Key task sự kiện không bị lặp",
+    summary:"Nhóm Marketing: khi thêm Key task trùng tên một sự kiện đã có Key task (kể cả ở tháng khác), app gợi ý thêm thành <b>sub-task</b> để không lặp việc. Sự kiện tạo trên app Sự kiện MKT cũng có trong danh sách gợi ý tên.",
+    items:[
+      { type:"new", icon:"🗂️", title:"Cảnh báo Key task sự kiện bị trùng", text:"Cập nhật công việc ▸ Thêm Key task ▸ gõ tên sự kiện đã có Key task ⇒ hộp <b>Sự kiện này đã có Key task</b>: bấm Key task có sẵn để thêm thành sub-task, hoặc <b>Vẫn tạo Key task mới</b> khi thật cần." },
+      { type:"imp", icon:"↗", title:"Mở sự kiện trên app Sự kiện MKT", text:"Key task sự kiện có thêm nút <b>App</b> cạnh nút Folder ⇒ mở đúng sự kiện trên app Sự kiện MKT (việc theo 3 giai đoạn, tuyển sinh, ấn phẩm)." }
+    ],
+    en:{ title:"No more duplicate event Key tasks",
+      items:[
+        { title:"Warning for duplicate event Key tasks", text:"Update tasks ▸ Add Key task ▸ type the name of an event that already has a Key task ⇒ the box <b>This event already has a Key task</b>: click the existing Key task to add a sub-task, or <b>Create a new Key task anyway</b> when really needed." },
+        { title:"Open the event in the MKT Events app", text:"Event Key tasks have a new <b>App</b> button next to Folder ⇒ opens the event in the MKT Events app (3-phase tasks, enrolment, materials)." }
+      ] }
+  },
+  {
     id:"2026-11-17-v19.8", version:"v19.8", date:"2026-11-17",
     title:"Sửa, xoá và tải dữ liệu mượt hơn",
     summary:"Sửa kết quả, trạng thái, % hoàn thành… giờ không còn làm app tải lại cả danh sách sau mỗi lần sửa. Máy chủ cũng trả dữ liệu nhanh hơn khi nhiều người cùng dùng.",
