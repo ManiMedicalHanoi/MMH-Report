@@ -57,6 +57,15 @@ TOUR.add([
     { el:"#v189-team", t:"Xem cả key task", x:"Bật để thấy <b>mọi sub-task</b> của những key task bạn tham gia, kể cả việc của người khác. Tắt ⇒ chỉ còn việc của bạn." },
     { el:".v10-tbl tr.v189-oth td.c-pic[data-ro]", when:function(){ return !!q(".v10-tbl tr.v189-oth td.c-pic[data-ro]"); }, t:"Việc của người khác", x:"Dòng nền xám nhạt, ghi <b>chỉ xem</b> dưới tên PIC: xem được tiến độ, kết quả nhưng không sửa được." }
    ] },
+ { id:"svmail", v:1, d:"2026-11-18", g:"Công việc", ic:"mail", t:"Gửi email khảo sát cho Marketing", x:"Task khảo sát bác sĩ có nút gửi email + mã QR cho Team Marketing, gửi xong task tự hoàn thành.",
+   when:function(){ return !!(window.SVM && SVM.find && SVM.find()); },
+   steps:[
+    { el:function(){ var b=[].filter.call(document.querySelectorAll(".svm-btn"), function(x){ return x.offsetParent; }); return b[0]||null; }, do:function(){ try{ SVM.show(); }catch(_){} }, wait:1200,
+      t:"Nút Gửi email khảo sát", x:"Khi tạo khảo sát bác sĩ, hệ thống tự thêm task <b>Khảo sát bác sĩ · …</b> (trong Key task của sự kiện). Dòng ghi <b>Chưa gửi</b> / <b>Đã gửi</b>; bấm nút để mở hộp gửi email." },
+    { el:"#svm-ov .svm-mh", do:function(){ try{ var h=SVM.find(); if(h) SVM.open(h.code); }catch(_){} }, wait:1500,
+      t:"Xem trước email", x:"Mục tiêu, số câu, nhóm câu hỏi, link khảo sát, link kết quả và nguyên văn email: To <b>Thương, Trang</b> · CC <b>Tuyên, Nguyễn Hà</b>, kèm mã QR (PNG, SVG)." },
+    { el:"#svm-ft", t:"Xác nhận & gửi", x:"Bấm <b>Xác nhận hoàn thành &amp; gửi email</b> ⇒ <b>Gửi email</b>. Email đi và task trên Report Hub tự chuyển <b>Completed</b>. Chỉ người tạo khảo sát hoặc Admin / Giám đốc / Trưởng bộ phận gửi được." }
+   ] },
  { id:"calendar", v:1, d:"2026-10-11", g:"Công việc", ic:"cal", t:"Lịch làm việc", x:"Xem việc theo tuần / tháng, lọc người, xem việc quá hạn.",
    steps:[
     { el:function(){ var b=q("[onclick=\"c10Face('cal')\"]"); return b&&b.parentElement; }, do:cal, t:"Hôm nay và Pending", x:"<b>Today task</b> = việc theo lịch. <b>Pending</b> = việc còn tồn, chưa xong." },

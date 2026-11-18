@@ -8,6 +8,20 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-11-18-v20.0", version:"v20.0", date:"2026-11-18",
+    title:"Gửi email khảo sát cho Marketing ngay trên Report Hub",
+    summary:"Khảo sát bác sĩ tạo bằng hệ thống khảo sát MMH tự có task <b>Khảo sát bác sĩ · …</b> trên Report Hub. Task có nút <b>Gửi email khảo sát</b>: xem trước email, mã QR, rồi gửi cho Team Marketing; task tự chuyển Hoàn thành.",
+    items:[
+      { type:"new", icon:"✉", title:"Nút Gửi email khảo sát trên task", text:"Cập nhật công việc ▸ mở Key task của sự kiện ▸ dòng <b>Khảo sát bác sĩ · …</b> ▸ bấm <b>Gửi email khảo sát</b>. Dòng ghi rõ <b>Chưa gửi</b> / <b>Đã gửi</b>.", img:"updates/v20.0/nut-gui-email.jpg" },
+      { type:"new", icon:"◎", title:"Xem trước rồi xác nhận gửi", text:"Hộp hiện mục tiêu, số câu, nhóm câu hỏi, link khảo sát, link kết quả và nguyên văn email (To Thương, Trang · CC Tuyên, Nguyễn Hà, kèm mã QR). Bấm <b>Xác nhận hoàn thành &amp; gửi email</b> ⇒ <b>Gửi email</b> ⇒ email đi, task chuyển <b>Completed</b>.", img:"updates/v20.0/xem-truoc-email.jpg" }
+    ],
+    en:{ title:"Send the survey email to Marketing from Report Hub",
+      items:[
+        { title:"Send survey email button on the task", text:"Update tasks ▸ open the event Key task ▸ row <b>Khảo sát bác sĩ · …</b> ▸ click <b>Send survey email</b>. The row shows <b>Not sent</b> / <b>Sent</b>." },
+        { title:"Preview, then confirm", text:"The box shows the objective, number of questions, question groups, survey and result links and the exact email (To Thuong, Trang · CC Tuyen, Nguyen Ha, with the QR code). Click <b>Confirm done &amp; send email</b> ⇒ <b>Send</b> ⇒ the email goes out and the task becomes <b>Completed</b>." }
+      ] }
+  },
+  {
     id:"2026-11-18-v19.9", version:"v19.9", date:"2026-11-18",
     title:"Key task sự kiện không bị lặp",
     summary:"Nhóm Marketing: khi thêm Key task trùng tên một sự kiện đã có Key task (kể cả ở tháng khác), app gợi ý thêm thành <b>sub-task</b> để không lặp việc. Sự kiện tạo trên app Sự kiện MKT cũng có trong danh sách gợi ý tên.",
