@@ -20536,19 +20536,19 @@ window.lrAfterWrite=function(ms, a, r){
 <script id="v200-js">
 /* ⭐ v20.0 (18/11/2026) — nút "Gửi email khảo sát" trên task Report Hub (người dùng yêu cầu).
    Hệ thống khảo sát MMH (mmh-backend ▸ survey ▸ MMH_SurveyNotify.gs) tự tạo task "Khảo sát bác sĩ · …" với kết quả chứa link
-   Training-Hub/khao-sat/gui.html?s=<mã> ⇒ ở mọi chỗ hiển thị kết quả (linkify, ô kết quả trên dòng) link đó thành nút ⇒ SVM.open(mã):
+   MMH-Survey/s/gui.html?s=<mã> (link cũ Training-Hub/khao-sat/… vẫn nhận) ⇒ ở mọi chỗ hiển thị kết quả (linkify, ô kết quả trên dòng) link đó thành nút ⇒ SVM.open(mã):
    máy chủ survey nsInfo (tóm tắt, QR, bản xem trước email) ⇒ "Xác nhận hoàn thành & gửi email" (xác nhận ngay trong hộp, không dùng confirm)
    ⇒ nsMailSend: email To Thương, Trang · CC Tuyên, Nguyễn Hà + task Report Hub Completed ⇒ tải lại danh sách. */
 (function(){
   var API="https://script.google.com/macros/s/AKfycbx8l7u4j2tFDpfsg8IFsEcuXNrTbrLVRA_SoZ2Iisqprfm1ipL4z2NfDudVKuI1paFQPg/exec";
-  var RX=/https?:\/\/manimedicalhanoi\.github\.io\/Training-Hub\/khao-sat\/gui\.html\?s=([a-z0-9]{4,12})/i;
+  var RX=/https?:\/\/manimedicalhanoi\.github\.io\/(?:MMH-Survey\/s|Training-Hub\/khao-sat)\/gui\.html\?s=([a-z0-9]{4,12})/i;
   var en=function(){ return typeof LANG!=="undefined" && LANG==="en"; };
   var L=function(vi,e){ return en()?e:vi; };
   function btn(code){ return '<button type="button" class="svm-btn" data-svm="'+esc(code)+'" onclick="event.stopPropagation();SVM.open(\''+esc(code)+'\')" title="'+esc(L('Xem trước và gửi email khảo sát cho Team Marketing','Preview and send the survey email to the Marketing team'))+'">'+L('Gửi email khảo sát','Send survey email')+'</button>'; }
   /* thay link trang gửi email bằng nút */
   function swap(h){
-    if(!h || h.indexOf("khao-sat/gui.html")<0) return h;
-    return h.replace(/<a [^>]*href="(https?:\/\/manimedicalhanoi\.github\.io\/Training-Hub\/khao-sat\/gui\.html\?s=([a-z0-9]{4,12}))"[^>]*>[\s\S]*?<\/a>/gi, function(_m,_u,c){ return btn(c); });
+    if(!h || h.indexOf("/gui.html?s=")<0) return h;
+    return h.replace(/<a [^>]*href="(https?:\/\/manimedicalhanoi\.github\.io\/(?:MMH-Survey\/s|Training-Hub\/khao-sat)\/gui\.html\?s=([a-z0-9]{4,12}))"[^>]*>[\s\S]*?<\/a>/gi, function(_m,_u,c){ return btn(c); });
   }
   var _lk=window.linkify; if(_lk) window.linkify=function(){ return swap(_lk.apply(this, arguments)); };
   var _rc=window.resultCellEditable; if(_rc) window.resultCellEditable=function(o){
@@ -20595,7 +20595,7 @@ window.lrAfterWrite=function(ms, a, r){
       '<div class="svm-mut">'+L("Khảo sát (gửi bác sĩ)","Survey (for doctors)")+'</div><a href="'+esc(d.url)+'" target="_blank" rel="noopener">'+esc(d.url)+'</a>'+
       '<div class="svm-mut" style="margin-top:8px">'+L("Thống kê, biểu đồ","Charts")+'</div><a href="'+esc(d.app)+'" target="_blank" rel="noopener">'+L("Mở app MMH Survey","Open MMH Survey")+'</a>'+
       '<div class="svm-mut" style="margin-top:8px">'+L("Dữ liệu chi tiết","Raw data")+'</div><a href="'+esc(d.sheet)+'" target="_blank" rel="noopener">Google Sheet</a>'+
-      '<div style="margin-top:10px"><a class="svm-sec" href="https://manimedicalhanoi.github.io/Training-Hub/khao-sat/gui.html?s='+esc(d.code)+'" target="_blank" rel="noopener">'+L("Tải mã QR (PNG / SVG)","Download QR (PNG / SVG)")+'</a></div></div>'+
+      '<div style="margin-top:10px"><a class="svm-sec" href="https://manimedicalhanoi.github.io/MMH-Survey/s/gui.html?s='+esc(d.code)+'" target="_blank" rel="noopener">'+L("Tải mã QR (PNG / SVG)","Download QR (PNG / SVG)")+'</a></div></div>'+
       '</div><div><div class="svm-c"><div class="svm-l">'+L("Email gửi Team Marketing","Email to the Marketing team")+'</div><div class="svm-mh">'+
       '<div><span>'+L("Đến","To")+'</span>'+esc(d.mail.to.join(", "))+'</div><div><span>CC</span>'+esc(d.mail.cc.join(", "))+'</div>'+
       '<div><span>'+L("Tiêu đề","Subject")+'</span>'+esc(d.mail.subject)+'</div><div><span>'+L("Đính kèm","Attach")+'</span>'+L("Mã QR (PNG, SVG)","QR code (PNG, SVG)")+'</div></div>'+
