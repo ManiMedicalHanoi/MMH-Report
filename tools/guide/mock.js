@@ -48,7 +48,7 @@ const KEY=[
    {no:'4.1',row:41,subTask:'Truyền thông: Agenda sự kiện',pic:'Minh Trang',status:'Not started',start:'2026-10-06',planned:'2026-10-08'},
    {no:'4.2',row:42,subTask:'Đặt phòng hội thảo',pic:'Thuong',status:'On going',start:'2026-10-05',planned:'2026-10-09'},
    {no:'4.5',row:45,subTask:'Khảo sát bác sĩ · Thói quen sử dụng trâm nội nha',pic:'Giang',status:'In Progress',progress:50,start:'2026-10-07',planned:'2026-10-19',
-    result:'Link khảo sát: https://manimedicalhanoi.github.io/Training-Hub/khao-sat/?s=demo123\nGửi email + QR cho Marketing: https://manimedicalhanoi.github.io/Training-Hub/khao-sat/gui.html?s=demo123'}]},
+    result:'Link khảo sát: https://manimedicalhanoi.github.io/MMH-Survey/s/?s=demo123\nGửi email + QR cho Marketing: https://manimedicalhanoi.github.io/MMH-Survey/s/gui.html?s=demo123'}]},
  {no:'3',row:30,keyTask:'Weekly report & meeting',pic:'Giang',status:'On going',type:'Routine',start:'2026-10-05',planned:'2026-10-09',subs:[
    {no:'3.1',row:31,subTask:'Weekly meeting Sales & Marketing',pic:'Giang',status:'Completed',start:'2026-10-05',planned:'2026-10-05'}]},
  {no:'5',row:50,keyTask:'Internal Meeting 102026 · Marketing',pic:'Thuong',status:'To Do',type:'Plan',start:'2026-10-01',planned:'2026-10-31',subs:[]},
