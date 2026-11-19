@@ -227,3 +227,5 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
   ⇒ `SVM.open(mã)`: hộp `#svm-ov` (máy chủ survey `nsInfo`: tóm tắt, link, bản xem trước email) ⇒ "Xác nhận hoàn thành & gửi email" ⇒ xác nhận trong hộp ⇒ `nsMailSend` (email To Thương, Trang · CC Tuyên, Nguyễn Hà + QR; task ⇒ Completed) ⇒ `lightRefreshSoon`.
   `SVM.find` / `SVM.show` cho tour `svmail`. Mock: sub 4.5 + `tools/guide/sv_info.json` (route `AKfycbx8l7u4` nsInfo / nsMailSend); test + ảnh `tools/guide/t200.js [--shots]` (đồng hồ 08/10/2026).
 
+- **19/11/2026 — giới hạn 130% (cùng CRM v37.8)**: `kpisop.js` v1.3 (`isSales` chỉ theo mã F khi dòng có mã — hỗ trợ bán C5–C7 là KPI Quá trình, tối đa 130%) + Total KPI `ta()` kỳ FY: % của mã không phải F tối đa 130%.
+  Rule: mã F (doanh số NPP, sản phẩm mới) không giới hạn, mọi mã khác tối đa 130%. Kiểm số thật: mmh-backend ▸ ping `kpi?action=capDiag&key=<8 ký tự cuối ID file KPI>&full=1`.

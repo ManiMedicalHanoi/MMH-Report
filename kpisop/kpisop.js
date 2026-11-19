@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
- * kpisop.js — v1.2 (09/11/2026 · CHỈ gửi bản soạn sẵn về email của chính mình · nhắc hạn ngày 01–05, quá hạn 06–10) · v1.1 (02/11/2026 · lời chào theo chức danh) · GIỐNG HỆT ở MMH-Report và MMH-CRM (sửa 1 nơi ⇒ chép sang nơi kia)
+ * kpisop.js — v1.3 (19/11/2026 · isSales chỉ theo mã F khi có mã — hỗ trợ bán C5–C7 tối đa 130%) · v1.2 (09/11/2026 · CHỈ gửi bản soạn sẵn về email của chính mình · nhắc hạn ngày 01–05, quá hạn 06–10) · v1.1 (02/11/2026 · lời chào theo chức danh) · GIỐNG HỆT ở MMH-Report và MMH-CRM (sửa 1 nơi ⇒ chép sang nơi kia)
  *
  * BÁO CÁO KPI THEO QUY TRÌNH QUẢN LÝ KPI MMHSOP_009 (phiên bản 20260801, hiệu lực 01/10/2026)
  *  · Báo cáo KPI Tháng = Biểu mẫu MMHSOP_009-FM01 (KR.open) — chậm nhất ngày 05 hằng tháng, cho kết quả tháng trước.
@@ -59,7 +59,8 @@ function dueQuarter(fy,q){ var y0=fy+1958, m=[[y0,12],[y0+1,3],[y0+1,6],[y0+1,9]
 /* tên KPI hiển thị: VN = tên rút gọn tiếng Việt (kpiShort) · EN = tên gốc trong file KPI */
 function kName(r, lang){ var n=String(r&&(r.name||r.kpi)||"").replace(/\s+/g," ").trim(); if(lang==="en") return n; try{ return H().kpiShort?H().kpiShort(n):n; }catch(_){ return n; } }
 /* KPI doanh số bán hàng ⇒ không giới hạn 130% (FM02 · Chú ý) */
-function isSales(r){ return /^F\d/i.test(r.code||"") || /turnover|doanh số/i.test(r.group||""); }
+function isSales(r){ var c=String(r.code||"").trim(); if(/^F\d/i.test(c)) return true; if(/^[A-Z]\d/i.test(c)) return false;   /* v1.3: có mã ⇒ chỉ mã F; hỗ trợ bán C5–C7 = Quá trình, tối đa 130% */
+  return /turnover|doanh số/i.test(r.group||"") && !/support|hỗ trợ/i.test(r.group||""); }
 
 /* ── Word (JSZip) ── */
 function xw(v){ return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\r?\n/g,'</w:t><w:br/><w:t xml:space="preserve">'); }

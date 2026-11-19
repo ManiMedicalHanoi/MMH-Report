@@ -18212,7 +18212,7 @@ function ratio(k,t,a){
 }
 function ta(k){
   var i=T.mi, t=null, a=null, tt=k.t||[], aa=k.a||[];
-  if(T.mode==="fy") return { t:k.tgt, a:k.act, p:k.pct };
+  if(T.mode==="fy") return { t:k.tgt, a:k.act, p:(k.pct!=null&&!turnover(k)&&!lower(k))?Math.min(k.pct,1.3):k.pct };   /* v37.8 / v20.1: mã không phải F tối đa 130% */
   if(T.mode==="m"){ t=tt[i]; a=aa[i]; }
   else {
     var tn=tt.slice(0,i+1).filter(function(v){ return v!==null; }), an=aa.slice(0,i+1).filter(function(v){ return v!==null; });
@@ -20289,7 +20289,7 @@ window.RHN_CFG={ url:TRAINING_HUB_API, key:TRAINING_RH_KEY, actor:function(){ re
    (templates/kpi_fm0x_vi|en.docx — nhóm Thái dùng mẫu tiếng Anh). Thay KR / SE / popup nhắc hạn của khối v16.5. */
 window.KPISOP_CFG={ en:function(){ return false; }, thai:function(pic, s){ return /thai/i.test([s&&s.team, s&&s.dept].join(" ")); } };
 </script>
-<script src="kpisop/kpisop.js?v=1.2"></script>
+<script src="kpisop/kpisop.js?v=1.3"></script>
 
 <style id="v195-css">
 /* ⭐ v19.5 — Báo cáo tuần: hiện rõ phòng ban đang xem + gợi ý khi trống */
