@@ -229,3 +229,6 @@ Sửa nhỏ không ảnh hưởng người dùng (refactor, comment) thì không
 
 - **19/11/2026 — giới hạn 130% (cùng CRM v37.8)**: `kpisop.js` v1.3 (`isSales` chỉ theo mã F khi dòng có mã — hỗ trợ bán C5–C7 là KPI Quá trình, tối đa 130%) + Total KPI `ta()` kỳ FY: % của mã không phải F tối đa 130%.
   Rule: mã F (doanh số NPP, sản phẩm mới) không giới hạn, mọi mã khác tối đa 130%. Kiểm số thật: mmh-backend ▸ ping `kpi?action=capDiag&key=<8 ký tự cuối ID file KPI>&full=1`.
+- **v20.1 (21/11/2026) — sub-task / Key task "đang lưu" bị nhân bản**: `applyWeekly` giữ bản tạm (`tmp-…`) rồi `setKeyTasks` ⇒ `overlay()` của OUTBOX cũng thêm 1 bản ⇒ mỗi lần tải lại
+  danh sách trong lúc lệnh còn chờ (máy chủ bận, `RH_FRESH`, lệnh lỗi) thêm 1 dòng trùng, lưu xong vẫn còn dòng "đang lưu" ma (sheet chỉ có 1 dòng). Nay cùng số tạm ⇒ thay đúng chỗ bằng bản cũ, số tạm đã có số thật ⇒ bỏ.
+  Test: `NODE_PATH=$(npm root -g) node tools/guide/t201.js` (mock `flaky` busy + tải lại 5 lần).
