@@ -8,6 +8,18 @@
    · title   : chữ thuần (viết & bình thường, KHÔNG dùng &amp;) · summary / text: được phép dùng thẻ HTML đơn giản (<b>, <i>, <br>) */
 window.MMH_UPDATES = [
   {
+    id:"2026-11-21-v20.1", version:"v20.1", date:"2026-11-21",
+    title:"Sub-task đang lưu không còn bị nhân bản",
+    summary:"Sửa lỗi: thêm sub-task (hoặc Key task) khi máy chủ đang bận ⇒ dòng <b>đang lưu</b> hiện lặp lại nhiều lần mỗi lần danh sách tải lại. Trên Google Sheet chỉ có 1 dòng — các dòng lặp chỉ nằm trên màn hình.",
+    items:[
+      { type:"fix", icon:"✓", title:"Mỗi việc vừa thêm chỉ hiện 1 dòng", text:"Thêm sub-task ▸ app hiện ngay 1 dòng <b>đang lưu</b> ▸ lưu xong tự đổi sang số task thật. Dù danh sách tải lại nhiều lần trong lúc chờ, dòng đó không còn bị nhân đôi. Nếu đang thấy dòng lặp: tải lại trang (F5) là hết." }
+    ],
+    en:{ title:"Pending sub-tasks are no longer duplicated",
+      items:[
+        { title:"Each new task shows one row only", text:"Add a sub-task ▸ the app shows one <b>saving</b> row at once ▸ it switches to the real task number when saved. Reloading the list while it waits no longer duplicates the row. If you still see duplicates: reload the page (F5)." }
+      ] }
+  },
+  {
     id:"2026-11-18-v20.0", version:"v20.0", date:"2026-11-18",
     title:"Gửi email khảo sát cho Marketing ngay trên Report Hub",
     summary:"Khảo sát bác sĩ tạo bằng hệ thống khảo sát MMH tự có task <b>Khảo sát bác sĩ · …</b> trên Report Hub. Task có nút <b>Gửi email khảo sát</b>: xem trước email, mã QR, rồi gửi cho Team Marketing; task tự chuyển Hoàn thành.",
